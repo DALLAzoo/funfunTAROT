@@ -44,8 +44,7 @@ async function shuffle(){
   if(!completed){magic.stop();return;}
   if(token!==session){magic.stop();return;}
   cards.forEach(c=>{c.hidden=!selection.includes(c);});
-  magic.phase("release");
-  const opened=await fanMotion(selection,stage);
+  const opened=await fanMotion(selection,stage,clock=>magic.release(clock));
   if(!opened){magic.stop();return;}
   magic.finish();
   fanLayout(selection,stage);

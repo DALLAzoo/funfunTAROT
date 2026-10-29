@@ -1,0 +1,229 @@
+--- a/js/shuffle-paths.js
++++ b/js/shuffle-paths.js
+@@ -5,23 +5,23 @@
+   const small = width < 600;
+   return {width, height, radiusX:Math.min(width * .27, 285), radiusY:Math.min(height * .15, 82), depth:small ? 140 : 230};
+ }
+-export function liftPose(index, m) {
+-  const group = index % 3, lane = Math.floor(index / 3) - 3.5;
+-  return {x:(group - 1) * m.radiusX * .85 + lane * 3,
+-    y:-m.radiusY * .6 + lane * 4 - (group === 1 ? 30 : 0),
+-    z:(group - 1) * m.depth * .65 + lane * 5,
+-    rot:(group - 1) * 18 + lane * 2, ry:(group - 1) * 25, rx:lane * 2, scale:.9};
++// Eleven pairs have distinct phases, radii, speeds and tilted orbital planes.
++// Opposite partners keep the deck centroid steady: no repeated whole-deck hop.
++export function liftPose(index,m) {
++  const p=orbitPose(index,0,m);
++  return {...p,x:p.x*.72,y:-18+(p.y+18)*.72,z:p.z*.72,rot:p.rot*.7,ry:p.ry*.7,rx:p.rx*.7};
+ }
+-export function orbitPose(index, progress, m) {
+-  const group = index % 3, lane = Math.floor(index / 3) - 3.5;
+-  const direction = group === 1 ? -1 : 1;
+-  const angle = group * TAU / 3 + direction * progress * TAU * 1.15;
+-  const radius = 1 + lane * .025;
+-  return {x:Math.cos(angle) * m.radiusX * radius + lane * 3,
+-    y:-18 + Math.sin(angle * 2 + group * .55) * m.radiusY + lane * 4,
+-    z:Math.sin(angle) * m.depth + lane * 6,
+-    rot:Math.sin(angle) * 30 + (group - 1) * 12,
+-    ry:Math.cos(angle) * 48, rx:Math.sin(angle + group) * 20, scale:.92};
++export function orbitPose(index,progress,m) {
++  const k=index%11,side=index<11?1:-1;
++  const direction=k%3===1?-1:1;
++  const a=k*2.399963+direction*progress*TAU*(1.05+(k%4)*.07);
++  const radius=.68+(k%5)*.065,tilt=(k-5)*.12;
++  const x=Math.cos(a)*m.radiusX*radius;
++  const y=Math.sin(a)*m.radiusY*.72*Math.cos(tilt)+Math.cos(a)*m.radiusY*.30*Math.sin(tilt);
++  const z=Math.sin(a)*m.depth*(.80+(k%3)*.08);
++  return {x:side*x,y:-18+side*y,z:side*z,
++    rot:side*(Math.sin(a)*23+(k-5)*2),ry:side*Math.cos(a)*44,
++    rx:side*Math.sin(a+tilt)*18,scale:.92};
+ }
+ export function stackPose(index, count = SELECTION_COUNT) {
+   const t = count === 1 ? 0 : index / (count - 1) * 2 - 1;
+--- a/js/card-animation.js
++++ b/js/card-animation.js
+@@ -1,3 +1,4 @@
++import {FINALE_DURATION, pressureProgress} from './finale-motion.js';
+ import {SELECTION_COUNT, metrics, liftPose, orbitPose, stackPose, fanPose, mixPose, smooth} from './shuffle-paths.js';
+ const ease = 'cubic-bezier(.2,.7,.2,1)';
+ const running = new WeakMap();
+@@ -24,10 +25,12 @@
+   return `translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
+ }
+ const transform = p => pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
+-async function play(el, frames, duration, delay=0, easing=ease) {
++async function play(el, frames, duration, delay=0, easing=ease, startTime=null, observe=null) {
+   const previous = running.get(el);
+   if (previous) previous.cancel();
+   const animation = el.animate(frames, {duration,delay,easing,fill:'both'});
++  if(startTime!==null)animation.startTime=startTime;
++  observe?.(animation);
+   running.set(el, animation);
+   samples.set(el,{animation,poses:frames.map(f=>readPose(f.transform))});
+   try { await animation.finished; }
+@@ -64,7 +67,7 @@
+   const m=metrics(stage.clientWidth,stage.clientHeight);
+   const lifted=await Promise.all(els.map((el,i)=>animateTo(el,transform(liftPose(i,m)),560)));
+   if(lifted.some(value=>!value))return false;
+-  // One continuous sampled trajectory: blend onto the orbit, cross in 3 groups,
++  // One continuous sampled trajectory: blend onto independent orbital planes,
+   // then decelerate onto the stack. No separate phase resets or timeout gaps.
+   phase("vortex");
+   const results=await Promise.all(els.map((el,i)=>{
+@@ -85,9 +88,22 @@
+   cardSize(stage);
+   els.forEach((el,i)=>{el.style.transform=transform(fanPose(i,els.length,stage.clientWidth));});
+ }
+-export async function fanMotion(els,stage) {
++export async function fanMotion(els,stage,onStart=()=>{}) {
+   cardSize(stage);
+-  const results=await Promise.all(els.map((el,i)=>animateTo(el,transform(fanPose(i,els.length,stage.clientWidth)),780,i*14)));
++  const startTime=stage.ownerDocument?.timeline?.currentTime??null;
++  let leader=null,completed=false;
++  const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,
++    progress:()=>completed?1:(leader?.effect.getComputedTiming().progress??0)};
++  const results=await Promise.all(els.map((el,i)=>{
++    const from=readPose(el.style.transform),to=fanPose(i,els.length,stage.clientWidth),frames=[];
++    for(let n=0;n<=80;n++){
++      const t=n/80,q=pressureProgress(t);
++      frames.push({offset:t,transform:transform(mixPose(from,to,q))});
++    }
++    return play(el,frames,FINALE_DURATION,0,'linear',startTime,
++      i===0?animation=>{leader=animation;onStart(clock);}:null);
++  }));
++  completed=true;
+   return results.every(Boolean);
+ }
+ export async function revealMotion(els,chosen,stage) {
+--- a/js/finale-motion.js
++++ b/js/finale-motion.js
+@@ -0,0 +1,21 @@
++// One scalar drives both the pressure wave radius and every card's opening pose.
++export const FINALE_DURATION = 1040;
++export const clamp01 = t => Math.max(0, Math.min(1,t));
++export function pressureProgress(t) {
++  t=clamp01(t);
++  if(t===0||t===1)return t;
++  const u=t*t*(3-2*t), k=6;
++  return (1-Math.exp(-k*u)*(1+k*u))/(1-Math.exp(-k)*(1+k));
++}
++export function waveRadius(progress,width,count=9) {
++  const cw=Math.max(65,Math.min(112,width*.18));
++  const reach=Math.min(width*.48,410);
++  return 14+(Math.max(cw*.8,reach)-14)*progress;
++}
++
++// Match the exact linear interpolation between the 81 WAAPI keyframes.
++export function samplePressure(t) {
++  const n=clamp01(t)*80,i=Math.min(79,Math.floor(n));
++  const a=pressureProgress(i/80),b=pressureProgress((i+1)/80);
++  return a+(b-a)*(n-i);
++}
+--- a/js/magic-vfx.js
++++ b/js/magic-vfx.js
+@@ -1,3 +1,4 @@
++import {samplePressure, waveRadius} from './finale-motion.js';
+ import {sampleCard} from './card-animation.js';
+ // Canvas light lives outside the preserve-3d tree. Card transforms remain WAAPI-owned.
+ export class MagicVFX {
+@@ -25,9 +26,10 @@
+     this.stop();this.cards=cards;this.active=true;this.last=performance.now();this.phase('charge');
+     this.frame=requestAnimationFrame(t=>this.draw(t));
+   }
++  release(clock){this.waveClock=clock;this.trails=[];this.phase('release');}
+   finish(){this.phase('fade');}
+   stop(){
+-    this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];
++    this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];this.waveClock=null;
+     for(const {ctx} of this.layers)ctx?.clearRect(0,0,this.w,this.h);
+   }
+   project(p){const k=1100/(1100-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
+@@ -39,16 +41,52 @@
+     for(let i=0;i<12;i++){const a=i*Math.PI/6;ctx.beginPath();ctx.moveTo(Math.cos(a)*(r-5),Math.sin(a)*(r-5));ctx.lineTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.stroke();}
+     ctx.restore();
+   }
++  drawWave(rear,front,fade){
++    const t=Math.max(0,Math.min(1,this.waveClock.progress()));
++    const q=samplePressure(t),r=waveRadius(q,this.waveClock.width,this.waveClock.count);
++    const cx=this.w/2,cy=this.h/2-8;
++    const intensity=Math.pow(1-t,1.4)*fade;
++    // A broad energy shoulder, sharp pressure edge and a trailing secondary rim.
++    for(const [width,alpha,rr] of [[22,.11,r],[7,.30,r],[1.8,.95,r],[1,.25,r*.88]]){
++      rear.strokeStyle=`rgba(189,231,204,${intensity*alpha})`;rear.lineWidth=width;
++      rear.beginPath();rear.arc(cx,cy,rr,0,Math.PI*2);rear.stroke();
++    }
++    if(!this.reduced){
++      // Short arcs reach beyond the opaque card edges; no card opacity/filter change.
++      front.strokeStyle=`rgba(232,246,216,${intensity*.7})`;front.lineWidth=1.2;
++      for(let i=0;i<8;i++){
++        const a=i*Math.PI/4+.15;
++        front.beginPath();front.arc(cx,cy,r,a,a+.13);front.stroke();
++      }
++      const count=Math.min(this.w<600?16:24,Math.max(0,this.limit-this.particles.length));
++      const sparkle=Math.max(0,1-t/.85)*fade;
++      front.fillStyle=`rgba(226,244,211,${sparkle*.8})`;
++      for(let i=0;i<count;i++){
++        const a=i*2.399963,rr=r+(8+(i%4)*5)*q;
++        front.fillRect(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,1.4,1.4);
++      }
++    }
++    // Energy follows the same nine moving poses, then extinguishes as they settle.
++    if(q>.65){
++      const glow=(1-q)*2*fade;
++      rear.strokeStyle=`rgba(186,230,201,${glow})`;rear.lineWidth=1;
++      for(const card of this.cards){
++        if(card.hidden)continue;
++        const p=sampleCard(card);if(!p)continue;const point=this.project(p);
++        rear.beginPath();rear.arc(point.x,point.y,9+(1-q)*25,0,Math.PI*2);rear.stroke();
++      }
++    }
++  }
+   draw(now){
+     if(!this.active)return;
+     const dt=Math.min(.05,Math.max(0,(now-this.last)/1000));this.last=now;
+     const age=(now-this.phaseAt)/1000;
+-    if(this.name==='fade'&&age>.55){this.stop();return;}
+-    const fade=this.name==='fade'?Math.max(0,1-age/.55):1;
++    if(this.name==='fade'&&age>.28){this.stop();return;}
++    const fade=this.name==='fade'?Math.max(0,1-age/.28):1;
+     const vortex=this.name==='vortex';
+-    // The last 24% of the existing 2.6 s path is deceleration onto the stack.
++    // Existing orbit-to-stack interval, followed by the short still pose.
+     const condense=vortex?Math.max(0,Math.min(1,(age-1.976)/.624)):0;
+-    const release=this.name==='release';
++    const release=this.name==='release'||(this.name==='fade'&&this.waveClock);
+     const rear=this.layers[0].ctx,front=this.layers[1].ctx;
+     for(const {ctx} of this.layers){if(ctx){ctx.clearRect(0,0,this.w,this.h);ctx.globalCompositeOperation='lighter';}}
+     if(!rear||!front){this.stop();return;}
+@@ -57,15 +95,11 @@
+     this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
+     this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
+     if(condense>0){
+-      const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,50);
+-      g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-50,this.h/2-58,100,100);
++      const coreRadius=Math.max(66,Math.min(130,this.w*.18));
++      const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,coreRadius);
++      g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-coreRadius,this.h/2-8-coreRadius,coreRadius*2,coreRadius*2);
+     }
+-    if(release&&age<.65){
+-      this.ring(front,12+age*radius*3.2,(1-age/.65)*.65,0);
+-      // Brief directional impact, never a full-screen flash or card filter.
+-      front.strokeStyle=`rgba(229,246,221,${Math.max(0,1-age/.18)*.65})`;
+-      for(let i=0;i<8;i++){const a=i*Math.PI/4;front.beginPath();front.moveTo(this.w/2+Math.cos(a)*20,this.h/2-8+Math.sin(a)*9);front.lineTo(this.w/2+Math.cos(a)*radius*.65,this.h/2-8+Math.sin(a)*radius*.22);front.stroke();}
+-    }
++    if(release&&this.waveClock)this.drawWave(rear,front,fade);
+     this.cards.forEach((card,i)=>{
+       if(card.hidden)return;
+       const p=sampleCard(card);if(!p)return;
+--- a/js/main.js
++++ b/js/main.js
+@@ -44,8 +44,7 @@
+   if(!completed){magic.stop();return;}
+   if(token!==session){magic.stop();return;}
+   cards.forEach(c=>{c.hidden=!selection.includes(c);});
+-  magic.phase("release");
+-  const opened=await fanMotion(selection,stage);
++  const opened=await fanMotion(selection,stage,clock=>magic.release(clock));
+   if(!opened){magic.stop();return;}
+   magic.finish();
+   fanLayout(selection,stage);

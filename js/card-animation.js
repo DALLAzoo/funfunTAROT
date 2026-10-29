@@ -1,3 +1,4 @@
+import {FINALE_DURATION, pressureProgress} from './finale-motion.js';
 import {SELECTION_COUNT, metrics, liftPose, orbitPose, stackPose, fanPose, mixPose, smooth} from './shuffle-paths.js';
 const ease = 'cubic-bezier(.2,.7,.2,1)';
 const running = new WeakMap();
@@ -24,10 +25,12 @@ export function pose(x,y,z,rot=0,ry=0,scale=1,rx=0) {
   return `translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
 }
 const transform = p => pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
-async function play(el, frames, duration, delay=0, easing=ease) {
+async function play(el, frames, duration, delay=0, easing=ease, startTime=null, observe=null) {
   const previous = running.get(el);
   if (previous) previous.cancel();
   const animation = el.animate(frames, {duration,delay,easing,fill:'both'});
+  if(startTime!==null)animation.startTime=startTime;
+  observe?.(animation);
   running.set(el, animation);
   samples.set(el,{animation,poses:frames.map(f=>readPose(f.transform))});
   try { await animation.finished; }
@@ -64,7 +67,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}) {
   const m=metrics(stage.clientWidth,stage.clientHeight);
   const lifted=await Promise.all(els.map((el,i)=>animateTo(el,transform(liftPose(i,m)),560)));
   if(lifted.some(value=>!value))return false;
-  // One continuous sampled trajectory: blend onto the orbit, cross in 3 groups,
+  // One continuous sampled trajectory: blend onto independent orbital planes,
   // then decelerate onto the stack. No separate phase resets or timeout gaps.
   phase("vortex");
   const results=await Promise.all(els.map((el,i)=>{
@@ -85,9 +88,22 @@ export function fanLayout(els,stage) {
   cardSize(stage);
   els.forEach((el,i)=>{el.style.transform=transform(fanPose(i,els.length,stage.clientWidth));});
 }
-export async function fanMotion(els,stage) {
+export async function fanMotion(els,stage,onStart=()=>{}) {
   cardSize(stage);
-  const results=await Promise.all(els.map((el,i)=>animateTo(el,transform(fanPose(i,els.length,stage.clientWidth)),780,i*14)));
+  const startTime=stage.ownerDocument?.timeline?.currentTime??null;
+  let leader=null,completed=false;
+  const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,
+    progress:()=>completed?1:(leader?.effect.getComputedTiming().progress??0)};
+  const results=await Promise.all(els.map((el,i)=>{
+    const from=readPose(el.style.transform),to=fanPose(i,els.length,stage.clientWidth),frames=[];
+    for(let n=0;n<=80;n++){
+      const t=n/80,q=pressureProgress(t);
+      frames.push({offset:t,transform:transform(mixPose(from,to,q))});
+    }
+    return play(el,frames,FINALE_DURATION,0,'linear',startTime,
+      i===0?animation=>{leader=animation;onStart(clock);}:null);
+  }));
+  completed=true;
   return results.every(Boolean);
 }
 export async function revealMotion(els,chosen,stage) {

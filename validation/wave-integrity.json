@@ -1,0 +1,28 @@
+{
+  "baseline_zip_sha256": "cfac699b4a3ce44a9d71e8246177d04a17c2ae2983f4ee09c7e645321d313438",
+  "baseline_library_file_id": "libfile_147be9ba95188191a972e7041e57925e",
+  "changed_files": [
+    "js/shuffle-paths.js",
+    "js/card-animation.js",
+    "js/finale-motion.js",
+    "js/magic-vfx.js",
+    "js/main.js"
+  ],
+  "png": {
+    "assets/card-backs/back-01.png": "8be5447257d179c4dc774d2e364381d9a03779e13aa70a27a08d358526d21857",
+    "assets/card-backs/back-02.png": "d876503933ce45745c4d24593feb7ad2a372a3598acd7b436dcf7913953d063d",
+    "assets/card-backs/back-03.png": "13867533d3ce1db27e5d0bdaba642ce49011a82eff75f51fbdf3942ce998dcb0",
+    "assets/card-backs/back-04.png": "40ef6c214b8721595e68367c878640d0a7762acfd2420aefc2e9627b1e1d6167",
+    "assets/card-backs/back-05.png": "65aab5b5b37065bb4f26b5e6131aad35cfa4e66d9e89f79f9d8721812ed08324",
+    "assets/card-backs/back-06.png": "c0f03f99422211f8dcef1a91b5b5f152ddfd26c1d4328498c1fc36c03badf740",
+    "assets/card-backs/back-07.png": "f6c1999166996969c471f9a6e773bc8425b9813b313b4123bd366a0f43e06ec5",
+    "assets/card-backs/back-08.png": "48c87ce8e70e9f21f329dc5c5fd93fbed0d62f9c379147fd348e61ebb6bb4fb1"
+  },
+  "code": {
+    "js/shuffle-paths.js": "0ac57c41c26dea04be389fbd325b97e4eb124d8c9f037385a7a9c36fde024861",
+    "js/card-animation.js": "d5ab3b533ec4e7472b63442fcba4896703e937f8dfbb5c7b87a1ccbc9d28118c",
+    "js/finale-motion.js": "f030d85999ca8632e2cb65d8b2f38d628ede09cc929f9cfc6ce9081da725af35",
+    "js/magic-vfx.js": "c758ccbf2473d24bd98bff5e257e9e10d3b3202d28f9b78b5662156ba621b4ea",
+    "js/main.js": "c0b9934e5c1d4d0e660b1662d9000a5a15edd866d17a36d9672604fff23bbd5d"
+  }
+}

@@ -5,23 +5,23 @@ export function metrics(width, height) {
   const small = width < 600;
   return {width, height, radiusX:Math.min(width * .27, 285), radiusY:Math.min(height * .15, 82), depth:small ? 140 : 230};
 }
-export function liftPose(index, m) {
-  const group = index % 3, lane = Math.floor(index / 3) - 3.5;
-  return {x:(group - 1) * m.radiusX * .85 + lane * 3,
-    y:-m.radiusY * .6 + lane * 4 - (group === 1 ? 30 : 0),
-    z:(group - 1) * m.depth * .65 + lane * 5,
-    rot:(group - 1) * 18 + lane * 2, ry:(group - 1) * 25, rx:lane * 2, scale:.9};
+// Eleven pairs have distinct phases, radii, speeds and tilted orbital planes.
+// Opposite partners keep the deck centroid steady: no repeated whole-deck hop.
+export function liftPose(index,m) {
+  const p=orbitPose(index,0,m);
+  return {...p,x:p.x*.72,y:-18+(p.y+18)*.72,z:p.z*.72,rot:p.rot*.7,ry:p.ry*.7,rx:p.rx*.7};
 }
-export function orbitPose(index, progress, m) {
-  const group = index % 3, lane = Math.floor(index / 3) - 3.5;
-  const direction = group === 1 ? -1 : 1;
-  const angle = group * TAU / 3 + direction * progress * TAU * 1.15;
-  const radius = 1 + lane * .025;
-  return {x:Math.cos(angle) * m.radiusX * radius + lane * 3,
-    y:-18 + Math.sin(angle * 2 + group * .55) * m.radiusY + lane * 4,
-    z:Math.sin(angle) * m.depth + lane * 6,
-    rot:Math.sin(angle) * 30 + (group - 1) * 12,
-    ry:Math.cos(angle) * 48, rx:Math.sin(angle + group) * 20, scale:.92};
+export function orbitPose(index,progress,m) {
+  const k=index%11,side=index<11?1:-1;
+  const direction=k%3===1?-1:1;
+  const a=k*2.399963+direction*progress*TAU*(1.05+(k%4)*.07);
+  const radius=.68+(k%5)*.065,tilt=(k-5)*.12;
+  const x=Math.cos(a)*m.radiusX*radius;
+  const y=Math.sin(a)*m.radiusY*.72*Math.cos(tilt)+Math.cos(a)*m.radiusY*.30*Math.sin(tilt);
+  const z=Math.sin(a)*m.depth*(.80+(k%3)*.08);
+  return {x:side*x,y:-18+side*y,z:side*z,
+    rot:side*(Math.sin(a)*23+(k-5)*2),ry:side*Math.cos(a)*44,
+    rx:side*Math.sin(a+tilt)*18,scale:.92};
 }
 export function stackPose(index, count = SELECTION_COUNT) {
   const t = count === 1 ? 0 : index / (count - 1) * 2 - 1;

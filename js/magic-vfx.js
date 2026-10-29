@@ -1,3 +1,4 @@
+import {samplePressure, waveRadius} from './finale-motion.js';
 import {sampleCard} from './card-animation.js';
 // Canvas light lives outside the preserve-3d tree. Card transforms remain WAAPI-owned.
 export class MagicVFX {
@@ -25,9 +26,10 @@ export class MagicVFX {
     this.stop();this.cards=cards;this.active=true;this.last=performance.now();this.phase('charge');
     this.frame=requestAnimationFrame(t=>this.draw(t));
   }
+  release(clock){this.waveClock=clock;this.trails=[];this.phase('release');}
   finish(){this.phase('fade');}
   stop(){
-    this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];
+    this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];this.waveClock=null;
     for(const {ctx} of this.layers)ctx?.clearRect(0,0,this.w,this.h);
   }
   project(p){const k=1100/(1100-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
@@ -39,16 +41,52 @@ export class MagicVFX {
     for(let i=0;i<12;i++){const a=i*Math.PI/6;ctx.beginPath();ctx.moveTo(Math.cos(a)*(r-5),Math.sin(a)*(r-5));ctx.lineTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.stroke();}
     ctx.restore();
   }
+  drawWave(rear,front,fade){
+    const t=Math.max(0,Math.min(1,this.waveClock.progress()));
+    const q=samplePressure(t),r=waveRadius(q,this.waveClock.width,this.waveClock.count);
+    const cx=this.w/2,cy=this.h/2-8;
+    const intensity=Math.pow(1-t,1.4)*fade;
+    // A broad energy shoulder, sharp pressure edge and a trailing secondary rim.
+    for(const [width,alpha,rr] of [[22,.11,r],[7,.30,r],[1.8,.95,r],[1,.25,r*.88]]){
+      rear.strokeStyle=`rgba(189,231,204,${intensity*alpha})`;rear.lineWidth=width;
+      rear.beginPath();rear.arc(cx,cy,rr,0,Math.PI*2);rear.stroke();
+    }
+    if(!this.reduced){
+      // Short arcs reach beyond the opaque card edges; no card opacity/filter change.
+      front.strokeStyle=`rgba(232,246,216,${intensity*.7})`;front.lineWidth=1.2;
+      for(let i=0;i<8;i++){
+        const a=i*Math.PI/4+.15;
+        front.beginPath();front.arc(cx,cy,r,a,a+.13);front.stroke();
+      }
+      const count=Math.min(this.w<600?16:24,Math.max(0,this.limit-this.particles.length));
+      const sparkle=Math.max(0,1-t/.85)*fade;
+      front.fillStyle=`rgba(226,244,211,${sparkle*.8})`;
+      for(let i=0;i<count;i++){
+        const a=i*2.399963,rr=r+(8+(i%4)*5)*q;
+        front.fillRect(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr,1.4,1.4);
+      }
+    }
+    // Energy follows the same nine moving poses, then extinguishes as they settle.
+    if(q>.65){
+      const glow=(1-q)*2*fade;
+      rear.strokeStyle=`rgba(186,230,201,${glow})`;rear.lineWidth=1;
+      for(const card of this.cards){
+        if(card.hidden)continue;
+        const p=sampleCard(card);if(!p)continue;const point=this.project(p);
+        rear.beginPath();rear.arc(point.x,point.y,9+(1-q)*25,0,Math.PI*2);rear.stroke();
+      }
+    }
+  }
   draw(now){
     if(!this.active)return;
     const dt=Math.min(.05,Math.max(0,(now-this.last)/1000));this.last=now;
     const age=(now-this.phaseAt)/1000;
-    if(this.name==='fade'&&age>.55){this.stop();return;}
-    const fade=this.name==='fade'?Math.max(0,1-age/.55):1;
+    if(this.name==='fade'&&age>.28){this.stop();return;}
+    const fade=this.name==='fade'?Math.max(0,1-age/.28):1;
     const vortex=this.name==='vortex';
-    // The last 24% of the existing 2.6 s path is deceleration onto the stack.
+    // Existing orbit-to-stack interval, followed by the short still pose.
     const condense=vortex?Math.max(0,Math.min(1,(age-1.976)/.624)):0;
-    const release=this.name==='release';
+    const release=this.name==='release'||(this.name==='fade'&&this.waveClock);
     const rear=this.layers[0].ctx,front=this.layers[1].ctx;
     for(const {ctx} of this.layers){if(ctx){ctx.clearRect(0,0,this.w,this.h);ctx.globalCompositeOperation='lighter';}}
     if(!rear||!front){this.stop();return;}
@@ -57,15 +95,11 @@ export class MagicVFX {
     this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
     this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
     if(condense>0){
-      const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,50);
-      g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-50,this.h/2-58,100,100);
+      const coreRadius=Math.max(66,Math.min(130,this.w*.18));
+      const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,coreRadius);
+      g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-coreRadius,this.h/2-8-coreRadius,coreRadius*2,coreRadius*2);
     }
-    if(release&&age<.65){
-      this.ring(front,12+age*radius*3.2,(1-age/.65)*.65,0);
-      // Brief directional impact, never a full-screen flash or card filter.
-      front.strokeStyle=`rgba(229,246,221,${Math.max(0,1-age/.18)*.65})`;
-      for(let i=0;i<8;i++){const a=i*Math.PI/4;front.beginPath();front.moveTo(this.w/2+Math.cos(a)*20,this.h/2-8+Math.sin(a)*9);front.lineTo(this.w/2+Math.cos(a)*radius*.65,this.h/2-8+Math.sin(a)*radius*.22);front.stroke();}
-    }
+    if(release&&this.waveClock)this.drawWave(rear,front,fade);
     this.cards.forEach((card,i)=>{
       if(card.hidden)return;
       const p=sampleCard(card);if(!p)return;
