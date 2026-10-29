@@ -30,3 +30,26 @@
 .stage.is-dragging .group-glow{opacity:.7}
 .tarot-card{touch-action:none;contain:layout style}
 @media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important}.group-glow{filter:none}.group-glow-path{stroke-width:1.6}}
+
+/* 2026-10-29: preserve original back PNG edges (1240x2128), no image cropping. */
+.card-back{background-size:100% 100%!important;background-repeat:no-repeat!important;background-position:center!important;border:0!important}
+.card-face{border-radius:3px!important;overflow:hidden;box-shadow:0 3px 11px rgba(0,0,0,.12)!important}
+.card-edge{border-radius:3px!important;opacity:.75}
+/* The light comes from behind the whole three-card group, not its outlines. */
+.group-glow,.group-glow-path{display:none!important}
+.selection-backlight{position:absolute;left:50%;top:50%;width:min(86%,640px);height:68%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,rgba(166,219,185,.18) 0%,rgba(153,199,181,.075) 43%,transparent 74%);filter:blur(24px)}
+.selection-stage .aura{opacity:.3}
+/* Full fan area is the gesture surface, including gaps between cards. */
+.selection-stage{cursor:grab;touch-action:pan-y}
+.selection-stage.is-dragging{cursor:grabbing}
+.selection-stage .cards{pointer-events:none}
+.selection-stage .tarot-card.selectable{pointer-events:auto}
+.selection-stage .tarot-card{touch-action:pan-y}
+/* Remove all under-card captions, counters and arrow controls. */
+.controls .status,.controls .navigation,.controls .note,.intro #instruction{display:none!important}
+.controls{padding:8px 0 22px}
+.controls .actions{margin-top:0}
+/* No wipe, mask or translucent reveal overlay on the card face. */
+.card-front,.card-front img{opacity:1!important;mask:none!important;-webkit-mask:none!important;clip-path:none!important;filter:none!important}
+.transition-overlay{display:none!important}
+@media(max-width:600px){.card-face{box-shadow:0 2px 7px rgba(0,0,0,.10)!important}.selection-backlight{filter:blur(15px)}}

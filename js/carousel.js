@@ -12,8 +12,7 @@ export class Carousel {
   stage.addEventListener('pointerup',e=>this.up(e),opt);
   stage.addEventListener('pointercancel',()=>this.cancel(),opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
-  this.glow=document.createElementNS('http://www.w3.org/2000/svg','svg');this.glow.classList.add('group-glow');this.glow.setAttribute('aria-hidden','true');
-  this.path=document.createElementNS('http://www.w3.org/2000/svg','path');this.path.setAttribute('class','group-glow-path');this.path.setAttribute('pathLength','100');this.glow.append(this.path);stage.append(this.glow);
+  this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
  }
  distance(i){const n=this.cards.length;let d=mod(i-this.index,n);if(d>n/2)d-=n;return d;}
  get visible(){return this.cards.filter((_,i)=>Math.abs(this.distance(i))<=1);}
@@ -28,24 +27,8 @@ export class Carousel {
   });
   this.updateGlow();this.onIndex(this.index);
  }
- updateGlow(){
-  const w=this.stage.clientWidth,h=this.stage.clientHeight;
-  this.glow.setAttribute('viewBox',`0 0 ${w} ${h}`);
-  // The visible three cards form ONE traced silhouette, not three separate glows.
-  const pts=[];const cw=stageSize('selection',w),ch=cw*C.aspect;
-  for(let i=0;i<this.cards.length;i++){
-   const d=this.distance(i)+this.offset;if(Math.abs(d)>1.08)continue;
-   const pos=slotPose(d,w),scale=C.camera.perspective/(C.camera.perspective-pos.z);
-   const a=pos.rot*Math.PI/180,cos=Math.cos(a),sin=Math.sin(a),cx=w/2+pos.x*scale,cy=h/2+pos.y*scale;
-   for(const [x,y] of [[-cw/2,-ch/2],[cw/2,-ch/2],[cw/2,ch/2],[-cw/2,ch/2]])pts.push([cx+(x*cos-y*sin)*scale,cy+(x*sin+y*cos)*scale]);
-  }
-  if(pts.length<3){this.path.setAttribute('d','');return;}
-  pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);const low=[],up=[];
-  for(const pt of pts){while(low.length>=2&&cross(low.at(-2),low.at(-1),pt)<=0)low.pop();low.push(pt);}
-  for(const pt of [...pts].reverse()){while(up.length>=2&&cross(up.at(-2),up.at(-1),pt)<=0)up.pop();up.push(pt);}
-  const hull=[...low.slice(0,-1),...up.slice(0,-1)];this.path.setAttribute('d',hull.map((p,i)=>`${i?'L':'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(' ')+' Z');
- }
- down(e){if(this.busy||e.button!==0||!e.target.closest('.tarot-card'))return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};}
+ updateGlow(){ /* Soft stationary backlight; no tracing line. */ }
+ down(e){if(this.busy||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};}
  move(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){if(!p.dragged){p.dragged=true;this.stage.setPointerCapture(e.pointerId);this.stage.classList.add('is-dragging');}
@@ -58,5 +41,5 @@ export class Carousel {
  }
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  cancel(){this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');if(!this.busy)this.layout();}
- destroy(){this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.glow.remove();this.stage.classList.remove('is-dragging');}
+ destroy(){this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.stage.classList.remove('is-dragging');}
 }

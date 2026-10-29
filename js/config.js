@@ -1,7 +1,7 @@
 // All stage sizes, counts and primary animation/material values live here.
 // This is a local trial. The 20-card pool policy is NOT a production decision.
 export const CONFIG = {
-  breakpoint:600, aspect:1.58,
+  breakpoint:600, aspect:2128/1240,
   counts:{shuffle:22,selection:20,visible:3,result:1},
   pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
   catalog:{additionalCards:[],frontImages:{},requireActualFrontImages:false},
@@ -15,7 +15,7 @@ export const CONFIG = {
   carousel:{gap:.86,angle:18,centerDepth:70,depthStep:105,drop:32,move:260,enter:160,dragThreshold:34,dragLimit:2.4,clickGuard:320},
   reveal:{lift:480,focus:220,approach:430,arrival:360,flip:650,zoom:1.18,overscan:1.04,mode:'flip-after-arrival'},
   material:{thickness:4,shadowY:5,shadowBlur:13,shadowAlpha:.18,edge:'#756f61',satinEdgeAlpha:.22},
-  glow:{enabled:true,rgb:'213, 203, 245',intensity:.28,blur:16,pulseMs:3000,centerEmphasis:false,centerMultiplier:1,dragMultiplier:.35},
+  glow:{enabled:false,rgb:'213, 203, 245',intensity:.28,blur:16,pulseMs:3000,centerEmphasis:false,centerMultiplier:1,dragMultiplier:.35},
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'189,231,204'},
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5],result:[1]},
 };

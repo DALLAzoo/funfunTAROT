@@ -8,7 +8,7 @@ let catalog=[],cards=[],pool=[],back=null,state='idle',carousel=null,token=0;con
 function applySettings(){const s=document.documentElement.style;
  for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,'--glow-rgb':C.glow.rgb,'--glow-alpha':C.glow.enabled?C.glow.intensity:0,'--glow-blur':C.glow.blur+'px','--glow-pulse':C.glow.pulseMs+'ms','--center-multiplier':C.glow.centerEmphasis?C.glow.centerMultiplier:1,'--drag-glow':C.glow.dragMultiplier}))s.setProperty(k,v);
 }
-function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';$('#navigation').hidden=next!=='selection';$('#selectBtn').disabled=next!=='selection';}
+function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';$('#navigation').hidden=true;$('#selectBtn').disabled=next!=='selection';}
 function refreshCounter(index){$('#counter').textContent=`${index+1} / ${pool.length}`;}
 async function startShuffle(){
  if(!['idle','selection','result'].includes(state))return;
@@ -18,14 +18,14 @@ async function startShuffle(){
  carousel?.destroy();carousel=null;magic.stop();cancelAll(cards);back=next;$('#backName').textContent='· '+back.name;
  main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage');cardSize(stage,'shuffle');
  cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);
- setState('shuffling','카드를 섞고 있어요…');instruction.textContent='카드가 공간을 가로질러 섞입니다.';magic.start(cards);
+ setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(cards);
  if(!await shuffleMotion(cards,stage,name=>magic.phase(name))||current!==token){magic.stop();return;}
  pool=selectionPool(catalog);cards=renderCards(container,pool,back);cards.forEach(c=>{c.hidden=true;c.disabled=true;});
  const ids=visibleIndices(0,pool.length,C.counts.visible),opening=ids.map(i=>cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=cards;stage.classList.add('selection-stage');
  if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==token){magic.stop();return;}
  magic.finish();carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','끌리는 카드를 골라 주세요');
- instruction.textContent='좌우로 넘기거나 마음에 드는 카드를 선택하세요.';
+ instruction.textContent='';
 }
 async function choose(chosen){
  if(state!=='selection'||carousel?.busy||chosen.hidden)return;
