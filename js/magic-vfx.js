@@ -1,3 +1,4 @@
+import {CONFIG as C} from './config.js';
 import {samplePressure, waveRadius} from './finale-motion.js';
 import {sampleCard} from './card-animation.js';
 // Canvas light lives outside the preserve-3d tree. Card transforms remain WAAPI-owned.
@@ -16,8 +17,8 @@ export class MagicVFX {
   }
   resize(){
     this.w=this.stage.clientWidth;this.h=this.stage.clientHeight;
-    this.dpr=Math.min(devicePixelRatio||1,this.w<600?1.25:1.5);
-    this.limit=this.w<600?100:180;
+    this.dpr=Math.min(devicePixelRatio||1,this.w<C.breakpoint?C.vfx.mobileDpr:C.vfx.desktopDpr);
+    this.limit=this.w<C.breakpoint?C.vfx.mobileParticles:C.vfx.desktopParticles;
     for(const {canvas,ctx} of this.layers){canvas.width=Math.round(this.w*this.dpr);canvas.height=Math.round(this.h*this.dpr);ctx?.setTransform(this.dpr,0,0,this.dpr,0,0);}
     this.trails=[];
   }
@@ -32,7 +33,7 @@ export class MagicVFX {
     this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];this.waveClock=null;
     for(const {ctx} of this.layers)ctx?.clearRect(0,0,this.w,this.h);
   }
-  project(p){const k=1100/(1100-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
+  project(p){const k=C.camera.perspective/(C.camera.perspective-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
   ring(ctx,r,alpha,rotation=0){
     if(!ctx||alpha<=0)return;
     ctx.save();ctx.translate(this.w/2,this.h/2-8);ctx.scale(1,.34);ctx.rotate(rotation);
@@ -48,7 +49,7 @@ export class MagicVFX {
     const intensity=Math.pow(1-t,1.4)*fade;
     // A broad energy shoulder, sharp pressure edge and a trailing secondary rim.
     for(const [width,alpha,rr] of [[22,.11,r],[7,.30,r],[1.8,.95,r],[1,.25,r*.88]]){
-      rear.strokeStyle=`rgba(189,231,204,${intensity*alpha})`;rear.lineWidth=width;
+      rear.strokeStyle=`rgba(${C.vfx.rgb},${intensity*alpha})`;rear.lineWidth=width;
       rear.beginPath();rear.arc(cx,cy,rr,0,Math.PI*2);rear.stroke();
     }
     if(!this.reduced){
@@ -58,7 +59,7 @@ export class MagicVFX {
         const a=i*Math.PI/4+.15;
         front.beginPath();front.arc(cx,cy,r,a,a+.13);front.stroke();
       }
-      const count=Math.min(this.w<600?16:24,Math.max(0,this.limit-this.particles.length));
+      const count=Math.min(this.w<C.breakpoint?16:24,Math.max(0,this.limit-this.particles.length));
       const sparkle=Math.max(0,1-t/.85)*fade;
       front.fillStyle=`rgba(226,244,211,${sparkle*.8})`;
       for(let i=0;i<count;i++){
@@ -81,17 +82,17 @@ export class MagicVFX {
     if(!this.active)return;
     const dt=Math.min(.05,Math.max(0,(now-this.last)/1000));this.last=now;
     const age=(now-this.phaseAt)/1000;
-    if(this.name==='fade'&&age>.28){this.stop();return;}
-    const fade=this.name==='fade'?Math.max(0,1-age/.28):1;
+    if(this.name==='fade'&&age>C.finale.afterglow/1000){this.stop();return;}
+    const fade=this.name==='fade'?Math.max(0,1-age/(C.finale.afterglow/1000)):1;
     const vortex=this.name==='vortex';
     // Existing orbit-to-stack interval, followed by the short still pose.
-    const condense=vortex?Math.max(0,Math.min(1,(age-1.976)/.624)):0;
+    const condense=vortex?Math.max(0,Math.min(1,(age-C.shuffle.duration*.78/1000)/(C.shuffle.duration*.22/1000))):0;
     const release=this.name==='release'||(this.name==='fade'&&this.waveClock);
     const rear=this.layers[0].ctx,front=this.layers[1].ctx;
     for(const {ctx} of this.layers){if(ctx){ctx.clearRect(0,0,this.w,this.h);ctx.globalCompositeOperation='lighter';}}
     if(!rear||!front){this.stop();return;}
     const radius=Math.min(this.w*.42,310);
-    const energy=this.name==='charge'?Math.min(1,age/.56):vortex?1:Math.max(0,1-age/.75);
+    const energy=this.name==='charge'?Math.min(1,age/(C.shuffle.separate/1000)):vortex?1:Math.max(0,1-age/.75);
     this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
     this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
     if(condense>0){
@@ -100,6 +101,12 @@ export class MagicVFX {
       g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-coreRadius,this.h/2-8-coreRadius,coreRadius*2,coreRadius*2);
     }
     if(release&&this.waveClock)this.drawWave(rear,front,fade);
+    if(this.name==='focus'){
+      const p=sampleCard(this.cards[0]);if(p){const v=this.project(p),r=100-age*80;
+        rear.strokeStyle=`rgba(213,203,245,${Math.max(0,.42-age*.35)})`;rear.lineWidth=1.5;
+        rear.beginPath();rear.arc(v.x,v.y,Math.max(40,r),0,Math.PI*2);rear.stroke();
+      }
+    }
     this.cards.forEach((card,i)=>{
       if(card.hidden)return;
       const p=sampleCard(card);if(!p)return;

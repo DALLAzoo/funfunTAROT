@@ -1,56 +1,56 @@
-import{MagicVFX}from'./magic-vfx.js';
-import{SELECTION_COUNT}from'./shuffle-paths.js';
-import{prepareBack}from'./back-loader.js';
-import{shuffledDeck}from'./card-data.js';import{randomBack}from'./back-config.js';import{renderCards}from'./card-view.js';import{cardSize,floatLayout,cancelAll,shuffleMotion,fanMotion,fanLayout,revealMotion}from'./card-animation.js';
-const stage=document.querySelector('#stage'),container=document.querySelector('#cards'),status=document.querySelector('#status'),backName=document.querySelector('#backName'),instruction=document.querySelector('#instruction'),shuffleBtn=document.querySelector('#shuffleBtn'),resetBtn=document.querySelector('#resetBtn');
-const magic=new MagicVFX(stage);
-let cards=[],selection=[],currentBack=null,state='idle',session=0;
-function setState(next,label){state=next;status.textContent=label;shuffleBtn.disabled=next==='preparing'||next==='shuffling'||next==='revealing';shuffleBtn.textContent=next==='fan'?'다시 섞기':'카드 섞기';resetBtn.hidden=next!=='revealed';cards.forEach(c=>{c.classList.toggle('selectable',next==='fan'&&!c.hidden);c.disabled=next!=='fan'||c.hidden;});}
-async function prepareDeck(token){
-  const back=randomBack(currentBack?.id),previousState=state,previousInstruction=instruction.textContent;
-  setState('preparing','카드 이미지를 준비하고 있어요…');
-  try{await prepareBack(back);}catch(error){
-    if(token!==session)return false;
-    setState(previousState,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');
-    instruction.textContent=previousInstruction;
-    return false;
-  }
-  if(token!==session)return false;
-  magic.stop();
-  cancelAll(cards);
-  currentBack=back;
-  backName.textContent=`· ${currentBack.name}`;
-  cardSize(stage);
-  cards=renderCards(container,shuffledDeck(),currentBack);
-  selection=cards.slice(0,SELECTION_COUNT); // shuffledDeck already randomizes all 22 unique cards.
-  floatLayout(cards,stage);
-  cards.forEach(c=>c.addEventListener('click',()=>choose(c)));
-  return true;
+import {CONFIG as C,stageSize,deviceProfile} from './config.js';
+import {makeCatalog,validateConfig,randomOrder,selectionPool,slotPose,visibleIndices} from './cinema-core.js';
+import {backs,randomBack} from './back-config.js';import {prepareBack} from './back-loader.js';import {renderCards} from './card-view.js';
+import {cardSize,floatLayout,shuffleMotion,fanMotion,animateTo,cancelAll,pose,transform} from './card-animation.js';
+import {MagicVFX} from './magic-vfx.js';import {Carousel} from './carousel.js';import {prepareFront,screenTransition} from './transition.js';
+const $=s=>document.querySelector(s),stage=$('#stage'),container=$('#cards'),status=$('#status'),instruction=$('#instruction'),shuffleBtn=$('#shuffleBtn'),main=$('#tarotApp'),resultView=$('#resultView');
+let catalog=[],cards=[],pool=[],back=null,state='idle',carousel=null,token=0;const magic=new MagicVFX(stage);
+function applySettings(){const s=document.documentElement.style;
+ for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,'--glow-rgb':C.glow.rgb,'--glow-alpha':C.glow.enabled?C.glow.intensity:0,'--glow-blur':C.glow.blur+'px','--glow-pulse':C.glow.pulseMs+'ms','--center-multiplier':C.glow.centerEmphasis?C.glow.centerMultiplier:1,'--drag-glow':C.glow.dragMultiplier}))s.setProperty(k,v);
 }
-async function start(){
-  const token=++session;
-  if(!await prepareDeck(token))return;
-  setState('idle','새로운 덱이 준비됐어요');
-  instruction.textContent='카드를 섞을 때마다 새로운 무늬가 나타납니다.';
+function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';$('#navigation').hidden=next!=='selection';$('#selectBtn').disabled=next!=='selection';}
+function refreshCounter(index){$('#counter').textContent=`${index+1} / ${pool.length}`;}
+async function startShuffle(){
+ if(!['idle','selection','result'].includes(state))return;
+ const previous=state,current=++token,previousText=instruction.textContent;setState('preparing','카드 이미지를 준비하고 있어요…');
+ let next;try{next=randomBack(back?.id);await prepareBack(next);}catch(e){setState(previous,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');if(previous==='result')$('#resultNotice').textContent='카드 이미지를 불러오지 못했어요. 다시 섞기를 눌러 재시도해 주세요.';instruction.textContent=previousText;return;}
+ if(current!==token)return;
+ carousel?.destroy();carousel=null;magic.stop();cancelAll(cards);back=next;$('#backName').textContent='· '+back.name;
+ main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage');cardSize(stage,'shuffle');
+ cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);
+ setState('shuffling','카드를 섞고 있어요…');instruction.textContent='카드가 공간을 가로질러 섞입니다.';magic.start(cards);
+ if(!await shuffleMotion(cards,stage,name=>magic.phase(name))||current!==token){magic.stop();return;}
+ pool=selectionPool(catalog);cards=renderCards(container,pool,back);cards.forEach(c=>{c.hidden=true;c.disabled=true;});
+ const ids=visibleIndices(0,pool.length,C.counts.visible),opening=ids.map(i=>cards[i]);opening.forEach(c=>c.hidden=false);
+ magic.cards=cards;stage.classList.add('selection-stage');
+ if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==token){magic.stop();return;}
+ magic.finish();carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','끌리는 카드를 골라 주세요');
+ instruction.textContent='좌우로 넘기거나 마음에 드는 카드를 선택하세요.';
 }
-async function shuffle(){
-  if(state==='preparing'||state==='shuffling'||state==='revealing')return;
-  const token=++session;
-  if(!await prepareDeck(token))return;
-  setState('shuffling','카드를 섞고 있어요…');
-  instruction.textContent='잠시 기다려 주세요.';
-  magic.start(cards);
-  const completed=await shuffleMotion(cards,stage,name=>magic.phase(name));
-  if(!completed){magic.stop();return;}
-  if(token!==session){magic.stop();return;}
-  cards.forEach(c=>{c.hidden=!selection.includes(c);});
-  const opened=await fanMotion(selection,stage,clock=>magic.release(clock));
-  if(!opened){magic.stop();return;}
-  magic.finish();
-  fanLayout(selection,stage);
-  if(token!==session)return;
-  setState('fan','끌리는 카드를 골라 주세요');
-  instruction.textContent='마음에 드는 카드를 터치하거나 다시 섞어 보세요.';
+async function choose(chosen){
+ if(state!=='selection'||carousel?.busy||chosen.hidden)return;
+ setState('revealing','선택한 카드를 준비하고 있어요…');
+ try{await prepareFront(chosen.cardData);}catch(e){carousel.busy=false;carousel.layout();setState('selection',e.message);return;}
+ carousel.destroy();carousel=null;cards.forEach(c=>c.disabled=true);magic.stop();magic.start([chosen]);magic.phase('focus');
+ try{
+  await Promise.all(cards.filter(c=>!c.hidden).map((c,i)=>animateTo(c,c===chosen?pose(0,-12,180):pose((i%2?1:-1)*stage.clientWidth*.75,80,-250,0,0,1),C.reveal.lift)));
+  // The focus phase is short and separate from the earlier shuffle wave.
+  await new Promise(resolve=>{const a=chosen.animate([{outlineOffset:'0px'},{outlineOffset:'0px'}],{duration:C.reveal.focus});a.finished.then(resolve,resolve);});
+  magic.stop();const results=renderCards($('#resultCardHost'),[chosen.cardData],back),result=results[0];
+  result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);result.style.visibility='hidden';
+  const rw=stageSize('result',innerWidth);result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
+  $('#resultName').textContent=chosen.cardData.name;$('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
+  setState('wiping','카드와 함께 다음 화면으로 이동합니다.');
+  await screenTransition(chosen,result,()=>{main.hidden=true;resultView.hidden=false;});
+  setState('result','카드가 공개됐어요');$('#resultTitle').focus();
+ }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
-async function choose(card){if(state!=='fan'||!selection.includes(card)||card.hidden)return;const token=++session;setState('revealing','카드를 공개하고 있어요…');instruction.textContent='선택한 카드가 모습을 드러냅니다.';const completed=await revealMotion(selection,card,stage);if(!completed)return;if(token!==session)return;setState('revealed','카드가 공개됐어요');instruction.textContent='앞면은 시연용 데이터입니다. 실제 타로 이미지와 리딩은 추후 연결합니다.';}
-shuffleBtn.addEventListener('click',shuffle);resetBtn.addEventListener('click',start);window.addEventListener('resize',()=>{if(state==='idle'){cardSize(stage);floatLayout(cards,stage);}else if(state==='fan'){fanLayout(selection,stage);}});start();
+$('#prevBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(-1)});$('#nextBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(1)});
+$('#selectBtn').addEventListener('click',()=>{if(carousel)choose(cards[carousel.index])});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
+window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
+try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
+ $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
+ back=randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
+ try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
+ catch(e){back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
+}catch(e){setState('error',e.message);status.setAttribute('role','alert');}
