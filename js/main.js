@@ -40,7 +40,7 @@ async function choose(chosen){
   result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);result.style.visibility='hidden';
   const rw=stageSize('result',innerWidth);result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
   $('#resultName').textContent=chosen.cardData.name;$('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
-  setState('wiping','카드와 함께 다음 화면으로 이동합니다.');
+  setState('revealing','선택한 카드를 공개하고 있어요…');
   await screenTransition(chosen,result,()=>{main.hidden=true;resultView.hidden=false;});
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}

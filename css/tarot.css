@@ -15,3 +15,18 @@
 .navigation{display:flex;align-items:center;justify-content:center;gap:15px;min-height:48px}.nav-btn{border:1px solid #bdb2dd55;background:#17221f;color:#e7dfff;border-radius:50%;width:40px;height:40px;cursor:pointer}.navigation #counter{min-width:58px;color:#c1b5d6;font-size:13px}.navigation .secondary{min-width:140px;padding:10px 16px}.result-view{min-height:100dvh;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(ellipse at 50% 40%,#28453a,#0b1413 85%)}.result-view>.top{position:absolute;top:25px;left:30px;right:30px}.result-view h1{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:20px 0 0}.result-view h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin:0}.result-card-host{position:relative;display:flex;align-items:center;justify-content:center;min-height:100px}.result-card{position:relative;left:auto;top:auto;transform:none;cursor:default}.result-view .note{margin:0;text-align:center}.transition-overlay{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto}.transition-overlay .tarot-card::after{display:none}.transition-overlay .card-face{border-radius:0}
 @media(max-width:600px){.stage{min-height:380px;max-height:500px}.result-view{padding:22px;gap:16px}.navigation{gap:10px}.navigation .secondary{min-width:110px;font-size:12px}.result-view h1{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.tarot-card.selectable::after{animation:none}}
+
+/* Revision: separate, restrained material edges and a SINGLE flowing group outline. */
+.tarot-card .card-face{box-shadow:0 4px 13px rgba(0,0,0,.18)!important;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(.35px)}
+.tarot-card .card-front{transform:rotateY(180deg) translateZ(.35px)}
+.card-edge{border:1px solid rgba(224,210,181,.5);box-shadow:none!important}
+.edge-1{transform:translateZ(calc(-1 * var(--thickness)))}
+.edge-2{transform:translateZ(calc(-.5 * var(--thickness)))}
+.edge-3{transform:translateZ(calc(-.12 * var(--thickness)));border-color:rgba(240,230,208,.65)}
+.tarot-card.selectable::after{display:none!important}
+.group-glow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:5;filter:drop-shadow(0 0 5px rgba(205,187,250,.65))}
+.group-glow-path{fill:none;stroke:rgba(216,198,255,.9);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:8 92;animation:group-trace 6s linear infinite}
+@keyframes group-trace{to{stroke-dashoffset:-100}}
+.stage.is-dragging .group-glow{opacity:.7}
+.tarot-card{touch-action:none;contain:layout style}
+@media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important}.group-glow{filter:none}.group-glow-path{stroke-width:1.6}}
