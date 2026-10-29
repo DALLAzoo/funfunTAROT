@@ -1,0 +1,16 @@
+PASS Selection count is 9
+PASS 5 stage sizes: finite paths, near/far depth, fan bounds and arch orientation
+PASS Projected orbit corners stay within 5 PC/mobile stage sizes
+PASS Lift/orbit/stack mathematical endpoints join without position reset
+PASS All 22 cards participate in lift and curved shuffle
+PASS WAAPI end keyframes committed exactly to stack inline transforms
+PASS 9 fan animations start exactly at previous stack poses
+PASS Fan completion relayout is identical at unchanged viewport
+PASS Reveal reaches 180 degrees without changing faces
+PASS Cancelled WAAPI cannot commit a stale target
+PASS 22 unique majors retained; fresh random 9-card subsets
+PASS VFX samples WAAPI progress and final committed pose without layout reads
+PASS Controller keeps deck during load, shuffles 22, enables only 9 visible cards
+PASS Hidden cards cannot select; visible choice reveals and enables reset
+PASS Loading failure restores revealed state and controls
+15 checks passed; numeric and mocked-state tests only, not browser visual verification.

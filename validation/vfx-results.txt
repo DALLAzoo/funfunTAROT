@@ -1,0 +1,1 @@
+PASS mobile DPR cap, particle cap, card-driven trails, fade completion, cleanup
