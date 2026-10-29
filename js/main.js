@@ -1,7 +1,9 @@
+import{MagicVFX}from'./magic-vfx.js';
 import{SELECTION_COUNT}from'./shuffle-paths.js';
 import{prepareBack}from'./back-loader.js';
 import{shuffledDeck}from'./card-data.js';import{randomBack}from'./back-config.js';import{renderCards}from'./card-view.js';import{cardSize,floatLayout,cancelAll,shuffleMotion,fanMotion,fanLayout,revealMotion}from'./card-animation.js';
 const stage=document.querySelector('#stage'),container=document.querySelector('#cards'),status=document.querySelector('#status'),backName=document.querySelector('#backName'),instruction=document.querySelector('#instruction'),shuffleBtn=document.querySelector('#shuffleBtn'),resetBtn=document.querySelector('#resetBtn');
+const magic=new MagicVFX(stage);
 let cards=[],selection=[],currentBack=null,state='idle',session=0;
 function setState(next,label){state=next;status.textContent=label;shuffleBtn.disabled=next==='preparing'||next==='shuffling'||next==='revealing';shuffleBtn.textContent=next==='fan'?'다시 섞기':'카드 섞기';resetBtn.hidden=next!=='revealed';cards.forEach(c=>{c.classList.toggle('selectable',next==='fan'&&!c.hidden);c.disabled=next!=='fan'||c.hidden;});}
 async function prepareDeck(token){
@@ -14,6 +16,7 @@ async function prepareDeck(token){
     return false;
   }
   if(token!==session)return false;
+  magic.stop();
   cancelAll(cards);
   currentBack=back;
   backName.textContent=`· ${currentBack.name}`;
@@ -36,12 +39,15 @@ async function shuffle(){
   if(!await prepareDeck(token))return;
   setState('shuffling','카드를 섞고 있어요…');
   instruction.textContent='잠시 기다려 주세요.';
-  const completed=await shuffleMotion(cards,stage);
-  if(!completed)return;
-  if(token!==session)return;
+  magic.start(cards);
+  const completed=await shuffleMotion(cards,stage,name=>magic.phase(name));
+  if(!completed){magic.stop();return;}
+  if(token!==session){magic.stop();return;}
   cards.forEach(c=>{c.hidden=!selection.includes(c);});
+  magic.phase("release");
   const opened=await fanMotion(selection,stage);
-  if(!opened)return;
+  if(!opened){magic.stop();return;}
+  magic.finish();
   fanLayout(selection,stage);
   if(token!==session)return;
   setState('fan','끌리는 카드를 골라 주세요');

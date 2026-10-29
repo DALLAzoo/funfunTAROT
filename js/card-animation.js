@@ -1,6 +1,19 @@
 import {SELECTION_COUNT, metrics, liftPose, orbitPose, stackPose, fanPose, mixPose, smooth} from './shuffle-paths.js';
 const ease = 'cubic-bezier(.2,.7,.2,1)';
 const running = new WeakMap();
+const samples = new WeakMap();
+function readPose(value) {
+  const n=[...value.matchAll(/(?:translate3d|rotateZ|rotateY|rotateX|scale)\(([^)]+)\)/g)].map(m=>m[1].split(',').map(parseFloat));
+  return n.length===5?{x:n[0][0],y:n[0][1],z:n[0][2],rot:n[1][0],ry:n[2][0],rx:n[3][0],scale:n[4][0]}:null;
+}
+export function sampleCard(el) {
+  const track=samples.get(el);
+  if(!track)return readPose(el.style.transform);
+  const progress=track.animation.effect.getComputedTiming().progress;
+  const t=Math.max(0,Math.min(1,progress??0))*(track.poses.length-1);
+  const i=Math.min(track.poses.length-2,Math.floor(t));
+  return mixPose(track.poses[i],track.poses[i+1],t-i);
+}
 export function cardSize(stage) {
   const w = Math.max(65, Math.min(112, stage.clientWidth * .18));
   stage.style.setProperty('--card-w', `${w}px`);
@@ -16,12 +29,14 @@ async function play(el, frames, duration, delay=0, easing=ease) {
   if (previous) previous.cancel();
   const animation = el.animate(frames, {duration,delay,easing,fill:'both'});
   running.set(el, animation);
+  samples.set(el,{animation,poses:frames.map(f=>readPose(f.transform))});
   try { await animation.finished; }
   catch { return false; }
   if (running.get(el) !== animation) return false;
   // Commit exactly the last keyframe before removing the WAAPI effect.
   el.style.transform = frames[frames.length - 1].transform;
   running.delete(el);
+  samples.delete(el);
   animation.cancel();
   return true;
 }
@@ -31,6 +46,7 @@ export function animateTo(el,to,duration=650,delay=0) {
 export function cancelAll(els) {
   els.forEach(el=>{
     running.delete(el);
+  samples.delete(el);
     el.getAnimations({subtree:true}).forEach(a=>a.cancel());
   });
 }
@@ -43,12 +59,14 @@ export function floatLayout(els,stage) {
     el.style.transform=pose(Math.cos(a)*width*.30*r,Math.sin(a)*height*.24*r,Math.sin(i*2.4)*90,(i*37)%80-40,Math.cos(i)*28,.72+.2*(i%4)/3);
   });
 }
-export async function shuffleMotion(els,stage) {
+export async function shuffleMotion(els,stage,phase=()=>{}) {
+  phase("charge");
   const m=metrics(stage.clientWidth,stage.clientHeight);
   const lifted=await Promise.all(els.map((el,i)=>animateTo(el,transform(liftPose(i,m)),560)));
   if(lifted.some(value=>!value))return false;
   // One continuous sampled trajectory: blend onto the orbit, cross in 3 groups,
   // then decelerate onto the stack. No separate phase resets or timeout gaps.
+  phase("vortex");
   const results=await Promise.all(els.map((el,i)=>{
     const frames=[];
     for(let sample=0;sample<=80;sample++){
@@ -56,7 +74,7 @@ export async function shuffleMotion(els,stage) {
       let p;
       if(t<.16)p=mixPose(liftPose(i,m),orbitPose(i,0,m),smooth(t/.16));
       else if(t<.76)p=orbitPose(i,smooth((t-.16)/.60),m);
-      else p=mixPose(orbitPose(i,1,m),stackPose(i,Math.min(SELECTION_COUNT,els.length)),smooth((t-.76)/.24));
+      else p=mixPose(orbitPose(i,1,m),stackPose(i,Math.min(SELECTION_COUNT,els.length)),smooth(Math.min(1,(t-.76)/.20)));
       frames.push({offset:t,transform:transform(p)});
     }
     return play(el,frames,2600,0,'linear');
