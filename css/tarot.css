@@ -86,7 +86,7 @@
 }
 
 /* Revision 7: restrained surface finish; no new solid side slabs or masks. */
-.shuffle-surface .card-face{box-shadow:0 1px 6px rgba(0,0,0,.12),0 0 0 .6px rgba(240,227,197,.22)!important}
+.shuffle-surface .card-face{box-shadow:0 5px 16px rgba(0,0,0,.23),0 0 0 .6px rgba(240,227,197,.22)!important}
 .shuffle-surface .card-face::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(116deg,rgba(255,250,231,.075) 0%,transparent 31%,rgba(9,20,18,.045) 76%,rgba(0,0,0,.085) 100%);mix-blend-mode:screen}
 /* Preserve the verified revision-6 result-face fix. */
 .result-card .card-edge{display:none!important}
@@ -145,32 +145,19 @@
 }
 @keyframes front-gold-sweep-visible{0%,12%{transform:translateX(-155%)}65%,100%{transform:translateX(155%)}}
 
-
-/* Initial deck only: dark gothic brown layered edges */
-.stage.idle-stack .shuffle-surface .card-edge {
-  background:
-    linear-gradient(
-      135deg,
-      rgba(197, 149, 75, .13),
-      transparent 60%
-    ),
-    repeating-linear-gradient(
-      180deg,
-      rgba(193, 145, 83, .27) 0px,
-      rgba(193, 145, 83, .27) .55px,
-      rgba(42, 28, 24, .96) 1.1px,
-      rgba(91, 60, 43, .92) 2.5px
-    ) !important;
-
-  border: 1px solid rgba(135, 89, 51, .68) !important;
-  border-radius: 8px !important;
-  box-shadow: inset 0 0 14px rgba(17, 10, 10, .6) !important;
+/* Initial deck only: warm-gold layered paper grain, aligned corners. */
+.stage.idle-stack .shuffle-surface .card-edge{
+ background:repeating-linear-gradient(180deg,#bda174 0px,#bda174 .85px,#806846 1.25px,#c5aa7e 2.3px)!important;
+ border:1px solid rgba(177,139,78,.65)!important;
+ border-radius:8px!important;
 }
+.stage.idle-stack .shuffle-surface .card-inner{border-radius:8px}
+.stage.idle-stack .shuffle-surface .card-face{border-radius:8px}
 
-.stage.idle-stack .shuffle-surface .card-inner {
-  border-radius: 8px;
-}
-
-.stage.idle-stack .shuffle-surface .card-face {
-  border-radius: 8px;
+/* First stack: dark gothic brown with faint layered back ornament, not bright paper stripes. */
+.stage.idle-stack .shuffle-surface .card-edge{
+ background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),
+ repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;
+ border-color:rgba(135,89,51,.68)!important;
+ box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;
 }
