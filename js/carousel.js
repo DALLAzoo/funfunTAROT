@@ -19,11 +19,21 @@ export class Carousel {
  layout(fraction=this.offset){
   cardSize(this.stage,'selection');const w=this.stage.clientWidth,n=this.cards.length;
   this.cards.forEach((card,i)=>{
-   const off=this.distance(i)+fraction,show=Math.abs(off)<2.6;
+   const off=this.distance(i)+fraction,show=Math.abs(off)<3.15;
    card.hidden=!show;card.disabled=Math.abs(off)>1.3;card.classList.toggle('selectable',Math.abs(off)<=1.3);
    card.classList.toggle('is-center',Math.abs(off)<.5);
-   if(show){const pos=slotPose(off,w);if(Math.abs(off)>1){pos.x+=Math.sign(off)*(Math.abs(off)-1)*stageSize('selection',w)*1.2;pos.z-=Math.max(0,Math.abs(off)-1)*100;}
-    card.style.transform=transform(pos);card.style.zIndex=String(100-Math.round(Math.abs(off)*20));}
+   if(show){
+    // Ease the outer card into the fan instead of throwing its corner forward.
+    const excess=Math.max(0,Math.abs(off)-1);
+    const eased=excess/(1+excess*.95);
+    const poseOff=Math.sign(off)*(Math.min(1,Math.abs(off))+eased);
+    const pos=slotPose(poseOff,w);
+    if(excess){pos.x+=Math.sign(off)*eased*stageSize('selection',w)*.38;pos.z-=eased*38;}
+    card.style.transform=transform(pos);
+    // Gradual reveal at the outer edge; no abrupt visibility jump.
+    card.style.opacity=String(Math.max(0,Math.min(1,(3.15-Math.abs(off))/.72)));
+    card.style.zIndex=String(100-Math.round(Math.abs(off)*20));
+   }
   });
   this.updateGlow();this.onIndex(this.index);
  }
