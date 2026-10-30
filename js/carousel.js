@@ -19,24 +19,16 @@ export class Carousel {
  layout(fraction=this.offset){
   cardSize(this.stage,'selection');const w=this.stage.clientWidth,n=this.cards.length;
   this.cards.forEach((card,i)=>{
-   const off=this.distance(i)+fraction,show=Math.abs(off)<3.15;
+   const off=this.distance(i)+fraction,show=Math.abs(off)<4;
    card.hidden=!show;card.disabled=Math.abs(off)>1.3;card.classList.toggle('selectable',Math.abs(off)<=1.3);
    card.classList.toggle('is-center',Math.abs(off)<.5);
    if(show){
-    // Ease the outer card into the fan instead of throwing its corner forward.
-    const excess=Math.max(0,Math.abs(off)-1);
-    const eased=excess/(1+excess*.95);
-    const poseOff=Math.sign(off)*(Math.min(1,Math.abs(off))+eased);
-    const pos=slotPose(poseOff,w);
-    if(excess){pos.x+=Math.sign(off)*eased*stageSize('selection',w)*.38;pos.z-=eased*38;}
+    // The opening and the interactive fan share the identical seven-slot geometry.
+    // Only cards beyond the outermost three fade in/out, never the seven main cards.
+    const pos=slotPose(off,w);
     card.style.transform=transform(pos);
-    // Gradual reveal at the outer edge; no abrupt visibility jump.
-    card.style.opacity=String(Math.max(0,Math.min(1,(3.15-Math.abs(off))/.72)));
-    // Keep the incoming card behind until the outgoing card has visibly cleared.
-    // A delayed, narrow overlap fade hides the corner at the depth hand-off.
-    const entering=Math.abs(off)<.72 && Math.abs(this.distance(i))>=1;
-    const handoff=entering?Math.max(.18,Math.min(1,(.72-Math.abs(off))/.42)):1;
-    card.style.opacity=String(Number(card.style.opacity)*handoff);
+    const visibility=Math.max(0,Math.min(1,(4-Math.abs(off))/.9));
+    card.style.setProperty('--fan-opacity',String(visibility));
     card.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    }
   });

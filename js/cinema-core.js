@@ -11,7 +11,7 @@ export function validateConfig(c,catalog){
  if(new Set(catalog.map(x=>x.id)).size!==catalog.length||catalog.some(x=>!x.id||!x.name))fail('카드 ID가 중복되었거나 이름이 비어 있습니다.');
  for(const key of ['shuffle','selection','visible','result'])if(!Number.isInteger(c.counts[key])||c.counts[key]<1)fail('카드 장수는 양의 정수여야 합니다.');
  if(c.counts.shuffle>Math.min(catalog.length,c.support.maxShuffle)||c.counts.selection>catalog.length)fail('등록된 카드 데이터보다 많은 장수를 요청했습니다.');
- if(!c.support.visible.includes(c.counts.visible)||c.counts.visible>c.counts.selection)fail('동시 표시 수는 3장 또는 5장이며 선택 대상 수 이하여야 합니다.');
+ if(!c.support.visible.includes(c.counts.visible)||c.counts.visible>c.counts.selection)fail('동시 표시 수는 3장, 5장 또는 7장이며 선택 대상 수 이하여야 합니다.');
  if(!c.support.result.includes(c.counts.result))fail('이번 시험본의 결과 공개는 1장을 지원합니다.');
  if(!['trial-uniform-subset','explicit-ids'].includes(c.pool.mode))fail('선택 대상 구성 방식을 확인해 주세요.');
  if(c.pool.mode==='explicit-ids'&&(c.pool.ids.length!==c.counts.selection||new Set(c.pool.ids).size!==c.pool.ids.length||c.pool.ids.some(id=>!catalog.some(x=>x.id===id))))fail('선택 카드 ID 목록과 선택 장수가 일치하지 않습니다.');

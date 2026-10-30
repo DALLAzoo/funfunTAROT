@@ -2,7 +2,7 @@
 // This is a local trial. The 20-card pool policy is NOT a production decision.
 export const CONFIG = {
   breakpoint:600, aspect:2128/1240,
-  counts:{shuffle:22,selection:20,visible:3,result:1},
+  counts:{shuffle:22,selection:20,visible:7,result:1},
   pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
   catalog:{additionalCards:[],frontImages:{},requireActualFrontImages:false},
   sizes:{
@@ -17,7 +17,7 @@ export const CONFIG = {
   material:{thickness:4,shadowY:5,shadowBlur:13,shadowAlpha:.18,edge:'#756f61',satinEdgeAlpha:.22},
   glow:{enabled:false,rgb:'213, 203, 245',intensity:.28,blur:16,pulseMs:3000,centerEmphasis:false,centerMultiplier:1,dragMultiplier:.35},
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'238,190,103'},
-  support:{maxCatalog:78,maxShuffle:78,visible:[3,5],result:[1]},
+  support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 export function stageSize(phase,width,config=CONFIG){return config.sizes[width<config.breakpoint?'mobile':'desktop'][phase];}

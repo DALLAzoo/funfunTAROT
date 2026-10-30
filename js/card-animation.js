@@ -66,6 +66,8 @@ export async function fanMotion(els,stage,onStart=()=>{}){
  const result=await Promise.all(els.map((el,i)=>{
   const from=stackPose(i,els.length),to=slotPose(i-(els.length-1)/2,stage.clientWidth),frames=[];
   el.style.width=fromSize+'px';el.style.height=fromSize*C.aspect+'px';el.style.transform=transform(from);
+  el.style.zIndex=String(100-Math.round(Math.abs(i-(els.length-1)/2)*20));
+  el.style.setProperty('--fan-opacity','1');
   for(let n=0;n<=80;n++){const t=n/80,q=pressureProgress(t),s=fromSize+(toSize-fromSize)*q;frames.push({offset:t,transform:transform(mix(from,to,q)),width:s+'px',height:s*C.aspect+'px'});}
   return play(el,frames,FINALE_DURATION,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
  }));done=true;return result.every(Boolean);
