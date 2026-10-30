@@ -126,3 +126,38 @@
 @media(max-width:600px){
  .shuffle-surface .card-face {box-shadow:inset 1px 0 0 rgba(255,245,213,.25),inset -1px 0 0 rgba(77,54,29,.23),0 3px 8px rgba(0,0,0,.17)!important}
 }
+
+/* Selective ornament glow: precomputed masks, no moving reflection or per-frame JS.
+   No filter, blend-mode or new transform on the 3D card faces. */
+.tarot-card .card-back::after,
+.tarot-card.shuffle-surface .card-front::after {
+  content:""!important;display:block!important;position:absolute;inset:0;
+  border:0!important;border-radius:inherit!important;pointer-events:none;
+  background:rgba(255,215,137,.78)!important;
+  -webkit-mask-image:var(--ornament-glow-mask);mask-image:var(--ornament-glow-mask);
+  -webkit-mask-size:100% 100%;mask-size:100% 100%;
+  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+  opacity:.12;box-shadow:none!important;mix-blend-mode:normal!important;
+}
+/* Override the earlier shuffle-only overlay suppression for ornament pixels. */
+.stage:not(.selection-stage) .tarot-card.shuffle-surface .card-back::after,
+.stage:not(.selection-stage) .tarot-card.shuffle-surface .card-front::after {
+ display:block!important;opacity:.12;
+}
+/* In the fan, a brief, staggered light-up travels across the deck. */
+.selection-stage .tarot-card .card-back::after,
+.selection-stage .tarot-card.shuffle-surface .card-front::after {
+  animation:ornament-fan-glow 1.35s ease-in-out 1 both;
+  animation-delay:calc(var(--glow-index, 0) * 36ms);
+}
+@keyframes ornament-fan-glow {
+  0%,100% {opacity:.10}
+  43% {opacity:.53}
+  68% {opacity:.24}
+}
+/* The picked card gets one modest pulse, without hiding the art. */
+.tarot-card.is-center .card-back::after {opacity:.25}
+@media (prefers-reduced-motion:reduce){
+ .selection-stage .tarot-card .card-back::after,
+ .selection-stage .tarot-card.shuffle-surface .card-front::after {animation:none!important;opacity:.17}
+}
