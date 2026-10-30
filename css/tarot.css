@@ -96,3 +96,24 @@
 .selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat}
 .selection-stage .card-face{transform:none;image-rendering:auto}
 .selection-stage .card-front{transform:rotateY(180deg)}
+
+/* Revision 9: translucent coated stock + tilt-responsive specular reflection.
+   Back artwork stays untouched; only a faint optical highlight is composited. */
+@property --coat-shift { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+@property --coat-strength { syntax: '<number>'; inherits: true; initial-value: 0; }
+.tarot-card .card-back::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  display:block!important;
+  background:linear-gradient(105deg,transparent 0%,rgba(255,249,226,.035) 35%,rgba(255,252,239,.48) 49%,rgba(246,215,155,.22) 53%,transparent 69%);
+  background-size:240% 100%;background-position:var(--coat-shift,50%) 50%;
+  opacity:var(--coat-strength,0);mix-blend-mode:screen;
+}
+/* A very slight coated-paper finish, not a white film over the illustration. */
+.tarot-card .card-back::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(155deg,rgba(255,247,224,.028),transparent 38%,rgba(18,15,9,.025));
+}
+/* The selection/result image must remain crisp and nearly reflection-free. */
+.selection-stage .card-back::after,.result-card .card-back::after{opacity:.025!important}
+.selection-stage .card-back::before,.result-card .card-back::before{opacity:.4}
+@media(prefers-reduced-motion:reduce){.tarot-card .card-back::after{opacity:0!important}}

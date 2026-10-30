@@ -53,7 +53,9 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
   for(let n=0;n<=100;n++){
    const t=n/100;
    const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):gatherPose(i,t,w,h,count);
-   frames.push({offset:t,transform:transform(p)});
+   // Gloss response follows the card's 3D tilt, not a fixed screen overlay.
+   const tilt=Math.sin((p.ry||0)*Math.PI/180);
+   frames.push({offset:t,transform:transform(p),'--coat-shift':`${50+tilt*42}%`,'--coat-strength':`${Math.min(.19,Math.abs(tilt)*.16+Math.abs(Math.sin((p.rx||0)*Math.PI/180))*.045)}`});
   }
   return play(el,frames,C.shuffle.duration,'linear');
  }));return result.every(Boolean);

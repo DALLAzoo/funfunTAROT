@@ -1,0 +1,1 @@
+Revision 9 — semi-gloss coating and reflection\n- Adds faint coated-paper finish and tilt-responsive specular highlight to card backs.\n- Uses existing 3D pose rotation for light strength and position in shuffle frames.\n- Keeps original PNG files and previous motion/flip/magic logic unchanged.\n- Browser visual verification pending.\n
