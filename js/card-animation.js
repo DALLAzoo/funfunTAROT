@@ -18,19 +18,43 @@ export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
 export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
+// Deterministic soft collision correction for precomputed 3D trajectories.
+// Only nearby cards in BOTH screen position and depth repel one another.
+function separateIntersecting(poses,cardWidth){
+ const out=poses.map(p=>({...p}));
+ const minXY=cardWidth*.82,minZ=cardWidth*.16;
+ for(let pass=0;pass<3;pass++){
+  for(let i=0;i<out.length;i++)for(let j=i+1;j<out.length;j++){
+   const a=out[i],b=out[j],dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
+   if(Math.abs(dz)>minZ||Math.abs(dx)>minXY||Math.abs(dy)>minXY)continue;
+   const dist=Math.hypot(dx,dy),needed=minXY-dist;
+   if(needed<=0)continue;
+   const theta=dist>.01?Math.atan2(dy,dx):(i*2.399963+j*.47);
+   const push=Math.min(needed*.53,cardWidth*.35);
+   a.x-=Math.cos(theta)*push;a.y-=Math.sin(theta)*push;
+   b.x+=Math.cos(theta)*push;b.y+=Math.sin(theta)*push;
+   // Maintain a small separation in depth for crossed paths.
+   const depthPush=(minZ-Math.abs(dz))*.28;
+   a.z-=depthPush;b.z+=depthPush;
+  }
+ }
+ return out;
+}
 export async function shuffleMotion(els,stage,phase=()=>{}){
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
  if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean))return false;
  phase('vortex');
- const result=await Promise.all(els.map((el,i)=>{
-  const frames=[];
-  for(let n=0;n<=100;n++){
-   const t=n/100;
-   const p=t<.78?travelPose(i,smooth(t/.78),w,h,count):mix(travelPose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19)));
-   frames.push({offset:t,transform:transform(p)});
-  }
-  return play(el,frames,C.shuffle.duration,'linear');
- }));return result.every(Boolean);
+ const sequences=els.map(()=>[]);
+ const size=stageSize('shuffle',stage.clientWidth);
+ for(let n=0;n<=100;n++){
+  const t=n/100;
+  const poses=els.map((_,i)=>t<.78?travelPose(i,smooth(t/.78),w,h,count):mix(travelPose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19))));
+  // No path correction during the final stacking phase: stacking is intentional.
+  const corrected=t<.78?separateIntersecting(poses,size):poses;
+  corrected.forEach((p,i)=>sequences[i].push({offset:t,transform:transform(p)}));
+ }
+ const result=await Promise.all(els.map((el,i)=>play(el,sequences[i],C.shuffle.duration,'linear')));
+ return result.every(Boolean);
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
  const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);cardSize(stage,'selection');

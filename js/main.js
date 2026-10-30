@@ -33,19 +33,25 @@ async function choose(chosen){
  try{await prepareFront(chosen.cardData);}catch(e){carousel.busy=false;carousel.layout();setState('selection',e.message);return;}
  carousel.destroy();carousel=null;cards.forEach(c=>c.disabled=true);magic.stop();magic.start([chosen]);magic.phase('focus');
  try{
-  await Promise.all(cards.filter(c=>!c.hidden).map((c,i)=>animateTo(c,c===chosen?pose(0,-12,180):pose((i%2?1:-1)*stage.clientWidth*.75,80,-250,0,0,1),C.reveal.lift)));
-  // The focus phase is short and separate from the earlier shuffle wave.
-  await new Promise(resolve=>{const a=chosen.animate([{outlineOffset:'0px'},{outlineOffset:'0px'}],{duration:C.reveal.focus});a.finished.then(resolve,resolve);});
-  magic.stop();const result=chosen;
-  result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);
-  const rw=stageSize('result',innerWidth);result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
-  $('#resultName').textContent=chosen.cardData.name;$('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
+  // Fade no card surface: move the selected DOM card directly into its final
+  // centered host BEFORE flipping, avoiding coordinate-space changes at 90deg.
+  magic.stop();
+  const result=chosen;
+  result.classList.remove('shuffle-surface','selectable','is-center');
+  result.classList.add('result-card');result.disabled=true;
+  result.setAttribute('aria-label',chosen.cardData.name);
+  const rw=stageSize('result',innerWidth);
+  result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
+  result.style.transform='none';result.style.zIndex='auto';
+  const host=$('#resultCardHost');host.replaceChildren(result);
+  $('#resultName').textContent=chosen.cardData.name;
+  $('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
+  main.hidden=true;resultView.hidden=false;
   setState('revealing','선택한 카드를 공개하고 있어요…');
-  await screenTransition(chosen,()=>{
-    const host=$('#resultCardHost');host.replaceChildren(chosen);
-    chosen.style.transform='none';chosen.style.zIndex='auto';
-    main.hidden=true;resultView.hidden=false;
-  });
+  const approach=result.animate([{transform:'scale(1)'},{transform:`scale(${C.reveal.zoom||1.18})`},{transform:'scale(1)'}],
+    {duration:C.reveal.approach,easing:'ease-in-out'});
+  await approach.finished;
+  await screenTransition(result);
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }

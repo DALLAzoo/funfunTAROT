@@ -68,3 +68,14 @@
 /* Keep the back image visible to the edges; material sides cannot mask it. */
 .tarot-card .card-inner{isolation:auto}
 .tarot-card .card-edge{pointer-events:none}
+
+/* Revision 4: a true single-card flip in the final centered result host. */
+.result-card-host{perspective:var(--perspective,1000px);transform-style:preserve-3d}
+.result-card{position:relative!important;left:auto!important;top:auto!important;transform:none!important;transform-origin:center center!important}
+.result-card .card-inner{transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.result-card .card-face{backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important}
+.result-card .card-back{transform:rotateY(0deg) translateZ(.35px)!important}
+.result-card .card-front{transform:rotateY(180deg) translateZ(.35px)!important}
+/* Do not expose a neutral material slab while shuffle cards tumble. */
+.shuffle-surface .card-edge{visibility:hidden!important}
+.shuffle-surface .card-face{background-color:transparent!important}
