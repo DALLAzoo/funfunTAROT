@@ -146,34 +146,25 @@
 @keyframes front-gold-sweep-visible{0%,12%{transform:translateX(-155%)}65%,100%{transform:translateX(155%)}}
 
 
-
-/* Initial deck only: antique gold foil layered edges */
+/* Initial deck only: dark gothic brown layered edges */
 .stage.idle-stack .shuffle-surface .card-edge {
   background:
     linear-gradient(
       135deg,
-      rgba(255, 224, 151, .28) 0%,
-      rgba(197, 149, 75, .10) 25%,
-      rgba(42, 28, 24, .12) 48%,
-      rgba(235, 190, 106, .30) 75%,
-      rgba(42, 28, 24, .18) 100%
+      rgba(197, 149, 75, .13),
+      transparent 60%
     ),
     repeating-linear-gradient(
       180deg,
-      #D6AE67 0px,
-      #E8C681 .45px,
-      #60452B .85px,
-      #2A1C18 1.35px,
-      #A47A43 1.85px,
-      #5B3C2B 2.5px
+      rgba(193, 145, 83, .27) 0px,
+      rgba(193, 145, 83, .27) .55px,
+      rgba(42, 28, 24, .96) 1.1px,
+      rgba(91, 60, 43, .92) 2.5px
     ) !important;
 
   border: 1px solid rgba(135, 89, 51, .68) !important;
   border-radius: 8px !important;
-
-  box-shadow:
-    inset 0 0 12px rgba(17, 10, 10, .45),
-    inset 0 1px 2px rgba(255, 221, 151, .35) !important;
+  box-shadow: inset 0 0 14px rgba(17, 10, 10, .6) !important;
 }
 
 .stage.idle-stack .shuffle-surface .card-inner {
