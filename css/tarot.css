@@ -96,3 +96,33 @@
 .selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat}
 .selection-stage .card-face{transform:none;image-rendering:auto}
 .selection-stage .card-front{transform:rotateY(180deg)}
+
+/* Revision 8 lighting study: cinematic softbox + restrained rim lighting.
+   No animated shine layers, filters, blend modes, or per-card JS updates. */
+.tarot-card .card-face {
+  border-radius:8px!important;
+  border:1px solid rgba(170,139,91,.48)!important;
+  box-shadow:inset 1px 1px 0 rgba(255,244,213,.17),
+             inset -1px -1px 0 rgba(28,23,17,.24),
+             0 4px 13px rgba(0,0,0,.18)!important;
+}
+.tarot-card .card-edge {border-radius:8px!important}
+/* The card already rotates in 3D; a static rim reads differently as it turns. */
+.shuffle-surface .card-face {
+  box-shadow:inset 1px 0 0 rgba(255,245,213,.27),
+             inset 0 1px 0 rgba(255,245,213,.13),
+             inset -1px 0 0 rgba(77,54,29,.25),
+             0 5px 16px rgba(0,0,0,.23)!important;
+}
+/* Keep the original card art sharp; use a single static, faint softbox wash
+   only after the fast shuffle, not a moving highlight on 22 cards. */
+.selection-stage .shuffle-surface .card-back::after,
+.result-card .card-back::after {
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(133deg,rgba(255,247,222,.09),rgba(255,247,222,0) 38%,rgba(17,20,21,0) 74%,rgba(11,14,16,.06));
+}
+/* No sheen overlays during the fast airborne shuffle. */
+.stage:not(.selection-stage) .shuffle-surface .card-face::after {display:none!important}
+@media(max-width:600px){
+ .shuffle-surface .card-face {box-shadow:inset 1px 0 0 rgba(255,245,213,.25),inset -1px 0 0 rgba(77,54,29,.23),0 3px 8px rgba(0,0,0,.17)!important}
+}
