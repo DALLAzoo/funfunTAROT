@@ -79,3 +79,8 @@
 /* Do not expose a neutral material slab while shuffle cards tumble. */
 .shuffle-surface .card-edge{visibility:hidden!important}
 .shuffle-surface .card-face{background-color:transparent!important}
+
+/* Revision 6: hide non-rotating thickness slabs only during result flip. */
+.result-card .card-edge {
+  display: none !important;
+}
