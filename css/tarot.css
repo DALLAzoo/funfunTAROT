@@ -114,3 +114,6 @@
  100%{background-position:7% 12%}
 }
 @media(prefers-reduced-motion:reduce){.card-back::before,.shuffle-surface .card-front::before{animation:none;opacity:.35}}
+
+/* Keep gold-ink glow visible, but pause its background-position animation during the 22-card airborne shuffle. */
+.glow-shuffle-lite .card-back::before,.glow-shuffle-lite .shuffle-surface .card-front::before{animation-play-state:paused!important;opacity:.9}
