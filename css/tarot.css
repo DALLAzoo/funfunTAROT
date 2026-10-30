@@ -144,3 +144,12 @@
  animation:front-gold-sweep-visible 5.8s ease-in-out infinite!important;
 }
 @keyframes front-gold-sweep-visible{0%,12%{transform:translateX(-155%)}65%,100%{transform:translateX(155%)}}
+
+/* Initial deck only: warm-gold layered paper grain, aligned corners. */
+.stage.idle-stack .shuffle-surface .card-edge{
+ background:repeating-linear-gradient(180deg,#bda174 0px,#bda174 .85px,#806846 1.25px,#c5aa7e 2.3px)!important;
+ border:1px solid rgba(177,139,78,.65)!important;
+ border-radius:8px!important;
+}
+.stage.idle-stack .shuffle-surface .card-inner{border-radius:8px}
+.stage.idle-stack .shuffle-surface .card-face{border-radius:8px}
