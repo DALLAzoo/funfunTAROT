@@ -97,67 +97,20 @@
 .selection-stage .card-face{transform:none;image-rendering:auto}
 .selection-stage .card-front{transform:rotateY(180deg)}
 
-/* Revision 8 lighting study: cinematic softbox + restrained rim lighting.
-   No animated shine layers, filters, blend modes, or per-card JS updates. */
-.tarot-card .card-face {
-  border-radius:8px!important;
-  border:1px solid rgba(170,139,91,.48)!important;
-  box-shadow:inset 1px 1px 0 rgba(255,244,213,.17),
-             inset -1px -1px 0 rgba(28,23,17,.24),
-             0 4px 13px rgba(0,0,0,.18)!important;
+/* Moving gold-ink light: attached to the card surface even when cards rotate or stop. */
+.card-back::before,.shuffle-surface .card-front::before{
+ content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+ background:radial-gradient(ellipse 42% 22% at 50% 50%,rgba(255,249,205,.97) 0%,rgba(255,213,106,.78) 26%,rgba(235,161,54,.26) 62%,transparent 100%);
+ background-size:270% 270%;background-position:10% 15%;
+ -webkit-mask-image:var(--glow-mask);mask-image:var(--glow-mask);
+ -webkit-mask-size:100% 100%;mask-size:100% 100%;
+ -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
+ opacity:.9;animation:gold-ink-travel 7.4s linear infinite;
 }
-.tarot-card .card-edge {border-radius:8px!important}
-/* The card already rotates in 3D; a static rim reads differently as it turns. */
-.shuffle-surface .card-face {
-  box-shadow:inset 1px 0 0 rgba(255,245,213,.27),
-             inset 0 1px 0 rgba(255,245,213,.13),
-             inset -1px 0 0 rgba(77,54,29,.25),
-             0 5px 16px rgba(0,0,0,.23)!important;
+.shuffle-surface .card-front::before{transform:rotateY(0deg)}
+@keyframes gold-ink-travel{
+ 0%{background-position:7% 12%}24%{background-position:92% 31%}
+ 49%{background-position:68% 93%}74%{background-position:9% 72%}
+ 100%{background-position:7% 12%}
 }
-/* Keep the original card art sharp; use a single static, faint softbox wash
-   only after the fast shuffle, not a moving highlight on 22 cards. */
-.selection-stage .shuffle-surface .card-back::after,
-.result-card .card-back::after {
-  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:linear-gradient(133deg,rgba(255,247,222,.09),rgba(255,247,222,0) 38%,rgba(17,20,21,0) 74%,rgba(11,14,16,.06));
-}
-/* No sheen overlays during the fast airborne shuffle. */
-.stage:not(.selection-stage) .shuffle-surface .card-face::after {display:none!important}
-@media(max-width:600px){
- .shuffle-surface .card-face {box-shadow:inset 1px 0 0 rgba(255,245,213,.25),inset -1px 0 0 rgba(77,54,29,.23),0 3px 8px rgba(0,0,0,.17)!important}
-}
-
-/* Selective ornament glow: precomputed masks, no moving reflection or per-frame JS.
-   No filter, blend-mode or new transform on the 3D card faces. */
-.tarot-card .card-back::after,
-.tarot-card.shuffle-surface .card-front::after {
-  content:""!important;display:block!important;position:absolute;inset:0;
-  border:0!important;border-radius:inherit!important;pointer-events:none;
-  background:rgba(255,215,137,.78)!important;
-  -webkit-mask-image:var(--ornament-glow-mask);mask-image:var(--ornament-glow-mask);
-  -webkit-mask-size:100% 100%;mask-size:100% 100%;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  opacity:.12;box-shadow:none!important;mix-blend-mode:normal!important;
-}
-/* Override the earlier shuffle-only overlay suppression for ornament pixels. */
-.stage:not(.selection-stage) .tarot-card.shuffle-surface .card-back::after,
-.stage:not(.selection-stage) .tarot-card.shuffle-surface .card-front::after {
- display:block!important;opacity:.12;
-}
-/* In the fan, a brief, staggered light-up travels across the deck. */
-.selection-stage .tarot-card .card-back::after,
-.selection-stage .tarot-card.shuffle-surface .card-front::after {
-  animation:ornament-fan-glow 1.35s ease-in-out 1 both;
-  animation-delay:calc(var(--glow-index, 0) * 36ms);
-}
-@keyframes ornament-fan-glow {
-  0%,100% {opacity:.10}
-  43% {opacity:.53}
-  68% {opacity:.24}
-}
-/* The picked card gets one modest pulse, without hiding the art. */
-.tarot-card.is-center .card-back::after {opacity:.25}
-@media (prefers-reduced-motion:reduce){
- .selection-stage .tarot-card .card-back::after,
- .selection-stage .tarot-card.shuffle-surface .card-front::after {animation:none!important;opacity:.17}
-}
+@media(prefers-reduced-motion:reduce){.card-back::before,.shuffle-surface .card-front::before{animation:none;opacity:.35}}
