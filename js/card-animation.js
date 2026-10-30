@@ -18,6 +18,15 @@ export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
 export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
+// A fixed, smoothly blended depth lane per card avoids sudden frame-by-frame
+// repulsion (which caused the revision-4 stutter). It improves visual ordering,
+// but does not claim to implement full rigid-body collision detection.
+function shuffleLanePose(i,t,w,h,count){
+ const p=travelPose(i,t,w,h,count);
+ const lane=((i*7)%count-(count-1)/2)*7.5;
+ const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
+ return {...p,z:p.z+lane*envelope};
+}
 export async function shuffleMotion(els,stage,phase=()=>{}){
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
  if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean))return false;
@@ -26,7 +35,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
   const frames=[];
   for(let n=0;n<=100;n++){
    const t=n/100;
-   const p=t<.78?travelPose(i,smooth(t/.78),w,h,count):mix(travelPose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19)));
+   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):mix(shuffleLanePose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19)));
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
