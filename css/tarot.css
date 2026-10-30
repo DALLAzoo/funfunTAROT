@@ -97,23 +97,26 @@
 .selection-stage .card-face{transform:none;image-rendering:auto}
 .selection-stage .card-front{transform:rotateY(180deg)}
 
-/* Revision 9: translucent coated stock + tilt-responsive specular reflection.
-   Back artwork stays untouched; only a faint optical highlight is composited. */
-@property --coat-shift { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
-@property --coat-strength { syntax: '<number>'; inherits: true; initial-value: 0; }
+/* Revision 8 material experiment: CSS-only semi-gloss coated stock.
+   Keep shuffle keyframes and 3D transforms IDENTICAL to revision 8.
+   No @property, no extra Web Animations keyframe properties, no filters,
+   mix-blend-mode, opacity on 3D parents, or new compositing wrappers. */
+.tarot-card .card-face{border-radius:8px!important}
+.tarot-card .card-edge{border-radius:8px!important;border-color:rgba(155,129,84,.32)!important;opacity:.42}
+/* The original alpha-rounded PNG remains the visible face. A subtle
+   stationary coating reflection rides with the existing rotating card. */
 .tarot-card .card-back::after{
-  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-  display:block!important;
-  background:linear-gradient(105deg,transparent 0%,rgba(255,249,226,.035) 35%,rgba(255,252,239,.48) 49%,rgba(246,215,155,.22) 53%,transparent 69%);
-  background-size:240% 100%;background-position:var(--coat-shift,50%) 50%;
-  opacity:var(--coat-strength,0);mix-blend-mode:screen;
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,
+    transparent 0%,transparent 27%,
+    rgba(255,252,238,.055) 37%,
+    rgba(255,251,235,.18) 45%,
+    rgba(255,246,214,.095) 51%,
+    transparent 64%,transparent 100%);
 }
-/* A very slight coated-paper finish, not a white film over the illustration. */
-.tarot-card .card-back::before{
-  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-  background:linear-gradient(155deg,rgba(255,247,224,.028),transparent 38%,rgba(18,15,9,.025));
+/* Preserve high-contrast source artwork when the card is being selected. */
+.selection-stage .card-back::after,.result-card .card-back::after{
+  background:linear-gradient(115deg,transparent 18%,rgba(255,251,232,.065) 44%,transparent 64%);
 }
-/* The selection/result image must remain crisp and nearly reflection-free. */
-.selection-stage .card-back::after,.result-card .card-back::after{opacity:.025!important}
-.selection-stage .card-back::before,.result-card .card-back::before{opacity:.4}
-@media(prefers-reduced-motion:reduce){.tarot-card .card-back::after{opacity:0!important}}
+/* No artificial gold outline over the artwork. */
+.tarot-card .card-back{border:0!important}
