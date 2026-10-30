@@ -53,3 +53,18 @@
 .card-front,.card-front img{opacity:1!important;mask:none!important;-webkit-mask:none!important;clip-path:none!important;filter:none!important}
 .transition-overlay{display:none!important}
 @media(max-width:600px){.card-face{box-shadow:0 2px 7px rgba(0,0,0,.10)!important}.selection-backlight{filter:blur(15px)}}
+
+/* Revision 3: two textured faces during SHUFFLE only. The unregistered
+   demo front is never exposed while cards tumble in 3D on mobile. */
+.tarot-card.shuffle-surface .card-front {
+ background-image:var(--back-image)!important;
+ background-size:100% 100%!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-color:transparent!important;
+ border:0!important; padding:0!important;
+}
+.tarot-card.shuffle-surface .card-front > *{visibility:hidden!important}
+/* Keep the back image visible to the edges; material sides cannot mask it. */
+.tarot-card .card-inner{isolation:auto}
+.tarot-card .card-edge{pointer-events:none}

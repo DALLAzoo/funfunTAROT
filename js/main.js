@@ -17,7 +17,7 @@ async function startShuffle(){
  if(current!==token)return;
  carousel?.destroy();carousel=null;magic.stop();cancelAll(cards);back=next;$('#backName').textContent='· '+back.name;
  main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage');cardSize(stage,'shuffle');
- cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);
+ cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(cards,stage);
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(cards);
  if(!await shuffleMotion(cards,stage,name=>magic.phase(name))||current!==token){magic.stop();return;}
  pool=selectionPool(catalog);cards=renderCards(container,pool,back);cards.forEach(c=>{c.hidden=true;c.disabled=true;});
@@ -36,12 +36,16 @@ async function choose(chosen){
   await Promise.all(cards.filter(c=>!c.hidden).map((c,i)=>animateTo(c,c===chosen?pose(0,-12,180):pose((i%2?1:-1)*stage.clientWidth*.75,80,-250,0,0,1),C.reveal.lift)));
   // The focus phase is short and separate from the earlier shuffle wave.
   await new Promise(resolve=>{const a=chosen.animate([{outlineOffset:'0px'},{outlineOffset:'0px'}],{duration:C.reveal.focus});a.finished.then(resolve,resolve);});
-  magic.stop();const results=renderCards($('#resultCardHost'),[chosen.cardData],back),result=results[0];
-  result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);result.style.visibility='hidden';
+  magic.stop();const result=chosen;
+  result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);
   const rw=stageSize('result',innerWidth);result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
   $('#resultName').textContent=chosen.cardData.name;$('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
   setState('revealing','선택한 카드를 공개하고 있어요…');
-  await screenTransition(chosen,result,()=>{main.hidden=true;resultView.hidden=false;});
+  await screenTransition(chosen,()=>{
+    const host=$('#resultCardHost');host.replaceChildren(chosen);
+    chosen.style.transform='none';chosen.style.zIndex='auto';
+    main.hidden=true;resultView.hidden=false;
+  });
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
@@ -51,6 +55,6 @@ window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)ca
 try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
  $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
  back=randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
- try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
+ try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(cards,stage);$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
  catch(e){back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
 }catch(e){setState('error',e.message);status.setAttribute('role','alert');}
