@@ -32,6 +32,11 @@ export class Carousel {
     card.style.transform=transform(pos);
     // Gradual reveal at the outer edge; no abrupt visibility jump.
     card.style.opacity=String(Math.max(0,Math.min(1,(3.15-Math.abs(off))/.72)));
+    // Keep the incoming card behind until the outgoing card has visibly cleared.
+    // A delayed, narrow overlap fade hides the corner at the depth hand-off.
+    const entering=Math.abs(off)<.72 && Math.abs(this.distance(i))>=1;
+    const handoff=entering?Math.max(.18,Math.min(1,(.72-Math.abs(off))/.42)):1;
+    card.style.opacity=String(Number(card.style.opacity)*handoff);
     card.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    }
   });
