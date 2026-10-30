@@ -45,9 +45,8 @@ function gatherPose(i,t,w,h,count){
  return {...p,z:p.z+lift};
 }
 export async function shuffleMotion(els,stage,phase=()=>{}){
- stage.classList.add('glow-shuffle-lite');
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
- if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
+ if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean))return false;
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
   const frames=[];
@@ -57,7 +56,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
- }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
+ }));return result.every(Boolean);
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
  const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);cardSize(stage,'selection');
