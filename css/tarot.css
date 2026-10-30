@@ -90,3 +90,9 @@
 .shuffle-surface .card-face::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(116deg,rgba(255,250,231,.075) 0%,transparent 31%,rgba(9,20,18,.045) 76%,rgba(0,0,0,.085) 100%);mix-blend-mode:screen}
 /* Preserve the verified revision-6 result-face fix. */
 .result-card .card-edge{display:none!important}
+
+/* Revision 8: preserve the original PNG contrast in the selection scene. */
+.shuffle-surface .card-face::after{display:none!important}
+.selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat}
+.selection-stage .card-face{transform:none;image-rendering:auto}
+.selection-stage .card-front{transform:rotateY(180deg)}

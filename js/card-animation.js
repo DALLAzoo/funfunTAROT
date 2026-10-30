@@ -27,6 +27,23 @@ function shuffleLanePose(i,t,w,h,count){
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
  return {...p,z:p.z+lane*envelope};
 }
+// The airborne orbit stays untouched. Only the final gathering uses a
+// continuous, staggered landing: cards approach the deck from the viewer side
+// and settle in order rather than cutting through the finished stack.
+function gatherPose(i,t,w,h,count){
+ const start=.78, finish=.985;
+ const order=i; // Stable stacking order, no mid-flight repulsion.
+ const begin=start+order*.004;
+ const end=finish-(count-1-order)*.001;
+ const origin=shuffleLanePose(i,1,w,h,count), target=stackPose(i,count);
+ if(t<=begin)return origin;
+ const u=smooth((t-begin)/(end-begin));
+ const p=mix(origin,target,u);
+ // Lift in depth while traveling inward; fades to zero at both ends.
+ // A card near the stack approaches from the front rather than behind it.
+ const lift=Math.sin(Math.PI*u)*Math.max(125,stageSize('shuffle',w)*1.2);
+ return {...p,z:p.z+lift};
+}
 export async function shuffleMotion(els,stage,phase=()=>{}){
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
  if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean))return false;
@@ -35,7 +52,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
   const frames=[];
   for(let n=0;n<=100;n++){
    const t=n/100;
-   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):mix(shuffleLanePose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19)));
+   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):gatherPose(i,t,w,h,count);
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
