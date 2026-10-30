@@ -15,6 +15,7 @@ export async function screenTransition(card){
  await animation.finished;
  inner.style.transform='rotateY(180deg)';
  animation.cancel();
+ card.classList.add('is-revealed');
  card.querySelector('.card-front').setAttribute('aria-hidden','false');
  card.querySelector('.card-back').setAttribute('aria-hidden','true');
 }

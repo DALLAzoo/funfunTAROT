@@ -8,9 +8,9 @@ export class Carousel {
   const opt={signal:this.abort.signal};
   cards.forEach((card,i)=>card.addEventListener('click',()=>{if(!this.busy&&!this.pointer&&performance.now()-this.lastDrag>C.carousel.clickGuard&&Math.abs(this.distance(i))<=1)this.onChoose(card);},opt));
   stage.addEventListener('pointerdown',e=>this.down(e),opt);
-  stage.addEventListener('pointermove',e=>this.move(e),opt);
-  stage.addEventListener('pointerup',e=>this.up(e),opt);
-  stage.addEventListener('pointercancel',()=>this.cancel(),opt);
+  window.addEventListener('pointermove',e=>this.move(e),opt);
+  window.addEventListener('pointerup',e=>this.up(e),opt);
+  window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
  }
@@ -31,7 +31,7 @@ export class Carousel {
  down(e){if(this.busy||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};}
  move(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
-  if(Math.abs(dx)>5){if(!p.dragged){p.dragged=true;this.stage.setPointerCapture(e.pointerId);this.stage.classList.add('is-dragging');}
+  if(Math.abs(dx)>5){if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
    const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));this.layout();e.preventDefault();}
  }
  up(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;this.pointer=null;if(p.dragged){this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}else this.stage.classList.remove('is-dragging');}

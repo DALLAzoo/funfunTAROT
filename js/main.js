@@ -16,7 +16,7 @@ async function startShuffle(){
  let next;try{next=randomBack(back?.id);await prepareBack(next);}catch(e){setState(previous,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');if(previous==='result')$('#resultNotice').textContent='카드 이미지를 불러오지 못했어요. 다시 섞기를 눌러 재시도해 주세요.';instruction.textContent=previousText;return;}
  if(current!==token)return;
  carousel?.destroy();carousel=null;magic.stop();cancelAll(cards);back=next;$('#backName').textContent='· '+back.name;
- main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage');cardSize(stage,'shuffle');
+ main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
  cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(cards,stage);
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(cards);
  if(!await shuffleMotion(cards,stage,name=>magic.phase(name))||current!==token){magic.stop();return;}
@@ -61,6 +61,6 @@ window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)ca
 try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
  $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
  back=randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
- try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(cards,stage);cardSize(stage,'selection');$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
+ try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(cards,stage);cardSize(stage,'selection');stage.classList.add('idle-stack');$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
  catch(e){back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
 }catch(e){setState('error',e.message);status.setAttribute('role','alert');}
