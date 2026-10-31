@@ -1,5 +1,6 @@
 import {CONFIG as C} from '../settings/config/config.js';
-import {cardCloud,goldLines} from './gold-lines.js';
+import {cardCloud} from './gold-lines.js';
+import {drawSparkleField} from './sparkle-field.js';
 export class RevealVFX {
  constructor(host){
   this.host=host;this.canvas=document.createElement('canvas');this.canvas.className='reveal-magic';this.canvas.setAttribute('aria-hidden','true');document.body.append(this.canvas);this.ctx=this.canvas.getContext('2d');this.frame=0;this.active=false;
@@ -15,7 +16,7 @@ export class RevealVFX {
    const t=Math.min(1,(now-start)/duration),box=cardCloud([card],this.bounds);
    this.ctx.clearRect(0,0,this.bounds.width,this.bounds.height);
    const alpha=Math.sin(Math.min(1,t/.12)*Math.PI/2)*Math.pow(1-t, .65);
-   goldLines(this.ctx,box,now/1000,alpha,3);
+   drawSparkleField(this.ctx,box,now,'travel',alpha,this.bounds.width,this.bounds.height,false);
    if(t<1)this.frame=requestAnimationFrame(draw);else{this.stop();}
   };this.frame=requestAnimationFrame(draw);});
  }
