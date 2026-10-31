@@ -37,6 +37,8 @@ async function choose(chosen){
   // centered host BEFORE flipping, avoiding coordinate-space changes at 90deg.
   magic.stop();
   const result=chosen;
+  // Preserve the chosen card's gold aura through its reveal.
+  result.classList.add('is-picked');
   result.classList.remove('shuffle-surface','selectable','is-center');
   result.classList.add('result-card');result.disabled=true;
   result.setAttribute('aria-label',chosen.cardData.name);
