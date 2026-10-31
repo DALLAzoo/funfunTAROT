@@ -67,8 +67,8 @@ export class Carousel {
   cardSize(this.stage,'selection');const w=this.stage.clientWidth, radius=(C.counts.visible-1)/2, edge=radius+1;
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,a=Math.abs(off);
-   // Keep entering/leaving cards mounted while the adjacent fan masks them.
-   // No opacity animation: reveal by geometric clipping under the neighbour.
+   // Keep entering/leaving cards mounted behind their adjacent fan cards.
+   // No opacity animation or geometric clipping.
    const show=a<edge,selectable=a<=radius+.001;
    if(card.hidden===show)card.hidden=!show;
    if(card.disabled===selectable)card.disabled=!selectable;
@@ -81,11 +81,9 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // A card outside the seven slots slides out from behind its neighbour.
-    // Clip its inner edge instead of fading its entire face.
-    const covered=Math.max(0,Math.min(1,a-radius));
-    const cut=(covered*100).toFixed(3)+'%';
-    card.style.clipPath=covered? (off<0?`inset(0 ${cut} 0 0)`:`inset(0 0 0 ${cut})`) : 'none';
+    // Keep the full card geometry intact. Neighbouring cards conceal the
+    // entering/leaving card by their natural stacking order, not clip-path.
+    card.style.clipPath='none';
     card.style.opacity='1';
     card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
    }
