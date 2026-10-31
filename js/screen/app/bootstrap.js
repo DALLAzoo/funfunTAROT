@@ -11,7 +11,9 @@ export async function initializeApp({ctx, $, stage, container, status, setState}
   try{applySettings(C);ctx.catalog=makeCatalog();const inventory=validateConfig(C,ctx.catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
    $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
    ctx.back=backs.find(b=>b.id===document.documentElement.dataset.initialBack)||randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
-   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,'selection');stage.classList.add('idle-stack');await prepareBack(ctx.back);requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
+   // Decode the back artwork before creating visible cards to avoid a texture-only first paint.
+   await prepareBack(ctx.back);
+   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,'selection');stage.classList.add('idle-stack');requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
    catch(e){ctx.back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
   }catch(e){setState('error',e.message);status.setAttribute('role','alert');}
 }
