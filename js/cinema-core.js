@@ -32,7 +32,7 @@ export function selectionPool(catalog,c=C,rng=Math.random){return c.pool.mode===
 export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
 // Single fan geometry for opening, dragging and snapping.
-// Center five cards are legible; outer pair remains partially exposed.
+// Five cards are displayed at a time, at equal physical size.
 export function slotPose(offset,width,c=C){
  const size=stageSize('selection',width,c);
  const a=Math.abs(offset),sgn=Math.sign(offset);
@@ -42,7 +42,7 @@ export function slotPose(offset,width,c=C){
  const displacement=(Math.min(a,1)*steps[0]+Math.max(0,Math.min(a-1,1))*steps[1]+Math.max(0,Math.min(a-2,1))*steps[2]+Math.max(0,a-3)*steps[2]*.9)*fit;
  const rotation=sgn*(Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*9+Math.max(0,a-2)*6);
  const drop=Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*13+Math.max(0,a-2)*14;
- // No per-slot perspective depth: all seven cards retain identical visual size.
+ // No per-slot perspective depth: all visible cards retain identical visual size.
  return {x:sgn*displacement,y:drop,z:0,rot:rotation,ry:0,rx:0,scale:1};
 }
 export function visibleIndices(index,count,visible){const r=(visible-1)/2;return Array.from({length:visible},(_,i)=>mod(index+i-r,count));}

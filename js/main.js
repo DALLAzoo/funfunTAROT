@@ -24,7 +24,7 @@ async function startShuffle(){
  const ids=visibleIndices(0,pool.length,C.counts.visible),opening=ids.map(i=>cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=cards;stage.classList.add('selection-stage');
  if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==token){magic.stop();return;}
- magic.finish();carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','끌리는 카드를 골라 주세요');
+ magic.finish();carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
  instruction.textContent='';
 }
 async function choose(chosen){
@@ -56,7 +56,7 @@ async function choose(chosen){
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
 $('#prevBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(-1)});$('#nextBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(1)});
-$('#selectBtn').addEventListener('click',()=>{if(carousel)choose(cards[carousel.index])});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
+$('#selectBtn').addEventListener('click',()=>{carousel?.confirm()});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
 window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
 try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
  $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';

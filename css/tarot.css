@@ -147,6 +147,7 @@
 
 /* Initial stacked deck: dark gothic-brown paper layers, not gold foil. */
 .stage.idle-stack .shuffle-surface .card-edge{
+ visibility:visible!important;
  background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;
  border:1px solid rgba(135,89,51,.68)!important;
  border-radius:8px!important;
@@ -157,3 +158,12 @@
 
 /* Seven-card fan: fade only the offscreen entering cards, without softening the seven displayed faces. */
 
+
+/* Selected card: raised above the fan, with a gold border; lavender aura remains on others. */
+.selection-stage .tarot-card.is-picked::after{
+ content:""!important;display:block!important;visibility:visible!important;opacity:1!important;
+ position:absolute;inset:-3px;border:3px solid #e9bd61!important;border-radius:11px;
+ box-shadow:0 0 12px rgba(247,199,100,.85),0 0 24px rgba(207,147,47,.45)!important;
+ animation:none!important;pointer-events:none;z-index:12;
+}
+.selection-stage .tarot-card.is-picked{filter:drop-shadow(0 8px 15px rgba(0,0,0,.45))}
