@@ -81,11 +81,15 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // Keep the full card geometry intact. Neighbouring cards conceal the
-    // entering/leaving card by their natural stacking order, not clip-path.
-    card.style.clipPath='none';
+    // Mask only the entering/leaving outer slot, from the outside inward.
+    // All seven selectable slots remain uncut; opacity never changes.
+    const cut=Math.max(0,Math.min(100,(a-radius)*100));
+    card.style.clipPath=cut===0?'none':off<0
+      ?`inset(0 0 0 ${cut}%)`:`inset(0 ${cut}% 0 0)`;
     card.style.opacity='1';
-    card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
+    // Keep a picked card in the same stacking order: lifting it 22px should
+    // reveal only the 22px displacement, not its whole hidden face.
+    card.style.zIndex=String(100-Math.round(a*20));
    }
   });
   this.updateGlow();this.onIndex(this.index);
