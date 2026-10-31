@@ -1,0 +1,3 @@
+export function applySettings(C){const s=document.documentElement.style;
+ for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,'--glow-rgb':C.glow.rgb,'--glow-alpha':C.glow.enabled?C.glow.intensity:0,'--glow-blur':C.glow.blur+'px','--glow-pulse':C.glow.pulseMs+'ms','--center-multiplier':C.glow.centerEmphasis?C.glow.centerMultiplier:1,'--drag-glow':C.glow.dragMultiplier}))s.setProperty(k,v);
+}

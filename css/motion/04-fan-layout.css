@@ -1,0 +1,8 @@
+.stage.idle-stack .shuffle-surface .card-edge{visibility:visible!important;}
+.selection-stage .tarot-card.is-picked::after{content:""!important;display:block!important;visibility:visible!important;opacity:1!important;position:absolute;inset:-3px;animation:none!important;pointer-events:none;z-index:12;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after,
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{content:"";position:absolute;z-index:8;pointer-events:none;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after{left:1px;right:1px;bottom:0;height:8px;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{top:2px;right:0;bottom:5px;width:6px;}
+
+

@@ -1,0 +1,17 @@
+[
+  "CODE_GUIDE.md",
+  "README.md",
+  "VALIDATION.md",
+  "validation/center-motion-checks.mjs",
+  "docs/MODULE_DEPENDENCIES.md",
+  "validation/revision42/rev42-dimensions.json",
+  "validation/revision42/rev42-mobile-motion-5.jpg",
+  "validation/revision42/rev42-desktop-result.jpg",
+  "validation/revision42/dimension-summary.json",
+  "validation/revision42/rev42-mobile-motion-21.jpg",
+  "docs/history/REVISION41_VALIDATION.md",
+  "js/motion/reveal/center-motion.js",
+  "js/screen/app/shuffle-flow.js",
+  "js/screen/app/reveal-flow.js",
+  "js/screen/app/events.js"
+]

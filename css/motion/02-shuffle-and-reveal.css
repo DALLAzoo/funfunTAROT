@@ -1,0 +1,16 @@
+.tarot-card.shuffle-surface .card-front{padding:0!important;}
+.tarot-card.shuffle-surface .card-front > *{visibility:hidden!important;}
+.tarot-card .card-inner{isolation:auto;}
+.tarot-card .card-edge{pointer-events:none;}
+.result-card-host{perspective:var(--perspective,1000px);transform-style:preserve-3d}
+.result-card{position:relative!important;left:auto!important;top:auto!important;transform:none;transform-origin:center center!important;}
+.result-card .card-inner{transform-style:preserve-3d;-webkit-transform-style:preserve-3d;}
+.result-card .card-face{backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;}
+.result-card .card-back{transform:rotateY(0deg) translateZ(.35px)!important;}
+.result-card .card-front{transform:rotateY(180deg) translateZ(.35px)!important;}
+.shuffle-surface .card-edge{visibility:hidden!important;}
+.result-card .card-edge{display:none!important;}
+.selection-stage .card-face{transform:none;image-rendering:auto;}
+.selection-stage .card-front{transform:rotateY(180deg);}
+
+

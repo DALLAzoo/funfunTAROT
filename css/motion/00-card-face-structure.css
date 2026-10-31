@@ -1,0 +1,2 @@
+.card-face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;transition:filter .2s;}
+.card-front{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;}

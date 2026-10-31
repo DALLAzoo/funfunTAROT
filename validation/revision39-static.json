@@ -1,0 +1,16 @@
+{
+  "source": "Revision 38",
+  "js_files": 20,
+  "css_files": 5,
+  "javascript_syntax_checked": 20,
+  "broken_relative_links": 0,
+  "browser_test": "not performed",
+  "preserved_css_order": [
+    "screen/01-foundation-and-cards.css",
+    "motion/02-shuffle-and-reveal.css",
+    "effects/03-light-and-reflection.css",
+    "decoration/04-stack-and-fan.css",
+    "decoration/05-selection-and-vfx-fixes.css"
+  ],
+  "note": "Code behavior is not independently browser-verified; CSS declarations and order preserved."
+}

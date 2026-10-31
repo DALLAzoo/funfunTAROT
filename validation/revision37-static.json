@@ -1,0 +1,10 @@
+{
+  "js_count": 20,
+  "js_syntax_pass": true,
+  "missing_imports": [],
+  "css_rules": 136,
+  "css_repeated_selectors": 22,
+  "assets_unchanged": true,
+  "asset_diffs": [],
+  "browser_verified": false
+}

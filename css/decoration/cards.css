@@ -1,0 +1,43 @@
+/* Single owner of card borders, corners, surfaces, shadows and filters.
+   Rules retain original relative cascade order. Layout and motion remain in their files. */
+.card-face{border-radius:8px;border:1px solid #c0d6bb88;box-shadow:0 8px 22px #0008,0 0 0 2px #0b1514;}
+.card-back{background-image:var(--back-image);background-size:cover;background-position:center;}
+.card-front{background:linear-gradient(160deg,#f0e7d0,#b8ac8c);color:#243c33;border:4px solid #d9cfad;}
+.tarot-card{border:0;background:none;}
+.tarot-card{background:transparent!important;outline:0;}
+.tarot-card:hover,.tarot-card:active,.tarot-card:focus{background:transparent!important;}
+.card-face{filter:none!important;border:1px solid #ddd6c055;box-shadow:0 var(--shadow-y) var(--shadow-blur) rgba(0,0,0,var(--shadow-alpha));}
+.card-edge{border-radius:8px;background:var(--edge);box-shadow:0 0 0 1px #16191b;}
+.edge-3{border:1px solid rgba(255,255,255,var(--satin-alpha));}
+.tarot-card.selectable::after{border:1px solid rgba(var(--glow-rgb),var(--glow-alpha));border-radius:10px;box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),var(--glow-alpha));}
+.tarot-card.selectable.is-center::after{box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),calc(var(--glow-alpha) * var(--center-multiplier)));}
+.tarot-card:focus-visible::after{border:2px solid #ded3ff;border-radius:12px;box-shadow:none;}
+.card-front.has-image{border:0;background:transparent;}
+.transition-overlay .card-face{border-radius:0;}
+.tarot-card .card-face{box-shadow:0 4px 13px rgba(0,0,0,.18)!important;}
+.card-edge{border:1px solid rgba(224,210,181,.5);box-shadow:none!important;}
+.edge-3{border-color:rgba(240,230,208,.65);}
+@media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important;}}
+.card-back{background-size:100% 100%!important;background-repeat:no-repeat!important;background-position:center!important;border:0!important;}
+.card-face{border-radius:3px!important;box-shadow:0 3px 11px rgba(0,0,0,.12)!important;}
+.card-edge{border-radius:3px!important;}
+.card-front,.card-front img{filter:none!important;}
+@media(max-width:600px){.card-face{box-shadow:0 2px 7px rgba(0,0,0,.10)!important;}}
+.tarot-card.shuffle-surface .card-front{background-image:var(--back-image)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;background-color:transparent!important;border:0!important;}
+.shuffle-surface .card-face{background-color:transparent!important;}
+.shuffle-surface .card-face{box-shadow:0 2px 6px rgba(0,0,0,.12),0 0 0 .6px rgba(240,227,197,.22)!important;}
+.selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat;}
+.card-back::before,.shuffle-surface .card-front::before{border-radius:inherit;background:radial-gradient(ellipse 42% 22% at 50% 50%,rgba(255,249,205,.97) 0%,rgba(255,213,106,.78) 26%,rgba(235,161,54,.26) 62%,transparent 100%);background-size:270% 270%;background-position:10% 15%;}
+.stage.idle-stack .shuffle-surface .card-edge{background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;border:1px solid rgba(135,89,51,.68)!important;border-radius:8px!important;box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;}
+.stage.idle-stack .shuffle-surface .card-inner{border-radius:8px;}
+.stage.idle-stack .shuffle-surface .card-face{border-radius:8px;}
+.selection-stage .tarot-card.is-picked::after{border:3px solid #e9bd61!important;border-radius:11px;box-shadow:0 0 12px rgba(247,199,100,.85),0 0 24px rgba(207,147,47,.45)!important;}
+.selection-stage .tarot-card.is-picked{filter:drop-shadow(0 8px 15px rgba(0,0,0,.45));}
+.result-card.is-picked .card-face{box-shadow:inset 0 0 0 3px #e9bd61,0 0 12px rgba(247,199,100,.8),0 0 23px rgba(207,147,47,.4)!important;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after,
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{background:repeating-linear-gradient(180deg,
+  rgba(193,145,83,.72) 0px,rgba(193,145,83,.72) .65px,
+  rgba(42,28,24,.98) 1.2px,rgba(91,60,43,.98) 2.5px);box-shadow:inset 0 0 4px rgba(10,6,5,.55);}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after{border-radius:0 0 7px 7px;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{border-radius:0 7px 5px 0;}
+.result-card.is-revealed .card-front{border-radius:8px;}
