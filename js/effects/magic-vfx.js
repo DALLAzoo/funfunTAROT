@@ -1,11 +1,12 @@
 import {CONFIG as C} from '../settings/config/config.js';
 import {cardCloud} from './gold-lines.js';
-import {drawSparkleField} from './sparkle-field.js';
+import {startScreenSparkles} from './sparkle-field.js';
 import {samplePressure,waveRadius} from '../motion/animation/finale-motion.js';
 // Body-owned fixed Canvas cannot be covered by cards advancing in stage 3D space.
 export class MagicVFX {
  constructor(stage){
   this.stage=stage;this.active=false;this.trails=[];this.name='off';
+  startScreenSparkles(); // Single viewport-fixed effect across every stage, including result.
   this.canvas=document.createElement('canvas');this.canvas.className='magic-canvas magic-front';this.canvas.setAttribute('aria-hidden','true');document.body.append(this.canvas);
   this.ctx=this.canvas.getContext('2d');
   // Restore the original rear-layer light during shuffle and fan opening.
@@ -38,8 +39,7 @@ export class MagicVFX {
   ctx.clearRect(0,0,this.w,this.h);
   this.drawRear(now,age,fade);
   const box=cardCloud(this.cards,this.bounds);this.canvas.dataset.center=box?`${box.cx.toFixed(2)},${box.cy.toFixed(2)}`:'';
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  drawSparkleField(ctx,box,now,this.name,fade,this.w,this.h,reduced);
+  // Screen sparkles run on their own fixed canvas; never follow cards or drag.
   this.frame=requestAnimationFrame(t=>this.draw(t));
  }
  // Rear light is separate from the new front orbit, so cards can pass in front of it.
