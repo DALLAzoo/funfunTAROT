@@ -22,6 +22,6 @@ export async function startShuffleFlow(ctx){
  const ids=visibleIndices(0,ctx.pool.length,C.counts.visible),opening=ids.map(i=>ctx.cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=ctx.cards;stage.classList.add('selection-stage');
  if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==ctx.token){magic.stop();return;}
- magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
+ magic.phase('selection');ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
  instruction.textContent='';
 }
