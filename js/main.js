@@ -6,10 +6,10 @@ import {MagicVFX} from './magic-vfx.js';import {Carousel} from './carousel.js';i
 const $=s=>document.querySelector(s),stage=$('#stage'),container=$('#cards'),status=$('#status'),instruction=$('#instruction'),shuffleBtn=$('#shuffleBtn'),main=$('#tarotApp'),resultView=$('#resultView');
 let catalog=[],cards=[],pool=[],back=null,state='idle',carousel=null,token=0;const magic=new MagicVFX(stage);
 function applySettings(){const s=document.documentElement.style;
- for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,}))s.setProperty(k,v);
+ for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,'--glow-rgb':C.glow.rgb,'--glow-alpha':C.glow.enabled?C.glow.intensity:0,'--glow-blur':C.glow.blur+'px','--glow-pulse':C.glow.pulseMs+'ms','--center-multiplier':C.glow.centerEmphasis?C.glow.centerMultiplier:1,'--drag-glow':C.glow.dragMultiplier}))s.setProperty(k,v);
 }
-function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';}
-function refreshCounter(){}
+function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';$('#navigation').hidden=true;$('#selectBtn').disabled=next!=='selection';}
+function refreshCounter(index){$('#counter').textContent=`${index+1} / ${pool.length}`;}
 async function startShuffle(){
  if(!['idle','selection','result'].includes(state))return;
  const previous=state,current=++token,previousText=instruction.textContent;setState('preparing','카드 이미지를 준비하고 있어요…');
@@ -55,7 +55,8 @@ async function choose(chosen){
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
-shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
+$('#prevBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(-1)});$('#nextBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(1)});
+$('#selectBtn').addEventListener('click',()=>{carousel?.confirm()});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
 window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
 try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
  $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';

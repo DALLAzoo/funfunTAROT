@@ -8,9 +8,13 @@
 [hidden]{display:none!important}body{overflow-x:hidden}.intro p:last-child{min-height:2.5em}.stage{min-height:430px;max-height:650px;touch-action:pan-y}.tarot-card{appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;background:transparent!important;outline:0;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .tarot-card:disabled{opacity:1!important}.tarot-card:hover,.tarot-card:active,.tarot-card:focus{background:transparent!important}.card-face{filter:none!important;border:1px solid #ddd6c055;box-shadow:0 var(--shadow-y) var(--shadow-blur) rgba(0,0,0,var(--shadow-alpha));transition:none}
 .card-edge{position:absolute;inset:0;border-radius:8px;background:var(--edge);pointer-events:none;box-shadow:0 0 0 1px #16191b}.edge-1{transform:translateZ(calc(-1 * var(--thickness)))}.edge-2{transform:translateZ(calc(-.66 * var(--thickness)))}.edge-3{transform:translateZ(calc(-.33 * var(--thickness)));border:1px solid rgba(255,255,255,var(--satin-alpha))}
-.result-view{min-height:100dvh;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(ellipse at 50% 40%,#28453a,#0b1413 85%)}.result-view>.top{position:absolute;top:25px;left:30px;right:30px}.result-view h1{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:20px 0 0}.result-view h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin:0}.result-card-host{position:relative;display:flex;align-items:center;justify-content:center;min-height:100px}.result-card{position:relative;left:auto;top:auto;transform:none;cursor:default}.result-view .note{margin:0;text-align:center}.transition-overlay{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto}.transition-overlay .tarot-card::after{display:none}.transition-overlay .card-face{border-radius:0}
-@media(max-width:600px){.stage{min-height:380px;max-height:500px}.result-view{padding:22px;gap:16px}.result-view h1{font-size:22px}}
-
+.tarot-card.selectable::after{content:'';position:absolute;inset:-2px;border:1px solid rgba(var(--glow-rgb),var(--glow-alpha));border-radius:10px;box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),var(--glow-alpha));pointer-events:none;animation:edge-pulse var(--glow-pulse) ease-in-out infinite;transform:translateZ(1px)}
+.tarot-card.selectable.is-center::after{box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),calc(var(--glow-alpha) * var(--center-multiplier)))}
+.is-dragging .tarot-card.selectable::after{animation:none;opacity:var(--drag-glow)}.tarot-card:focus-visible::after{content:'';position:absolute;inset:-5px;border:2px solid #ded3ff;border-radius:12px;box-shadow:none;animation:none;pointer-events:none}
+@keyframes edge-pulse{0%,100%{opacity:.62}50%{opacity:1}}.card-front{padding:12px;text-align:center;overflow:hidden}.front-name{font-size:clamp(13px,1.2vw,19px);overflow-wrap:anywhere;max-width:100%}.front-sub{font-size:10px;line-height:1.5;letter-spacing:.04em}.card-front.has-image{padding:0;border:0;background:transparent}.card-front img{width:100%;height:100%;object-fit:contain;display:block}
+.navigation{display:flex;align-items:center;justify-content:center;gap:15px;min-height:48px}.nav-btn{border:1px solid #bdb2dd55;background:#17221f;color:#e7dfff;border-radius:50%;width:40px;height:40px;cursor:pointer}.navigation #counter{min-width:58px;color:#c1b5d6;font-size:13px}.navigation .secondary{min-width:140px;padding:10px 16px}.result-view{min-height:100dvh;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(ellipse at 50% 40%,#28453a,#0b1413 85%)}.result-view>.top{position:absolute;top:25px;left:30px;right:30px}.result-view h1{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:20px 0 0}.result-view h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin:0}.result-card-host{position:relative;display:flex;align-items:center;justify-content:center;min-height:100px}.result-card{position:relative;left:auto;top:auto;transform:none;cursor:default}.result-view .note{margin:0;text-align:center}.transition-overlay{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto}.transition-overlay .tarot-card::after{display:none}.transition-overlay .card-face{border-radius:0}
+@media(max-width:600px){.stage{min-height:380px;max-height:500px}.result-view{padding:22px;gap:16px}.navigation{gap:10px}.navigation .secondary{min-width:110px;font-size:12px}.result-view h1{font-size:22px}}
+@media(prefers-reduced-motion:reduce){.tarot-card.selectable::after{animation:none}}
 
 /* Revision: separate, restrained material edges and a SINGLE flowing group outline. */
 .tarot-card .card-face{box-shadow:0 4px 13px rgba(0,0,0,.18)!important;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translateZ(.35px)}
@@ -19,16 +23,20 @@
 .edge-1{transform:translateZ(calc(-1 * var(--thickness)))}
 .edge-2{transform:translateZ(calc(-.5 * var(--thickness)))}
 .edge-3{transform:translateZ(calc(-.12 * var(--thickness)));border-color:rgba(240,230,208,.65)}
-
+.tarot-card.selectable::after{display:none!important}
+.group-glow{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:5;filter:drop-shadow(0 0 5px rgba(205,187,250,.65))}
+.group-glow-path{fill:none;stroke:rgba(216,198,255,.9);stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:8 92;animation:group-trace 6s linear infinite}
+@keyframes group-trace{to{stroke-dashoffset:-100}}
+.stage.is-dragging .group-glow{opacity:.7}
 .tarot-card{touch-action:none;contain:layout style}
-@media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important}}
+@media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important}.group-glow{filter:none}.group-glow-path{stroke-width:1.6}}
 
 /* 2026-10-29: preserve original back PNG edges (1240x2128), no image cropping. */
 .card-back{background-size:100% 100%!important;background-repeat:no-repeat!important;background-position:center!important;border:0!important}
 .card-face{border-radius:3px!important;overflow:hidden;box-shadow:0 3px 11px rgba(0,0,0,.12)!important}
 .card-edge{border-radius:3px!important;opacity:.75}
 /* The light comes from behind the whole three-card group, not its outlines. */
-
+.group-glow,.group-glow-path{display:none!important}
 .selection-backlight{position:absolute;left:50%;top:50%;width:min(86%,640px);height:68%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;background:radial-gradient(ellipse at center,rgba(166,219,185,.18) 0%,rgba(153,199,181,.075) 43%,transparent 74%);filter:blur(24px)}
 .selection-stage .aura{opacity:.3}
 /* Full fan area is the gesture surface, including gaps between cards. */
@@ -36,9 +44,9 @@
 .selection-stage.is-dragging{cursor:grabbing}
 .selection-stage .cards{pointer-events:none}
 .selection-stage .tarot-card.selectable{pointer-events:auto}
-.selection-stage .tarot-card{touch-action:none}
+.selection-stage .tarot-card{touch-action:pan-y}
 /* Remove all under-card captions, counters and arrow controls. */
-.controls .status,.controls .note,.intro #instruction{display:none!important}
+.controls .status,.controls .navigation,.controls .note,.intro #instruction{display:none!important}
 .controls{padding:8px 0 22px}
 .controls .actions{margin-top:0}
 /* No wipe, mask or translucent reveal overlay on the card face. */
@@ -118,7 +126,11 @@
 
 /* Blank carousel space accepts horizontal drags while vertical scrolling remains available. */
 .selection-stage{touch-action:pan-y}
-.selection-stage .tarot-card{touch-action:none}
+.selection-stage .tarot-card{touch-action:pan-y}
+/* A soft moving reflection over the front only after the card finishes turning. */
+.result-card.is-revealed .card-front::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(112deg,transparent 24%,rgba(255,234,164,.035) 38%,rgba(255,248,211,.21) 49%,rgba(255,223,137,.075) 56%,transparent 73%);background-size:260% 100%;background-position:120% 0;mix-blend-mode:screen;animation:revealed-front-shimmer 7.4s ease-in-out infinite}
+@keyframes revealed-front-shimmer{0%,12%{background-position:120% 0}70%,100%{background-position:-120% 0}}
+
 /* Smooth fan edge: gradual opacity at the entry and exit instead of a hard corner reveal. */
 .selection-stage .tarot-card{transition:none;backface-visibility:visible}
 /* Front artwork receives a visible, slow golden sweep after the completed flip. */
@@ -129,9 +141,9 @@
  background:linear-gradient(110deg,transparent 0%,transparent 34%,rgba(255,215,105,.08) 42%,rgba(255,245,183,.48) 49%,rgba(255,213,107,.18) 55%,transparent 64%,transparent 100%);
  background-size:100% 100%;background-position:0 0;
  mix-blend-mode:screen;transform:translateX(-155%);
- animation:front-gold-sweep-visible 3.4s ease-in-out infinite!important;
+ animation:front-gold-sweep-visible 5.8s ease-in-out infinite!important;
 }
-@keyframes front-gold-sweep-visible{0%{transform:translateX(-155%)}52%{transform:translateX(155%)}100%{transform:translateX(155%)}}
+@keyframes front-gold-sweep-visible{0%,12%{transform:translateX(-155%)}65%,100%{transform:translateX(155%)}}
 
 /* Initial stacked deck: dark gothic-brown paper layers, not gold foil. */
 .stage.idle-stack .shuffle-surface .card-edge{
@@ -147,7 +159,7 @@
 /* Seven-card fan: fade only the offscreen entering cards, without softening the seven displayed faces. */
 
 
-/* Selected card: raised above the fan, with a gold border. */
+/* Selected card: raised above the fan, with a gold border; lavender aura remains on others. */
 .selection-stage .tarot-card.is-picked::after{
  content:""!important;display:block!important;visibility:visible!important;opacity:1!important;
  position:absolute;inset:-3px;border:3px solid #e9bd61!important;border-radius:11px;
@@ -173,6 +185,3 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{
  top:2px;right:0;bottom:5px;width:6px;border-radius:0 7px 5px 0;
 }
-
-/* Revision 17: keep drag pointer gestures active across fan edges. */
-.selection-stage{touch-action:none}
