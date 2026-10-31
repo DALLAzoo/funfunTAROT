@@ -1,4 +1,4 @@
-// Fine orbiting gold trails, drawn in the caller's local screen coordinates.
+// Animated fine gold strands. Coordinates are local to the MagicVFX canvas.
 export function cardCloud(cards, origin={left:0,top:0}) {
  const boxes=cards.filter(c=>!c.hidden).map(c=>c.getBoundingClientRect()).filter(b=>b.width&&b.height);
  if(!boxes.length)return null;
@@ -6,27 +6,33 @@ export function cardCloud(cards, origin={left:0,top:0}) {
  const top=Math.min(...boxes.map(b=>b.top)),bottom=Math.max(...boxes.map(b=>b.bottom));
  return {cx:(left+right)/2-origin.left,cy:(top+bottom)/2-origin.top,width:right-left,height:bottom-top};
 }
-export function goldLines(ctx, box, seconds, alpha=1, count=3) {
+export function goldLines(ctx,box,seconds,alpha=1,count=3){
  if(!box||alpha<=0)return;
  const rx=box.width*.57+16,ry=box.height*.56+16;
- ctx.save();ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor='rgba(240,182,66,.5)';ctx.shadowBlur=3;
+ ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+ ctx.shadowColor='rgba(240,182,66,.5)';ctx.shadowBlur=3;
  for(let j=0;j<count;j++){
-  // A short trail has a visible moving head; the former long, uniform arcs looked stationary.
   const direction=j===1?-1:1;
-  const head=seconds*(1.35+j*.23)*direction+j*2.12;
-  const span=1.12+j*.13,segments=30;
-  const point=t=>[box.cx+Math.cos(t)*rx*(1+j*.045),box.cy+Math.sin(t)*ry*(.87+j*.09)+Math.sin(t*2+j)*8];
+  const speed=[2.25,1.82,2.63][j%3];
+  const head=seconds*speed*direction+j*2.094;
+  const span=[.92,1.18,.76][j%3],segments=36;
+  const rxx=rx*(1+j*.045),ryy=ry*(.87+j*.09);
+  const point=t=>[box.cx+Math.cos(t)*rxx,box.cy+Math.sin(t)*ryy+Math.sin(t*2+j)*8];
   for(let k=0;k<segments;k++){
    const t0=head-direction*span*(1-k/segments),t1=head-direction*span*(1-(k+1)/segments);
-   const p=point(t0),q=point((t0+t1)/2),r=point(t1);
+   const p=point(t0),m=point((t0+t1)/2),q=point(t1);
    const progress=(k+.5)/segments;
-   // Fade at both ends and subtly brighten the near half of each orbit.
-   const taper=Math.sin(Math.PI*progress)**.75;
-   const depth=.65+.35*Math.max(0,Math.sin((t0+t1)/2));
-   ctx.strokeStyle=`rgba(246,197,107,${alpha*taper*depth*(.78-j*.1)})`;
+   const taper=Math.sin(Math.PI*progress)**1.1;
+   const depth=.42+.58*(.5+.5*Math.sin((t0+t1)/2));
+   const flicker=.88+.12*Math.sin(seconds*(3.1+j*.7)+j);
+   ctx.strokeStyle=`rgba(246,197,107,${Math.min(1,alpha*taper*depth*flicker*(.92-j*.11))})`;
    ctx.lineWidth=.85+j*.12;
-   ctx.beginPath();ctx.moveTo(...p);ctx.quadraticCurveTo(...q,...r);ctx.stroke();
+   ctx.beginPath();ctx.moveTo(...p);ctx.quadraticCurveTo(...m,...q);ctx.stroke();
   }
+  // Small moving highlight marks the travelling head without a bright flash.
+  const p=point(head);
+  ctx.fillStyle=`rgba(255,218,151,${alpha*.48})`;
+  ctx.beginPath();ctx.arc(p[0],p[1],.8,0,Math.PI*2);ctx.fill();
  }
  ctx.restore();
 }
