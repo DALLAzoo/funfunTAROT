@@ -15,21 +15,22 @@ export class Carousel {
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
  }
  distance(i){const n=this.cards.length;let d=mod(i-this.index,n);if(d>n/2)d-=n;return d;}
- get visible(){return this.cards.filter((_,i)=>Math.abs(this.distance(i))<=1);}
+ get visible(){return this.cards.filter((_,i)=>Math.abs(this.distance(i))<=3);}
  layout(fraction=this.offset){
-  cardSize(this.stage,'selection');const w=this.stage.clientWidth,n=this.cards.length;
+  cardSize(this.stage,'selection');const w=this.stage.clientWidth;
   this.cards.forEach((card,i)=>{
-   const off=this.distance(i)+fraction,show=Math.abs(off)<4;
-   card.hidden=!show;card.disabled=Math.abs(off)>3.35;card.classList.toggle('selectable',Math.abs(off)<=3.35);
-   card.classList.toggle('is-center',Math.abs(off)<.5);
+   const off=this.distance(i)+fraction,a=Math.abs(off);
+   // Keep an entering card mounted before it reaches the edge, avoiding pop-in.
+   const show=a<=3.001||(Math.abs(fraction)>.001&&a<4.15),selectable=a<=3.001;
+   if(card.hidden===show)card.hidden=!show;
+   if(card.disabled===selectable)card.disabled=!selectable;
+   card.classList.toggle('selectable',selectable);
+   card.classList.toggle('is-center',a<.5);
    if(show){
-    // The opening and the interactive fan share the identical seven-slot geometry.
-    // Only cards beyond the outermost three fade in/out, never the seven main cards.
-    const pos=slotPose(off,w);
-    card.style.transform=transform(pos);
-    const visibility=Math.max(0,Math.min(1,(4-Math.abs(off))/.9));
-    card.style.setProperty('--fan-opacity',String(visibility));
-    card.style.zIndex=String(100-Math.round(Math.abs(off)*20));
+    card.style.transform=transform(slotPose(off,w));
+    // Fade only the extra entering card, never any of the seven main slots.
+    card.style.opacity=String(a<=3?1:Math.max(0,Math.min(1,(4.15-a)/1.15)));
+    card.style.zIndex=String(100-Math.round(a*20));
    }
   });
   this.updateGlow();this.onIndex(this.index);
@@ -39,7 +40,7 @@ export class Carousel {
  move(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
-   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));this.layout();e.preventDefault();}
+   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;this.layout();});e.preventDefault();}
  }
  up(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;this.pointer=null;if(p.dragged){this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}else this.stage.classList.remove('is-dragging');}
  async snap(shift){if(this.busy)return;this.busy=true;const start=this.offset,end=-shift,duration=Math.max(160,C.carousel.move);const begin=performance.now();
@@ -48,5 +49,5 @@ export class Carousel {
  }
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  cancel(){this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');if(!this.busy)this.layout();}
- destroy(){this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.stage.classList.remove('is-dragging');}
+ destroy(){if(this.raf)cancelAnimationFrame(this.raf);this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.stage.classList.remove('is-dragging');}
 }

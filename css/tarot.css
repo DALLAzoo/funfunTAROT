@@ -121,7 +121,7 @@
 
 /* Initial stack only: show paper-layer edges, not repeated back artwork on the sides.
    Removed before shuffle; all shuffle/fan/flip geometry remains unchanged. */
-.stage.idle-stack .shuffle-surface .card-edge{visibility:visible!important;opacity:1;background:repeating-linear-gradient(180deg,#c8bba2 0px,#c8bba2 1px,#776e5e 1.5px,#d8c9aa 2.5px)!important;border:1px solid rgba(220,205,176,.5)}
+
 .stage.idle-stack .shuffle-surface:not(:first-child) .card-inner{visibility:hidden!important}
 
 /* Blank carousel space accepts horizontal drags while vertical scrolling remains available. */
@@ -145,14 +145,15 @@
 }
 @keyframes front-gold-sweep-visible{0%,12%{transform:translateX(-155%)}65%,100%{transform:translateX(155%)}}
 
-/* Initial deck only: warm-gold layered paper grain, aligned corners. */
+/* Initial stacked deck: dark gothic-brown paper layers, not gold foil. */
 .stage.idle-stack .shuffle-surface .card-edge{
- background:repeating-linear-gradient(180deg,#bda174 0px,#bda174 .85px,#806846 1.25px,#c5aa7e 2.3px)!important;
- border:1px solid rgba(177,139,78,.65)!important;
+ background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;
+ border:1px solid rgba(135,89,51,.68)!important;
  border-radius:8px!important;
+ box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;
 }
 .stage.idle-stack .shuffle-surface .card-inner{border-radius:8px}
 .stage.idle-stack .shuffle-surface .card-face{border-radius:8px}
 
 /* Seven-card fan: fade only the offscreen entering cards, without softening the seven displayed faces. */
-.selection-stage .tarot-card:disabled{opacity:var(--fan-opacity,1)!important}
+

@@ -31,19 +31,19 @@ export function randomOrder(items,rng=Math.random){const a=[...items];for(let i=
 export function selectionPool(catalog,c=C,rng=Math.random){return c.pool.mode==='explicit-ids'?c.pool.ids.map(id=>catalog.find(x=>x.id===id)):randomOrder(catalog,rng).slice(0,c.counts.selection);}
 export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
+// Single fan geometry for opening, dragging and snapping.
+// Center five cards are legible; outer pair remains partially exposed.
 export function slotPose(offset,width,c=C){
  const size=stageSize('selection',width,c);
- // Keep the three front cards generously separated; compress only the two
- // successive outer pairs. The same geometry is used during opening and drag.
  const a=Math.abs(offset),sgn=Math.sign(offset);
- const compact=width<=600;
- const first=compact?size*.78:size*.86;
- const second=compact?size*.54:size*.64;
- const third=compact?size*.42:size*.50;
- const displacement=Math.min(a,1)*first+Math.max(0,Math.min(a-1,1))*second+Math.max(0,Math.min(a-2,1))*third+Math.max(0,a-3)*third*.9;
- const rotation=a<=1?offset*9:sgn*(9+Math.min(a-1,1)*9+Math.max(0,a-2)*5);
- const drop=a<=1?a*9:9+Math.min(a-1,1)*12+Math.max(0,a-2)*12;
- return {x:sgn*displacement,y:drop,z:c.carousel.centerDepth-Math.min(a,3)*c.carousel.depthStep/3,rot:rotation,ry:0,rx:0,scale:1};
+ // One formula on all devices; only available stage width changes the spacing.
+ const fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
+ const steps=[size*.72,size*.52,size*.36];
+ const displacement=(Math.min(a,1)*steps[0]+Math.max(0,Math.min(a-1,1))*steps[1]+Math.max(0,Math.min(a-2,1))*steps[2]+Math.max(0,a-3)*steps[2]*.9)*fit;
+ const rotation=sgn*(Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*9+Math.max(0,a-2)*6);
+ const drop=Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*13+Math.max(0,a-2)*14;
+ // No per-slot perspective depth: all seven cards retain identical visual size.
+ return {x:sgn*displacement,y:drop,z:0,rot:rotation,ry:0,rx:0,scale:1};
 }
 export function visibleIndices(index,count,visible){const r=(visible-1)/2;return Array.from({length:visible},(_,i)=>mod(index+i-r,count));}
 export function stackPose(i,count){return {x:0,y:-8,z:-Math.abs(i-(count-1)/2)*3,rot:0,ry:0,rx:0,scale:1};}

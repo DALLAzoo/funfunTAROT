@@ -60,15 +60,19 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
- const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);cardSize(stage,'selection');
+ const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);
+ cardSize(stage,'selection');
  const start=stage.ownerDocument.timeline.currentTime;let leader,done=false;
  const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
  const result=await Promise.all(els.map((el,i)=>{
-  const from=stackPose(i,els.length),to=slotPose(i-(els.length-1)/2,stage.clientWidth),frames=[];
-  el.style.width=fromSize+'px';el.style.height=fromSize*C.aspect+'px';el.style.transform=transform(from);
-  el.style.zIndex=String(100-Math.round(Math.abs(i-(els.length-1)/2)*20));
-  el.style.setProperty('--fan-opacity','1');
-  for(let n=0;n<=80;n++){const t=n/80,q=pressureProgress(t),s=fromSize+(toSize-fromSize)*q;frames.push({offset:t,transform:transform(mix(from,to,q)),width:s+'px',height:s*C.aspect+'px'});}
+  const off=i-(els.length-1)/2,from=stackPose(i,els.length),to=slotPose(off,stage.clientWidth),frames=[];
+  // Animate transform only, avoiding width/height layout work on mobile.
+  const initial={...from,scale:fromSize/toSize};
+  el.style.width=toSize+'px';el.style.height=toSize*C.aspect+'px';
+  el.style.transform=transform(initial);
+  el.style.zIndex=String(100-Math.round(Math.abs(off)*20));
+  el.style.opacity='1';
+  for(let n=0;n<=60;n++){const t=n/60,q=pressureProgress(t);frames.push({offset:t,transform:transform(mix(initial,to,q))});}
   return play(el,frames,FINALE_DURATION,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
  }));done=true;return result.every(Boolean);
 }
