@@ -16,8 +16,22 @@ export class Carousel {
  }
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
+  const old=this.selectedCard;
   this.selectedCard=card;
   this.layout();
+  // Animate the newly picked card from its resting position to its raised pose.
+  // The layout already owns the final transform, so no persistent animation
+  // can fight subsequent drag/snap updates.
+  const index=this.cards.indexOf(card);
+  const off=this.distance(index)+this.offset;
+  const resting=slotPose(off,this.stage.clientWidth);
+  const raised={...resting,y:resting.y-22};
+  card.getAnimations().forEach(animation=>animation.cancel());
+  card.animate([
+   {transform:transform({...resting,scale:1,z:0,ry:0,rx:0})},
+   {transform:transform({...raised,scale:1,z:0,ry:0,rx:0})}
+  ],{duration:260,easing:'cubic-bezier(.2,.75,.25,1)'});
+  if(old&&old!==card)old.getAnimations().forEach(animation=>animation.cancel());
  }
  confirm(){if(this.selectedCard&&!this.selectedCard.hidden&&!this.busy)this.onChoose(this.selectedCard);}
  distance(i){const n=this.cards.length;let d=mod(i-this.index,n);if(d>n/2)d-=n;return d;}
@@ -27,7 +41,9 @@ export class Carousel {
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,a=Math.abs(off);
    // Keep an entering card mounted before it reaches the edge, avoiding pop-in.
-   const show=a<=radius+.001||(Math.abs(fraction)>.001&&a<edge),selectable=a<=radius+.001;
+   // Keep the entering/leaving edge card mounted across drag start and
+   // snap completion. Its opacity tapers to zero before it is hidden.
+   const show=a<edge,selectable=a<=radius+.001;
    if(card.hidden===show)card.hidden=!show;
    if(card.disabled===selectable)card.disabled=!selectable;
    card.classList.toggle('selectable',selectable);
@@ -39,7 +55,7 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // Fade only the extra entering card, never any of the seven main slots.
+    // Fade only the extra entering card, never the five main slots.
     card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,(edge-a)/1.15)));
     card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
    }

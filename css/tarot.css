@@ -167,3 +167,21 @@
  animation:none!important;pointer-events:none;z-index:12;
 }
 .selection-stage .tarot-card.is-picked{filter:drop-shadow(0 8px 15px rgba(0,0,0,.45))}
+
+
+/* Revision 15: visible paper grain on the actual front-most initial stack
+   surface. The previous 3D edge layers were behind/covered by card faces. */
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after,
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{
+ content:"";position:absolute;z-index:8;pointer-events:none;
+ background:repeating-linear-gradient(180deg,
+  rgba(193,145,83,.72) 0px,rgba(193,145,83,.72) .65px,
+  rgba(42,28,24,.98) 1.2px,rgba(91,60,43,.98) 2.5px);
+ box-shadow:inset 0 0 4px rgba(10,6,5,.55);
+}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after{
+ left:1px;right:1px;bottom:0;height:8px;border-radius:0 0 7px 7px;
+}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{
+ top:2px;right:0;bottom:5px;width:6px;border-radius:0 7px 5px 0;
+}
