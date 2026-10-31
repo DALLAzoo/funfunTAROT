@@ -188,3 +188,9 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{
  top:2px;right:0;bottom:5px;width:6px;border-radius:0 7px 5px 0;
 }
+
+/* Revision 26: final revealed-card light is warm gold, not silver-white. */
+.result-card.is-revealed .card-front::after{
+ background:linear-gradient(110deg,transparent 0%,transparent 32%,rgba(171,96,12,.12) 39%,rgba(255,175,30,.42) 45%,rgba(255,211,65,.8) 49%,rgba(255,170,28,.48) 53%,rgba(168,88,9,.16) 61%,transparent 68%)!important;
+ mix-blend-mode:normal!important;
+}

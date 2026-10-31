@@ -117,28 +117,37 @@ export class MagicVFX {
     }
     if(release&&this.waveClock)this.drawWave(rear,front,fade);
     if(this.name==='focus'){
-      const p=sampleCard(this.cards[0]);
-      if(p){
-        const v=this.project(p), duration=C.reveal.focus/1000;
-        const progress=Math.min(1,age/duration), radius=125-95*progress;
+      const chosen=this.cards[0];
+      if(chosen){
+        const rect=chosen.getBoundingClientRect(),bounds=this.stage.getBoundingClientRect();
+        const cx=rect.left-bounds.left+rect.width/2,cy=rect.top-bounds.top+rect.height/2;
+        const duration=C.reveal.focus/1000,progress=Math.min(1,age/duration);
+        const converge=1-Math.pow(1-progress,1.45);
         const pulse=Math.sin(Math.PI*progress);
-        rear.save();rear.globalCompositeOperation='lighter';
-        for(const [line,alpha,extra] of [[18,.24,0],[5,.9,0],[2,.65,16]]){
-          rear.strokeStyle=`rgba(255,207,119,${alpha*pulse})`;rear.lineWidth=line;
-          rear.beginPath();rear.arc(v.x,v.y,radius+extra,0,Math.PI*2);rear.stroke();
+        // Visible gold streams converge from outside the card onto its center.
+        front.save();front.globalCompositeOperation='lighter';
+        const count=this.w<C.breakpoint?64:100;
+        const outer=Math.min(this.w*.46,290);
+        for(let i=0;i<count;i++){
+          const angle=i*2.399963+(i%5)*.12;
+          const startR=outer*(.68+(i%9)*.047);
+          const endR=6+(i%7)*2.4;
+          const r=startR*(1-converge)+endR*converge;
+          const x=cx+Math.cos(angle)*r,y=cy+Math.sin(angle)*r*.68;
+          const trailR=Math.min(startR,r+18+18*progress);
+          const tx=cx+Math.cos(angle)*trailR,ty=cy+Math.sin(angle)*trailR*.68;
+          const alpha=Math.min(1,(.48+.48*pulse)*(1-progress*.25));
+          front.strokeStyle=`rgba(255,180,45,${alpha*.65})`;
+          front.lineWidth=i%5===0?2.8:1.6;
+          front.beginPath();front.moveTo(tx,ty);front.lineTo(x,y);front.stroke();
+          front.fillStyle=`rgba(255,210,74,${alpha})`;
+          front.beginPath();front.arc(x,y,i%5===0?3.9:2.5,0,Math.PI*2);front.fill();
         }
-        rear.restore();
-        if(!this.reduced){
-          front.save();front.globalCompositeOperation='lighter';
-          for(let i=0;i<28;i++){
-            const angle=i*2.399963+now*.00035;
-            const r=radius*(.65+(i%6)*.08);
-            const x=v.x+Math.cos(angle)*r,y=v.y+Math.sin(angle)*r*.65;
-            front.fillStyle=`rgba(255,225,156,${pulse*(.4+(i%4)*.12)})`;
-            front.beginPath();front.arc(x,y,i%5===0?2.1:1.2,0,Math.PI*2);front.fill();
-          }
-          front.restore();
-        }
+        const glow=front.createRadialGradient(cx,cy,0,cx,cy,56);
+        glow.addColorStop(0,`rgba(255,205,73,${.46*pulse})`);
+        glow.addColorStop(1,'rgba(255,170,35,0)');
+        front.fillStyle=glow;front.fillRect(cx-56,cy-56,112,112);
+        front.restore();
       }
     }
     this.cards.forEach((card,i)=>{

@@ -44,7 +44,7 @@ async function choose(chosen){
   result.classList.remove('shuffle-surface','selectable','is-center');
   result.classList.add('result-card');result.disabled=true;
   result.setAttribute('aria-label',chosen.cardData.name);
-  const rw=stageSize('result',innerWidth);
+  const rw=stageSize('result',innerWidth)*(C.reveal.zoom||1.18);
   result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
   result.style.transform='none';result.style.zIndex='auto';
   const host=$('#resultCardHost');host.replaceChildren(result);
@@ -52,8 +52,8 @@ async function choose(chosen){
   $('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
   main.hidden=true;resultView.hidden=false;
   setState('revealing','선택한 카드를 공개하고 있어요…');
-  const approach=result.animate([{transform:'scale(1)'},{transform:`scale(${C.reveal.zoom||1.18})`},{transform:'scale(1)'}],
-    {duration:C.reveal.approach,easing:'ease-in-out'});
+  const approach=host.animate([{transform:'scale(.86)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],
+    {duration:C.reveal.approach,easing:'cubic-bezier(.18,.7,.2,1)'});
   await approach.finished;
   await screenTransition(result);
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
@@ -61,7 +61,7 @@ async function choose(chosen){
 }
 $('#prevBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(-1)});$('#nextBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(1)});
 $('#selectBtn').addEventListener('click',()=>{carousel?.confirm()});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
-window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
+window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth)*(C.reveal.zoom||1.18);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
 try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
  $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
  back=randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
