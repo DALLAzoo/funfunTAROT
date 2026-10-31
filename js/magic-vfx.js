@@ -99,7 +99,7 @@ export class MagicVFX {
         const a=i*2.399963+now*.00022;
         const r=radius*(.42+.56*((i*17)%29)/29)*(1-condense*.78);
         const x=this.w/2+Math.cos(a)*r,y=this.h/2-8+Math.sin(a)*r*.4;
-        const alpha=(.16+.16*Math.sin(now*.0017+i)**2)*fade;
+        const alpha=(.42+.22*Math.sin(now*.0017+i)**2)*fade;
         front.fillStyle=`rgba(255,217,144,${alpha})`;
         front.beginPath();front.arc(x,y,i%5===0?1.3:.7,0,Math.PI*2);front.fill();
       }
@@ -137,7 +137,8 @@ export class MagicVFX {
     this.cards.forEach((card,i)=>{
       if(card.hidden)return;
       const p=sampleCard(card);if(!p)return;
-      const point=this.project(p);const history=this.trails[i]||(this.trails[i]=[]);
+      const rect=card.getBoundingClientRect(),bounds=this.stage.getBoundingClientRect();
+      const point={x:rect.left-bounds.left+rect.width/2,y:rect.top-bounds.top+rect.height/2,z:p.z};const history=this.trails[i]||(this.trails[i]=[]);
       if(this.name==='charge'&&!this.reduced){
         const a=i*Math.PI*2/22+now*.0006;
         const sx=this.w/2+Math.cos(a)*radius,sy=this.h/2-8+Math.sin(a)*radius*.34;
@@ -145,14 +146,18 @@ export class MagicVFX {
         rear.beginPath();rear.moveTo(sx,sy);rear.quadraticCurveTo(this.w/2,this.h/2-60,point.x,point.y);rear.stroke();
       }
       const prev=history.at(-1);const speed=prev?Math.hypot(point.x-prev.x,point.y-prev.y)/Math.max(dt,.001):0;
-      history.push({...point,time:now});while(history.length>9||history.length&&now-history[0].time>150)history.shift();
-      if(!this.reduced&&speed>45&&this.name!=='fade'){
-        const ctx=p.z>0?front:rear;
+      history.push({...point,time:now});while(history.length>28||history.length&&now-history[0].time>450)history.shift();
+      if(!this.reduced&&speed>45&&this.name!=='fade'&&i%4===0){
+        // Front canvas remains outside the 3D stack. Follow a visible card edge.
+        const ctx=front;
+        const edge=rect.width*.38;
+        const path=history.map(v=>({...v,x:v.x+edge,y:v.y+rect.height*.28}));
+        ctx.save();ctx.shadowColor='rgba(244,184,65,.8)';ctx.shadowBlur=7;ctx.lineCap='round';ctx.lineJoin='round';
         ctx.lineWidth=Math.min(3.2, 1+speed/400);ctx.strokeStyle=`rgba(246,197,107,${Math.min(.65,speed/1000)*fade})`;
-        ctx.beginPath();history.forEach((v,j)=>j?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.stroke();
+        ctx.beginPath();path.forEach((v,j)=>{if(!j)ctx.moveTo(v.x,v.y);else {const prev=path[j-1];ctx.quadraticCurveTo(prev.x,prev.y,(prev.x+v.x)/2,(prev.y+v.y)/2);}});ctx.stroke();ctx.restore();
         if(this.particles.length<this.limit&&prev&&dt>0){
           // Sparks inherit the card's velocity; no unrelated random screen emitter.
-          this.particles.push({x:point.x,y:point.y,z:p.z,vx:(point.x-prev.x)/dt*.12,vy:(point.y-prev.y)/dt*.12,life:.22,max:.22});
+          this.particles.push({x:point.x+edge,y:point.y+rect.height*.28,z:1,vx:(point.x-prev.x)/dt*.12,vy:(point.y-prev.y)/dt*.12,life:.65,max:.65});
         }
       }
     });

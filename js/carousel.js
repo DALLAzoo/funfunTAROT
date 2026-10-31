@@ -84,7 +84,7 @@ export class Carousel {
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
     // Fade only entering cards outside the seven-card fan.
     card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,edge-a)));
-    card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
+    card.style.zIndex=String(100-Math.round(a*20));
    }
   });
   this.updateGlow();this.onIndex(this.index);
