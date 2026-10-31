@@ -6,7 +6,7 @@ export class Carousel {
   this.cards=cards;this.stage=stage;this.index=0;this.busy=false;this.onIndex=onIndex;this.onChoose=onChoose;
   this.pointer=null;this.lastDrag=-Infinity;this.offset=0;this.abort=new AbortController();
   const opt={signal:this.abort.signal};
-  cards.forEach((card,i)=>card.addEventListener('click',()=>{if(!this.busy&&!this.pointer&&performance.now()-this.lastDrag>C.carousel.clickGuard&&Math.abs(this.distance(i))<=1)this.onChoose(card);},opt));
+  cards.forEach((card,i)=>card.addEventListener('click',()=>{if(!this.busy&&!this.pointer&&performance.now()-this.lastDrag>C.carousel.clickGuard&&Math.abs(this.distance(i))<=3)this.onChoose(card);},opt));
   stage.addEventListener('pointerdown',e=>this.down(e),opt);
   window.addEventListener('pointermove',e=>this.move(e),opt);
   window.addEventListener('pointerup',e=>this.up(e),opt);
@@ -20,7 +20,7 @@ export class Carousel {
   cardSize(this.stage,'selection');const w=this.stage.clientWidth,n=this.cards.length;
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,show=Math.abs(off)<4;
-   card.hidden=!show;card.disabled=Math.abs(off)>1.3;card.classList.toggle('selectable',Math.abs(off)<=1.3);
+   card.hidden=!show;card.disabled=Math.abs(off)>3.35;card.classList.toggle('selectable',Math.abs(off)<=3.35);
    card.classList.toggle('is-center',Math.abs(off)<.5);
    if(show){
     // The opening and the interactive fan share the identical seven-slot geometry.

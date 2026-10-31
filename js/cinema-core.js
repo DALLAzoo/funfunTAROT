@@ -32,12 +32,18 @@ export function selectionPool(catalog,c=C,rng=Math.random){return c.pool.mode===
 export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
 export function slotPose(offset,width,c=C){
- const size=stageSize('selection',width,c),r=(c.counts.visible-1)/2,normalized=offset/r;
- const angle=c.carousel.angle*Math.PI/180,edgeZ=c.carousel.centerDepth-c.carousel.depthStep;
- const projection=c.camera.perspective/(c.camera.perspective-edgeZ);
- const halfEdge=(size*Math.cos(angle)+size*c.aspect*Math.sin(angle))/2*projection;
- const gap=Math.max(0,Math.min(size*c.carousel.gap,(width/2-halfEdge-8)/(r*projection)));
- return {x:offset*gap,y:Math.abs(normalized)*c.carousel.drop,z:c.carousel.centerDepth-Math.abs(normalized)*c.carousel.depthStep,rot:normalized*c.carousel.angle,ry:0,rx:0,scale:1};
+ const size=stageSize('selection',width,c);
+ // Keep the three front cards generously separated; compress only the two
+ // successive outer pairs. The same geometry is used during opening and drag.
+ const a=Math.abs(offset),sgn=Math.sign(offset);
+ const compact=width<=600;
+ const first=compact?size*.78:size*.86;
+ const second=compact?size*.54:size*.64;
+ const third=compact?size*.42:size*.50;
+ const displacement=Math.min(a,1)*first+Math.max(0,Math.min(a-1,1))*second+Math.max(0,Math.min(a-2,1))*third+Math.max(0,a-3)*third*.9;
+ const rotation=a<=1?offset*9:sgn*(9+Math.min(a-1,1)*9+Math.max(0,a-2)*5);
+ const drop=a<=1?a*9:9+Math.min(a-1,1)*12+Math.max(0,a-2)*12;
+ return {x:sgn*displacement,y:drop,z:c.carousel.centerDepth-Math.min(a,3)*c.carousel.depthStep/3,rot:rotation,ry:0,rx:0,scale:1};
 }
 export function visibleIndices(index,count,visible){const r=(visible-1)/2;return Array.from({length:visible},(_,i)=>mod(index+i-r,count));}
 export function stackPose(i,count){return {x:0,y:-8,z:-Math.abs(i-(count-1)/2)*3,rot:0,ry:0,rx:0,scale:1};}
