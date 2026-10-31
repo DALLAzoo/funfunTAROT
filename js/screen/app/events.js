@@ -1,5 +1,7 @@
 import {CONFIG as C, stageSize} from '../../settings/config/config.js';
 
+import {cardSize,floatLayout} from '../../motion/animation/card-animation.js';
+
 /** Register navigation, selection, shuffle and responsive layout handlers. */
 export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   $('#prevBtn').addEventListener('click', () => {
@@ -15,6 +17,9 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   $('#resultAgain').addEventListener('click', startShuffle);
 
   window.addEventListener('resize', () => {
+    if (getState() === 'idle' && ctx.cards.length) {
+      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,'selection');
+    }
     if (getState() === 'selection' && !ctx.carousel?.busy) {
       ctx.carousel.layout();
     }

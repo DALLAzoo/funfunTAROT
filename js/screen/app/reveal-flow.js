@@ -33,10 +33,10 @@ export async function chooseFlow(ctx,chosen){
   main.hidden=true;resultView.hidden=false;
   setState('revealing','선택한 카드를 공개하고 있어요…');
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
-    (card,duration)=>revealMagic.gather(card,duration));
+    (card,duration)=>revealMagic.orbit(card,duration));
   await new Promise(resolve=>setTimeout(resolve,C.reveal.pauseBeforeFlip));
   await screenTransition(result);
-  revealMagic.sweep(result);
+  revealMagic.stars(result);
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }

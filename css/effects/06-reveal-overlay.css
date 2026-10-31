@@ -6,3 +6,5 @@
 @media(prefers-reduced-motion:reduce){.reveal-magic{display:none}
 }
 
+/* Keep stage VFX in viewport space, outside the stage perspective tree. */
+.magic-canvas{position:fixed;inset:auto;z-index:9;pointer-events:none!important;contain:strict}
