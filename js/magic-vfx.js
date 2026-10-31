@@ -117,9 +117,28 @@ export class MagicVFX {
     }
     if(release&&this.waveClock)this.drawWave(rear,front,fade);
     if(this.name==='focus'){
-      const p=sampleCard(this.cards[0]);if(p){const v=this.project(p),r=100-age*80;
-        rear.strokeStyle=`rgba(248,205,126,${Math.max(0,.42-age*.35)})`;rear.lineWidth=1.5;
-        rear.beginPath();rear.arc(v.x,v.y,Math.max(40,r),0,Math.PI*2);rear.stroke();
+      const p=sampleCard(this.cards[0]);
+      if(p){
+        const v=this.project(p), duration=C.reveal.focus/1000;
+        const progress=Math.min(1,age/duration), radius=125-95*progress;
+        const pulse=Math.sin(Math.PI*progress);
+        rear.save();rear.globalCompositeOperation='lighter';
+        for(const [line,alpha,extra] of [[12,.14,0],[3,.65,0],[1,.4,16]]){
+          rear.strokeStyle=`rgba(255,207,119,${alpha*pulse})`;rear.lineWidth=line;
+          rear.beginPath();rear.arc(v.x,v.y,radius+extra,0,Math.PI*2);rear.stroke();
+        }
+        rear.restore();
+        if(!this.reduced){
+          front.save();front.globalCompositeOperation='lighter';
+          for(let i=0;i<28;i++){
+            const angle=i*2.399963+now*.00035;
+            const r=radius*(.65+(i%6)*.08);
+            const x=v.x+Math.cos(angle)*r,y=v.y+Math.sin(angle)*r*.65;
+            front.fillStyle=`rgba(255,225,156,${pulse*(.4+(i%4)*.12)})`;
+            front.beginPath();front.arc(x,y,i%5===0?2.1:1.2,0,Math.PI*2);front.fill();
+          }
+          front.restore();
+        }
       }
     }
     this.cards.forEach((card,i)=>{

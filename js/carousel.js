@@ -67,9 +67,8 @@ export class Carousel {
   cardSize(this.stage,'selection');const w=this.stage.clientWidth, radius=(C.counts.visible-1)/2, edge=radius+1;
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,a=Math.abs(off);
-   // Keep an entering card mounted before it reaches the edge, avoiding pop-in.
-   // Keep the entering/leaving edge card mounted across drag start and
-   // snap completion. Its opacity tapers to zero before it is hidden.
+   // Keep entering/leaving cards mounted while the adjacent fan masks them.
+   // No opacity animation: reveal by geometric clipping under the neighbour.
    const show=a<edge,selectable=a<=radius+.001;
    if(card.hidden===show)card.hidden=!show;
    if(card.disabled===selectable)card.disabled=!selectable;
@@ -82,8 +81,12 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // Fade only entering cards outside the seven-card fan.
-    card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,edge-a)));
+    // A card outside the seven slots slides out from behind its neighbour.
+    // Clip its inner edge instead of fading its entire face.
+    const covered=Math.max(0,Math.min(1,a-radius));
+    const cut=(covered*100).toFixed(3)+'%';
+    card.style.clipPath=covered? (off<0?`inset(0 ${cut} 0 0)`:`inset(0 0 0 ${cut})`) : 'none';
+    card.style.opacity='1';
     card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
    }
   });
