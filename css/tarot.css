@@ -44,7 +44,7 @@
 .selection-stage.is-dragging{cursor:grabbing}
 .selection-stage .cards{pointer-events:none}
 .selection-stage .tarot-card.selectable{pointer-events:auto}
-.selection-stage .tarot-card{touch-action:pan-y}
+.selection-stage .tarot-card{touch-action:none}
 /* Remove all under-card captions, counters and arrow controls. */
 .controls .status,.controls .navigation,.controls .note,.intro #instruction{display:none!important}
 .controls{padding:8px 0 22px}
@@ -126,7 +126,7 @@
 
 /* Blank carousel space accepts horizontal drags while vertical scrolling remains available. */
 .selection-stage{touch-action:pan-y}
-.selection-stage .tarot-card{touch-action:pan-y}
+.selection-stage .tarot-card{touch-action:none}
 /* A soft moving reflection over the front only after the card finishes turning. */
 .result-card.is-revealed .card-front::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(112deg,transparent 24%,rgba(255,234,164,.035) 38%,rgba(255,248,211,.21) 49%,rgba(255,223,137,.075) 56%,transparent 73%);background-size:260% 100%;background-position:120% 0;mix-blend-mode:screen;animation:revealed-front-shimmer 7.4s ease-in-out infinite}
 @keyframes revealed-front-shimmer{0%,12%{background-position:120% 0}70%,100%{background-position:-120% 0}}
@@ -185,3 +185,6 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{
  top:2px;right:0;bottom:5px;width:6px;border-radius:0 7px 5px 0;
 }
+
+/* Revision 17: keep drag pointer gestures active across fan edges. */
+.selection-stage{touch-action:none}

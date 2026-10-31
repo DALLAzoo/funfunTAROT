@@ -11,6 +11,7 @@ export class Carousel {
   window.addEventListener('pointermove',e=>this.move(e),opt);
   window.addEventListener('pointerup',e=>this.up(e),opt);
   window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
+  stage.addEventListener('lostpointercapture',e=>{if(this.pointer?.id===e.pointerId&&!this.pointer.ending)this.cancel();},opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
  }
@@ -63,19 +64,40 @@ export class Carousel {
   this.updateGlow();this.onIndex(this.index);
  }
  updateGlow(){ /* Soft stationary backlight; no tracing line. */ }
- down(e){if(this.busy||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};
+ down(e){if(this.busy||this.pointer||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;
+  this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,ending:false};
+  // Keep normal card clicks until a real horizontal drag starts.
  }
- move(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
+ move(e){const p=this.pointer;if(!p||e.pointerId!==p.id||this.busy)return;
+  const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
-  if(Math.abs(dx)>5){if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');
-     // Capture only after drag begins; capturing on pointerdown steals card clicks.
-     if(this.stage.setPointerCapture)try{this.stage.setPointerCapture(e.pointerId);}catch(_){}}
-   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;this.layout();});e.preventDefault();}
+  if(Math.abs(dx)<=5&&!p.dragged)return;
+  if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');
+   try{this.stage.setPointerCapture(e.pointerId);}catch(_){}}
+  const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
+  let movement=dx/gap;
+  // Rebase by whole slots while dragging: never clamp or jump at the edge.
+  const whole=Math.trunc(movement);
+  if(whole!==0){this.index=mod(this.index-whole,this.cards.length);p.x+=whole*gap;movement-=whole;}
+  this.offset=movement;
+  if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
+  e.preventDefault();
  }
- up(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;this.pointer=null;this.releasePointer(e.pointerId);if(p.dragged){this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}else this.stage.classList.remove('is-dragging');}
- async snap(shift){if(this.busy)return;this.busy=true;const start=this.offset,end=-shift,duration=Math.max(160,C.carousel.move);const begin=performance.now();
-  await new Promise(resolve=>{const frame=t=>{if(this.destroyed){resolve();return;}const q=Math.min(1,(t-begin)/duration),ease=1-Math.pow(1-q,3);this.offset=start+(end-start)*ease;this.layout();if(q<1)requestAnimationFrame(frame);else resolve();};requestAnimationFrame(frame);});
-  if(this.destroyed)return;this.index=mod(this.index+shift,this.cards.length);this.selectedCard=null;this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
+ up(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;
+  p.ending=true;this.pointer=null;this.releasePointer(e.pointerId);
+  if(p.dragged){this.lastDrag=performance.now();e.preventDefault();this.snap(Math.round(-this.offset));}
+  else this.stage.classList.remove('is-dragging');
+ }
+ async snap(shift){if(this.busy)return;this.busy=true;
+  if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
+  const start=this.offset,end=-shift,duration=Math.max(160,C.carousel.move),begin=performance.now();
+  await new Promise(resolve=>{const frame=t=>{if(this.destroyed){resolve();return;}
+   const q=Math.min(1,(t-begin)/duration),ease=1-Math.pow(1-q,3);
+   this.offset=start+(end-start)*ease;this.layout();
+   if(q<1)requestAnimationFrame(frame);else resolve();};requestAnimationFrame(frame);});
+  if(this.destroyed)return;
+  this.index=mod(this.index+shift,this.cards.length);this.selectedCard=null;
+  this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){}}
