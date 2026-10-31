@@ -6,13 +6,40 @@ export class Carousel {
   this.cards=cards;this.stage=stage;this.index=0;this.busy=false;this.onIndex=onIndex;this.onChoose=onChoose;
   this.pointer=null;this.lastDrag=-Infinity;this.offset=0;this.selectedCard=null;this.abort=new AbortController();
   const opt={signal:this.abort.signal};
-  cards.forEach((card,i)=>card.addEventListener('click',()=>{if(!this.busy&&!this.pointer&&performance.now()-this.lastDrag>C.carousel.clickGuard&&Math.abs(this.distance(i))<=(C.counts.visible-1)/2)this.tap(card);},opt));
+  // Resolve taps from the fan slots, not the overlapping card elements.
+  // The outer two cards may be partly covered or outside the stage bounds.
+  stage.addEventListener('click',e=>this.clickSlot(e),opt);
+  // Keyboard activation of a focused card keeps its original target.
+  cards.forEach((card,i)=>card.addEventListener('click',e=>{
+   if(e.detail!==0)return;
+   if(!this.busy&&!this.pointer&&Math.abs(this.distance(i))<=(C.counts.visible-1)/2)this.tap(card);
+  },opt));
   stage.addEventListener('pointerdown',e=>this.down(e),opt);
   window.addEventListener('pointermove',e=>this.move(e),opt);
   window.addEventListener('pointerup',e=>this.up(e),opt);
   window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
+ }
+ clickSlot(e){
+  if(this.busy||this.pointer||performance.now()-this.lastDrag<=C.carousel.clickGuard)return;
+  if(e.target.closest('button:not(.tarot-card)'))return;
+  // Keyboard-generated clicks are handled on the focused card above.
+  if(e.detail===0)return;
+  const bounds=this.stage.getBoundingClientRect(),w=this.stage.clientWidth;
+  const x=e.clientX-bounds.left-w/2,y=e.clientY-bounds.top-bounds.height/2;
+  const radius=(C.counts.visible-1)/2,cardW=stageSize('selection',w),cardH=cardW*C.aspect;
+  const slots=[];
+  for(let d=-radius;d<=radius;d++){
+   const pose=slotPose(d+this.offset,w);
+   slots.push({d,x:pose.x,y:pose.y});
+  }
+  // Ignore clicks outside the card fan's vertical and horizontal reach.
+  const nearest=slots.reduce((best,slot)=>Math.abs(x-slot.x)<Math.abs(x-best.x)?slot:best);
+  if(Math.abs(y-nearest.y)>cardH*.55||
+     x<slots[0].x-cardW*.5||x>slots[slots.length-1].x+cardW*.5)return;
+  const index=mod(this.index+nearest.d,this.cards.length),card=this.cards[index];
+  if(!card.hidden&&!card.disabled)this.tap(card);
  }
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
@@ -37,7 +64,7 @@ export class Carousel {
  distance(i){const n=this.cards.length;let d=mod(i-this.index,n);if(d>n/2)d-=n;return d;}
  get visible(){return this.cards.filter((_,i)=>Math.abs(this.distance(i))<=(C.counts.visible-1)/2);}
  layout(fraction=this.offset){
-  cardSize(this.stage,'selection');const w=this.stage.clientWidth, radius=(C.counts.visible-1)/2, edge=radius+1.15;
+  cardSize(this.stage,'selection');const w=this.stage.clientWidth, radius=(C.counts.visible-1)/2, edge=radius+1;
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,a=Math.abs(off);
    // Keep an entering card mounted before it reaches the edge, avoiding pop-in.
@@ -55,8 +82,8 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // Fade only the extra entering card, never the five main slots.
-    card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,(edge-a)/1.15)));
+    // Fade only entering cards outside the seven-card fan.
+    card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,edge-a)));
     card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
    }
   });
