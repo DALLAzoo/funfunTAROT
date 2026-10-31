@@ -32,7 +32,7 @@ export function selectionPool(catalog,c=C,rng=Math.random){return c.pool.mode===
 export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
 // Single fan geometry for opening, dragging and snapping.
-// Five cards are displayed at a time, at equal physical size.
+// Seven equal-sized cards form one fan; overlap increases toward the outer pairs.
 export function slotPose(offset,width,c=C){
  const size=stageSize('selection',width,c);
  const a=Math.abs(offset),sgn=Math.sign(offset);

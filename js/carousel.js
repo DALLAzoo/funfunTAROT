@@ -11,9 +11,9 @@ export class Carousel {
   window.addEventListener('pointermove',e=>this.move(e),opt);
   window.addEventListener('pointerup',e=>this.up(e),opt);
   window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
-  stage.addEventListener('lostpointercapture',e=>{if(this.pointer?.id===e.pointerId&&!this.pointer.ending)this.cancel();},opt);
-  stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
-  this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
+
+
+
  }
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
@@ -44,7 +44,7 @@ export class Carousel {
    // Keep an entering card mounted before it reaches the edge, avoiding pop-in.
    // Keep the entering/leaving edge card mounted across drag start and
    // snap completion. Its opacity tapers to zero before it is hidden.
-   const show=a<edge,selectable=a<=radius+.001;
+   const show=a<=radius+.001||(Math.abs(fraction)>.001&&a<edge),selectable=a<=radius+.001;
    if(card.hidden===show)card.hidden=!show;
    if(card.disabled===selectable)card.disabled=!selectable;
    card.classList.toggle('selectable',selectable);
@@ -61,19 +61,18 @@ export class Carousel {
     card.style.zIndex=String(card===this.selectedCard?200:100-Math.round(a*20));
    }
   });
-  this.updateGlow();this.onIndex(this.index);
+  this.onIndex(this.index);
  }
- updateGlow(){ /* Soft stationary backlight; no tracing line. */ }
  down(e){if(this.busy||this.pointer||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;
   this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,ending:false};
-  // Keep normal card clicks until a real horizontal drag starts.
+  // Window listeners track the gesture without retargeting card clicks.
  }
  move(e){const p=this.pointer;if(!p||e.pointerId!==p.id||this.busy)return;
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)<=5&&!p.dragged)return;
   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');
-   try{this.stage.setPointerCapture(e.pointerId);}catch(_){}}
+}
   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
   let movement=dx/gap;
   // Rebase by whole slots while dragging: never clamp or jump at the edge.
@@ -99,8 +98,8 @@ export class Carousel {
   this.index=mod(this.index+shift,this.cards.length);this.selectedCard=null;
   this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
- step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
+ step(direction){if(this.busy||this.pointer)return;this.offset=0;return this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){}}
  cancel(){if(this.pointer)this.releasePointer(this.pointer.id);this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');if(!this.busy)this.layout();}
- destroy(){if(this.pointer)this.releasePointer(this.pointer.id);if(this.raf)cancelAnimationFrame(this.raf);this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.stage.classList.remove('is-dragging');}
+ destroy(){if(this.pointer)this.releasePointer(this.pointer.id);if(this.raf)cancelAnimationFrame(this.raf);this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.stage.classList.remove('is-dragging');}
 }

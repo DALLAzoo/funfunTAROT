@@ -2,7 +2,7 @@
 // This is a local trial. The 20-card pool policy is NOT a production decision.
 export const CONFIG = {
   breakpoint:600, aspect:2128/1240,
-  counts:{shuffle:22,selection:20,visible:5,result:1},
+  counts:{shuffle:22,selection:20,visible:7,result:1},
   pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
   catalog:{additionalCards:[],frontImages:{},requireActualFrontImages:false},
   sizes:{
