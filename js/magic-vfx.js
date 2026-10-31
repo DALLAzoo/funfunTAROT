@@ -93,8 +93,8 @@ export class MagicVFX {
     if(!rear||!front){this.stop();return;}
     const radius=Math.min(this.w*.42,310);
     const energy=this.name==='charge'?Math.min(1,age/(C.shuffle.separate/1000)):vortex?1:Math.max(0,1-age/.75);
-    this.ring(rear,radius*(1-condense*.83),.85*energy*fade,now*.0004);
-    this.ring(rear,radius*.8*(1-condense*.8),.48*energy*fade,-now*.0007);
+    if(this.name!=='focus')this.ring(rear,radius*(1-condense*.83),.85*energy*fade,now*.0004);
+    if(this.name!=='focus')this.ring(rear,radius*.8*(1-condense*.8),.48*energy*fade,-now*.0007);
     if(condense>0){
       const coreRadius=Math.max(66,Math.min(130,this.w*.18));
       const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,coreRadius);
@@ -121,32 +121,30 @@ export class MagicVFX {
       if(chosen){
         const rect=chosen.getBoundingClientRect(),bounds=this.stage.getBoundingClientRect();
         const cx=rect.left-bounds.left+rect.width/2,cy=rect.top-bounds.top+rect.height/2;
-        const duration=C.reveal.focus/1000,progress=Math.min(1,age/duration);
-        const converge=1-Math.pow(1-progress,1.45);
-        const pulse=Math.sin(Math.PI*progress);
-        // Visible gold streams converge from outside the card onto its center.
+        const duration=C.reveal.approach/1000,progress=Math.min(1,age/duration);
+        const eased=1-Math.pow(1-progress,2);
+        const envelope=Math.sin(Math.PI*progress);
         front.save();front.globalCompositeOperation='lighter';
-        const count=this.w<C.breakpoint?64:100;
-        const outer=Math.min(this.w*.46,290);
+        const count=this.w<C.breakpoint?22:34;
+        const outer=Math.min(this.w*.30,175);
         for(let i=0;i<count;i++){
-          const angle=i*2.399963+(i%5)*.12;
-          const startR=outer*(.68+(i%9)*.047);
-          const endR=6+(i%7)*2.4;
-          const r=startR*(1-converge)+endR*converge;
-          const x=cx+Math.cos(angle)*r,y=cy+Math.sin(angle)*r*.68;
-          const trailR=Math.min(startR,r+18+18*progress);
-          const tx=cx+Math.cos(angle)*trailR,ty=cy+Math.sin(angle)*trailR*.68;
-          const alpha=Math.min(1,(.48+.48*pulse)*(1-progress*.25));
-          front.strokeStyle=`rgba(255,180,45,${alpha*.65})`;
-          front.lineWidth=i%5===0?2.8:1.6;
-          front.beginPath();front.moveTo(tx,ty);front.lineTo(x,y);front.stroke();
-          front.fillStyle=`rgba(255,210,74,${alpha})`;
-          front.beginPath();front.arc(x,y,i%5===0?3.9:2.5,0,Math.PI*2);front.fill();
+          const angle=i*2.399963;
+          const startR=outer*(.72+(i%7)*.045);
+          const r=startR*(1-eased)+(8+i%6)*eased;
+          const x=cx+Math.cos(angle)*r,y=cy+Math.sin(angle)*r*.77;
+          const alpha=(.12+.46*envelope)*(i%4===0?1:.72);
+          front.fillStyle=`rgba(255,215,135,${alpha})`;
+          front.beginPath();front.arc(x,y,i%7===0?1.65:0.85,0,Math.PI*2);front.fill();
+          if(i%6===0){
+            front.strokeStyle=`rgba(255,226,163,${alpha*.42})`;
+            front.lineWidth=.55;
+            front.beginPath();front.moveTo(x-3,y);front.lineTo(x+3,y);front.moveTo(x,y-3);front.lineTo(x,y+3);front.stroke();
+          }
         }
-        const glow=front.createRadialGradient(cx,cy,0,cx,cy,56);
-        glow.addColorStop(0,`rgba(255,205,73,${.46*pulse})`);
-        glow.addColorStop(1,'rgba(255,170,35,0)');
-        front.fillStyle=glow;front.fillRect(cx-56,cy-56,112,112);
+        const glow=front.createRadialGradient(cx,cy,0,cx,cy,35);
+        glow.addColorStop(0,`rgba(255,201,112,${.16*envelope})`);
+        glow.addColorStop(1,'rgba(255,201,112,0)');
+        front.fillStyle=glow;front.fillRect(cx-35,cy-35,70,70);
         front.restore();
       }
     }

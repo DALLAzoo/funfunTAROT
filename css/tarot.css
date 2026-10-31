@@ -194,3 +194,9 @@
  background:linear-gradient(110deg,transparent 0%,transparent 32%,rgba(171,96,12,.12) 39%,rgba(255,175,30,.42) 45%,rgba(255,211,65,.8) 49%,rgba(255,170,28,.48) 53%,rgba(168,88,9,.16) 61%,transparent 68%)!important;
  mix-blend-mode:normal!important;
 }
+
+/* Revision 27: fine gold particles overlay the enlarging result card. */
+.result-view{position:relative}
+.result-view .magic-canvas{z-index:4;pointer-events:none}
+.result-view .magic-rear{z-index:1}
+.result-view .magic-front{z-index:4}
