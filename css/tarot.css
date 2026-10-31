@@ -188,3 +188,15 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{
  top:2px;right:0;bottom:5px;width:6px;border-radius:0 7px 5px 0;
 }
+
+/* Revision 30: independent particles around the selected result card. */
+.result-card-host{isolation:isolate}
+.reveal-magic{position:absolute;inset:-65% -90%;width:280%;height:230%;pointer-events:none;z-index:4;overflow:visible}
+.result-card{z-index:2}
+/* A soft golden reflection moves once, with no abrupt hard white bar. */
+.result-card.is-revealed .card-front::after{
+ background:linear-gradient(108deg,transparent 0%,transparent 29%,rgba(189,125,36,.02) 35%,rgba(242,185,77,.11) 43%,rgba(255,224,145,.24) 49%,rgba(246,192,88,.12) 56%,rgba(205,141,43,.025) 65%,transparent 73%)!important;
+ transform:translateX(-145%);animation:front-gold-natural 7s cubic-bezier(.42,0,.58,1) 1 both!important;
+}
+@keyframes front-gold-natural{0%,12%{transform:translateX(-145%)}85%,100%{transform:translateX(145%)}}
+@media(prefers-reduced-motion:reduce){.reveal-magic{display:none}.result-card.is-revealed .card-front::after{animation:none!important}}

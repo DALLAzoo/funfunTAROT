@@ -92,6 +92,18 @@ export class MagicVFX {
     for(const {ctx} of this.layers){if(ctx){ctx.clearRect(0,0,this.w,this.h);ctx.globalCompositeOperation='lighter';}}
     if(!rear||!front){this.stop();return;}
     const radius=Math.min(this.w*.42,310);
+    // Fine gold motes orbit with the shuffle, separate from the card surface.
+    if(!this.reduced&&(this.name==='charge'||this.name==='vortex')){
+      const count=this.w<C.breakpoint?20:42;
+      for(let i=0;i<count;i++){
+        const a=i*2.399963+now*.00022;
+        const r=radius*(.42+.56*((i*17)%29)/29)*(1-condense*.78);
+        const x=this.w/2+Math.cos(a)*r,y=this.h/2-8+Math.sin(a)*r*.4;
+        const alpha=(.16+.16*Math.sin(now*.0017+i)**2)*fade;
+        front.fillStyle=`rgba(255,217,144,${alpha})`;
+        front.beginPath();front.arc(x,y,i%5===0?1.3:.7,0,Math.PI*2);front.fill();
+      }
+    }
     const energy=this.name==='charge'?Math.min(1,age/(C.shuffle.separate/1000)):vortex?1:Math.max(0,1-age/.75);
     this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
     this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
