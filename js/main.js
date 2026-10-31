@@ -33,9 +33,11 @@ async function choose(chosen){
  try{await prepareFront(chosen.cardData);}catch(e){carousel.busy=false;carousel.layout();setState('selection',e.message);return;}
  carousel.destroy();carousel=null;cards.forEach(c=>c.disabled=true);magic.stop();magic.start([chosen]);magic.phase('focus');
  try{
-  // Fade no card surface: move the selected DOM card directly into its final
-  // centered host BEFORE flipping, avoiding coordinate-space changes at 90deg.
+  // Let the original focus ring and particles play before moving the card
+  // to the result host (the VFX canvas belongs to the selection stage).
+  await new Promise(resolve=>setTimeout(resolve,C.reveal.focus));
   magic.stop();
+  // Move the selected DOM card directly into its final centered host.
   const result=chosen;
   // Preserve the chosen card's gold aura through its reveal.
   result.classList.add('is-picked');
