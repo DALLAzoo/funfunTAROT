@@ -3,8 +3,7 @@
 .result-card{z-index:2;}
 .result-card.is-revealed .card-front{isolation:isolate;overflow:hidden;}
 .result-card.is-revealed .card-front::after{display:none!important;animation:none!important;}
-@media(prefers-reduced-motion:reduce){.reveal-magic{display:none}
-}
+/* Keep the card-face glow visible on desktop even when reduced motion is enabled. */
 
 /* Keep stage VFX in viewport space, outside the stage perspective tree. */
 .magic-canvas{position:fixed;inset:auto;z-index:9;pointer-events:none!important;contain:strict}
