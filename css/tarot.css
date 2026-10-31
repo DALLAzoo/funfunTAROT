@@ -200,3 +200,8 @@
 .result-view .magic-canvas{z-index:4;pointer-events:none}
 .result-view .magic-rear{z-index:1}
 .result-view .magic-front{z-index:4}
+
+/* Revision 28: broad soft-edged amber-to-gold reflection, without a hard white band. */
+.result-card.is-revealed .card-front::after{
+ background:linear-gradient(110deg,transparent 0%,rgba(141,77,8,.02) 24%,rgba(186,106,13,.11) 34%,rgba(233,155,34,.25) 43%,rgba(255,209,85,.39) 49%,rgba(238,164,37,.25) 56%,rgba(178,99,12,.1) 66%,transparent 78%)!important;
+}

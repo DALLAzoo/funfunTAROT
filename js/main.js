@@ -54,6 +54,8 @@ async function choose(chosen){
     {duration:C.reveal.approach,easing:'cubic-bezier(.18,.7,.2,1)'});
   await approach.finished;
   revealMagic.stop();
+  // Give the enlarged, gathered card a readable pause before turning.
+  await new Promise(resolve=>setTimeout(resolve,560));
   await screenTransition(result);
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();
  }catch(e){magic.stop();revealMagic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}

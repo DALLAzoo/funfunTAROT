@@ -86,6 +86,14 @@ export class Carousel {
     const cut=Math.max(0,Math.min(100,(a-radius)*100));
     card.style.clipPath=cut===0?'none':off<0
       ?`inset(0 0 0 ${cut}%)`:`inset(0 ${cut}% 0 0)`;
+    // Soften only the freshly exposed inner boundary of the outermost clipped cards.
+    // Keep the geometric outer-to-inner cut and all seven selectable slots intact.
+    const feather=14;
+    const edgeMask=cut===0?'none':off<0
+      ?`linear-gradient(to right, transparent ${cut}%, black ${Math.min(100,cut+feather)}%)`
+      :`linear-gradient(to left, transparent ${cut}%, black ${Math.min(100,cut+feather)}%)`;
+    card.style.maskImage=edgeMask;
+    card.style.webkitMaskImage=edgeMask;
     card.style.opacity='1';
     // Keep a picked card in the same stacking order: lifting it 22px should
     // reveal only the 22px displacement, not its whole hidden face.
