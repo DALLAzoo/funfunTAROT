@@ -1,0 +1,249 @@
+{
+  "baseRevision": 42,
+  "targetRevision": 43,
+  "baseZip": "tarot-cinematic-carousel-revision42-fixed-size-travel-20261031.zip",
+  "baseZipSha256": "e48e17f2144cae744814932380b7799fea82d66e35e79070819466c34457b688",
+  "delete": [],
+  "files": [
+    {
+      "path": "CHANGED_FILES.md",
+      "action": "add",
+      "before": null,
+      "after": "98d4292ebe07a67dc81683ee973466306df9d65d2cecbb8e81317be59bef00a4"
+    },
+    {
+      "path": "CODE_GUIDE.md",
+      "action": "replace",
+      "before": "fe04c02eb32535f718d12237b8e6257ae2a1fef97e1ff581447a1bfab7a41750",
+      "after": "671f58c38f45f1f15a342e694e92798d907c266dc9eb82a448e07365d3125603"
+    },
+    {
+      "path": "PATCH_APPLY.md",
+      "action": "add",
+      "before": null,
+      "after": "478777e650cf9528543ce0deb789491bd40680e775ca3d3472eb8b67a040f4a6"
+    },
+    {
+      "path": "README.md",
+      "action": "replace",
+      "before": "e3b5d119582386c3ab83fe16debc9d798976d242cde689c404abb85ae7b50363",
+      "after": "9a3bcdb9bb83b6b8ca45bf19373524c7eb799c27a0058f99ba417898ca04390c"
+    },
+    {
+      "path": "VALIDATION.md",
+      "action": "replace",
+      "before": "0e61b399fc825fdb9a926bdf80abd3a9b162dac78029d37003031de5c10cc3a3",
+      "after": "f2edcac78f5c76d6f7e5cb85b914363a7815439a421b6a88ca788b7e9c0888eb"
+    },
+    {
+      "path": "assets/card-backs/back-01.webp",
+      "action": "add",
+      "before": null,
+      "after": "60c2fc7e5e3ab666c3b2a16f13352c0500f79ed0c9a0d5304c1c9cbade5f1f3a"
+    },
+    {
+      "path": "assets/card-backs/back-02.webp",
+      "action": "add",
+      "before": null,
+      "after": "74f4b7e048c30c079713a0b05126ee4f25924724b33d32113b73980411afeaca"
+    },
+    {
+      "path": "assets/card-backs/back-03.webp",
+      "action": "add",
+      "before": null,
+      "after": "8bdff98d157b83caa0339ac2cb2e104c6337a661673d4babe2bdc0a1f9e79d9c"
+    },
+    {
+      "path": "assets/card-backs/back-04.webp",
+      "action": "add",
+      "before": null,
+      "after": "73b5faf0073c536a5699662b7a587979f4c6123e3dccdf4a058c1f4f2a6b14fb"
+    },
+    {
+      "path": "assets/card-backs/back-05.webp",
+      "action": "add",
+      "before": null,
+      "after": "2d2ebebd1627f8e0e8551714645e09e98b8378e8420de826568c958307eac758"
+    },
+    {
+      "path": "assets/card-backs/back-06.webp",
+      "action": "add",
+      "before": null,
+      "after": "2cb590996f0523cdb93a39eed0299bc77a1279a8c0b2bb6e903dbd7fe65996cf"
+    },
+    {
+      "path": "assets/card-backs/back-07.webp",
+      "action": "add",
+      "before": null,
+      "after": "6958d813649ac66d63dad4f8a822b9b7628f727ea19e98a8990861a46f6c2f7b"
+    },
+    {
+      "path": "assets/card-backs/back-08.webp",
+      "action": "add",
+      "before": null,
+      "after": "5f8fec4cfa0717eee3de8c90d00fdc501753345454ec5f10365390d313bc5f3a"
+    },
+    {
+      "path": "css/decoration/cards.css",
+      "action": "replace",
+      "before": "d09a5470b85e4291a9b93c20940ce7bf8497a4aa65dcc5f06d2280e533dab9a2",
+      "after": "188c5223cfd890c1edd69437576375815d4ed017669d827fd8946b7d5c020d01"
+    },
+    {
+      "path": "css/effects/06-reveal-overlay.css",
+      "action": "replace",
+      "before": "0500fa62359ff6748e8d9f6e3c5e47a41d334b1818fa5af9f1b69713852e50a4",
+      "after": "5565028d1a1deedfc2735150ab852a1cd34def98de56484bc894a3c034f42d74"
+    },
+    {
+      "path": "docs/MODULE_DEPENDENCIES.md",
+      "action": "replace",
+      "before": "36c499d7d2cfb558c5acccc8b1897f751d6ac5766a152aa56ecb53e9da57e301",
+      "after": "87792ddae06e25ff4d46e0c86f95c507bf7d637c3a7e27d6638e5ed76d574d65"
+    },
+    {
+      "path": "docs/history/REVISION42_VALIDATION.md",
+      "action": "add",
+      "before": null,
+      "after": "0e61b399fc825fdb9a926bdf80abd3a9b162dac78029d37003031de5c10cc3a3"
+    },
+    {
+      "path": "index.html",
+      "action": "replace",
+      "before": "da7b9bc28ef45ff67471d6455f7d255b44ff58b7f30740508b17fdd1e1651722",
+      "after": "b663caf0a199dd5e8e41aefdf3a15a633a7ede4c3a922fe921e973cd2453a17d"
+    },
+    {
+      "path": "js/effects/gold-lines.js",
+      "action": "add",
+      "before": null,
+      "after": "509191dc60a004208177e1d0f5323e651e703791e6152e11a709187025df27d4"
+    },
+    {
+      "path": "js/effects/magic-vfx.js",
+      "action": "replace",
+      "before": "acf31b9e4f5ed6514780f50976298194062df5399462c6d0146b0d5a3abd07d2",
+      "after": "5dd14d77f4f7fb7f90e6e2eceeddc46bdd4fe498519167f46f8fa02772e56e95"
+    },
+    {
+      "path": "js/effects/reveal-vfx.js",
+      "action": "replace",
+      "before": "1fffb174cda93aa8bd8e8b47a202205795542840b1718385dbab0c1942ff12a6",
+      "after": "c2230aa64f8672d4fbd7fbddcf01820e63ab25c52b8812f3c0745b445dc3f16f"
+    },
+    {
+      "path": "js/screen/app/bootstrap.js",
+      "action": "replace",
+      "before": "740ccfd3621548d16bf4e6c0898c19a623d10f68eef8318b1fcea99743c22b85",
+      "after": "8219f14e6f1a050cff1bde9ddb92529a7cad170367c949ff276529c04ae17124"
+    },
+    {
+      "path": "js/screen/app/events.js",
+      "action": "replace",
+      "before": "444ee9b2cf0d288b7b90f416bc74082d2fcfb7fd7e0566f238bc62f737226796",
+      "after": "28277502d86704f6dfe3ddc920746703d40ca0dedaea22b58df13f79e79d2c31"
+    },
+    {
+      "path": "js/screen/app/reveal-flow.js",
+      "action": "replace",
+      "before": "b617516f25998353c1a4694604d769c0cded4be66ede782b4e0bea95ede982bc",
+      "after": "8ed2a161a34bebc6fd70a8c75817ecc437472d64d4e3fb2f3ef228b28fd4c9ec"
+    },
+    {
+      "path": "js/settings/config/apply-settings.js",
+      "action": "replace",
+      "before": "a1bbf375a4462fa37bb7d8b273f16ab0bc4adc249712d425f01ab2cd25f8b2ae",
+      "after": "b25acea814e92b5475f310fa095a8e3a1ac7313c2efa0c71f742e5143c717947"
+    },
+    {
+      "path": "js/settings/config/config.js",
+      "action": "replace",
+      "before": "d62d981f353b88228996ce9839ae6ef7162411b9038049b576bae23f67d7cfba",
+      "after": "311afcedccdb4d3ba39b27ffb6493f5810e2ec6d168a4126e70dc9a928351773"
+    },
+    {
+      "path": "js/settings/data/back-config.js",
+      "action": "replace",
+      "before": "5e540538458d9ca2e9855c9e75a4d01bd4e0dc8b547b6e71a8abb5dff661776e",
+      "after": "e6d9a37ee52205cf739d783ff32064a95908ba8128ccfb304351109fbee38c81"
+    },
+    {
+      "path": "validation/effects-checks.mjs",
+      "action": "add",
+      "before": null,
+      "after": "aa6c2e60f2113e0c0f9457f3f3a24f560b58313cc6c04f3d87c8b7635a3b61ea"
+    },
+    {
+      "path": "validation/revision43/rev43-browser-results.json",
+      "action": "add",
+      "before": null,
+      "after": "11a22d280a8daaed1157b983ea73d7153d8a41b7575cb58dea8ba3db3df01ed5"
+    },
+    {
+      "path": "validation/revision43/rev43-idle-pc.jpg",
+      "action": "add",
+      "before": null,
+      "after": "c409dac56b925e243a477a5432c7ddac693bd8fc6b636092e35a1a2fed3b3b69"
+    },
+    {
+      "path": "validation/revision43/rev43-orbit-pc.jpg",
+      "action": "add",
+      "before": null,
+      "after": "9291da51fb3304d78c7b2d547b2be795e89c78b3ac62e8c5d92977ba97026110"
+    },
+    {
+      "path": "validation/revision43/rev43-orbit-stars-3.jpg",
+      "action": "add",
+      "before": null,
+      "after": "c4b77b959c5bac1fab1af40fc340abf14daba83a9c1c6d02fc79bdb4da3135f2"
+    },
+    {
+      "path": "validation/revision43/rev43-pc-drag.json",
+      "action": "add",
+      "before": null,
+      "after": "ad59dbb4419e799ec5b5f44eea8b2547a124655740097daf8e44e6b814183e52"
+    },
+    {
+      "path": "validation/revision43/rev43-picked-mobile.jpg",
+      "action": "add",
+      "before": null,
+      "after": "a847c62ae5c6ce162df009e886dbcf078a25aa19ea95c933ef35c093c12b33b2"
+    },
+    {
+      "path": "validation/revision43/rev43-repeat-orbit.jpg",
+      "action": "add",
+      "before": null,
+      "after": "b50a4b47303ae17646326fcb257c2ea7dd392cf35ed9dc822a4b61f27bbd9aad"
+    },
+    {
+      "path": "validation/revision43/rev43-shuffle-mobile.jpg",
+      "action": "add",
+      "before": null,
+      "after": "92581ac294c6603c4870435785c724b947e0dd618d93916fb40ff41641832989"
+    },
+    {
+      "path": "validation/revision43/rev43-shuffle-pc.jpg",
+      "action": "add",
+      "before": null,
+      "after": "51b858d5d0bbbf3e257e4923b3ab36ab1cd18bef516ab1e8296506e8b000f1f9"
+    },
+    {
+      "path": "validation/revision43/rev43-stars-mobile-final.jpg",
+      "action": "add",
+      "before": null,
+      "after": "b5443181114ece05899fca40ca1c515685e7c5e108c1418c917bead8ba27e4c9"
+    },
+    {
+      "path": "validation/revision43/rev43-stars-pc-final.jpg",
+      "action": "add",
+      "before": null,
+      "after": "34e5ea0d37480d7b27fa528436cc4c2ab2af8431bc8df6700d9d88046e3f1ef2"
+    },
+    {
+      "path": "validation/revision43/rev43-stars-pc.jpg",
+      "action": "add",
+      "before": null,
+      "after": "092394bab20c3e085c8ac8c6d983d1cc3a2c9c6c45d11ead59c7ba6894f4d71e"
+    }
+  ]
+}
