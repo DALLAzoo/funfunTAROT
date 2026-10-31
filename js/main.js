@@ -31,30 +31,45 @@ async function choose(chosen){
  if(state!=='selection'||carousel?.busy||chosen.hidden)return;
  setState('revealing','선택한 카드를 준비하고 있어요…');
  try{await prepareFront(chosen.cardData);}catch(e){carousel.busy=false;carousel.layout();setState('selection',e.message);return;}
+ const selectedOffset=carousel.distance(cards.indexOf(chosen))+carousel.offset;
  carousel.destroy();carousel=null;cards.forEach(c=>c.disabled=true);magic.stop();
  try{
-  // Reveal particles now run in the result view alongside the card's enlargement.
-  // Move the selected DOM card directly into its final centered host.
+  // Capture the picked card's screen position before changing views.
+  // It travels out of the fan, grows naturally and settles at the result host.
   const result=chosen;
-  // Preserve the chosen card's gold aura through its reveal.
+  const source=result.getBoundingClientRect();
+  const sourcePose=slotPose(selectedOffset,stage.clientWidth);
   result.classList.add('is-picked');
   result.classList.remove('shuffle-surface','selectable','is-center');
   result.classList.add('result-card');result.disabled=true;
   result.setAttribute('aria-label',chosen.cardData.name);
   const rw=stageSize('result',innerWidth)*(C.reveal.zoom||1.18);
-  result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
-  result.style.transform='none';result.style.zIndex='auto';
-  const host=$('#resultCardHost');host.replaceChildren(result);
+  const rh=rw*C.aspect;
+  const host=$('#resultCardHost');
+  host.style.width=rw+'px';host.style.height=rh+'px';
   $('#resultName').textContent=chosen.cardData.name;
   $('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
   main.hidden=true;resultView.hidden=false;
   setState('revealing','선택한 카드를 공개하고 있어요…');
+  const target=host.getBoundingClientRect();
+  // Fixed positioning allows the actual card to move continuously between views.
+  document.body.append(result);
+  result.style.position='fixed';result.style.left=source.left+'px';result.style.top=source.top+'px';
+  result.style.width=source.width+'px';result.style.height=source.height+'px';
+  result.style.transform='none';result.style.zIndex='6';
+  result.style.clipPath='none';result.style.maskImage='none';result.style.webkitMaskImage='none';
   revealMagic.start([result]);revealMagic.phase('focus');
-  const approach=host.animate([{transform:'scale(.86)'},{transform:'scale(1.04)'},{transform:'scale(1)'}],
-    {duration:C.reveal.approach,easing:'cubic-bezier(.18,.7,.2,1)'});
+  const approach=result.animate([
+   {left:source.left+'px',top:source.top+'px',width:source.width+'px',height:source.height+'px',transform:`rotate(${sourcePose.rot}deg)`},
+   {left:target.left+'px',top:target.top+'px',width:rw+'px',height:rh+'px',transform:'rotate(0deg)'}
+  ],{duration:C.reveal.approach,easing:'cubic-bezier(.22,.7,.2,1)',fill:'forwards'});
   await approach.finished;
+  approach.cancel();
   revealMagic.stop();
-  // Give the enlarged, gathered card a readable pause before turning.
+  host.append(result);
+  result.style.position='relative';result.style.left='auto';result.style.top='auto';
+  result.style.width=rw+'px';result.style.height=rh+'px';
+  result.style.transform='none';result.style.zIndex='auto';
   await new Promise(resolve=>setTimeout(resolve,560));
   await screenTransition(result);
   setState('result','카드가 공개됐어요');$('#resultTitle').focus();

@@ -69,7 +69,7 @@ export class Carousel {
    const off=this.distance(i)+fraction,a=Math.abs(off);
    // Keep entering/leaving cards mounted behind their adjacent fan cards.
    // No opacity animation or geometric clipping.
-   const show=a<edge,selectable=a<=radius+.001;
+   const show=a<edge+0.5,selectable=a<=radius+.001;
    if(card.hidden===show)card.hidden=!show;
    if(card.disabled===selectable)card.disabled=!selectable;
    card.classList.toggle('selectable',selectable);
@@ -81,19 +81,11 @@ export class Carousel {
     const cardPose=slotPose(off,w);
     if(card===this.selectedCard)cardPose.y-=22;
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
-    // Mask only the entering/leaving outer slot, from the outside inward.
-    // All seven selectable slots remain uncut; opacity never changes.
-    const cut=Math.max(0,Math.min(100,(a-radius)*100));
-    card.style.clipPath=cut===0?'none':off<0
-      ?`inset(0 0 0 ${cut}%)`:`inset(0 ${cut}% 0 0)`;
-    // Soften only the freshly exposed inner boundary of the outermost clipped cards.
-    // Keep the geometric outer-to-inner cut and all seven selectable slots intact.
-    const feather=14;
-    const edgeMask=cut===0?'none':off<0
-      ?`linear-gradient(to right, transparent ${cut}%, black ${Math.min(100,cut+feather)}%)`
-      :`linear-gradient(to left, transparent ${cut}%, black ${Math.min(100,cut+feather)}%)`;
-    card.style.maskImage=edgeMask;
-    card.style.webkitMaskImage=edgeMask;
+    // Whole-card reveal: an entering card stays behind its adjacent card.
+    // No geometric clipping, feather mask or per-card transparency.
+    card.style.clipPath='none';
+    card.style.maskImage='none';
+    card.style.webkitMaskImage='none';
     card.style.opacity='1';
     // Keep a picked card in the same stacking order: lifting it 22px should
     // reveal only the 22px displacement, not its whole hidden face.
