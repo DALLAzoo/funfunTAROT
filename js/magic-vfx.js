@@ -93,8 +93,8 @@ export class MagicVFX {
     if(!rear||!front){this.stop();return;}
     const radius=Math.min(this.w*.42,310);
     const energy=this.name==='charge'?Math.min(1,age/(C.shuffle.separate/1000)):vortex?1:Math.max(0,1-age/.75);
-    if(this.name!=='focus')this.ring(rear,radius*(1-condense*.83),.85*energy*fade,now*.0004);
-    if(this.name!=='focus')this.ring(rear,radius*.8*(1-condense*.8),.48*energy*fade,-now*.0007);
+    this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
+    this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
     if(condense>0){
       const coreRadius=Math.max(66,Math.min(130,this.w*.18));
       const g=rear.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,coreRadius);
@@ -117,35 +117,9 @@ export class MagicVFX {
     }
     if(release&&this.waveClock)this.drawWave(rear,front,fade);
     if(this.name==='focus'){
-      const chosen=this.cards[0];
-      if(chosen){
-        const rect=chosen.getBoundingClientRect(),bounds=this.stage.getBoundingClientRect();
-        const cx=rect.left-bounds.left+rect.width/2,cy=rect.top-bounds.top+rect.height/2;
-        const duration=C.reveal.approach/1000,progress=Math.min(1,age/duration);
-        const eased=1-Math.pow(1-progress,2);
-        const envelope=Math.sin(Math.PI*progress);
-        front.save();front.globalCompositeOperation='lighter';
-        const count=this.w<C.breakpoint?22:34;
-        const outer=Math.min(this.w*.30,175);
-        for(let i=0;i<count;i++){
-          const angle=i*2.399963;
-          const startR=outer*(.72+(i%7)*.045);
-          const r=startR*(1-eased)+(8+i%6)*eased;
-          const x=cx+Math.cos(angle)*r,y=cy+Math.sin(angle)*r*.77;
-          const alpha=(.12+.46*envelope)*(i%4===0?1:.72);
-          front.fillStyle=`rgba(255,215,135,${alpha})`;
-          front.beginPath();front.arc(x,y,i%7===0?1.65:0.85,0,Math.PI*2);front.fill();
-          if(i%6===0){
-            front.strokeStyle=`rgba(255,226,163,${alpha*.42})`;
-            front.lineWidth=.55;
-            front.beginPath();front.moveTo(x-3,y);front.lineTo(x+3,y);front.moveTo(x,y-3);front.lineTo(x,y+3);front.stroke();
-          }
-        }
-        const glow=front.createRadialGradient(cx,cy,0,cx,cy,35);
-        glow.addColorStop(0,`rgba(255,201,112,${.16*envelope})`);
-        glow.addColorStop(1,'rgba(255,201,112,0)');
-        front.fillStyle=glow;front.fillRect(cx-35,cy-35,70,70);
-        front.restore();
+      const p=sampleCard(this.cards[0]);if(p){const v=this.project(p),r=100-age*80;
+        rear.strokeStyle=`rgba(248,205,126,${Math.max(0,.42-age*.35)})`;rear.lineWidth=1.5;
+        rear.beginPath();rear.arc(v.x,v.y,Math.max(40,r),0,Math.PI*2);rear.stroke();
       }
     }
     this.cards.forEach((card,i)=>{
@@ -160,20 +134,20 @@ export class MagicVFX {
       }
       const prev=history.at(-1);const speed=prev?Math.hypot(point.x-prev.x,point.y-prev.y)/Math.max(dt,.001):0;
       history.push({...point,time:now});while(history.length>9||history.length&&now-history[0].time>150)history.shift();
-      if(!this.reduced&&speed>20&&this.name!=='fade'){
+      if(!this.reduced&&speed>45&&this.name!=='fade'){
         const ctx=p.z>0?front:rear;
         ctx.lineWidth=Math.min(3.2, 1+speed/400);ctx.strokeStyle=`rgba(246,197,107,${Math.min(.65,speed/1000)*fade})`;
         ctx.beginPath();history.forEach((v,j)=>j?ctx.lineTo(v.x,v.y):ctx.moveTo(v.x,v.y));ctx.stroke();
         if(this.particles.length<this.limit&&prev&&dt>0){
           // Sparks inherit the card's velocity; no unrelated random screen emitter.
-          this.particles.push({x:point.x,y:point.y,z:p.z,vx:(point.x-prev.x)/dt*.12,vy:(point.y-prev.y)/dt*.12,life:.42,max:.42});
+          this.particles.push({x:point.x,y:point.y,z:p.z,vx:(point.x-prev.x)/dt*.12,vy:(point.y-prev.y)/dt*.12,life:.22,max:.22});
         }
       }
     });
     for(let i=this.particles.length-1;i>=0;i--){
       const p=this.particles[i];p.life-=dt;if(p.life<=0){this.particles.splice(i,1);continue;}
       p.x+=p.vx*dt;p.y+=p.vy*dt;const ctx=p.z>0?front:rear;
-      ctx.fillStyle=`rgba(255,225,153,${p.life/p.max*.95*fade})`;ctx.fillRect(p.x,p.y,1.5,1.5);
+      ctx.fillStyle=`rgba(255,225,153,${p.life/p.max*.7*fade})`;ctx.fillRect(p.x,p.y,1.5,1.5);
     }
     this.frame=requestAnimationFrame(t=>this.draw(t));
   }
