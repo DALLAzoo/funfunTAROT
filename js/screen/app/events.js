@@ -18,6 +18,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   const dropdown = $('#readingDropdown');
   const options = $('#readingOptions');
   dropdown.addEventListener('click', () => {
+    if (dropdown.disabled) return;
     const open = options.hidden;
     options.hidden = !open;
     dropdown.setAttribute('aria-expanded', String(open));
