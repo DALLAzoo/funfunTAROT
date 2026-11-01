@@ -15,6 +15,28 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   });
   shuffleBtn.addEventListener('click', startShuffle);
   $('#resultAgain').addEventListener('click', startShuffle);
+  const dropdown = $('#readingDropdown');
+  const options = $('#readingOptions');
+  dropdown.addEventListener('click', () => {
+    const open = options.hidden;
+    options.hidden = !open;
+    dropdown.setAttribute('aria-expanded', String(open));
+  });
+  options.querySelector('.reading-option').addEventListener('click', () => {
+    dropdown.firstChild.textContent = '조언 - 당신을 위한 ';
+    options.hidden = true;
+    dropdown.setAttribute('aria-expanded', 'false');
+    dropdown.focus();
+  });
+  document.addEventListener('click', e => {
+    if (!dropdown.parentElement.contains(e.target)) {
+      options.hidden = true;
+      dropdown.setAttribute('aria-expanded', 'false');
+    }
+  });
+  dropdown.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { options.hidden = true; dropdown.setAttribute('aria-expanded', 'false'); }
+  });
 
   window.addEventListener('resize', () => {
     if (getState() === 'idle' && ctx.cards.length) {

@@ -28,8 +28,9 @@ export async function chooseFlow(ctx,chosen){
   result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
   result.style.transform='none';result.style.zIndex='auto';
   const host=$('#resultCardHost');host.replaceChildren(result);
-  $('#resultName').textContent=chosen.cardData.name;
-  $('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
+  const reading = $('#resultReading');
+  reading.textContent = chosen.cardData.id === 'major-00' ? `새로운 길을 앞두고 모든 것을 미리 알 수는 없습니다. 어디로 이어질지 알 수 없는 길이라도 직접 걸어 보아야 비로소 알게 되는 것들이 있지요. 지금은 익숙한 생각과 정해진 방식에서 벗어나 조금 더 자유롭게 움직여 보세요. 남들이 정해 놓은 기준이나 앞으로의 결과에 지나치게 얽매이지 말고 자신이 가고 싶은 방향을 바라보세요. 처음부터 완벽한 계획이나 확실한 답을 가지고 출발해야 하는 것은 아닙니다. 때로는 새로운 경험 자체가 그동안 알지 못했던 세상을 보여 주기도 합니다. 지금은 모든 가능성을 미리 판단하고 제한하기보다 열린 마음으로 새로운 길에 발을 내디뎌 보세요.` : '';
+  reading.hidden = !reading.textContent;
   main.hidden=true;resultView.hidden=false;
   setState('revealing','선택한 카드를 공개하고 있어요…');
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
@@ -37,6 +38,6 @@ export async function chooseFlow(ctx,chosen){
   await new Promise(resolve=>setTimeout(resolve,C.reveal.pauseBeforeFlip));
   await screenTransition(result);
   revealMagic.stars(result);
-  setState('result','카드가 공개됐어요');$('#resultTitle').focus();
+  setState('result','카드가 공개됐어요');$('#resultAgain').focus({preventScroll:true});
  }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
