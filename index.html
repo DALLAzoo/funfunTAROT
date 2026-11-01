@@ -12,12 +12,6 @@
 
 <link rel="stylesheet" href="./css/tarot.css"><script>const n=1+Math.floor(Math.random()*8);document.documentElement.dataset.initialBack='back-0'+n;const l=document.createElement('link');l.rel='preload';l.as='image';l.href='./assets/card-backs/back-0'+n+'.webp';document.head.append(l);</script><link rel="modulepreload" href="./js/screen/app/bootstrap.js"><link rel="modulepreload" href="./js/motion/animation/card-animation.js"><link rel="modulepreload" href="./js/settings/config/config.js"></head>
 <body>
-<div class="reading-dropdown">
-<button id="readingDropdown" type="button" class="reading-dropdown-trigger" aria-expanded="false" aria-controls="readingOptions">조언 - 당신을 위한 <span aria-hidden="true">⌄</span></button>
-<div id="readingOptions" class="reading-dropdown-menu" hidden>
-<button type="button" class="reading-option" aria-selected="true">조언 - 당신을 위한</button>
-</div>
-</div>
 <main class="tarot-app" id="tarotApp">
 <header class="top">
 <span>IN-BETWEEN SHIFT</span>
@@ -51,6 +45,12 @@
 </div>
 <div class="actions">
 <button id="shuffleBtn" class="primary">카드 섞기</button>
+<div class="reading-dropdown">
+<button id="readingDropdown" type="button" class="reading-dropdown-trigger" aria-expanded="false" aria-controls="readingOptions">조언 - 당신을 위한 <span aria-hidden="true">⌄</span></button>
+<div id="readingOptions" class="reading-dropdown-menu" hidden>
+<button type="button" class="reading-option" aria-selected="true">조언 - 당신을 위한</button>
+</div>
+
 </div>
 <p class="note" id="poolNotice">
 </p>
