@@ -55,16 +55,22 @@
 <section id="resultView" class="result-view" hidden>
 <header class="top">
 <span>IN-BETWEEN SHIFT</span>
-<span>YOUR CARD</span>
+
 </header>
-<h1 id="resultTitle" tabindex="-1">당신이 선택한 카드</h1>
+
 <div id="resultCardHost" class="result-card-host">
 </div>
-<h2 id="resultName">
-</h2>
-<p id="resultNotice" class="note">
-</p>
+<p id="resultReading" class="result-reading" aria-live="polite"></p>
+<p id="resultNotice" class="note" hidden></p>
+<div class="result-actions">
 <button id="resultAgain" class="primary">다시 섞기</button>
+<div class="reading-dropdown">
+<button id="readingDropdown" type="button" class="reading-dropdown-trigger" aria-expanded="false" aria-controls="readingOptions">조언 - 당신을 위한 <span aria-hidden="true">⌄</span></button>
+<div id="readingOptions" class="reading-dropdown-menu" hidden>
+<button type="button" class="reading-option" aria-selected="true">조언 - 당신을 위한</button>
+</div>
+</div>
+</div>
 </section>
 <script type="module" src="./js/screen/app/main.js">
 </script>
