@@ -68,7 +68,7 @@ body{overflow-x:hidden}
 .navigation .secondary{min-width:140px;padding:10px 16px}
 .result-view{min-height:100dvh;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(ellipse at 50% 40%,#28453a,#0b1413 85%)}
 .result-view>.top{position:absolute;top:25px;left:30px;right:30px}
-.result-view h1{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:20px 0 0}
+
 .result-view h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin:0}
 .result-card-host{position:relative;display:flex;align-items:center;justify-content:center;min-height:100px}
 .result-card{position:relative;left:auto;top:auto;transform:none;cursor:default;}
@@ -79,7 +79,7 @@ body{overflow-x:hidden}
 .result-view{padding:22px;gap:16px}
 .navigation{gap:10px}
 .navigation .secondary{min-width:110px;font-size:12px}
-.result-view h1{font-size:22px}
+
 }
 @media(prefers-reduced-motion:reduce){.tarot-card.selectable::after{animation:none;}
 }
