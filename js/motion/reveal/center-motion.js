@@ -6,7 +6,7 @@ export function travelFrames(origin, destination, angle, scale=1) {
  const dy=origin.top+origin.height/2-destination.top-destination.height/2;
  return [
   {transform:`translate(${dx}px,${dy}px) rotateZ(${angle}deg) scale(${scale})`},
-  {transform:`translate(0px,0px) rotateZ(${angle}deg) scale(1)`}
+  {transform:'translate(0px,0px) rotateZ(0deg) scale(1)'}
  ];
 }
 export async function moveToCenter(card, host, origin, sourceWidth, angle, resultWidth, gather) {
@@ -18,16 +18,9 @@ export async function moveToCenter(card, host, origin, sourceWidth, angle, resul
  const approach=card.animate(travelFrames(origin,destination,angle,sourceWidth/resultWidth),
   {duration:C.reveal.travel,easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
  await Promise.all([approach.finished,gather(card,C.reveal.travel)]);
- // Commit the arrival pose before cancelling the travel animation to avoid a snap.
- card.style.transform=`rotateZ(${angle}deg)`;
+ // Position and rotation finish together in one continuous travel animation.
+ // There is no separate post-arrival alignment movement.
+ card.style.transform='none';
  approach.cancel();
- card.dataset.revealPhase='arrival';
- // Keep the card at its final size. Finish with a restrained rotation only,
- // so the arrival feels deliberate without an elastic scale pulse.
- const settle=card.animate([
-  {offset:0,transform:`rotateZ(${angle}deg)`},
-  {offset:1,transform:'rotateZ(0deg)'}
- ],{duration:Math.max(280,Math.min(C.reveal.arrival,420)),easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
- await settle.finished;
- card.style.transform='none';settle.cancel();card.dataset.revealPhase='centered';
+ card.dataset.revealPhase='centered';
 }
