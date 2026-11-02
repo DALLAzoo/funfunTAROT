@@ -200,12 +200,12 @@ body{overflow-x:hidden}
 .result-card {width:100%!important; height:100%!important; flex:none;}
 .result-reading {position:absolute; top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px); bottom:84px; left:50%; transform:translateX(-50%); width:min(calc(100% - 28px),520px); height:auto; min-height:0!important; max-height:none; margin:0!important; overflow-y:auto;}
 .result-reading[hidden] {display:none!important;}
-.result-actions {position:absolute; bottom:25px; left:50%; transform:translateX(-50%); margin:0!important; width:max-content; max-width:calc(100% - 28px);}
+.result-actions {position:absolute; bottom:calc(clamp(15px, 3vw, 30px) + 22px); left:50%; transform:translateX(-50%); margin:0!important; width:max-content; max-width:calc(100% - 28px);}
 .result-view:not(.is-revealed) .result-reading, .result-view:not(.is-revealed) .result-actions {visibility:hidden!important;}
 .result-view.is-final:not(.is-revealed) .result-reading {opacity:0;}
 .result-view.is-revealed .result-reading:not([hidden]) {animation:reading-enter .35s ease-out both;}
 @keyframes reading-enter {from {opacity:0; translate:0 8px;} to {opacity:1; translate:0 0;}}
-@media(max-width:600px) {.result-view {padding:0!important;} .result-actions {bottom:25px;} .result-reading {bottom:84px;}}
+@media(max-width:600px) {.result-view {padding:0!important;} .result-reading {bottom:84px;}}
 
 /* The same intro node is used before and after card selection. */
 .result-view > .intro {position:absolute;top:var(--heading-top,65px);left:0;right:0;margin:0;z-index:3;pointer-events:none;}
