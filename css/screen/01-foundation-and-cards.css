@@ -198,3 +198,11 @@ body{overflow-x:hidden}
  .controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:124px; padding-inline:12px; }
  .controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:160px; }
 }
+
+/* Uniform result card frame: match the empty-image placeholder dimensions. */
+.result-card-host { width:var(--result-card-width,190px); height:calc(var(--result-card-width,190px) * 2128 / 1240); min-height:0; flex:0 0 auto; }
+.result-card-host > .result-card { box-sizing:border-box; width:100%!important; height:100%!important; min-width:0; min-height:0; max-width:100%; max-height:100%; flex:none; }
+.result-card .card-inner,.result-card .card-face { box-sizing:border-box; width:100%; height:100%; }
+.result-card .card-front.has-image { padding:0!important; }
+.result-card .card-front.has-image > img { display:block; width:100%!important; height:100%!important; max-width:none; max-height:none; object-fit:cover; object-position:center; }
+@media(min-width:600px) { .result-card-host { --result-card-width:260px; } }
