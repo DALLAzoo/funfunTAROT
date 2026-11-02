@@ -5,7 +5,7 @@ export function setStateUI(ctx,next,label){
  const destination=next==='result'?$('.result-actions'):$('.controls .actions');
  if(dropdown.parentElement!==destination) destination.appendChild(dropdown);
  const inTransition=['preparing','shuffling','revealing','error'].includes(next);
- dropdown.hidden=inTransition;
+ dropdown.hidden=next==='revealing'||next==='error';
  const trigger=$('#readingDropdown');
  trigger.disabled=inTransition;
  if(inTransition){$('#readingOptions').hidden=true;trigger.setAttribute('aria-expanded','false');}

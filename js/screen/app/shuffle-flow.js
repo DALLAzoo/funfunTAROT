@@ -14,7 +14,7 @@ export async function startShuffleFlow(ctx){
  ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
  $('#resultCardHost').replaceChildren();
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
- resultView.classList.remove('is-final');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
+ resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
  ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(ctx.cards);
  if(!await shuffleMotion(ctx.cards,stage,name=>magic.phase(name))||current!==ctx.token){magic.stop();return;}
