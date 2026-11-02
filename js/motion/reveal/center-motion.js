@@ -1,32 +1,30 @@
 import {CONFIG as C} from '../../settings/config/config.js';
 
 // Translation only: a rotated card's axis-aligned bounds are not its real size.
-export function travelFrames(origin, destination, angle) {
+export function travelFrames(origin, destination, angle, scale=1) {
  const dx=origin.left+origin.width/2-destination.left-destination.width/2;
  const dy=origin.top+origin.height/2-destination.top-destination.height/2;
  return [
-  {transform:`translate(${dx}px,${dy}px) rotateZ(${angle}deg)`},
-  {transform:`translate(0px,0px) rotateZ(${angle}deg)`}
+  {transform:`translate(${dx}px,${dy}px) rotateZ(${angle}deg) scale(${scale})`},
+  {transform:`translate(0px,0px) rotateZ(${angle}deg) scale(1)`}
  ];
 }
 export async function moveToCenter(card, host, origin, sourceWidth, angle, resultWidth, gather) {
  // Reserve the final result layout so text and the center stay still during growth.
  host.style.width=resultWidth+'px';host.style.height=resultWidth*C.aspect+'px';
- card.style.width=sourceWidth+'px';card.style.height=sourceWidth*C.aspect+'px';
+ card.style.width=resultWidth+'px';card.style.height=resultWidth*C.aspect+'px';
  const destination=card.getBoundingClientRect();
  card.dataset.revealPhase='travel';
- const approach=card.animate(travelFrames(origin,destination,angle),
+ const approach=card.animate(travelFrames(origin,destination,angle,sourceWidth/resultWidth),
   {duration:C.reveal.travel,easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
  await Promise.all([approach.finished,gather(card,C.reveal.travel)]);
  // Commit the arrival pose before cancelling the travel animation to avoid a snap.
  card.style.transform=`rotateZ(${angle}deg)`;
  approach.cancel();
  card.dataset.revealPhase='arrival';
- card.style.width=resultWidth+'px';card.style.height=resultWidth*C.aspect+'px';
- // Keep the arrival motion gentle: no pronounced shrink-and-rebound before the flip.
- // The final card dimensions are already reserved by the result host.
+ // Rotation settles without a separate shrink/rebound.
  const settle=card.animate([
-  {transform:`rotateZ(${angle}deg) scale(0.98)`},
+  {transform:`rotateZ(${angle}deg) scale(1)`},
   {transform:'rotateZ(0deg) scale(1)'}
  ],{duration:Math.max(C.reveal.arrival,520),easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
  await settle.finished;
