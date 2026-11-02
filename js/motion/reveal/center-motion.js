@@ -18,7 +18,9 @@ export async function moveToCenter(card, host, origin, sourceWidth, angle, resul
  const approach=card.animate(travelFrames(origin,destination,angle),
   {duration:C.reveal.travel,easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
  await Promise.all([approach.finished,gather(card,C.reveal.travel)]);
- // Keep the same visible size while switching to the final layout dimensions.
+ // Commit the arrival pose before cancelling the travel animation to avoid a snap.
+ card.style.transform=`rotateZ(${angle}deg)`;
+ approach.cancel();
  card.dataset.revealPhase='arrival';
  card.style.width=resultWidth+'px';card.style.height=resultWidth*C.aspect+'px';
  const scale=sourceWidth/resultWidth;
@@ -26,7 +28,6 @@ export async function moveToCenter(card, host, origin, sourceWidth, angle, resul
   {transform:`rotateZ(${angle}deg) scale(${scale})`},
   {transform:'rotateZ(0deg) scale(1)'}
  ],{duration:C.reveal.arrival,easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
- approach.cancel();
  await settle.finished;
  card.style.transform='none';settle.cancel();card.dataset.revealPhase='centered';
 }
