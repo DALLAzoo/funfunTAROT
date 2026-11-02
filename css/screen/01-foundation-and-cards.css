@@ -235,3 +235,8 @@ body{overflow-x:hidden}
     margin: 0!important;
   }
 }
+
+/* Mobile result actions use the measured shuffle-screen button anchor. */
+@media (max-width: 699px) and (orientation: portrait) {
+  .result-view .result-actions { bottom: var(--mobile-actions-bottom, calc(clamp(15px, 3vw, 30px) + 22px)); }
+}
