@@ -22,12 +22,12 @@ export async function moveToCenter(card, host, origin, sourceWidth, angle, resul
  card.style.transform=`rotateZ(${angle}deg)`;
  approach.cancel();
  card.dataset.revealPhase='arrival';
- // Deliberate arrival accent: a visible, smooth overshoot after travel, then settle before flip.
+ // Keep the card at its final size. Finish with a restrained rotation only,
+ // so the arrival feels deliberate without an elastic scale pulse.
  const settle=card.animate([
-  {offset:0,transform:`rotateZ(${angle}deg) scale(1)`},
-  {offset:.48,transform:`rotateZ(${angle*.38}deg) scale(1.085)`},
-  {offset:1,transform:'rotateZ(0deg) scale(1)'}
- ],{duration:Math.max(C.reveal.arrival,650),easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
+  {offset:0,transform:`rotateZ(${angle}deg)`},
+  {offset:1,transform:'rotateZ(0deg)'}
+ ],{duration:Math.max(280,Math.min(C.reveal.arrival,420)),easing:'cubic-bezier(.16,1,.3,1)',fill:'forwards'});
  await settle.finished;
  card.style.transform='none';settle.cancel();card.dataset.revealPhase='centered';
 }
