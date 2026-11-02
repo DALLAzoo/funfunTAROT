@@ -206,3 +206,12 @@ body{overflow-x:hidden}
 .result-card .card-front.has-image { padding:0!important; }
 .result-card .card-front.has-image > img { display:block; width:100%!important; height:100%!important; max-width:none; max-height:none; object-fit:cover; object-position:center; }
 @media(min-width:600px) { .result-card-host { --result-card-width:260px; } }
+
+/* 2026-11-02 final corrections: use the existing empty-front frame size. */
+.result-view { justify-content:flex-start; padding-top:var(--reveal-top, 150px) !important; }
+.result-card-host { width:auto; height:auto; min-height:0; flex:none; }
+.result-card-host > .result-card { width:var(--result-width) !important; height:calc(var(--result-width) * 2128 / 1240) !important; max-width:none; max-height:none; }
+.result-card .card-front.has-image > img { object-fit:contain !important; object-position:center; }
+/* Preserve the current two-button dimensions and positions. */
+/* Empty readings reserve the same space without shifting the card. */
+.result-reading[hidden] { display:block !important; visibility:hidden; min-height:108px; }
