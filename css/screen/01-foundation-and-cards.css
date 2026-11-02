@@ -180,3 +180,21 @@ body{overflow-x:hidden}
  .reading-dropdown-trigger { height:44px; font-size:13px; padding:0 10px; }
  .result-view { padding-top:clamp(72px, 10vh, 100px); }
 }
+
+/* Restore a comfortable reveal position; keep artwork fixed as reading grows. */
+.result-view { justify-content:flex-start; padding-top:clamp(150px, 25dvh, 280px); }
+.result-card-host { flex:none; }
+/* Give the shuffle action its original generous width, not a cramped pill. */
+.controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:150px; padding-inline:22px; height:46px; font-size:14px; }
+.controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:194px; }
+.reading-dropdown-trigger { height:46px; font-size:14px; }
+@media(max-width:600px) {
+ .result-view { padding-top:clamp(140px, 24dvh, 230px); }
+ .controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:138px; padding-inline:16px; height:46px; font-size:13px; }
+ .controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:174px; }
+ .reading-dropdown-trigger { height:46px; font-size:13px; }
+}
+@media(max-width:365px) {
+ .controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:124px; padding-inline:12px; }
+ .controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:160px; }
+}
