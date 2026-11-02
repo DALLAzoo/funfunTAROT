@@ -13,6 +13,9 @@ export async function chooseFlow(ctx,chosen){
  const heading=$('#resultSelectionTitle');
  const intro=$('#sharedIntro');
  const introTop=intro.getBoundingClientRect().top;
+ // Capture the actual shuffle-screen button position before changing screens.
+ const shuffleActions=main.querySelector('.controls .actions');
+ const shuffleActionsBottom=shuffleActions.getBoundingClientRect().bottom;
  heading.textContent=ctx.readingSelection || '조언 - 당신을 위한';
  const origin=chosen.getBoundingClientRect();
  const sourceWidth=chosen.offsetWidth;
@@ -45,6 +48,10 @@ export async function chooseFlow(ctx,chosen){
   resultView.style.setProperty('--heading-top',Math.round(introTop)+'px');
   resultView.insertBefore(intro,host);
   main.hidden=true;resultView.hidden=false;
+  // Match the result buttons to the shuffle buttons on narrow screens.
+  // Measure relative to the result container, not an assumed viewport inset.
+  resultView.style.setProperty('--mobile-actions-bottom',
+    Math.max(0,Math.round(resultView.getBoundingClientRect().bottom-shuffleActionsBottom))+'px');
   const titleBottom=heading.getBoundingClientRect().bottom;
   const viewTop=resultView.getBoundingClientRect().top;
   resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+12)+'px');
