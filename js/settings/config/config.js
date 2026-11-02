@@ -4,7 +4,7 @@ export const CONFIG = {
   breakpoint:600, aspect:2128/1240,
   counts:{shuffle:22,selection:20,visible:7,result:1},
   pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
-  catalog:{additionalCards:[],frontImages:{"major-00":"./assets/card-fronts/major-00.png","major-01":"./assets/card-fronts/major-01.png"},requireActualFrontImages:false},
+  catalog:{additionalCards:[],frontImages:{"major-00":"./assets/card-fronts/major-00.png","major-01":"./assets/card-fronts/major-01.png","major-02":"./assets/card-fronts/major-02.png"},requireActualFrontImages:false},
   sizes:{
     desktop:{shuffle:164,selection:210,transition:240,result:260},
     mobile:{shuffle:104,selection:146,transition:160,result:190}
