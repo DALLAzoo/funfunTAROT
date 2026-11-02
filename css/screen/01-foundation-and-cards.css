@@ -213,3 +213,6 @@ body{overflow-x:hidden}
 .result-view.is-final .result-card-host { top:var(--reveal-top,125px); }
 .result-reading { top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px); }
 @media(max-width:600px){.result-selection-title{top:65px;}}
+
+/* Keep horizontal centering in left, not transform: the reveal animation owns transform. */
+.result-view .result-card-host {left:calc(50% - var(--result-width,190px) / 2); transform:none;}
