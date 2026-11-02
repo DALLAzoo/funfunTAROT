@@ -181,37 +181,14 @@ body{overflow-x:hidden}
  .result-view { padding-top:clamp(72px, 10vh, 100px); }
 }
 
-/* Restore a comfortable reveal position; keep artwork fixed as reading grows. */
-.result-view { justify-content:flex-start; padding-top:clamp(150px, 25dvh, 280px); }
-.result-card-host { flex:none; }
-/* Give the shuffle action its original generous width, not a cramped pill. */
-.controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:150px; padding-inline:22px; height:46px; font-size:14px; }
-.controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:194px; }
-.reading-dropdown-trigger { height:46px; font-size:14px; }
-@media(max-width:600px) {
- .result-view { padding-top:clamp(140px, 24dvh, 230px); }
- .controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:138px; padding-inline:16px; height:46px; font-size:13px; }
- .controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:174px; }
- .reading-dropdown-trigger { height:46px; font-size:13px; }
-}
-@media(max-width:365px) {
- .controls .actions > #shuffleBtn, .result-actions > #resultAgain { min-width:124px; padding-inline:12px; }
- .controls .reading-dropdown, .result-actions > .reading-dropdown { min-width:160px; }
-}
-
-/* Uniform result card frame: match the empty-image placeholder dimensions. */
-.result-card-host { width:var(--result-card-width,190px); height:calc(var(--result-card-width,190px) * 2128 / 1240); min-height:0; flex:0 0 auto; }
-.result-card-host > .result-card { box-sizing:border-box; width:100%!important; height:100%!important; min-width:0; min-height:0; max-width:100%; max-height:100%; flex:none; }
-.result-card .card-inner,.result-card .card-face { box-sizing:border-box; width:100%; height:100%; }
+/* Result-only layout: centered travel, then a single move to the requested top edge. */
+.result-view { box-sizing:border-box; height:100dvh; min-height:0; overflow:hidden; justify-content:center; padding:0 20px 14px!important; gap:0!important; }
+.result-view.is-final { justify-content:flex-start; padding-top:var(--reveal-top, 110px)!important; }
+.result-card-host { flex:0 0 auto; margin:0 auto; }
 .result-card .card-front.has-image { padding:0!important; }
-.result-card .card-front.has-image > img { display:block; width:100%!important; height:100%!important; max-width:none; max-height:none; object-fit:cover; object-position:center; }
-@media(min-width:600px) { .result-card-host { --result-card-width:260px; } }
-
-/* 2026-11-02 final corrections: use the existing empty-front frame size. */
-.result-view { justify-content:flex-start; padding-top:var(--reveal-top, 150px) !important; }
-.result-card-host { width:auto; height:auto; min-height:0; flex:none; }
-.result-card-host > .result-card { width:var(--result-width) !important; height:calc(var(--result-width) * 2128 / 1240) !important; max-width:none; max-height:none; }
-.result-card .card-front.has-image > img { object-fit:contain !important; object-position:center; }
-/* Preserve the current two-button dimensions and positions. */
-/* Empty readings reserve the same space without shifting the card. */
-.result-reading[hidden] { display:block !important; visibility:hidden; min-height:108px; }
+.result-card .card-front img { display:block; width:100%; height:100%; object-fit:contain; }
+.result-reading { flex:1 1 auto; min-height:0!important; max-height:none; width:min(100%,520px); overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:#638577 #14231e; padding:15px 18px; margin:10px auto 10px!important; border-radius:15px; background:linear-gradient(180deg,rgba(7,16,15,.82),rgba(13,27,24,.7)); box-shadow:inset 0 1px 0 rgba(199,234,210,.06); color:#e9f0eb; line-height:1.85; }
+.result-reading[hidden] { display:none!important; }
+.result-actions { flex:0 0 auto; margin:0 auto 4px!important; }
+.result-view:not(.is-final) .result-reading,.result-view:not(.is-final) .result-actions { visibility:hidden; }
+@media(max-width:600px){.result-view {padding-left:14px!important;padding-right:14px!important;padding-bottom:10px!important}.result-reading{padding:12px 14px;margin:8px auto!important}.result-actions{margin-bottom:2px!important}}
