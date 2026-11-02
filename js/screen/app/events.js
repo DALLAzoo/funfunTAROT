@@ -24,6 +24,10 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
     dropdown.setAttribute('aria-expanded', String(open));
   });
   options.querySelector('.reading-option').addEventListener('click', () => {
+    // Share the selected value, not the dropdown element, with the title.
+    ctx.readingSelection = '조언 - 당신을 위한';
+    const resultTitle = $('#resultSelectionTitle');
+    if (resultTitle) resultTitle.textContent = ctx.readingSelection;
     dropdown.firstChild.textContent = '조언 - 당신을 위한 ';
     options.hidden = true;
     dropdown.setAttribute('aria-expanded', 'false');
@@ -55,6 +59,8 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       host.style.width = w + 'px';host.style.height = w * C.aspect + 'px';
       $('#resultView').style.setProperty('--result-width',w+'px');
       $('#resultView').style.setProperty('--result-height',w*C.aspect+'px');
+      const heading = $('#resultSelectionTitle');
+      if (heading) $('#resultView').style.setProperty('--reveal-top',Math.round(heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+12)+'px');
     }
   });
 }
