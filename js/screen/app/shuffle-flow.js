@@ -14,7 +14,7 @@ export async function startShuffleFlow(ctx){
  ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
  $('#resultCardHost').replaceChildren();
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
- main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
+ resultView.classList.remove('is-final');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
  ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(ctx.cards);
  if(!await shuffleMotion(ctx.cards,stage,name=>magic.phase(name))||current!==ctx.token){magic.stop();return;}
@@ -22,6 +22,6 @@ export async function startShuffleFlow(ctx){
  const ids=visibleIndices(0,ctx.pool.length,C.counts.visible),opening=ids.map(i=>ctx.cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=ctx.cards;stage.classList.add('selection-stage');
  if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==ctx.token){magic.stop();return;}
- magic.phase('selection');ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
+ magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
  instruction.textContent='';
 }

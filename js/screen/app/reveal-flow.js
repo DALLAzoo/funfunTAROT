@@ -29,6 +29,7 @@ export async function chooseFlow(ctx,chosen){
   result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
   result.style.transform='none';result.style.zIndex='auto';
   const host=$('#resultCardHost');host.replaceChildren(result);
+  resultView.classList.remove('is-final');
   resultView.style.setProperty('--reveal-top',Math.max(0,revealTop)+'px');
   host.style.setProperty('--result-width',rw+'px');
   const reading = $('#resultReading');
@@ -39,8 +40,17 @@ export async function chooseFlow(ctx,chosen){
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
     (card,duration)=>revealMagic.orbit(card,duration));
   await new Promise(resolve=>setTimeout(resolve,C.reveal.pauseBeforeFlip));
-  await screenTransition(result);
+  // At the start of the front reveal, animate the entire card host from
+  // the central travel destination to the exact original stage top edge.
+  const before=host.getBoundingClientRect();
+  resultView.classList.add('is-final');
+  const after=host.getBoundingClientRect();
+  const shift=host.animate([
+   {transform:`translate(${before.left-after.left}px,${before.top-after.top}px)`},
+   {transform:'translate(0px,0px)'}
+  ],{duration:C.reveal.flip,easing:'cubic-bezier(.22,.68,.22,1)'});
+  await Promise.all([screenTransition(result),shift.finished]);
   revealMagic.stars(result);
   setState('result','카드가 공개됐어요');$('#resultAgain').focus({preventScroll:true});
- }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
+ }catch(e){magic.stop();resultView.classList.remove('is-final');main.hidden=false;resultView.hidden=true;ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }
