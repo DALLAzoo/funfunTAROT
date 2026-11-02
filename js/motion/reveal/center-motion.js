@@ -23,11 +23,12 @@ export async function moveToCenter(card, host, origin, sourceWidth, angle, resul
  approach.cancel();
  card.dataset.revealPhase='arrival';
  card.style.width=resultWidth+'px';card.style.height=resultWidth*C.aspect+'px';
- const scale=sourceWidth/resultWidth;
+ // Keep the arrival motion gentle: no pronounced shrink-and-rebound before the flip.
+ // The final card dimensions are already reserved by the result host.
  const settle=card.animate([
-  {transform:`rotateZ(${angle}deg) scale(${scale})`},
+  {transform:`rotateZ(${angle}deg) scale(0.98)`},
   {transform:'rotateZ(0deg) scale(1)'}
- ],{duration:C.reveal.arrival,easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
+ ],{duration:Math.max(C.reveal.arrival,520),easing:'cubic-bezier(.22,.65,.3,1)',fill:'forwards'});
  await settle.finished;
  card.style.transform='none';settle.cancel();card.dataset.revealPhase='centered';
 }
