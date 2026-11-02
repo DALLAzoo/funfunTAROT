@@ -192,3 +192,17 @@ body{overflow-x:hidden}
 .result-actions { flex:0 0 auto; margin:0 auto 4px!important; }
 .result-view:not(.is-final) .result-reading,.result-view:not(.is-final) .result-actions { visibility:hidden; }
 @media(max-width:600px){.result-view {padding-left:14px!important;padding-right:14px!important;padding-bottom:10px!important}.result-reading{padding:12px 14px;margin:8px auto!important}.result-actions{margin-bottom:2px!important}}
+
+/* Unified final card geometry; no image-dependent placement. */
+.result-view {position:relative; display:block; height:100dvh; min-height:0; overflow:hidden; padding:0!important;}
+.result-card-host {position:absolute; left:50%; top:calc(50% - var(--result-height, 163px)); transform:translateX(-50%); width:var(--result-width,190px); height:var(--result-height,326px); min-height:0; margin:0!important; display:flex; align-items:center; justify-content:center;}
+.result-view.is-final .result-card-host {top:var(--reveal-top,125px);}
+.result-card {width:100%!important; height:100%!important; flex:none;}
+.result-reading {position:absolute; top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px); bottom:84px; left:50%; transform:translateX(-50%); width:min(calc(100% - 28px),520px); height:auto; min-height:0!important; max-height:none; margin:0!important; overflow-y:auto;}
+.result-reading[hidden] {display:none!important;}
+.result-actions {position:absolute; bottom:25px; left:50%; transform:translateX(-50%); margin:0!important; width:max-content; max-width:calc(100% - 28px);}
+.result-view:not(.is-revealed) .result-reading, .result-view:not(.is-revealed) .result-actions {visibility:hidden!important;}
+.result-view.is-final:not(.is-revealed) .result-reading {opacity:0;}
+.result-view.is-revealed .result-reading:not([hidden]) {animation:reading-enter .35s ease-out both;}
+@keyframes reading-enter {from {opacity:0; translate:0 8px;} to {opacity:1; translate:0 0;}}
+@media(max-width:600px) {.result-view {padding:0!important;} .result-actions {bottom:25px;} .result-reading {bottom:84px;}}
