@@ -12,6 +12,9 @@ export async function startShuffleFlow(ctx){
  let next;try{next=randomBack(ctx.back?.id);await prepareBack(next);}catch(e){setState(previous,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');if(previous==='result')$('#resultNotice').textContent='카드 이미지를 불러오지 못했어요. 다시 섞기를 눌러 재시도해 주세요.';instruction.textContent=previousText;return;}
  if(current!==ctx.token)return;
  ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
+ const intro=$('#sharedIntro');
+ if(intro.parentElement===resultView) main.insertBefore(intro,stage);
+ $('#resultSelectionTitle').textContent='마음이 끌리는 카드를 선택하세요';
  $('#resultCardHost').replaceChildren();
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
  resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
