@@ -244,7 +244,7 @@ export async function chooseFlow(ctx,chosen){
 더 넓은 세계에서 새로운 기쁨을 찾아도 좋습니다.
 어느 쪽이든 그 선택은 당신의 것입니다.
 당신이 완성한 세계 안에서
-이제는 원하는 삶의 풍경을 마음껏 펼쳐보세요.` : '';
+이제는 원하는 삶의 풍경을 마음껏 펼쳐보세요.` : chosen.cardData.id === 'cups-page' ? `마음이 원하는 것을 분명히 알게 되면, 세상은 그 마음을 중심으로 조금씩 달라 보이기 시작합니다. 좋아하는 것에는 이유가 생기고, 바라는 것에는 저마다의 의미가 깃들지요. 하지만 마음이 정해졌다고 해서 세상까지 같은 방향으로 움직이는 것은 아닙니다. 때로는 너무 확고한 생각이 다른 가능성을 보지 못하게 하기도 합니다. 자신이 원하는 것을 소중히 간직하세요. 다만 그 마음이 세상의 전부가 되지는 않도록, 아직 알지 못하는 이야기에도 귀를 기울여 보세요.` : '';
   reading.hidden = !reading.textContent;
   resultView.style.setProperty('--heading-top',Math.round(introTop)+'px');
   resultView.insertBefore(intro,host);
