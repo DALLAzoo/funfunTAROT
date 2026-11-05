@@ -1,0 +1,123 @@
+/* In-between Shift — scene study 01: "Obsidian Theatre"
+   Inspired by the photographic principles of dark mineral scenery, overhead
+   light, atmosphere and depth, not by any third-party artwork.
+   Stays behind all existing tarot card layers, not a replacement for card art.
+   Moves only composited opacity / transform. Never reads card bounding boxes. */
+#stage.cinema-vault {
+  --scene-mx:0px; --scene-my:0px;
+  background:
+    radial-gradient(ellipse 66% 63% at 50% 46%, #1a343b 0%, #111f2c 43%, #09141d 81%, #070e15 100%);
+}
+#stage.cinema-vault > .aura {opacity:.08;}
+#stage.cinema-vault > .cards {z-index:3;}
+#stage.cinema-vault > .cinema-vault__world {
+  position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none!important;
+  contain:paint;isolation:isolate;
+}
+#stage.cinema-vault .cinema-vault__world * {pointer-events:none!important;}
+#stage.cinema-vault .cinema-vault__depth {
+  position:absolute;inset:-5%;
+  background:
+    radial-gradient(ellipse 48% 61% at 50% 47%,rgba(101,135,142,.20),transparent 72%),
+    radial-gradient(ellipse 32% 70% at 7% 41%,rgba(0,0,0,.45),transparent 80%),
+    radial-gradient(ellipse 32% 70% at 93% 49%,rgba(0,0,0,.48),transparent 80%);
+  transform:translate3d(calc(var(--scene-mx) * -.25),calc(var(--scene-my) * -.18),0);
+  transition:transform 450ms cubic-bezier(.2,.8,.2,1);
+}
+#stage.cinema-vault .cinema-vault__rocks {
+  position:absolute;inset:-2%;width:104%;height:104%;display:block;
+  transform:translate3d(calc(var(--scene-mx) * -.55),calc(var(--scene-my) * -.35),0);
+  transition:transform 500ms cubic-bezier(.2,.8,.2,1);
+}
+#stage.cinema-vault .cinema-vault__shaft {
+  position:absolute;left:50%;top:-24%;width:76%;height:122%;
+  transform:translate3d(calc(-50% + var(--scene-mx) * .10),0,0) rotate(-6deg);
+  transition:transform 500ms ease-out;
+  opacity:.80;
+  background:
+    linear-gradient(91deg,transparent 0%,rgba(231,227,193,.015) 22%,rgba(230,222,174,.115) 38%,rgba(246,234,200,.155) 45%,rgba(227,219,194,.065) 55%,transparent 72%);
+  clip-path:polygon(45% 0%,58% 0%,97% 100%,8% 100%);
+  mix-blend-mode:screen;
+}
+#stage.cinema-vault .cinema-vault__halo {
+  position:absolute;inset:-12%;
+  background:radial-gradient(ellipse 30% 46% at 51% 31%,rgba(237,217,165,.24),rgba(205,197,163,.065) 43%,transparent 80%);
+  mix-blend-mode:screen;
+  opacity:.78;
+}
+#stage.cinema-vault .cinema-vault__haze {
+  position:absolute;left:-13%;width:126%;height:35%;border-radius:50%;
+  background:radial-gradient(ellipse 55% 48% at 47% 50%,rgba(154,174,184,.17),rgba(92,123,144,.095) 55%,transparent 86%);
+  opacity:.60;mix-blend-mode:screen;
+  will-change:auto;
+}
+#stage.cinema-vault .cinema-vault__haze--rear {top:42%;transform:translate3d(-3%,0,0) scaleX(1.07);}
+#stage.cinema-vault .cinema-vault__haze--near {top:67%;height:30%;opacity:.42;transform:translate3d(4%,0,0) scaleX(1.16);}
+#stage.cinema-vault .cinema-vault__particles {
+  position:absolute;inset:0;
+  background-image:
+   radial-gradient(circle,rgba(250,237,202,.44) 0 1px,transparent 1.5px),
+   radial-gradient(circle,rgba(206,225,225,.27) 0 .8px,transparent 1.4px);
+  background-position:28px 24px,95px 80px;
+  background-size:167px 131px,241px 169px;
+  opacity:.19;
+}
+#stage.cinema-vault .cinema-vault__shade {
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 77% at 50% 50%,transparent 38%,rgba(3,8,14,.56) 100%);
+}
+/* When moving, a restrained cinematic drift is visible even without mouse input. */
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__shaft {
+  animation:cinema-shaft-sway 10s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__halo {
+  animation:cinema-halo 9s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__haze--rear {
+  animation:cinema-haze-rear 13s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__haze--near {
+  animation:cinema-haze-near 16s ease-in-out infinite alternate;
+}
+@keyframes cinema-shaft-sway {
+  from {transform:translate3d(calc(-50% + var(--scene-mx) * .10 - 22px),0,0) rotate(-8deg);opacity:.63;}
+  to   {transform:translate3d(calc(-50% + var(--scene-mx) * .10 + 22px),0,0) rotate(-3deg);opacity:.94;}
+}
+@keyframes cinema-halo {
+  from {opacity:.48;transform:scale(.98) translate3d(-1%,0,0);}
+  to {opacity:.87;transform:scale(1.035) translate3d(1%,0,0);}
+}
+@keyframes cinema-haze-rear {
+  from {transform:translate3d(-6%,0,0) scaleX(1.06);opacity:.38;}
+  to {transform:translate3d(6%,1%,0) scaleX(1.1);opacity:.69;}
+}
+@keyframes cinema-haze-near {
+  from {transform:translate3d(6%,0,0) scaleX(1.15);opacity:.24;}
+  to {transform:translate3d(-8%,0,0) scaleX(1.19);opacity:.49;}
+}
+/* Human-readable direct control, independent of browser keyboard shortcuts.
+   No storage: previous experiments cannot silently disable this scene. */
+#stage.cinema-vault > .cinema-vault__toggle {
+  position:absolute;z-index:9;right:11px;top:10px;
+  border:1px solid rgba(210,193,160,.42);border-radius:999px;
+  padding:8px 12px;background:rgba(8,17,25,.88);color:#eee6d6;
+  font:500 12px/1.2 system-ui,-apple-system,'Noto Sans KR',sans-serif;
+  cursor:pointer;letter-spacing:.01em;
+}
+#stage.cinema-vault > .cinema-vault__toggle:focus-visible {outline:2px solid #f2cf92;outline-offset:3px;}
+#stage.cinema-vault > .cinema-vault__toggle:hover {background:#1a313a;}
+html[data-cinema-motion="off"] #stage.cinema-vault {--scene-mx:0px!important;--scene-my:0px!important;}
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__depth,
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__rocks,
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__shaft {transition:none!important;}
+@media(max-width:600px) {
+  #stage.cinema-vault .cinema-vault__shaft {width:95%;opacity:.58;}
+  #stage.cinema-vault .cinema-vault__rocks {opacity:.76;}
+  #stage.cinema-vault .cinema-vault__haze--near {opacity:.26;}
+  #stage.cinema-vault > .cinema-vault__toggle {right:6px;top:6px;padding:7px 9px;font-size:11px;}
+}
+@media(prefers-reduced-motion:reduce) {
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__shaft,
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__halo,
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__haze {animation:none!important;}
+}
