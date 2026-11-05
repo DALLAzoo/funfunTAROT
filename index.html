@@ -3,38 +3,39 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>In-between Shift — Design 01 / 3D Studio</title>
-<meta name="theme-color" content="#070d12">
+<meta name="theme-color" content="#060b10">
+<title>In-between Shift — Cinematic Stage / Design 01</title>
+<link rel="preload" href="assets/obsidian_stage.webp" as="image">
 <link rel="stylesheet" href="studio.css">
 </head>
 <body>
-<main class="app">
-  <header class="header">
-    <div class="brand"><span class="brandmark">✦</span> <span>IN-BETWEEN SHIFT</span><small>DESIGN STUDY 01 / REAL-TIME 3D</small></div>
-    <div class="version">3D SCENE · PROTOTYPE</div>
-  </header>
-  <section class="headings">
-    <p class="kicker">A MOMENT BETWEEN</p>
-    <h1>침묵 속에 떠오르는 카드</h1>
-    <p>빛과 카드가 같은 공간에서 움직이는 영화적 타로 무대</p>
-  </section>
-  <section class="stage-wrap" id="stageWrap">
-    <canvas id="view" aria-label="3D 암석 공간 속에서 카드가 떠올라 셔플되고 다시 모이는 장면"></canvas>
-    <div class="veil"></div>
-    <div class="stage-guide"><span class="runlight" id="runlight"></span><span id="sceneLabel">SCENE READY · 3D</span></div>
-    <div class="stage-control"><button id="sceneToggle" type="button" aria-pressed="true">빛·안개 켜짐</button></div>
-    <div class="stage-caption"><span id="phaseText">잠시, 카드를 바라보세요.</span><small id="phaseCount">01 / 05</small></div>
-    <div class="unavailable" id="unavailable" hidden>이 브라우저에서 WebGL을 사용할 수 없어 3D 장면을 표시하지 못했어. Chrome의 그래픽 가속 설정을 확인해 줘.</div>
-  </section>
-  <div class="bottom">
-    <div class="details"><span class="orb"></span><span id="state">준비 완료</span><small>22장 구성 · 전면 5장 / 모바일 3장</small></div>
-    <div class="controls">
-      <button id="shuffle" class="primary" type="button">3D 셔플 체험</button>
-      <label class="upload" for="textureInput">내 카드 뒷면 불러오기</label>
-      <input id="textureInput" type="file" accept="image/*" hidden>
-    </div>
-  </div>
-  <p class="footnote">독립 시험 무대 · 기존 사이트와 GitHub 원본에는 적용되지 않았습니다. 카드 이미지에는 우선 시험용 문양이 표시됩니다.</p>
+<main class="shell">
+ <header class="masthead">
+  <div class="brand"><span class="brand-glyph" aria-hidden="true">✧</span><span>IN-BETWEEN SHIFT</span></div>
+  <div class="descriptor">CINEMATIC SCENE STUDY <span class="divider"></span> DESIGN 01</div>
+ </header>
+ <section class="intro">
+   <p class="overline">A MOMENT BETWEEN</p>
+   <h1>빛 속에서, 카드가 움직이다.</h1>
+   <p>공간과 카드가 하나의 조명 아래 움직이는 타로 무대</p>
+ </section>
+ <section class="theatre" id="stageWrap">
+  <div class="environment" aria-hidden="true"></div>
+  <div class="ambient-light" aria-hidden="true"></div>
+  <div class="light-shaft" aria-hidden="true"></div>
+  <canvas id="view" aria-label="실제 3D 카드들이 빛을 받으며 공중에서 셔플되고 모이는 장면"></canvas>
+  <div class="foreground" aria-hidden="true"></div>
+  <div class="air" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="theatre-top"><span class="scene-led"><i></i> CINEMA 01 <span class="scene-subtitle" id="sceneLabel">REAL-TIME 3D CARDS</span></span><button type="button" id="sceneToggle" aria-pressed="true">공간·조명 움직임 끄기</button></div>
+  <div class="theatre-bottom"><span class="eyeline" aria-hidden="true"></span><span id="phaseText">고요한 공간에 카드가 놓여 있습니다</span><span class="phase-count" id="phaseCount">SCENE READY</span></div>
+  <div class="unavailable" id="unavailable" hidden>이 환경에서 WebGL2 3D를 실행할 수 없습니다. PC Chrome의 그래픽 가속 설정을 확인해 주세요.</div>
+ </section>
+ <section class="actions">
+  <div class="stage-status"><span class="status-light"></span><span id="state">장면 준비 완료</span><small>22 CARDS · DESKTOP 5 / MOBILE 3 HERO CARDS</small></div>
+  <div class="button-group"><button class="primary" id="shuffle" type="button">3D 셔플 감상 <span aria-hidden="true">↗</span></button><label class="upload" for="textureInput">내 카드 뒷면 적용</label><input id="textureInput" type="file" accept="image/*" hidden></div>
+ </section>
+ <footer class="disclaimer">실제 카드 표면과 모션은 WebGL로 처리합니다. 암석 무대는 고해상도 원본 이미지 기반의 시네마틱 합성입니다. <span>별도 시험본 · 운영 사이트 미반영</span></footer>
 </main>
 <script src="js/studio.js"></script>
 </body>
