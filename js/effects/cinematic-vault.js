@@ -1,3 +1,4 @@
+import {sampleCard} from '../motion/animation/card-animation.js';
 /* In-between Shift — scene study 01, original scenic art and motion.
    The deck, card art and the application state machine are untouched. */
 const stage = document.getElementById('stage');
@@ -41,6 +42,11 @@ if (stage && !stage.querySelector('.cinema-vault__world')) {
     <div class="cinema-vault__haze cinema-vault__haze--rear"></div>
     <div class="cinema-vault__haze cinema-vault__haze--near"></div>
     <div class="cinema-vault__particles"></div>
+    <div class="cinema-vault__archlight"></div>
+    <div class="cinema-vault__beam cinema-vault__beam--wide"></div>
+    <div class="cinema-vault__beam cinema-vault__beam--core"></div>
+    <div class="cinema-vault__bounce"></div>
+    <div class="cinema-vault__light-dust"></div>
     <div class="cinema-vault__shade"></div>`;
   // Insert beneath existing 3D card stage, never intercept pointer events.
   stage.prepend(scene);
@@ -62,12 +68,14 @@ if (stage && !stage.querySelector('.cinema-vault__world')) {
     stage.style.setProperty('--scene-my',`${targetY.toFixed(1)}px`);
   }
   function schedule(){if(!raf)raf=requestAnimationFrame(paint);}
+  let refreshCardLighting=()=>{};
   function sync(){
     enabled=override===null ? !preference.matches : override;
     document.documentElement.dataset.cinemaMotion = enabled?'on':'off';
     toggle.textContent=enabled?'장면 모션 끄기':'장면 모션 켜기';
     toggle.setAttribute('aria-pressed',String(enabled));
     if(!enabled){targetX=targetY=0;schedule();}
+    refreshCardLighting();
   }
   toggle.addEventListener('click',()=>{override=!enabled;sync();});
   if(preference.addEventListener)preference.addEventListener('change',()=>{if(override===null)sync();});
@@ -84,5 +92,63 @@ if (stage && !stage.querySelector('.cinema-vault__world')) {
   stage.addEventListener('pointerleave',()=>{rect=null;targetX=targetY=0;schedule();},{passive:true});
   window.addEventListener('resize',()=>{rect=null;},{passive:true});
   window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);},{once:true});
+  refreshCardLighting=initCardLighting(stage, () => enabled);
   sync();
+}
+
+/* Real card-linked reflections during existing v6 shuffle.
+   Sample existing WAAPI poses on foreground cards only, at <=24 Hz.
+   No geometry reads, no new 3D paths and no writes to card transforms. */
+function initCardLighting(stage, isSceneMoving){
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  let raf=0,previous=0,active=false;
+  const cards=stage.querySelector('#cards');
+  if(!cards)return;
+  const clear=()=>{
+    for(const el of cards.querySelectorAll('.cinema-shuffle__hero')){
+      el.style.removeProperty('--cinema-spec-x');
+      el.style.removeProperty('--cinema-spec-power');
+      el.style.removeProperty('--cinema-edge-light');
+    }
+  };
+  function tick(time){
+    raf=0;
+    if(!stage.isConnected)return;
+    const shuffling=stage.classList.contains('cinematic-shuffle');
+    if(!shuffling||!isSceneMoving()){
+      if(active){active=false;clear();}
+      return;
+    }
+    active=true;
+    if(time-previous>=42){
+      previous=time;
+      const width=Math.max(1,stage.clientWidth);
+      for(const el of cards.querySelectorAll('.cinema-shuffle__hero')){
+        const p=sampleCard(el);
+        if(!p)continue;
+        // A single overhead key light in world space. Card tilt changes the
+        // point and strength of reflection on the rotating *actual face*.
+        const lateral=clamp(p.x/(width*.44),-1,1);
+        const x=clamp(49-p.ry*1.42-lateral*21,16,84);
+        const angular=Math.cos(p.ry*Math.PI/180)*Math.cos(p.rx*Math.PI/180);
+        const power=clamp(.34+Math.max(0,angular)*.27-Math.abs(lateral)*.10,.18,.67);
+        const edge=clamp(.35+angular*.35-Math.abs(lateral)*.14,.18,.76);
+        el.style.setProperty('--cinema-spec-x',x.toFixed(1)+'%');
+        el.style.setProperty('--cinema-spec-power',power.toFixed(3));
+        el.style.setProperty('--cinema-edge-light',edge.toFixed(3));
+      }
+    }
+    raf=requestAnimationFrame(tick);
+  }
+  function schedule(){
+    if(raf)return;
+    if(stage.classList.contains('cinematic-shuffle')&&isSceneMoving())raf=requestAnimationFrame(tick);
+    else if(active){active=false;clear();}
+  }
+  // Existing v6 toggles 'cinematic-shuffle' and hero classes; watch only these changes.
+  const observer=new MutationObserver(schedule);
+  observer.observe(stage,{attributes:true,attributeFilter:['class','data-cinema-state'],childList:true,subtree:true});
+  window.addEventListener('pagehide',()=>{observer.disconnect();cancelAnimationFrame(raf);},{once:true});
+  schedule();
+  return schedule;
 }
