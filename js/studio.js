@@ -144,19 +144,39 @@ function mate(j){if(heroes===3)return j===0?2:j===2?0:-1;return j===0?1:j===1?0:
 function flying(j,phase){const a=hero(j),m=mate(j),u=smooth(clamp((phase-.05)/(heroes===5?.72:.76)));if(m<0)return {...a,y:a.y+Math.sin(u*PI)*.3,z:a.z+Math.sin(u*PI)*.35,ry:a.ry+Math.sin(u*TAU)*.08};const b=hero(m),forward=j<m,p=Math.sin(u*PI);return {...mPose(a,b,u),y:mix(a.y,b.y,u)+(forward?.73:-.55)*p,z:mix(a.z,b.z,u)+(forward?1.45:-1.45)*p,rz:mix(a.rz,b.rz,u)+(forward?-.16:.17)*p,ry:mix(a.ry,b.ry,u)+(forward?.23:-.23)*p,rx:.055+(forward?-.03:.10)*p};}
 function packetFlight(i,phase){const a=packet(i),s=smooth(clamp(phase/.82)),u=Math.sin(s*PI);return {...a,x:a.x+(i%2===0?-.18:.18)*u,y:a.y+.18*u,z:a.z+.13*u,ry:a.ry+.05*u};}
 function fanPose(j){const center=j-3;const xs=mobile?.68:.96;return {x:center*xs,y:-.15-.13*Math.abs(center)+.28*Math.abs(center/3)**2,z:.8+.02*(3-Math.abs(center)),rz:center*(mobile?-.11:-.12),ry:0,rx:0};}
+// A 22-card circular selection fan: the original v8 only displayed cards 0..6.
+// focusIndex and gestureOffset are updated by pointer/keyboard input below.
+let focusIndex=3,gestureOffset=0,pickedIndex=-1,confirmedIndex=-1;
+const circular=(n,count)=>((n%count)+count)%count;
+const wrappedDistance=(i,center)=>circular(i-center+actorCount/2,actorCount)-actorCount/2;
+const visibleOffset=i=>wrappedDistance(i,focusIndex+gestureOffset);
+function selectedFanPose(i,offset){
+ const p=fanPose(offset+3);
+ if(i===pickedIndex && Math.abs(offset)<.55){p.y+=.36;p.z+=.50;}
+ return p;
+}
 function poseFor(i,seconds){const j=heroMap.get(i),h=j!==undefined,first=initial(i);
  if(seconds<=0)return {p:first,alpha:1};
  if(seconds<1.04){const t=smooth(seconds/1.04);return {p:mPose(first,h?hero(j):packet(i),t),alpha:1};}
  if(seconds<3.85){const t=(seconds-1.04)/2.81;return {p:h?flying(j,t):packetFlight(i,t),alpha:1};}
  if(seconds<5.02){const t=smooth((seconds-3.85)/1.17);const a=h?flying(j,1):packetFlight(i,1),b=initial(i);const p=mPose(a,b,t);p.y+=Math.sin(t*PI)*.16;p.z+=Math.sin(t*PI)*.35;return {p,alpha:1};}
  if(seconds<5.32)return {p:first,alpha:1};
- const t=smooth(clamp((seconds-5.32)/1.06));if(i<7)return {p:mPose(first,fanPose(i),t),alpha:1};return {p:first,alpha:1-t};
+ const t=smooth(clamp((seconds-5.32)/1.06));
+ // Transition the initial seven cards to the new interactive carousel.
+ // Later all 22 cards can travel through the same seven visible slots.
+ const off=visibleOffset(i),abs=Math.abs(off);
+ if(abs<3.85){
+   const edgeFade=clamp((3.85-abs)/.40,0,1);
+   return {p:mPose(first,selectedFanPose(i,off),t),alpha:(1-t)+t*edgeFade};
+ }
+ return {p:first,alpha:1-t};
 }
 let running=false,start=0,clock=0,paused=false,hoverX=0,hoverY=0,activeX=0,activeY=0,last=0;
 let shaderReady=true;
+let currentV=I(),currentP=I();
 function dimensions(){const rect=canvas.getBoundingClientRect(),scale=Math.min(window.devicePixelRatio||1,mobile?1.15:1.35);const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}return {w,h};}
 function drawMesh(m,kind,pos=I(),alpha=1){gl.uniform1i(uni.uKind,kind);gl.uniformMatrix4fv(uni.uM,false,pos);gl.uniform1f(uni.uFade,alpha);gl.bindVertexArray(m.vao);gl.drawArrays(kind===5?gl.POINTS:gl.TRIANGLES,0,m.count);}
-function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 감상 ↗';$('state').textContent='선택용 펼침 완료';$('phaseText').textContent='마음이 끌리는 카드를 선택하세요';$('phaseCount').textContent='05 / 05';}}else if(clock===0){};
+function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 감상 ↗';$('state').textContent='카드 선택 가능 · 드래그 / 터치';$('phaseText').textContent='좌우로 밀어 카드를 이동하고, 눌러 선택하세요';$('phaseCount').textContent='4 / 22';stage.classList.add('fan-ready');}}else if(clock===0){};
  const t=clock;
  if(running){const names=t<1.04?['카드가 공중으로 떠오릅니다','01 / 05']:t<3.85?['공간 속에서 서로 다른 길로 교차합니다','02 / 05']:t<5.02?['카드가 하나의 덱으로 모입니다','03 / 05']:t<5.32?['고요한 순간','04 / 05']:['카드를 펼칩니다','05 / 05'];$('phaseText').textContent=names[0];$('phaseCount').textContent=names[1];}
  if(!paused){activeX+=(hoverX-activeX)*Math.min(1,dt*2.4);activeY+=(hoverY-activeY)*Math.min(1,dt*2.4);}else{activeX+=(0-activeX)*Math.min(1,dt*4);activeY+=(0-activeY)*Math.min(1,dt*4);}
@@ -164,6 +184,7 @@ function render(now){if(document.hidden){last=now;requestAnimationFrame(render);
  const eye=[activeX*.29, .38+activeY*.16, mobile?10.1-forward:9.15-forward],target=[activeX*.055,.1,-1.9];
  const light=[-.9+(paused?0:Math.sin(now*.00046)*1.35)+activeX*.48,6.3,4.5];
  const v=lookAt(eye,target),p=perspective((mobile?50:48)*PI/180,w/h,.1,70);
+ currentV=v;currentP=p;
  gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
  gl.useProgram(pr);gl.uniformMatrix4fv(uni.uP,false,p);gl.uniformMatrix4fv(uni.uV,false,v);gl.uniform3fv(uni.uLight,light);gl.uniform3fv(uni.uEye,eye);gl.uniform1f(uni.uTime,now/1000);gl.uniform1f(uni.uLightPower,paused?1.1:2.25);gl.uniform1f(uni.uBeamShift,activeX);
  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,currentTex);gl.uniform1i(uni.uTex,0);
@@ -177,10 +198,95 @@ function render(now){if(document.hidden){last=now;requestAnimationFrame(render);
  gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
  requestAnimationFrame(render);
 }
-const pointer=event=>{if(paused)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);stage.style.setProperty('--pan-x',`${(hoverX*16).toFixed(1)}px`);stage.style.setProperty('--pan-y',`${(hoverY*13).toFixed(1)}px`);};
-stage.addEventListener('pointermove',pointer,{passive:true});stage.addEventListener('pointerleave',()=>{hoverX=hoverY=0;stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');},{passive:true});
+const pointer=event=>{if(paused||dragging)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);stage.style.setProperty('--pan-x',`${(hoverX*16).toFixed(1)}px`);stage.style.setProperty('--pan-y',`${(hoverY*13).toFixed(1)}px`);};
+// Project a card center to the display to distinguish clicking a card from
+// clicking empty scenery; this is not an HTML overlay pretending to be a card.
+function projectWorld(pt){
+ const a=[pt.x,pt.y,pt.z,1];
+ const byMat=(mat,v)=>Array.from({length:4},(_,row)=>mat[row]*v[0]+mat[4+row]*v[1]+mat[8+row]*v[2]+mat[12+row]*v[3]);
+ const clip=byMat(currentP,byMat(currentV,a));
+ if(clip[3]<=.1)return null;
+ const r=canvas.getBoundingClientRect();
+ return {x:r.left+(clip[0]/clip[3]+1)*r.width*.5,
+         y:r.top+(1-clip[1]/clip[3])*r.height*.5,
+         pixelsPerUnit:Math.abs(currentP[5]*r.height/(2*clip[3]))};
+}
+function hitCard(clientX,clientY){
+ let best=-1,score=Infinity;
+ for(let i=0;i<actorCount;i++){
+   const offset=visibleOffset(i);
+   if(Math.abs(offset)>3.42)continue;
+   const screen=projectWorld(selectedFanPose(i,offset));
+   if(!screen)continue;
+   const wx=screen.pixelsPerUnit*.87,hy=screen.pixelsPerUnit*1.47;
+   const dx=Math.abs(clientX-screen.x)/Math.max(24,wx),dy=Math.abs(clientY-screen.y)/Math.max(36,hy);
+   // The generous rectangle uses the real card dimensions in screen pixels.
+   if(dx>.98||dy>.94)continue;
+   const s=dx*dx+dy*dy+Math.abs(offset)*.0001;
+   if(s<score){score=s;best=i;}
+ }
+ return best;
+}
+let gesture=null,dragging=false;
+const ready=()=>clock>=6.38&&!running;
+const gestureStep=()=>Math.max(mobile?43:55,Math.min(92,stage.clientWidth*(mobile?.145:.065)));
+function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;confirmedIndex=-1;gestureOffset=0;
+ $('state').textContent=`${focusIndex+1}번째 카드 · 선택하려면 누르세요`;
+ $('phaseCount').textContent=`${focusIndex+1} / ${actorCount}`;
+ $('phaseText').textContent='가운데 카드를 한 번 누르면 선택됩니다';
+}
+function chooseCard(i){
+ if(i<0)return;
+ if(i!==focusIndex){setFocus(i);return;}
+ if(pickedIndex===i){confirmedIndex=i; $('state').textContent=`${i+1}번째 카드 선택 확인`;
+  $('phaseText').textContent='선택 확인 완료 · 실제 상담 결과 기능은 연결 전입니다';return;}
+ pickedIndex=i;confirmedIndex=-1;
+ $('state').textContent=`${i+1}번째 카드 선택됨`;
+ $('phaseText').textContent='한 번 더 누르면 선택을 확인합니다';
+}
+stage.addEventListener('pointerdown',e=>{
+ if(!ready()||e.button!==undefined&&e.button!==0||e.target.closest('button'))return;
+ gesture={id:e.pointerId,x:e.clientX,y:e.clientY,origin:focusIndex,moved:false};
+ dragging=false;
+ try{stage.setPointerCapture(e.pointerId);}catch(_){}
+},{passive:true});
+stage.addEventListener('pointermove',e=>{
+ if(gesture&&gesture.id===e.pointerId&&ready()){
+   const dx=e.clientX-gesture.x,dy=e.clientY-gesture.y;
+   if(!gesture.moved&&Math.abs(dx)>9&&Math.abs(dx)>Math.abs(dy)*.65)gesture.moved=true;
+   if(gesture.moved){dragging=true;gestureOffset=clamp(-dx/gestureStep(),-6,6);
+     $('phaseText').textContent='카드를 밀어 이동 중';e.preventDefault();}
+   return;
+ }
+ pointer(e);
+},{passive:false});
+function finishGesture(e,cancelled=false){
+ if(!gesture||gesture.id!==e.pointerId)return;
+ const g=gesture;gesture=null;
+ const dx=e.clientX-g.x;
+ if(g.moved&&!cancelled){
+  let delta=Math.round(-dx/gestureStep());
+  if(delta===0&&Math.abs(dx)>24)delta=dx<0?1:-1;
+  setFocus(g.origin+clamp(delta,-6,6));
+ }else if(!cancelled&&ready()){
+  const index=hitCard(e.clientX,e.clientY);chooseCard(index);
+ }
+ gestureOffset=0;dragging=false;
+ try{if(stage.hasPointerCapture(e.pointerId))stage.releasePointerCapture(e.pointerId);}catch(_){}
+}
+stage.addEventListener('pointerup',e=>finishGesture(e));
+stage.addEventListener('pointercancel',e=>finishGesture(e,true));
+stage.addEventListener('lostpointercapture',()=>{if(gesture){gesture=null;gestureOffset=0;dragging=false;}});
+stage.addEventListener('pointerleave',()=>{if(dragging)return;hoverX=hoverY=0;stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');},{passive:true});
+stage.tabIndex=0;stage.setAttribute('aria-label','3D 타로 셔플. 펼침 후 좌우 방향키로 이동하고 Enter로 선택하세요.');
+stage.addEventListener('keydown',e=>{
+ if(!ready())return;
+ if(e.key==='ArrowRight'){e.preventDefault();setFocus(focusIndex+1);}
+ if(e.key==='ArrowLeft'){e.preventDefault();setFocus(focusIndex-1);}
+ if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseCard(focusIndex);}
+});
 $('sceneToggle').addEventListener('click',()=>{paused=!paused;document.documentElement.dataset.sceneMotion=paused?'off':'on';$('sceneToggle').textContent=paused?'공간·조명 움직임 켜기':'공간·조명 움직임 끄기';$('sceneToggle').setAttribute('aria-pressed',String(!paused));if(paused){stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');}});
-$('shuffle').addEventListener('click',()=>{if(running)return;clock=0;start=performance.now();running=true;$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';});
+$('shuffle').addEventListener('click',()=>{if(running)return;clock=0;start=performance.now();running=true;focusIndex=3;gestureOffset=0;pickedIndex=-1;confirmedIndex=-1;gesture=null;dragging=false;stage.classList.remove('fan-ready');$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';});
 let prevMobile=mobile;new ResizeObserver(()=>{const m=stage.clientWidth<650;if(m!==prevMobile){layout();prevMobile=m;}}).observe(stage);
 document.documentElement.dataset.sceneMotion='on';
 $('sceneLabel').textContent='LIVE 3D CARDS + CINEMATIC SCENE';
