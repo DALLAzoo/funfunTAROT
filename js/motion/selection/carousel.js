@@ -20,6 +20,9 @@ export class Carousel {
   window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
+  // A separate, non-interactive spotlight follows the selected fan slot.
+  // It does not alter card motion, stacking order or the existing backlight.
+  this.spotlight=document.createElement('div');this.spotlight.className='selection-follow-spotlight';this.spotlight.setAttribute('aria-hidden','true');stage.prepend(this.spotlight);
  }
  clickSlot(e){
   if(this.busy||this.pointer||performance.now()-this.lastDrag<=C.carousel.clickGuard)return;
@@ -89,7 +92,17 @@ export class Carousel {
   });
   this.updateGlow();this.onIndex(this.index);
  }
- updateGlow(){ /* Soft stationary backlight; no tracing line. */ }
+ updateGlow(){
+  // Use the existing fan geometry (no layout reads, no new animation loop).
+  const picked=this.selectedCard;
+  const active=!!picked&&!picked.hidden;
+  this.stage.classList.toggle('has-follow-spotlight',active);
+  if(!active)return;
+  const i=this.cards.indexOf(picked);
+  const p=slotPose(this.distance(i)+this.offset,this.stage.clientWidth);
+  this.spotlight.style.setProperty('--follow-x',p.x.toFixed(2)+'px');
+  this.spotlight.style.setProperty('--follow-y',(p.y-C.carousel.selectedLift).toFixed(2)+'px');
+ }
  down(e){if(this.busy||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};
  }
  move(e){const p=this.pointer;if(!p||e.pointerId!==p.id)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;
@@ -107,5 +120,5 @@ export class Carousel {
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){}}
  cancel(){if(this.pointer)this.releasePointer(this.pointer.id);this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');if(!this.busy)this.layout();}
- destroy(){if(this.pointer)this.releasePointer(this.pointer.id);if(this.raf)cancelAnimationFrame(this.raf);this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.stage.classList.remove('is-dragging');}
+ destroy(){if(this.pointer)this.releasePointer(this.pointer.id);if(this.raf)cancelAnimationFrame(this.raf);this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.aura.remove();this.spotlight.remove();this.stage.classList.remove('is-dragging','has-follow-spotlight');}
 }
