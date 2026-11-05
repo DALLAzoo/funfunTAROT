@@ -1,125 +1,64 @@
-/* In-between Shift — Stage Depth Study v1 (PC + mobile)
-   All decoration stays behind .cards. No card size, timing or motion is changed.
-   The layer is inserted by js/effects/stage-depth.js, and is pointer-transparent. */
+/* In-between Shift — Cinematic stage v4.
+   One coherent key-light, no fake floor or periodically sampled card shadows.
+   Stage artwork stays behind the existing 3D deck. */
 .stage .stage-depth {
-  --space-far-x: 0px;
-  --space-far-y: 0px;
-  --space-beam-x: 0px;
-  --space-beam-y: 0px;
-  --space-air-x: 0px;
-  --space-air-y: 0px;
-  --space-floor-x: 0px;
-  --space-group-x: 50%;
-  --space-shadow-width: 230px;
-  --space-shadow-alpha: .50;
-  --space-focus-x: 50%;
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none !important;
-  contain: paint;
+  --scene-far-x:0px;
+  --scene-far-y:0px;
+  --scene-light-x:0px;
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none!important;
+  overflow:hidden;
+  isolation:isolate;
 }
-.stage-depth > * { position: absolute; pointer-events: none !important; }
-/* The outermost layer recedes when the pointer moves. */
+.stage-depth > div {position:absolute;pointer-events:none!important;}
 .stage-depth__distance {
-  inset: -12%;
+  inset:-6%;
   background:
-    radial-gradient(ellipse 57% 52% at 50% 38%, rgba(79,132,113,.24), transparent 76%),
-    radial-gradient(ellipse 32% 54% at 12% 57%, rgba(15,51,45,.44), transparent 85%),
-    radial-gradient(ellipse 38% 56% at 88% 45%, rgba(8,39,38,.50), transparent 82%),
-    linear-gradient(180deg, rgba(5,16,17,.32), transparent 50%, rgba(2,10,12,.58));
-  transform: translate3d(var(--space-far-x), var(--space-far-y), 0) scale(1.025);
-  transition: transform 420ms ease-out;
+    radial-gradient(ellipse 64% 60% at 50% 43%, rgba(53,95,80,.29),transparent 78%),
+    radial-gradient(ellipse 30% 72% at 6% 52%, rgba(4,14,18,.70),transparent 94%),
+    radial-gradient(ellipse 35% 70% at 94% 51%, rgba(4,14,18,.75),transparent 94%),
+    linear-gradient(180deg,rgba(9,24,25,.20),rgba(7,18,20,.03) 42%,rgba(2,10,13,.35));
+  transform:translate3d(var(--scene-far-x),var(--scene-far-y),0);
+  transition:transform 350ms cubic-bezier(.2,.7,.25,1);
 }
-/* Two soft volumes of light create distant air without hard-edged spotlight cones. */
-.stage-depth__beams {
-  inset: -17% -8%;
+/* One light source: upper-left, warm neutral gold. Never moves separately
+   from an invented ground or casts a contradictory deck-shaped shadow. */
+.stage-depth__keylight {
+  inset:-14%;
+  opacity:.71;
   background:
-    linear-gradient(112deg, transparent 28%, rgba(129,187,166,.065) 42%, rgba(167,213,184,.075) 47%, transparent 61%),
-    linear-gradient(70deg, transparent 33%, rgba(93,145,126,.065) 46%, rgba(185,213,179,.055) 52%, transparent 64%);
-  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.80),rgba(0,0,0,.48) 60%,transparent 92%);
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,.80),rgba(0,0,0,.48) 60%,transparent 92%);
-  transform: translate3d(var(--space-beam-x), var(--space-beam-y), 0);
-  transition: transform 450ms ease-out;
+    radial-gradient(ellipse 24% 75% at 37% 30%,rgba(207,189,142,.22),transparent 98%),
+    linear-gradient(110deg,transparent 33%,rgba(205,210,176,.048) 44%,rgba(243,221,167,.115) 48%,transparent 61%);
+  transform:translate3d(var(--scene-light-x),0,0) rotate(-1.4deg) scale(1.02);
+  animation:scene-keylight-glide 11s ease-in-out infinite alternate;
+  will-change:transform;
 }
-/* Mid-distance atmosphere moves more than the far background. */
-.stage-depth__air {
-  inset: 2% -16% 14%;
-  border-radius: 50%;
-  background:
-    radial-gradient(ellipse 42% 26% at 32% 37%,rgba(124,178,149,.12),transparent 95%),
-    radial-gradient(ellipse 45% 32% at 71% 64%,rgba(95,167,144,.13),transparent 95%);
-  filter: blur(24px);
-  opacity: .83;
-  transform: translate3d(var(--space-air-x), var(--space-air-y), 0);
-  animation: space-air-breathe 13s ease-in-out infinite alternate;
+.stage-depth__edge-vignette {
+  inset:0;
+  background:radial-gradient(ellipse 71% 78% at 50% 44%,transparent 45%,rgba(2,10,11,.33) 100%);
 }
-@keyframes space-air-breathe {
-  from {opacity:.53;}
-  to {opacity:.88;}
+@keyframes scene-keylight-glide {
+  from { transform:translate3d(calc(var(--scene-light-x) - 32px),-2px,0) rotate(-1.4deg) scale(1.02); }
+  to   { transform:translate3d(calc(var(--scene-light-x) + 32px), 3px,0) rotate(1.4deg) scale(1.035); }
 }
-/* A low reflected pool defines a ground plane beneath the floating deck. */
-.stage-depth__floor {
-  left: -19%; right:-19%; bottom:-24%; height:65%;
-  background:
-    radial-gradient(ellipse 50% 43% at 50% 32%,rgba(118,173,153,.17),rgba(35,80,69,.105) 48%, transparent 78%),
-    linear-gradient(180deg, transparent 0%,rgba(4,15,16,.36) 62%,rgba(1,6,8,.75) 100%);
-  transform: translate3d(var(--space-floor-x),0,0);
-  transition: transform 450ms ease-out;
+/* Static depth, texture and lighting remain visible while motion is off. */
+html[data-space-motion="off"] .stage-depth__keylight {animation:none!important;will-change:auto;}
+html[data-space-motion="off"] .stage-depth__distance,
+html[data-space-motion="off"] .stage-depth__keylight {transition:none!important;}
+.stage-depth-motion-toggle {
+  position:absolute;right:10px;top:10px;z-index:5;
+  padding:7px 10px;border-radius:999px;
+  border:1px solid rgba(211,210,183,.23);
+  background:rgba(9,26,25,.80);color:rgba(235,230,210,.92);
+  font:500 12px/1.25 system-ui,-apple-system,'Noto Sans KR',sans-serif;
+  cursor:pointer;pointer-events:auto;
 }
-.stage-depth__horizon {
-  left: 9%;right:9%;top:73%;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(169,203,181,.085) 25%,rgba(179,217,192,.16) 50%,rgba(169,203,181,.085) 75%,transparent);
-  box-shadow: 0 9px 32px 7px rgba(92,151,130,.045);
-}
-/* The shadow responds to the actual on-screen width and position of the moving cards. */
-.stage-depth__deck-shadow {
-  left:var(--space-group-x);
-  bottom:13%;
-  width:var(--space-shadow-width);
-  max-width:94%;height:clamp(32px,9%,68px);
-  border-radius:50%;
-  opacity:var(--space-shadow-alpha);
-  background:radial-gradient(ellipse closest-side,rgba(0,0,0,.78),rgba(0,0,0,.30) 57%,transparent 100%);
-  filter:blur(14px);
-  transform:translateX(-50%) scaleY(.68);
-  transition:left 110ms linear,width 110ms linear,opacity 130ms linear;
-}
-/* A modest floor reflection is not a duplicate/mirror of the actual card art. */
-.stage-depth__floor-glint {
-  left:var(--space-group-x);bottom:4%;
-  width:var(--space-shadow-width);max-width:92%;height:13%;
-  transform:translateX(-50%);
-  opacity:.50;
-  background:radial-gradient(ellipse closest-side,rgba(170,214,189,.11),rgba(132,190,168,.06) 42%,transparent 100%);
-  filter:blur(20px);
-  transition:left 150ms linear,width 150ms linear;
-}
-/* Extra contact shadow only when a card is actually chosen. */
-.stage-depth__focus-shadow {
-  left:var(--space-focus-x);bottom:12%;
-  width:clamp(65px,18%,140px);height:36px;
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(0,0,0,.65),rgba(0,0,0,.25) 50%,transparent 74%);
-  filter:blur(9px);
-  opacity:0;
-  transform:translateX(-50%);
-  transition:left 300ms cubic-bezier(.2,.7,.25,1),opacity 300ms ease;
-}
-.stage.selection-stage.has-depth-choice .stage-depth__focus-shadow{opacity:.70;}
-/* The actual cards sit above the ambience. Never capture clicks or drags. */
-.stage .cards{z-index:1;}
-@media (max-width:600px) {
-  .stage-depth__air {filter:blur(16px);opacity:.67;}
-  .stage-depth__beams {opacity:.78;}
-  .stage-depth__deck-shadow {filter:blur(10px);}
-  .stage-depth__floor-glint {filter:blur(13px);}
-  .stage-depth__horizon {top:72%;}
-}
-@media (prefers-reduced-motion:reduce) {
-  .stage-depth__air {animation:none;}
-  .stage-depth__distance,.stage-depth__beams,.stage-depth__air,
-  .stage-depth__floor,.stage-depth__deck-shadow,
-  .stage-depth__floor-glint,.stage-depth__focus-shadow {transition:none;}
+.stage-depth-motion-toggle:hover {background:rgba(30,55,50,.95);}
+.stage-depth-motion-toggle:focus-visible {outline:2px solid #f1d7a2;outline-offset:3px;}
+@media(max-width:600px){.stage-depth__keylight{opacity:.56}.stage-depth-motion-toggle{top:6px;right:6px;font-size:11px;}}
+@media(prefers-reduced-motion:reduce){
+  html:not([data-space-motion="on"]) .stage-depth__keylight {animation:none!important;will-change:auto;}
+  html:not([data-space-motion="on"]) .stage-depth__distance {transition:none!important;}
 }
