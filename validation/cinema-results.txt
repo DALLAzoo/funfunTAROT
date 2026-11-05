@@ -1,0 +1,11 @@
+PASS 22 records, no front-image assets, independent registry count
+PASS Invalid counts, unsupported visible/result counts, camera and missing required fronts rejected
+PASS Trial pools have unique IDs and no fixed excluded pair
+PASS Explicit-ID pool validation and exact data references
+PASS Infinite wrap and visible slots work at both boundaries
+PASS Stage and PC/mobile sizes are independent
+PASS Automatic 3/5-slot fan geometry, same physical card size
+PASS Perspective creates near/far size variation without randomized scale
+PASS Viewport cover scale covers portrait, landscape and extreme ratios
+PASS No hover face brightness filter; transparent tap highlight; outside focus; opaque disabled cards
+10 groups passed; pure math/config/source checks, not a substitute for browser QA

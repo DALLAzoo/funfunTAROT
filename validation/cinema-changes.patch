@@ -1,0 +1,686 @@
+--- a/index.html
++++ b/index.html
+@@ -1 +1 @@
+-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101b19"><title>In-between Shift | 1장 타로</title><link rel="stylesheet" href="./css/tarot.css"></head><body><main class="tarot-app" id="tarotApp"><header class="top"><span>IN-BETWEEN SHIFT</span><span>1장 타로 · 독립 시험본</span></header><section class="intro"><p class="eyebrow">A MOMENT BETWEEN</p><h1>마음이 끌리는 카드를 선택하세요</h1><p id="instruction" aria-live="polite">카드를 섞을 때마다 새로운 무늬의 덱을 만납니다.</p></section><section class="stage" id="stage" aria-label="타로 카드 애니메이션"><div class="aura"></div><div class="cards" id="cards"></div></section><section class="controls"><div class="status"><span class="status-dot"></span><span id="status" role="status">준비 완료</span><span id="backName"></span></div><div class="actions"><button id="shuffleBtn" class="primary">카드 섞기</button><button id="resetBtn" class="secondary" hidden>다시 시작</button></div><p class="note">셔플할 때 덱 전체의 뒷면 무늬가 바뀝니다. 카드를 고르면 앞면이 공개됩니다.</p></section></main><script type="module" src="./js/main.js"></script></body></html>
++<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101b19"><title>In-between Shift | 1장 타로</title><link rel="stylesheet" href="./css/tarot.css"></head><body><main class="tarot-app" id="tarotApp"><header class="top"><span>IN-BETWEEN SHIFT</span><span>1장 타로 · 독립 시험본</span></header><section class="intro"><p class="eyebrow">A MOMENT BETWEEN</p><h1>마음이 끌리는 카드를 선택하세요</h1><p id="instruction" aria-live="polite">카드를 섞을 때마다 새로운 무늬의 덱을 만납니다.</p></section><section class="stage" id="stage" aria-label="타로 카드 애니메이션"><div class="aura"></div><div class="cards" id="cards"></div></section><section class="controls"><div class="status"><span class="status-dot"></span><span id="status" role="status">준비 완료</span><span id="backName"></span></div><div id="navigation" class="navigation" hidden><button id="prevBtn" class="nav-btn" aria-label="이전 카드">←</button><span id="counter" aria-live="polite"></span><button id="nextBtn" class="nav-btn" aria-label="다음 카드">→</button><button id="selectBtn" class="secondary">가운데 카드 선택</button></div><div class="actions"><button id="shuffleBtn" class="primary">카드 섞기</button></div><p class="note" id="poolNotice"></p><p class="note" id="inventory"></p></section></main><section id="resultView" class="result-view" hidden><header class="top"><span>IN-BETWEEN SHIFT</span><span>YOUR CARD</span></header><h1 id="resultTitle" tabindex="-1">당신이 선택한 카드</h1><div id="resultCardHost" class="result-card-host"></div><h2 id="resultName"></h2><p id="resultNotice" class="note"></p><button id="resultAgain" class="primary">다시 섞기</button></section><script type="module" src="./js/main.js"></script></body></html>
+--- a/css/tarot.css
++++ b/css/tarot.css
+@@ -1,5 +1,17 @@
+-:root{color-scheme:dark;--ink:#e5eee8;--muted:#a0b7aa;--mint:#9bd5b5;--bg:#101b19}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 38%,#28453a 0,#152723 40%,#0b1413 85%);font-family:system-ui,-apple-system,'Noto Sans KR',sans-serif;color:var(--ink)}button{font:inherit}.tarot-app{min-height:100dvh;display:flex;flex-direction:column;max-width:1100px;margin:auto;padding:clamp(15px,3vw,30px)}.top{display:flex;justify-content:space-between;gap:15px;font-size:11px;letter-spacing:.14em;color:#a9c7b6}.intro{text-align:center;margin:clamp(18px,4vh,40px) 0 0}.eyebrow{color:#8eb9a3;font-size:11px;letter-spacing:.3em}.intro h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(23px,4.5vw,42px);margin:12px 0}.intro p:last-child{font-size:13px;color:var(--muted)}.stage{position:relative;flex:1;min-height:320px;max-height:610px;perspective:1100px;overflow:hidden;isolation:isolate}.aura{position:absolute;inset:10% 10%;background:radial-gradient(ellipse,#91d4b017,transparent 65%);pointer-events:none}.cards{position:absolute;inset:0;transform-style:preserve-3d}.tarot-card{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);border:0;padding:0;background:none;transform-style:preserve-3d;cursor:default;will-change:transform;touch-action:manipulation}.tarot-card.selectable{cursor:pointer}.tarot-card.selectable:hover .card-face{filter:brightness(1.2)}.card-inner{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d}.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden;border:1px solid #c0d6bb88;box-shadow:0 8px 22px #0008,0 0 0 2px #0b1514;transition:filter .2s}.card-back{background-image:var(--back-image);background-size:cover;background-position:center}.card-front{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:linear-gradient(160deg,#f0e7d0,#b8ac8c);color:#243c33;border:4px solid #d9cfad}.front-symbol{font-size:clamp(30px,5vw,65px)}.front-name{font-family:Georgia,serif;font-size:clamp(12px,1.7vw,20px);font-weight:bold}.front-sub{font-size:10px;letter-spacing:.16em}.controls{text-align:center;padding:8px 0 16px}.status{display:flex;align-items:center;justify-content:center;gap:9px;color:#b7d5c1;font-size:12px;min-height:30px}.status-dot{width:7px;height:7px;border-radius:50%;background:#9bd5b5;box-shadow:0 0 8px #9bd5b5}.status #backName{color:#819e8e}.actions{display:flex;justify-content:center;gap:12px;margin-top:12px}button.primary,button.secondary{min-width:170px;padding:13px 25px;border-radius:10px;cursor:pointer;border:1px solid #90c9a7}button.primary{background:#315b47;color:#f1fff4}button.secondary{background:#182a24;color:#d7ecdf}button:disabled{opacity:.5;cursor:wait}.tarot-card:disabled{opacity:1}button[hidden]{display:none}.note{font-size:11px;color:#7f9d8d;margin:15px 0 0}@media(max-width:600px){.top{font-size:9px}.stage{min-height:340px;max-height:480px}.intro{margin-top:18px}.intro h1{font-size:26px}.actions button{min-width:130px}.note{line-height:1.6}}@media(prefers-reduced-motion:reduce){.tarot-card{will-change:auto}}
++:root{color-scheme:dark;--ink:#e5eee8;--muted:#a0b7aa;--mint:#9bd5b5;--bg:#101b19}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 38%,#28453a 0,#152723 40%,#0b1413 85%);font-family:system-ui,-apple-system,'Noto Sans KR',sans-serif;color:var(--ink)}button{font:inherit}.tarot-app{min-height:100dvh;display:flex;flex-direction:column;max-width:1100px;margin:auto;padding:clamp(15px,3vw,30px)}.top{display:flex;justify-content:space-between;gap:15px;font-size:11px;letter-spacing:.14em;color:#a9c7b6}.intro{text-align:center;margin:clamp(18px,4vh,40px) 0 0}.eyebrow{color:#8eb9a3;font-size:11px;letter-spacing:.3em}.intro h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(23px,4.5vw,42px);margin:12px 0}.intro p:last-child{font-size:13px;color:var(--muted)}.stage{position:relative;flex:1;min-height:320px;max-height:610px;perspective:var(--perspective,1000px);overflow:hidden;isolation:isolate}.aura{position:absolute;inset:10% 10%;background:radial-gradient(ellipse,#91d4b017,transparent 65%);pointer-events:none}.cards{position:absolute;inset:0;transform-style:preserve-3d}.tarot-card{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);border:0;padding:0;background:none;transform-style:preserve-3d;cursor:default;will-change:transform;touch-action:manipulation}.tarot-card.selectable{cursor:pointer}.card-inner{display:block;width:100%;height:100%;position:relative;transform-style:preserve-3d}.card-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:8px;overflow:hidden;border:1px solid #c0d6bb88;box-shadow:0 8px 22px #0008,0 0 0 2px #0b1514;transition:filter .2s}.card-back{background-image:var(--back-image);background-size:cover;background-position:center}.card-front{transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;background:linear-gradient(160deg,#f0e7d0,#b8ac8c);color:#243c33;border:4px solid #d9cfad}.front-symbol{font-size:clamp(30px,5vw,65px)}.front-name{font-family:Georgia,serif;font-size:clamp(12px,1.7vw,20px);font-weight:bold}.front-sub{font-size:10px;letter-spacing:.16em}.controls{text-align:center;padding:8px 0 16px}.status{display:flex;align-items:center;justify-content:center;gap:9px;color:#b7d5c1;font-size:12px;min-height:30px}.status-dot{width:7px;height:7px;border-radius:50%;background:#9bd5b5;box-shadow:0 0 8px #9bd5b5}.status #backName{color:#819e8e}.actions{display:flex;justify-content:center;gap:12px;margin-top:12px}button.primary,button.secondary{min-width:170px;padding:13px 25px;border-radius:10px;cursor:pointer;border:1px solid #90c9a7}button.primary{background:#315b47;color:#f1fff4}button.secondary{background:#182a24;color:#d7ecdf}button:disabled{opacity:.5;cursor:wait}.tarot-card:disabled{opacity:1}button[hidden]{display:none}.note{font-size:11px;color:#7f9d8d;margin:15px 0 0}@media(max-width:600px){.top{font-size:9px}.stage{min-height:340px;max-height:480px}.intro{margin-top:18px}.intro h1{font-size:26px}.actions button{min-width:130px}.note{line-height:1.6}}@media(prefers-reduced-motion:reduce){.tarot-card{will-change:auto}}
+ 
+ /* Independent layers: card pixels stay opaque and sharp. */
+ .magic-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none!important;contain:strict}
+ .magic-rear{z-index:0}.cards{z-index:1}.magic-front{z-index:2}
++
++/* All material/glow properties are supplied by config.js. */
++[hidden]{display:none!important}body{overflow-x:hidden}.intro p:last-child{min-height:2.5em}.stage{min-height:430px;max-height:650px;touch-action:pan-y}.tarot-card{appearance:none;-webkit-appearance:none;-webkit-tap-highlight-color:transparent;background:transparent!important;outline:0;user-select:none;-webkit-user-select:none;touch-action:pan-y}
++.tarot-card:disabled{opacity:1!important}.tarot-card:hover,.tarot-card:active,.tarot-card:focus{background:transparent!important}.card-face{filter:none!important;border:1px solid #ddd6c055;box-shadow:0 var(--shadow-y) var(--shadow-blur) rgba(0,0,0,var(--shadow-alpha));transition:none}
++.card-edge{position:absolute;inset:0;border-radius:8px;background:var(--edge);pointer-events:none;box-shadow:0 0 0 1px #16191b}.edge-1{transform:translateZ(calc(-1 * var(--thickness)))}.edge-2{transform:translateZ(calc(-.66 * var(--thickness)))}.edge-3{transform:translateZ(calc(-.33 * var(--thickness)));border:1px solid rgba(255,255,255,var(--satin-alpha))}
++.tarot-card.selectable::after{content:'';position:absolute;inset:-2px;border:1px solid rgba(var(--glow-rgb),var(--glow-alpha));border-radius:10px;box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),var(--glow-alpha));pointer-events:none;animation:edge-pulse var(--glow-pulse) ease-in-out infinite;transform:translateZ(1px)}
++.tarot-card.selectable.is-center::after{box-shadow:0 0 var(--glow-blur) rgba(var(--glow-rgb),calc(var(--glow-alpha) * var(--center-multiplier)))}
++.is-dragging .tarot-card.selectable::after{animation:none;opacity:var(--drag-glow)}.tarot-card:focus-visible::after{content:'';position:absolute;inset:-5px;border:2px solid #ded3ff;border-radius:12px;box-shadow:none;animation:none;pointer-events:none}
++@keyframes edge-pulse{0%,100%{opacity:.62}50%{opacity:1}}.card-front{padding:12px;text-align:center;overflow:hidden}.front-name{font-size:clamp(13px,1.2vw,19px);overflow-wrap:anywhere;max-width:100%}.front-sub{font-size:10px;line-height:1.5;letter-spacing:.04em}.card-front.has-image{padding:0;border:0;background:transparent}.card-front img{width:100%;height:100%;object-fit:contain;display:block}
++.navigation{display:flex;align-items:center;justify-content:center;gap:15px;min-height:48px}.nav-btn{border:1px solid #bdb2dd55;background:#17221f;color:#e7dfff;border-radius:50%;width:40px;height:40px;cursor:pointer}.navigation #counter{min-width:58px;color:#c1b5d6;font-size:13px}.navigation .secondary{min-width:140px;padding:10px 16px}.result-view{min-height:100dvh;padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;background:radial-gradient(ellipse at 50% 40%,#28453a,#0b1413 85%)}.result-view>.top{position:absolute;top:25px;left:30px;right:30px}.result-view h1{font-family:Georgia,serif;font-size:24px;font-weight:400;margin:20px 0 0}.result-view h2{font-family:Georgia,serif;font-size:20px;font-weight:400;margin:0}.result-card-host{position:relative;display:flex;align-items:center;justify-content:center;min-height:100px}.result-card{position:relative;left:auto;top:auto;transform:none;cursor:default}.result-view .note{margin:0;text-align:center}.transition-overlay{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:auto}.transition-overlay .tarot-card::after{display:none}.transition-overlay .card-face{border-radius:0}
++@media(max-width:600px){.stage{min-height:380px;max-height:500px}.result-view{padding:22px;gap:16px}.navigation{gap:10px}.navigation .secondary{min-width:110px;font-size:12px}.result-view h1{font-size:22px}}
++@media(prefers-reduced-motion:reduce){.tarot-card.selectable::after{animation:none}}
+--- a/js/card-animation.js
++++ b/js/card-animation.js
+@@ -1,121 +1,45 @@
+-import {FINALE_DURATION, pressureProgress} from './finale-motion.js';
+-import {SELECTION_COUNT, metrics, liftPose, orbitPose, stackPose, fanPose, mixPose, smooth} from './shuffle-paths.js';
+-const ease = 'cubic-bezier(.2,.7,.2,1)';
+-const running = new WeakMap();
+-const samples = new WeakMap();
+-function readPose(value) {
+-  const n=[...value.matchAll(/(?:translate3d|rotateZ|rotateY|rotateX|scale)\(([^)]+)\)/g)].map(m=>m[1].split(',').map(parseFloat));
+-  return n.length===5?{x:n[0][0],y:n[0][1],z:n[0][2],rot:n[1][0],ry:n[2][0],rx:n[3][0],scale:n[4][0]}:null;
++import {CONFIG as C,stageSize} from './config.js';
++import {travelPose,slotPose,stackPose,mix,smooth} from './cinema-core.js';
++import {FINALE_DURATION,pressureProgress} from './finale-motion.js';
++const running=new WeakMap(),samples=new WeakMap();
++export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
++export const transform=p=>pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
++const readPose=s=>{const v=[...s.matchAll(/(?:translate3d|rotateZ|rotateY|rotateX|scale)\(([^)]+)\)/g)].map(m=>m[1].split(',').map(parseFloat));return v.length===5?{x:v[0][0],y:v[0][1],z:v[0][2],rot:v[1][0],ry:v[2][0],rx:v[3][0],scale:v[4][0]}:stackPose(0,1)};
++export function sampleCard(el){const tr=samples.get(el);if(!tr)return readPose(el.style.transform);const n=Math.max(0,Math.min(1,tr.animation.effect.getComputedTiming().progress??0))*(tr.poses.length-1),i=Math.min(tr.poses.length-2,Math.floor(n));return mix(tr.poses[i],tr.poses[i+1],n-i);}
++export function cardSize(stage,phase='shuffle'){const width=stageSize(phase,stage.clientWidth);stage.style.setProperty('--card-w',width+'px');stage.style.setProperty('--card-h',width*C.aspect+'px');return width;}
++export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',startTime=null,observe=null){
++ running.get(el)?.cancel();const a=el.animate(frames,{duration,easing,fill:'both'});if(startTime!==null)a.startTime=startTime;
++ running.set(el,a);if(frames.every(f=>f.transform))samples.set(el,{animation:a,poses:frames.map(f=>readPose(f.transform))});observe?.(a);
++ try{await a.finished;}catch{return false;}
++ if(running.get(el)!==a)return false;
++ const last=frames.at(-1);for(const k of ['transform','width','height','borderRadius'])if(last[k]!==undefined)el.style[k]=last[k];
++ running.delete(el);samples.delete(el);a.cancel();return true;
+ }
+-export function sampleCard(el) {
+-  const track=samples.get(el);
+-  if(!track)return readPose(el.style.transform);
+-  const progress=track.animation.effect.getComputedTiming().progress;
+-  const t=Math.max(0,Math.min(1,progress??0))*(track.poses.length-1);
+-  const i=Math.min(track.poses.length-2,Math.floor(t));
+-  return mixPose(track.poses[i],track.poses[i+1],t-i);
++export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
++export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
++export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
++export async function shuffleMotion(els,stage,phase=()=>{}){
++ const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
++ if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean))return false;
++ phase('vortex');
++ const result=await Promise.all(els.map((el,i)=>{
++  const frames=[];
++  for(let n=0;n<=100;n++){
++   const t=n/100;
++   const p=t<.78?travelPose(i,smooth(t/.78),w,h,count):mix(travelPose(i,1,w,h,count),stackPose(i,count),smooth(Math.min(1,(t-.78)/.19)));
++   frames.push({offset:t,transform:transform(p)});
++  }
++  return play(el,frames,C.shuffle.duration,'linear');
++ }));return result.every(Boolean);
+ }
+-export function cardSize(stage) {
+-  const w = Math.max(65, Math.min(112, stage.clientWidth * .18));
+-  stage.style.setProperty('--card-w', `${w}px`);
+-  stage.style.setProperty('--card-h', `${w * 1.58}px`);
+-  return w;
++export async function fanMotion(els,stage,onStart=()=>{}){
++ const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);cardSize(stage,'selection');
++ const start=stage.ownerDocument.timeline.currentTime;let leader,done=false;
++ const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
++ const result=await Promise.all(els.map((el,i)=>{
++  const from=stackPose(i,els.length),to=slotPose(i-(els.length-1)/2,stage.clientWidth),frames=[];
++  el.style.width=fromSize+'px';el.style.height=fromSize*C.aspect+'px';el.style.transform=transform(from);
++  for(let n=0;n<=80;n++){const t=n/80,q=pressureProgress(t),s=fromSize+(toSize-fromSize)*q;frames.push({offset:t,transform:transform(mix(from,to,q)),width:s+'px',height:s*C.aspect+'px'});}
++  return play(el,frames,FINALE_DURATION,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
++ }));done=true;return result.every(Boolean);
+ }
+-export function pose(x,y,z,rot=0,ry=0,scale=1,rx=0) {
+-  return `translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
+-}
+-const transform = p => pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
+-async function play(el, frames, duration, delay=0, easing=ease, startTime=null, observe=null) {
+-  const previous = running.get(el);
+-  if (previous) previous.cancel();
+-  const animation = el.animate(frames, {duration,delay,easing,fill:'both'});
+-  if(startTime!==null)animation.startTime=startTime;
+-  observe?.(animation);
+-  running.set(el, animation);
+-  samples.set(el,{animation,poses:frames.map(f=>readPose(f.transform))});
+-  try { await animation.finished; }
+-  catch { return false; }
+-  if (running.get(el) !== animation) return false;
+-  // Commit exactly the last keyframe before removing the WAAPI effect.
+-  el.style.transform = frames[frames.length - 1].transform;
+-  running.delete(el);
+-  samples.delete(el);
+-  animation.cancel();
+-  return true;
+-}
+-export function animateTo(el,to,duration=650,delay=0) {
+-  return play(el,[{transform:el.style.transform || pose(0,0,0)},{transform:to}],duration,delay);
+-}
+-export function cancelAll(els) {
+-  els.forEach(el=>{
+-    running.delete(el);
+-  samples.delete(el);
+-    el.getAnimations({subtree:true}).forEach(a=>a.cancel());
+-  });
+-}
+-export function floatLayout(els,stage) {
+-  const width=stage.clientWidth,height=stage.clientHeight;
+-  els.forEach((el,i)=>{
+-    const a=i*2.39996,r=Math.sqrt((i+.5)/els.length);
+-    el.hidden=false;
+-    el.style.zIndex='auto'; // Z depth governs occlusion, without a fan-time order switch.
+-    el.style.transform=pose(Math.cos(a)*width*.30*r,Math.sin(a)*height*.24*r,Math.sin(i*2.4)*90,(i*37)%80-40,Math.cos(i)*28,.72+.2*(i%4)/3);
+-  });
+-}
+-export async function shuffleMotion(els,stage,phase=()=>{}) {
+-  phase("charge");
+-  const m=metrics(stage.clientWidth,stage.clientHeight);
+-  const lifted=await Promise.all(els.map((el,i)=>animateTo(el,transform(liftPose(i,m)),560)));
+-  if(lifted.some(value=>!value))return false;
+-  // One continuous sampled trajectory: blend onto independent orbital planes,
+-  // then decelerate onto the stack. No separate phase resets or timeout gaps.
+-  phase("vortex");
+-  const results=await Promise.all(els.map((el,i)=>{
+-    const frames=[];
+-    for(let sample=0;sample<=80;sample++){
+-      const t=sample/80;
+-      let p;
+-      if(t<.16)p=mixPose(liftPose(i,m),orbitPose(i,0,m),smooth(t/.16));
+-      else if(t<.76)p=orbitPose(i,smooth((t-.16)/.60),m);
+-      else p=mixPose(orbitPose(i,1,m),stackPose(i,Math.min(SELECTION_COUNT,els.length)),smooth(Math.min(1,(t-.76)/.20)));
+-      frames.push({offset:t,transform:transform(p)});
+-    }
+-    return play(el,frames,2600,0,'linear');
+-  }));
+-  return results.every(Boolean);
+-}
+-export function fanLayout(els,stage) {
+-  cardSize(stage);
+-  els.forEach((el,i)=>{el.style.transform=transform(fanPose(i,els.length,stage.clientWidth));});
+-}
+-export async function fanMotion(els,stage,onStart=()=>{}) {
+-  cardSize(stage);
+-  const startTime=stage.ownerDocument?.timeline?.currentTime??null;
+-  let leader=null,completed=false;
+-  const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,
+-    progress:()=>completed?1:(leader?.effect.getComputedTiming().progress??0)};
+-  const results=await Promise.all(els.map((el,i)=>{
+-    const from=readPose(el.style.transform),to=fanPose(i,els.length,stage.clientWidth),frames=[];
+-    for(let n=0;n<=80;n++){
+-      const t=n/80,q=pressureProgress(t);
+-      frames.push({offset:t,transform:transform(mixPose(from,to,q))});
+-    }
+-    return play(el,frames,FINALE_DURATION,0,'linear',startTime,
+-      i===0?animation=>{leader=animation;onStart(clock);}:null);
+-  }));
+-  completed=true;
+-  return results.every(Boolean);
+-}
+-export async function revealMotion(els,chosen,stage) {
+-  const width=stage.clientWidth;
+-  const results=await Promise.all(els.map((el,i)=>el===chosen
+-    ?animateTo(el,pose(0,-12,180,0,0,1.28),700)
+-    :animateTo(el,pose((i%2?1:-1)*width*.85,150,-140,0,0,.7),500)));
+-  if(results.some(value=>!value))return false;
+-  const inner=chosen.querySelector('.card-inner');
+-  const a=inner.animate([{transform:'rotateY(0deg)'},{transform:'rotateY(180deg)'}],{duration:900,easing:ease,fill:'both'});
+-  try{await a.finished;}catch{return false;}
+-  inner.style.transform='rotateY(180deg)';
+-  a.cancel();
+-  return true;
+-}
+--- a/js/card-view.js
++++ b/js/card-view.js
+@@ -1,33 +1,11 @@
+-
+-export function renderCards(container, deck, back) {
+-  container.replaceChildren();
+-
+-  return deck.map(([name, symbol], i) => {
+-    const el = document.createElement('button');
+-
+-    el.type = 'button';
+-    el.className = 'tarot-card';
+-    el.setAttribute('aria-label', `${i + 1}번째 카드`);
+-
+-    // 이미지 경로를 페이지 기준의 절대 URL로 변환
+-    const imageUrl = new URL(back.url, document.baseURI).href;
+-    el.style.setProperty('--back-image', `url("${imageUrl}")`);
+-
+-    el.innerHTML = `
+-      <span class="card-inner">
+-        <span class="card-face card-back"></span>
+-        <span class="card-face card-front">
+-          <span class="front-symbol"></span>
+-          <span class="front-name"></span>
+-          <span class="front-sub">IN-BETWEEN SHIFT</span>
+-        </span>
+-      </span>
+-    `;
+-
+-    el.querySelector('.front-symbol').textContent = symbol;
+-    el.querySelector('.front-name').textContent = name;
+-
+-    container.append(el);
+-    return el;
+-  });
++export function renderCards(container,deck,back){
++ container.replaceChildren();return deck.map((data,i)=>{
++  const el=document.createElement('button');el.type='button';el.className='tarot-card';el.dataset.cardId=data.id;el.cardData=data;
++  el.setAttribute('aria-label',`${i+1}번째 카드`);el.style.setProperty('--back-image',`url("${new URL(back.url,document.baseURI).href}")`);
++  el.innerHTML='<span class="card-edge edge-1"></span><span class="card-edge edge-2"></span><span class="card-edge edge-3"></span><span class="card-inner"><span class="card-face card-back"></span><span class="card-face card-front" aria-hidden="true"><span class="front-symbol"></span><span class="front-name"></span><span class="front-sub"></span></span></span>';
++  const front=el.querySelector('.card-front');
++  if(data.frontImage){const image=document.createElement('img');image.src=new URL(data.frontImage,document.baseURI).href;image.alt=data.name;image.draggable=false;front.replaceChildren(image);front.classList.add('has-image');}
++  else{front.querySelector('.front-symbol').textContent=data.symbol||'✧';front.querySelector('.front-name').textContent=data.name;front.querySelector('.front-sub').textContent='앞면 이미지 미등록 · 시연 데이터';}
++  container.append(el);return el;
++ });
+ }
+--- a/js/carousel.js
++++ b/js/carousel.js
+@@ -0,0 +1,48 @@
++import {CONFIG as C} from './config.js';
++import {slotPose,visibleIndices,mod} from './cinema-core.js';
++import {animateTo,transform,cardSize} from './card-animation.js';
++export class Carousel {
++ constructor(cards,stage,onIndex,onChoose){
++  this.cards=cards;this.stage=stage;this.index=0;this.busy=false;this.onIndex=onIndex;this.onChoose=onChoose;this.lastDrag=-Infinity;
++  this.abort=new AbortController();const options={signal:this.abort.signal};
++  cards.forEach(c=>c.addEventListener('click',()=>{if(!this.busy&&performance.now()-this.lastDrag>C.carousel.clickGuard)onChoose(c);},options));
++  stage.addEventListener('pointerdown',e=>this.down(e),options);stage.addEventListener('pointermove',e=>this.move(e),options);
++  stage.addEventListener('pointerup',e=>this.up(e),options);stage.addEventListener('pointercancel',()=>this.cancel(),options);
++  stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},options);
++ }
++ get visible(){return visibleIndices(this.index,this.cards.length,C.counts.visible).map(i=>this.cards[i]);}
++ offset(i){const ids=visibleIndices(this.index,this.cards.length,C.counts.visible);return ids.indexOf(i)-(C.counts.visible-1)/2;}
++ layout(fraction=0){
++  cardSize(this.stage,'selection');const ids=visibleIndices(this.index,this.cards.length,C.counts.visible),r=(C.counts.visible-1)/2;
++  this.cards.forEach((c,i)=>{const j=ids.indexOf(i);c.hidden=j<0;c.disabled=j<0;c.classList.toggle('selectable',j>=0);c.classList.toggle('is-center',i===this.index);
++   if(j>=0){c.style.width='';c.style.height='';c.style.transform=transform(slotPose(j-r+fraction,this.stage.clientWidth));c.setAttribute('aria-label',j===r?'가운데 카드 선택':j<r?'왼쪽 카드 선택':'오른쪽 카드 선택');}
++  });this.onIndex(this.index);
++ }
++ async step(direction,fraction=0){
++  if(this.busy)return;this.busy=true;this.stage.classList.add('is-dragging');
++  const old=this.visible,r=(C.counts.visible-1)/2;
++  const outgoing=direction===1?old[0]:old.at(-1);
++  await Promise.all(old.map((c,j)=>{
++   const p=slotPose(j-r-direction,this.stage.clientWidth);
++   if(c===outgoing){p.x=-direction*(this.stage.clientWidth/2+parseFloat(getComputedStyle(c).width));p.z=-160;}
++   return animateTo(c,p,C.carousel.move);
++  }));
++  if(this.destroyed)return;
++  outgoing.hidden=true;this.index=mod(this.index+direction,this.cards.length);
++  const fresh=this.visible,incoming=direction===1?fresh.at(-1):fresh[0],target=slotPose(direction*r,this.stage.clientWidth);
++  incoming.hidden=false;incoming.disabled=false;incoming.classList.add('selectable');incoming.style.width='';incoming.style.height='';
++  incoming.style.transform=transform({...target,x:direction*(this.stage.clientWidth/2+parseFloat(getComputedStyle(incoming).width)),z:-160});
++  await animateTo(incoming,target,C.carousel.enter);
++  if(this.destroyed)return;
++  this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
++ }
++ down(e){if(this.busy||!e.target.closest('.tarot-card')||e.button!==0)return;this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false};}
++ move(e){if(!this.pointer||e.pointerId!==this.pointer.id)return;const dx=e.clientX-this.pointer.x,dy=e.clientY-this.pointer.y;if(!this.pointer.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>10){this.cancel();return;}
++  if(Math.abs(dx)>8){this.pointer.dragged=true;this.stage.setPointerCapture(e.pointerId);this.stage.classList.add('is-dragging');const gap=Math.abs(slotPose(1,this.stage.clientWidth).x);this.layout(Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap)));}
++ }
++ up(e){if(!this.pointer||e.pointerId!==this.pointer.id)return;const p=this.pointer,dx=e.clientX-p.x;this.pointer=null;this.stage.classList.remove('is-dragging');
++  if(p.dragged){this.lastDrag=performance.now();e.preventDefault();if(Math.abs(dx)>=C.carousel.dragThreshold)this.step(dx<0?1:-1);else this.layout();}
++ }
++ cancel(){this.pointer=null;this.stage.classList.remove('is-dragging');if(!this.busy)this.layout();}
++ destroy(){this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;this.stage.classList.remove('is-dragging');}
++}
+--- a/js/cinema-core.js
++++ b/js/cinema-core.js
+@@ -0,0 +1,55 @@
++import {CONFIG as C,stageSize} from './config.js';
++import {demoCards} from './card-data.js';
++export const mod=(n,m)=>((n%m)+m)%m;
++export function makeCatalog(config=C){
++ const items=[...demoCards.map(([name,symbol],i)=>({id:`major-${String(i).padStart(2,'0')}`,name,symbol})),...config.catalog.additionalCards];
++ return items.map(c=>({...c,frontImage:config.catalog.frontImages[c.id]||null}));
++}
++export function validateConfig(c,catalog){
++ const fail=m=>{throw new Error(m)};
++ if(!catalog.length||catalog.length>c.support.maxCatalog)fail('카드 데이터는 1~78장 범위로 등록해 주세요.');
++ if(new Set(catalog.map(x=>x.id)).size!==catalog.length||catalog.some(x=>!x.id||!x.name))fail('카드 ID가 중복되었거나 이름이 비어 있습니다.');
++ for(const key of ['shuffle','selection','visible','result'])if(!Number.isInteger(c.counts[key])||c.counts[key]<1)fail('카드 장수는 양의 정수여야 합니다.');
++ if(c.counts.shuffle>Math.min(catalog.length,c.support.maxShuffle)||c.counts.selection>catalog.length)fail('등록된 카드 데이터보다 많은 장수를 요청했습니다.');
++ if(!c.support.visible.includes(c.counts.visible)||c.counts.visible>c.counts.selection)fail('동시 표시 수는 3장 또는 5장이며 선택 대상 수 이하여야 합니다.');
++ if(!c.support.result.includes(c.counts.result))fail('이번 시험본의 결과 공개는 1장을 지원합니다.');
++ if(!['trial-uniform-subset','explicit-ids'].includes(c.pool.mode))fail('선택 대상 구성 방식을 확인해 주세요.');
++ if(c.pool.mode==='explicit-ids'&&(c.pool.ids.length!==c.counts.selection||new Set(c.pool.ids).size!==c.pool.ids.length||c.pool.ids.some(id=>!catalog.some(x=>x.id===id))))fail('선택 카드 ID 목록과 선택 장수가 일치하지 않습니다.');
++ if(c.catalog.requireActualFrontImages&&catalog.some(x=>!x.frontImage))fail('실제 앞면 이미지가 미등록된 카드가 있습니다.');
++ for(const sizes of Object.values(c.sizes))for(const v of Object.values(sizes))if(!Number.isFinite(v)||v<40||v>700)fail('카드 크기는 40~700px 범위로 설정해 주세요.');
++ for(const group of ['shuffle','finale','carousel','reveal','material','glow','vfx','camera'])for(const [key,v] of Object.entries(c[group]))if(typeof v==='number'&&!Number.isFinite(v))fail(`${group}.${key} 설정이 올바르지 않습니다.`);
++ if(c.camera.perspective<600||c.camera.perspective>2400||c.shuffle.nearDepth<=0||c.shuffle.nearDepth>=.7||c.shuffle.farDepth>=0||c.shuffle.farDepth<-.8)fail('카메라 원근감 또는 깊이 설정이 지원 범위를 벗어났습니다.');
++ for(const t of [c.shuffle.duration,c.shuffle.separate,c.finale.duration,c.carousel.move,c.carousel.enter,c.reveal.lift,c.reveal.approach,c.reveal.arrival,c.reveal.flip])if(t<100||t>15000)fail('동작 시간은 100~15000ms 범위로 설정해 주세요.');
++ if(c.reveal.overscan<1||!['flip-after-arrival','front-on-arrival'].includes(c.reveal.mode))fail('화면 전환 설정을 확인해 주세요.');
++ if(!Number.isFinite(c.aspect)||c.aspect<1||c.aspect>2.5)fail('카드 비율은 1~2.5 범위로 설정해 주세요.');
++ for(const [key,min,max] of [['radiusX',.1,.8],['radiusY',.05,.5],['turns',.2,3]])if(c.shuffle[key]<min||c.shuffle[key]>max)fail('셔플 이동 범위가 지원 범위를 벗어났습니다.');
++ if(c.material.thickness<0||c.material.thickness>6||c.glow.intensity<0||c.glow.intensity>1||c.glow.pulseMs<500||c.glow.pulseMs>15000)fail('두께 또는 테두리 발광 설정을 확인해 주세요.');
++ if(Object.entries(c.catalog.frontImages).some(([id,url])=>!catalog.some(x=>x.id===id)||(url!==null&&typeof url!=='string')))fail('앞면 이미지의 카드 ID 또는 경로가 올바르지 않습니다.');
++ return {records:catalog.length,registeredFrontImages:catalog.filter(x=>x.frontImage).length};
++}
++export function randomOrder(items,rng=Math.random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
++export function selectionPool(catalog,c=C,rng=Math.random){return c.pool.mode==='explicit-ids'?c.pool.ids.map(id=>catalog.find(x=>x.id===id)):randomOrder(catalog,rng).slice(0,c.counts.selection);}
++export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
++export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
++export function slotPose(offset,width,c=C){
++ const size=stageSize('selection',width,c),r=(c.counts.visible-1)/2,normalized=offset/r;
++ const angle=c.carousel.angle*Math.PI/180,edgeZ=c.carousel.centerDepth-c.carousel.depthStep;
++ const projection=c.camera.perspective/(c.camera.perspective-edgeZ);
++ const halfEdge=(size*Math.cos(angle)+size*c.aspect*Math.sin(angle))/2*projection;
++ const gap=Math.max(0,Math.min(size*c.carousel.gap,(width/2-halfEdge-8)/(r*projection)));
++ return {x:offset*gap,y:Math.abs(normalized)*c.carousel.drop,z:c.carousel.centerDepth-Math.abs(normalized)*c.carousel.depthStep,rot:normalized*c.carousel.angle,ry:0,rx:0,scale:1};
++}
++export function visibleIndices(index,count,visible){const r=(visible-1)/2;return Array.from({length:visible},(_,i)=>mod(index+i-r,count));}
++export function stackPose(i,count){return {x:0,y:-8,z:-Math.abs(i-(count-1)/2)*3,rot:0,ry:0,rx:0,scale:1};}
++export function travelPose(index,t,width,height,count,c=C){
++ const k=index%Math.ceil(count/2),side=index<Math.ceil(count/2)?1:-1;
++ const phase=k*2.399963,dir=k%3===1?-1:1;
++ const a=phase+dir*t*Math.PI*2*(c.shuffle.turns+(k%4)*.075);
++ const radius=.66+(k%5)*.075;
++ const x=side*Math.cos(a)*width*c.shuffle.radiusX*radius;
++ const y=side*(Math.sin(a)*Math.cos(k*.37)*height*c.shuffle.radiusY+Math.cos(a)*height*.065);
++ const middle=(c.shuffle.nearDepth+c.shuffle.farDepth)/2*c.camera.perspective;
++ const depth=(c.shuffle.nearDepth-c.shuffle.farDepth)/2*c.camera.perspective;
++ return {x,y:y-12,z:middle+side*Math.sin(a)*depth,rot:side*Math.sin(a*.8+k)*25,ry:side*Math.cos(a)*c.shuffle.rotationY,rx:side*Math.sin(a+k*.2)*c.shuffle.rotationX,scale:1};
++}
++export function coverScale(vw,vh,cw,ch,overscan=C.reveal.overscan){return Math.max(vw/cw,vh/ch)*overscan;}
+--- a/js/config.js
++++ b/js/config.js
+@@ -0,0 +1,23 @@
++// All stage sizes, counts and primary animation/material values live here.
++// This is a local trial. The 20-card pool policy is NOT a production decision.
++export const CONFIG = {
++  breakpoint:600, aspect:1.58,
++  counts:{shuffle:22,selection:20,visible:3,result:1},
++  pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
++  catalog:{additionalCards:[],frontImages:{},requireActualFrontImages:false},
++  sizes:{
++    desktop:{shuffle:164,selection:210,transition:240,result:260},
++    mobile:{shuffle:104,selection:146,transition:160,result:190}
++  },
++  camera:{perspective:1000},
++  shuffle:{duration:3800,separate:560,radiusX:.46,radiusY:.27,nearDepth:.48,farDepth:-.34,turns:1.1,rotationY:50,rotationX:22},
++  finale:{duration:1040,afterglow:280,pressure:6,waveReach:410,waveRadiusFraction:.48},
++  carousel:{gap:.86,angle:18,centerDepth:70,depthStep:105,drop:32,move:260,enter:160,dragThreshold:34,dragLimit:.85,clickGuard:320},
++  reveal:{lift:600,focus:280,approach:760,arrival:760,flip:720,overscan:1.04,mode:'flip-after-arrival'},
++  material:{thickness:2.2,shadowY:16,shadowBlur:30,shadowAlpha:.48,edge:'#756f61',satinEdgeAlpha:.22},
++  glow:{enabled:true,rgb:'213, 203, 245',intensity:.28,blur:16,pulseMs:3000,centerEmphasis:true,centerMultiplier:1.55,dragMultiplier:.35},
++  vfx:{desktopDpr:1.5,mobileDpr:1.25,desktopParticles:180,mobileParticles:100,rgb:'189,231,204'},
++  support:{maxCatalog:78,maxShuffle:78,visible:[3,5],result:[1]},
++};
++export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
++export function stageSize(phase,width,config=CONFIG){return config.sizes[width<config.breakpoint?'mobile':'desktop'][phase];}
+--- a/js/finale-motion.js
++++ b/js/finale-motion.js
+@@ -1,15 +1,16 @@
++import {CONFIG as C,stageSize} from './config.js';
+ // One scalar drives both the pressure wave radius and every card's opening pose.
+-export const FINALE_DURATION = 1040;
++export const FINALE_DURATION = C.finale.duration;
+ export const clamp01 = t => Math.max(0, Math.min(1,t));
+ export function pressureProgress(t) {
+   t=clamp01(t);
+   if(t===0||t===1)return t;
+-  const u=t*t*(3-2*t), k=6;
++  const u=t*t*(3-2*t), k=C.finale.pressure;
+   return (1-Math.exp(-k*u)*(1+k*u))/(1-Math.exp(-k)*(1+k));
+ }
+-export function waveRadius(progress,width,count=9) {
+-  const cw=Math.max(65,Math.min(112,width*.18));
+-  const reach=Math.min(width*.48,410);
++export function waveRadius(progress,width,count=C.counts.visible) {
++  const cw=stageSize('selection',width);
++  const reach=Math.min(width*C.finale.waveRadiusFraction,C.finale.waveReach);
+   return 14+(Math.max(cw*.8,reach)-14)*progress;
+ }
+ 
+--- a/js/magic-vfx.js
++++ b/js/magic-vfx.js
+@@ -1,3 +1,4 @@
++import {CONFIG as C} from './config.js';
+ import {samplePressure, waveRadius} from './finale-motion.js';
+ import {sampleCard} from './card-animation.js';
+ // Canvas light lives outside the preserve-3d tree. Card transforms remain WAAPI-owned.
+@@ -16,8 +17,8 @@
+   }
+   resize(){
+     this.w=this.stage.clientWidth;this.h=this.stage.clientHeight;
+-    this.dpr=Math.min(devicePixelRatio||1,this.w<600?1.25:1.5);
+-    this.limit=this.w<600?100:180;
++    this.dpr=Math.min(devicePixelRatio||1,this.w<C.breakpoint?C.vfx.mobileDpr:C.vfx.desktopDpr);
++    this.limit=this.w<C.breakpoint?C.vfx.mobileParticles:C.vfx.desktopParticles;
+     for(const {canvas,ctx} of this.layers){canvas.width=Math.round(this.w*this.dpr);canvas.height=Math.round(this.h*this.dpr);ctx?.setTransform(this.dpr,0,0,this.dpr,0,0);}
+     this.trails=[];
+   }
+@@ -32,7 +33,7 @@
+     this.active=false;cancelAnimationFrame(this.frame);this.particles=[];this.trails=[];this.waveClock=null;
+     for(const {ctx} of this.layers)ctx?.clearRect(0,0,this.w,this.h);
+   }
+-  project(p){const k=1100/(1100-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
++  project(p){const k=C.camera.perspective/(C.camera.perspective-p.z);return {x:this.w/2+p.x*k,y:this.h/2+p.y*k,z:p.z};}
+   ring(ctx,r,alpha,rotation=0){
+     if(!ctx||alpha<=0)return;
+     ctx.save();ctx.translate(this.w/2,this.h/2-8);ctx.scale(1,.34);ctx.rotate(rotation);
+@@ -48,7 +49,7 @@
+     const intensity=Math.pow(1-t,1.4)*fade;
+     // A broad energy shoulder, sharp pressure edge and a trailing secondary rim.
+     for(const [width,alpha,rr] of [[22,.11,r],[7,.30,r],[1.8,.95,r],[1,.25,r*.88]]){
+-      rear.strokeStyle=`rgba(189,231,204,${intensity*alpha})`;rear.lineWidth=width;
++      rear.strokeStyle=`rgba(${C.vfx.rgb},${intensity*alpha})`;rear.lineWidth=width;
+       rear.beginPath();rear.arc(cx,cy,rr,0,Math.PI*2);rear.stroke();
+     }
+     if(!this.reduced){
+@@ -58,7 +59,7 @@
+         const a=i*Math.PI/4+.15;
+         front.beginPath();front.arc(cx,cy,r,a,a+.13);front.stroke();
+       }
+-      const count=Math.min(this.w<600?16:24,Math.max(0,this.limit-this.particles.length));
++      const count=Math.min(this.w<C.breakpoint?16:24,Math.max(0,this.limit-this.particles.length));
+       const sparkle=Math.max(0,1-t/.85)*fade;
+       front.fillStyle=`rgba(226,244,211,${sparkle*.8})`;
+       for(let i=0;i<count;i++){
+@@ -81,17 +82,17 @@
+     if(!this.active)return;
+     const dt=Math.min(.05,Math.max(0,(now-this.last)/1000));this.last=now;
+     const age=(now-this.phaseAt)/1000;
+-    if(this.name==='fade'&&age>.28){this.stop();return;}
+-    const fade=this.name==='fade'?Math.max(0,1-age/.28):1;
++    if(this.name==='fade'&&age>C.finale.afterglow/1000){this.stop();return;}
++    const fade=this.name==='fade'?Math.max(0,1-age/(C.finale.afterglow/1000)):1;
+     const vortex=this.name==='vortex';
+     // Existing orbit-to-stack interval, followed by the short still pose.
+-    const condense=vortex?Math.max(0,Math.min(1,(age-1.976)/.624)):0;
++    const condense=vortex?Math.max(0,Math.min(1,(age-C.shuffle.duration*.78/1000)/(C.shuffle.duration*.22/1000))):0;
+     const release=this.name==='release'||(this.name==='fade'&&this.waveClock);
+     const rear=this.layers[0].ctx,front=this.layers[1].ctx;
+     for(const {ctx} of this.layers){if(ctx){ctx.clearRect(0,0,this.w,this.h);ctx.globalCompositeOperation='lighter';}}
+     if(!rear||!front){this.stop();return;}
+     const radius=Math.min(this.w*.42,310);
+-    const energy=this.name==='charge'?Math.min(1,age/.56):vortex?1:Math.max(0,1-age/.75);
++    const energy=this.name==='charge'?Math.min(1,age/(C.shuffle.separate/1000)):vortex?1:Math.max(0,1-age/.75);
+     this.ring(rear,radius*(1-condense*.83),.52*energy*fade,now*.0004);
+     this.ring(rear,radius*.8*(1-condense*.8),.24*energy*fade,-now*.0007);
+     if(condense>0){
+@@ -100,6 +101,12 @@
+       g.addColorStop(0,`rgba(220,247,227,${condense*.65*fade})`);g.addColorStop(1,'rgba(160,220,189,0)');rear.fillStyle=g;rear.fillRect(this.w/2-coreRadius,this.h/2-8-coreRadius,coreRadius*2,coreRadius*2);
+     }
+     if(release&&this.waveClock)this.drawWave(rear,front,fade);
++    if(this.name==='focus'){
++      const p=sampleCard(this.cards[0]);if(p){const v=this.project(p),r=100-age*80;
++        rear.strokeStyle=`rgba(213,203,245,${Math.max(0,.42-age*.35)})`;rear.lineWidth=1.5;
++        rear.beginPath();rear.arc(v.x,v.y,Math.max(40,r),0,Math.PI*2);rear.stroke();
++      }
++    }
+     this.cards.forEach((card,i)=>{
+       if(card.hidden)return;
+       const p=sampleCard(card);if(!p)return;
+--- a/js/main.js
++++ b/js/main.js
+@@ -1,56 +1,56 @@
+-import{MagicVFX}from'./magic-vfx.js';
+-import{SELECTION_COUNT}from'./shuffle-paths.js';
+-import{prepareBack}from'./back-loader.js';
+-import{shuffledDeck}from'./card-data.js';import{randomBack}from'./back-config.js';import{renderCards}from'./card-view.js';import{cardSize,floatLayout,cancelAll,shuffleMotion,fanMotion,fanLayout,revealMotion}from'./card-animation.js';
+-const stage=document.querySelector('#stage'),container=document.querySelector('#cards'),status=document.querySelector('#status'),backName=document.querySelector('#backName'),instruction=document.querySelector('#instruction'),shuffleBtn=document.querySelector('#shuffleBtn'),resetBtn=document.querySelector('#resetBtn');
+-const magic=new MagicVFX(stage);
+-let cards=[],selection=[],currentBack=null,state='idle',session=0;
+-function setState(next,label){state=next;status.textContent=label;shuffleBtn.disabled=next==='preparing'||next==='shuffling'||next==='revealing';shuffleBtn.textContent=next==='fan'?'다시 섞기':'카드 섞기';resetBtn.hidden=next!=='revealed';cards.forEach(c=>{c.classList.toggle('selectable',next==='fan'&&!c.hidden);c.disabled=next!=='fan'||c.hidden;});}
+-async function prepareDeck(token){
+-  const back=randomBack(currentBack?.id),previousState=state,previousInstruction=instruction.textContent;
+-  setState('preparing','카드 이미지를 준비하고 있어요…');
+-  try{await prepareBack(back);}catch(error){
+-    if(token!==session)return false;
+-    setState(previousState,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');
+-    instruction.textContent=previousInstruction;
+-    return false;
+-  }
+-  if(token!==session)return false;
+-  magic.stop();
+-  cancelAll(cards);
+-  currentBack=back;
+-  backName.textContent=`· ${currentBack.name}`;
+-  cardSize(stage);
+-  cards=renderCards(container,shuffledDeck(),currentBack);
+-  selection=cards.slice(0,SELECTION_COUNT); // shuffledDeck already randomizes all 22 unique cards.
+-  floatLayout(cards,stage);
+-  cards.forEach(c=>c.addEventListener('click',()=>choose(c)));
+-  return true;
++import {CONFIG as C,stageSize,deviceProfile} from './config.js';
++import {makeCatalog,validateConfig,randomOrder,selectionPool,slotPose,visibleIndices} from './cinema-core.js';
++import {backs,randomBack} from './back-config.js';import {prepareBack} from './back-loader.js';import {renderCards} from './card-view.js';
++import {cardSize,floatLayout,shuffleMotion,fanMotion,animateTo,cancelAll,pose,transform} from './card-animation.js';
++import {MagicVFX} from './magic-vfx.js';import {Carousel} from './carousel.js';import {prepareFront,screenTransition} from './transition.js';
++const $=s=>document.querySelector(s),stage=$('#stage'),container=$('#cards'),status=$('#status'),instruction=$('#instruction'),shuffleBtn=$('#shuffleBtn'),main=$('#tarotApp'),resultView=$('#resultView');
++let catalog=[],cards=[],pool=[],back=null,state='idle',carousel=null,token=0;const magic=new MagicVFX(stage);
++function applySettings(){const s=document.documentElement.style;
++ for(const [k,v] of Object.entries({'--perspective':C.camera.perspective+'px','--thickness':C.material.thickness+'px','--edge':C.material.edge,'--shadow-y':C.material.shadowY+'px','--shadow-blur':C.material.shadowBlur+'px','--shadow-alpha':C.material.shadowAlpha,'--satin-alpha':C.material.satinEdgeAlpha,'--glow-rgb':C.glow.rgb,'--glow-alpha':C.glow.enabled?C.glow.intensity:0,'--glow-blur':C.glow.blur+'px','--glow-pulse':C.glow.pulseMs+'ms','--center-multiplier':C.glow.centerEmphasis?C.glow.centerMultiplier:1,'--drag-glow':C.glow.dragMultiplier}))s.setProperty(k,v);
+ }
+-async function start(){
+-  const token=++session;
+-  if(!await prepareDeck(token))return;
+-  setState('idle','새로운 덱이 준비됐어요');
+-  instruction.textContent='카드를 섞을 때마다 새로운 무늬가 나타납니다.';
++function setState(next,label){state=next;status.textContent=label;$('#resultAgain').disabled=next!=='result';shuffleBtn.disabled=!['idle','selection','result'].includes(next);shuffleBtn.textContent=next==='selection'?'다시 섞기':'카드 섞기';$('#navigation').hidden=next!=='selection';$('#selectBtn').disabled=next!=='selection';}
++function refreshCounter(index){$('#counter').textContent=`${index+1} / ${pool.length}`;}
++async function startShuffle(){
++ if(!['idle','selection','result'].includes(state))return;
++ const previous=state,current=++token,previousText=instruction.textContent;setState('preparing','카드 이미지를 준비하고 있어요…');
++ let next;try{next=randomBack(back?.id);await prepareBack(next);}catch(e){setState(previous,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');if(previous==='result')$('#resultNotice').textContent='카드 이미지를 불러오지 못했어요. 다시 섞기를 눌러 재시도해 주세요.';instruction.textContent=previousText;return;}
++ if(current!==token)return;
++ carousel?.destroy();carousel=null;magic.stop();cancelAll(cards);back=next;$('#backName').textContent='· '+back.name;
++ main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage');cardSize(stage,'shuffle');
++ cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);
++ setState('shuffling','카드를 섞고 있어요…');instruction.textContent='카드가 공간을 가로질러 섞입니다.';magic.start(cards);
++ if(!await shuffleMotion(cards,stage,name=>magic.phase(name))||current!==token){magic.stop();return;}
++ pool=selectionPool(catalog);cards=renderCards(container,pool,back);cards.forEach(c=>{c.hidden=true;c.disabled=true;});
++ const ids=visibleIndices(0,pool.length,C.counts.visible),opening=ids.map(i=>cards[i]);opening.forEach(c=>c.hidden=false);
++ magic.cards=cards;stage.classList.add('selection-stage');
++ if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==token){magic.stop();return;}
++ magic.finish();carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','끌리는 카드를 골라 주세요');
++ instruction.textContent='좌우로 넘기거나 마음에 드는 카드를 선택하세요.';
+ }
+-async function shuffle(){
+-  if(state==='preparing'||state==='shuffling'||state==='revealing')return;
+-  const token=++session;
+-  if(!await prepareDeck(token))return;
+-  setState('shuffling','카드를 섞고 있어요…');
+-  instruction.textContent='잠시 기다려 주세요.';
+-  magic.start(cards);
+-  const completed=await shuffleMotion(cards,stage,name=>magic.phase(name));
+-  if(!completed){magic.stop();return;}
+-  if(token!==session){magic.stop();return;}
+-  cards.forEach(c=>{c.hidden=!selection.includes(c);});
+-  const opened=await fanMotion(selection,stage,clock=>magic.release(clock));
+-  if(!opened){magic.stop();return;}
+-  magic.finish();
+-  fanLayout(selection,stage);
+-  if(token!==session)return;
+-  setState('fan','끌리는 카드를 골라 주세요');
+-  instruction.textContent='마음에 드는 카드를 터치하거나 다시 섞어 보세요.';
++async function choose(chosen){
++ if(state!=='selection'||carousel?.busy||chosen.hidden)return;
++ setState('revealing','선택한 카드를 준비하고 있어요…');
++ try{await prepareFront(chosen.cardData);}catch(e){carousel.busy=false;carousel.layout();setState('selection',e.message);return;}
++ carousel.destroy();carousel=null;cards.forEach(c=>c.disabled=true);magic.stop();magic.start([chosen]);magic.phase('focus');
++ try{
++  await Promise.all(cards.filter(c=>!c.hidden).map((c,i)=>animateTo(c,c===chosen?pose(0,-12,180):pose((i%2?1:-1)*stage.clientWidth*.75,80,-250,0,0,1),C.reveal.lift)));
++  // The focus phase is short and separate from the earlier shuffle wave.
++  await new Promise(resolve=>{const a=chosen.animate([{outlineOffset:'0px'},{outlineOffset:'0px'}],{duration:C.reveal.focus});a.finished.then(resolve,resolve);});
++  magic.stop();const results=renderCards($('#resultCardHost'),[chosen.cardData],back),result=results[0];
++  result.classList.add('result-card');result.disabled=true;result.setAttribute('aria-label',chosen.cardData.name);result.style.visibility='hidden';
++  const rw=stageSize('result',innerWidth);result.style.width=rw+'px';result.style.height=rw*C.aspect+'px';
++  $('#resultName').textContent=chosen.cardData.name;$('#resultNotice').textContent=chosen.cardData.frontImage?'선택한 카드':'앞면 이미지 미등록 · 카드 ID가 연결된 시연 결과';
++  setState('wiping','카드와 함께 다음 화면으로 이동합니다.');
++  await screenTransition(chosen,result,()=>{main.hidden=true;resultView.hidden=false;});
++  setState('result','카드가 공개됐어요');$('#resultTitle').focus();
++ }catch(e){magic.stop();main.hidden=false;resultView.hidden=true;carousel=new Carousel(cards,stage,refreshCounter,choose);carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
+ }
+-async function choose(card){if(state!=='fan'||!selection.includes(card)||card.hidden)return;const token=++session;setState('revealing','카드를 공개하고 있어요…');instruction.textContent='선택한 카드가 모습을 드러냅니다.';const completed=await revealMotion(selection,card,stage);if(!completed)return;if(token!==session)return;setState('revealed','카드가 공개됐어요');instruction.textContent='앞면은 시연용 데이터입니다. 실제 타로 이미지와 리딩은 추후 연결합니다.';}
+-shuffleBtn.addEventListener('click',shuffle);resetBtn.addEventListener('click',start);window.addEventListener('resize',()=>{if(state==='idle'){cardSize(stage);floatLayout(cards,stage);}else if(state==='fan'){fanLayout(selection,stage);}});start();
++$('#prevBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(-1)});$('#nextBtn').addEventListener('click',()=>{if(state==='selection')carousel?.step(1)});
++$('#selectBtn').addEventListener('click',()=>{if(carousel)choose(cards[carousel.index])});shuffleBtn.addEventListener('click',startShuffle);$('#resultAgain').addEventListener('click',startShuffle);
++window.addEventListener('resize',()=>{if(state==='selection'&&!carousel?.busy)carousel.layout();if(state==='result'){const el=$('.result-card'),w=stageSize('result',innerWidth);el.style.width=w+'px';el.style.height=w*C.aspect+'px';}});
++try{applySettings();catalog=makeCatalog();const inventory=validateConfig(C,catalog);$('#inventory').textContent=`등록 데이터 ${inventory.records}장 · 앞면 이미지 ${inventory.registeredFrontImages}장 · 뒷면 ${backs.length}종`;
++ $('#poolNotice').textContent=C.pool.mode==='trial-uniform-subset'?'선택 대상은 시험용 무작위 20장입니다. 최종 구성 방식은 미확정입니다.'.replace('20',C.counts.selection):'설정된 카드 ID 목록을 선택 대상으로 사용합니다.';
++ back=randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
++ try{await prepareBack(back);cardSize(stage);cards=renderCards(container,randomOrder(catalog).slice(0,C.counts.shuffle),back);cards.forEach(c=>c.disabled=true);floatLayout(cards,stage);$('#backName').textContent='· '+back.name;setState('idle','새로운 덱이 준비됐어요');}
++ catch(e){back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
++}catch(e){setState('error',e.message);status.setAttribute('role','alert');}
+--- a/js/shuffle-paths.js
++++ b/js/shuffle-paths.js
+@@ -1,46 +1,9 @@
+-// Pure geometry, shared by the motion module and numeric checks.
+-export const SELECTION_COUNT = 9; // Trial count; the full deck remains 22.
+-const TAU = Math.PI * 2;
+-export function metrics(width, height) {
+-  const small = width < 600;
+-  return {width, height, radiusX:Math.min(width * .27, 285), radiusY:Math.min(height * .15, 82), depth:small ? 140 : 230};
+-}
+-// Eleven pairs have distinct phases, radii, speeds and tilted orbital planes.
+-// Opposite partners keep the deck centroid steady: no repeated whole-deck hop.
+-export function liftPose(index,m) {
+-  const p=orbitPose(index,0,m);
+-  return {...p,x:p.x*.72,y:-18+(p.y+18)*.72,z:p.z*.72,rot:p.rot*.7,ry:p.ry*.7,rx:p.rx*.7};
+-}
+-export function orbitPose(index,progress,m) {
+-  const k=index%11,side=index<11?1:-1;
+-  const direction=k%3===1?-1:1;
+-  const a=k*2.399963+direction*progress*TAU*(1.05+(k%4)*.07);
+-  const radius=.68+(k%5)*.065,tilt=(k-5)*.12;
+-  const x=Math.cos(a)*m.radiusX*radius;
+-  const y=Math.sin(a)*m.radiusY*.72*Math.cos(tilt)+Math.cos(a)*m.radiusY*.30*Math.sin(tilt);
+-  const z=Math.sin(a)*m.depth*(.80+(k%3)*.08);
+-  return {x:side*x,y:-18+side*y,z:side*z,
+-    rot:side*(Math.sin(a)*23+(k-5)*2),ry:side*Math.cos(a)*44,
+-    rx:side*Math.sin(a+tilt)*18,scale:.92};
+-}
+-export function stackPose(index, count = SELECTION_COUNT) {
+-  const t = count === 1 ? 0 : index / (count - 1) * 2 - 1;
+-  // The middle selection card is already nearest, before the fan opens.
+-  const z = index < count ? -Math.abs(t) * 8 : -30 - (index - count) * 1.2;
+-  return {x:0, y:-8, z, rot:0, ry:0, rx:0, scale:1};
+-}
+-export function fanPose(index, count, width) {
+-  const t = count === 1 ? 0 : index / (count - 1) * 2 - 1;
+-  const cardWidth = Math.max(65, Math.min(112, width * .18));
+-  const angle = 27 * Math.PI / 180;
+-  const edgeHalf = .92 * (cardWidth * Math.cos(angle) + cardWidth * 1.58 * Math.sin(angle)) / 2;
+-  const spread = Math.max(0, Math.min(width * .76, 710, width - 2 * (edgeHalf + 8)));
+-  return {x:t * spread * .5, y:23 + t * t * 37,
+-    z:(1 - t * t) * 45, rot:t * 27, ry:0, rx:0, scale:.92};
+-}
+-export function mixPose(a, b, t) {
+-  if (t <= 0) return {...a};
+-  if (t >= 1) return {...b};
+-  return Object.fromEntries(Object.keys(a).map(key=>[key, a[key] + (b[key] - a[key]) * t]));
+-}
+-export function smooth(t) { return t * t * (3 - 2 * t); }
++// Compatibility exports; current motion reads config.js and cinema-core.js.
++import {CONFIG as C} from './config.js';
++import {travelPose,slotPose,stackPose,smooth,mix} from './cinema-core.js';
++export const SELECTION_COUNT=C.counts.selection;
++export const metrics=(width,height)=>({width,height});
++export const orbitPose=(i,t,m)=>travelPose(i,t,m.width,m.height,C.counts.shuffle);
++export const liftPose=(i,m)=>orbitPose(i,0,m);
++export const fanPose=(i,count,width)=>slotPose(i-(count-1)/2,width);
++export {stackPose,smooth,mix as mixPose};
+--- a/js/transition.js
++++ b/js/transition.js
+@@ -0,0 +1,36 @@
++import {CONFIG as C,stageSize} from './config.js';
++import {coverScale} from './cinema-core.js';
++export async function prepareFront(data){
++ if(!data.frontImage)return;
++ await new Promise((resolve,reject)=>{const im=new Image();im.onload=async()=>{try{if(im.decode)await im.decode();resolve()}catch(e){reject(e)}};im.onerror=()=>reject(new Error('선택 카드의 앞면 이미지를 불러오지 못했습니다.'));im.src=new URL(data.frontImage,document.baseURI).href;});
++}
++async function animate(el,frames,duration){const a=el.animate(frames,{duration,easing:'cubic-bezier(.18,.72,.12,1)',fill:'both'});try{await a.finished;}catch{return false;}Object.assign(el.style,frames.at(-1));a.cancel();return true;}
++export async function screenTransition(source,resultCard,swapScene){
++ const rect=source.getBoundingClientRect(),vw=document.documentElement.clientWidth,vh=innerHeight;
++ const w=stageSize('transition',vw),h=w*C.aspect;
++ const overlay=document.createElement('div');overlay.className='transition-overlay';overlay.setAttribute('aria-hidden','true');
++ const clone=source.cloneNode(true);clone.removeAttribute('id');clone.classList.remove('selectable','is-center');clone.disabled=true;clone.tabIndex=-1;
++ Object.assign(clone.style,{position:'absolute',left:'0',top:'0',width:w+'px',height:h+'px',zIndex:'1',margin:'0'});
++ clone.querySelector('.card-inner').style.transform='rotateY(0deg)';overlay.append(clone);document.body.append(overlay);source.style.visibility='hidden';
++ const at=(cx,cy,s)=>`translate(${cx-w/2}px,${cy-h/2}px) scale(${s})`;
++ const first=at(rect.left+rect.width/2,rect.top+rect.height/2,rect.width/w);
++ const full=()=>at(document.documentElement.clientWidth/2,innerHeight/2,coverScale(document.documentElement.clientWidth,innerHeight,w,h));
++ clone.style.transform=first;
++ try{
++  if(!await animate(clone,[{transform:first},{transform:full()}],C.reveal.approach))throw new Error('전환이 중단되었습니다.');
++  // Recalculate against the current viewport before exposing the next scene.
++  clone.style.transform=full();
++  const coverage=clone.getBoundingClientRect();
++  if(coverage.left>0||coverage.top>0||coverage.right<document.documentElement.clientWidth||coverage.bottom<innerHeight)throw new Error('전체 화면 전환 크기를 확인하지 못했습니다.');
++  resultCard.dataset.coverage=JSON.stringify({left:coverage.left,top:coverage.top,right:coverage.right,bottom:coverage.bottom,viewportWidth:document.documentElement.clientWidth,viewportHeight:innerHeight});
++  swapScene();
++  const target=resultCard.getBoundingClientRect(),end=at(target.left+target.width/2,target.top+target.height/2,target.width/w);
++  let flipTask=Promise.resolve(true);
++  if(C.reveal.mode==='front-on-arrival')flipTask=animate(clone.querySelector('.card-inner'),[{transform:'rotateY(0deg)'},{transform:'rotateY(180deg)'}],C.reveal.arrival);
++  if(!await animate(clone,[{transform:full()},{transform:end}],C.reveal.arrival))throw new Error('전환이 중단되었습니다.');
++  await flipTask;overlay.remove();resultCard.style.visibility='visible';
++  if(C.reveal.mode==='flip-after-arrival')await animate(resultCard.querySelector('.card-inner'),[{transform:'rotateY(0deg)'},{transform:'rotateY(180deg)'}],C.reveal.flip);
++  else resultCard.querySelector('.card-inner').style.transform='rotateY(180deg)';
++  resultCard.querySelector('.card-front').setAttribute('aria-hidden','false');resultCard.querySelector('.card-back').setAttribute('aria-hidden','true');
++ }finally{overlay.remove();source.style.visibility='';}
++}

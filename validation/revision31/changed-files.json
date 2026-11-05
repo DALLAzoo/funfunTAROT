@@ -1,0 +1,22 @@
+{
+  "css/tarot.css": {
+    "before": "acf9289ace4bef4ce7d737e8b35ff7df0c747b3cd62ab3a4f150e3756d190a16",
+    "after": "0be9e51db511dd5ed8bf374e14d8f564cb0fc6fd39114ff6b8969a85597a37d2"
+  },
+  "js/reveal-vfx.js": {
+    "before": "d2763f91c50d7f5d1f487bc55dd91e6571f0bdbb5e4eb5f40db6677fcf63b06a",
+    "after": "3e63f372cfc287c2f3f0033870f8bf20349385eb73621259ca57aff0fa195fb5"
+  },
+  "js/magic-vfx.js": {
+    "before": "cc78de17dde1493d27ed0ed15a419eac4b46af30bd1ee16dd2147f620918b376",
+    "after": "50604feb1b1c5103d07fd73fb87a512b4cdcc5e0df839de85a86876a6e014b58"
+  },
+  "js/main.js": {
+    "before": "ec9275f62fa6f4817b3b0a013efb4bd9041a47fce8dc3490cdec3c5fd09b1305",
+    "after": "759b5b02e13723c01124bd6827270eae4a3d6e18dc144f59595eeadf746a4d78"
+  },
+  "js/carousel.js": {
+    "before": "d50c22082e420aec919b3eebc067f7c19242b920c4e5986845d7ecdfce55a519",
+    "after": "bf70b01eae295c68a666fc25074754dee62c692fdacbf27d0c4d191856fb190a"
+  }
+}

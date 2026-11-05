@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {cardCloud,goldLines} from '../js/effects/gold-lines.js';
+import {RevealVFX} from '../js/effects/reveal-vfx.js';
+const cards=[{hidden:false,getBoundingClientRect:()=>({left:20,top:50,right:120,bottom:250,width:100,height:200})},{hidden:false,getBoundingClientRect:()=>({left:80,top:70,right:180,bottom:270,width:100,height:200})}];
+assert.deepEqual(cardCloud(cards,{left:10,top:20}),{cx:90,cy:140,width:160,height:220});
+let roundClips=0,strokes=0;const noop=()=>{};const ctx=new Proxy({roundRect(){roundClips++},stroke(){strokes++}}, {get:(o,k)=>k in o?o[k]:noop,set:(o,k,v)=>(o[k]=v,true)});
+const box={width:800,height:600,left:0,top:0};const canvas={style:{},dataset:{},setAttribute:noop,getContext:()=>ctx,getBoundingClientRect:()=>box,isConnected:true};
+globalThis.document={body:{append:noop},createElement:()=>canvas};globalThis.window={addEventListener:noop};globalThis.devicePixelRatio=1;
+let callback,id=0;globalThis.requestAnimationFrame=fn=>(callback=fn,++id);globalThis.cancelAnimationFrame=noop;
+const card={isConnected:true,getBoundingClientRect:()=>({left:250,top:120,right:450,bottom:460,width:200,height:340})};
+const v=new RevealVFX({});const orbit=v.orbit(card,920);callback(performance.now()+1000);await orbit;assert.equal(v.active,false);assert.equal(canvas.dataset.phase,'off');
+v.stars(card);callback(performance.now()+200);assert.equal(v.active,true);assert.equal(canvas.dataset.phase,'stars');assert.ok(roundClips>0);assert.ok(Number(canvas.dataset.starCount)<=4);v.stop();assert.equal(v.active,false);
+goldLines(ctx,{cx:300,cy:200,width:150,height:260},1,.7,3);assert.ok(strokes>0);
+console.log('PASS actual-bounds center, 3 gold ribbons, orbit Promise cleanup, recurring stars with rounded clip and stop.');

@@ -1,0 +1,3 @@
+PASS 22 separate trajectories; stable world-space deck centroid at 5 widths × 121 times
+PASS wave pressure matches exact WAAPI interpolation; monotonic expansion and resting endpoints
+PASS nine card animations share startTime, duration, zero stagger and leader-clock progress

@@ -1,0 +1,37 @@
+{
+  "beforeRight": {
+    "samples": 12,
+    "widthMin": 220.7425537109375,
+    "widthMax": 254.57086181640625,
+    "heightMin": 378.8156127929687,
+    "heightMax": 436.8702087402344
+  },
+  "desktopRight": {
+    "samples": 12,
+    "widthMin": 334.11566162109375,
+    "widthMax": 334.11572265625,
+    "heightMin": 413.7804565429687,
+    "heightMax": 413.7804870605469
+  },
+  "desktopCenter": {
+    "samples": 12,
+    "widthMin": 210,
+    "widthMax": 210,
+    "heightMin": 360.375,
+    "heightMax": 360.375
+  },
+  "mobileLeft": {
+    "samples": 16,
+    "widthMin": 232.2901306152344,
+    "widthMax": 232.2901611328125,
+    "heightMin": 287.67633056640625,
+    "heightMax": 287.6763916015625
+  },
+  "mobileRight": {
+    "samples": 12,
+    "widthMin": 232.2901306152344,
+    "widthMax": 232.29014587402344,
+    "heightMin": 287.67633056640625,
+    "heightMax": 287.6763916015625
+  }
+}
