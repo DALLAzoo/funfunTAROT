@@ -1,0 +1,13 @@
+.card-back::before,.shuffle-surface .card-front::before{content:"";position:absolute;inset:0;pointer-events:none;-webkit-mask-image:var(--glow-mask);mask-image:var(--glow-mask);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;opacity:.9;animation:gold-ink-travel 7.4s linear infinite;}
+.shuffle-surface .card-front::before{transform:rotateY(0deg);}
+@keyframes gold-ink-travel{
+ 0%{background-position:7% 12%}24%{background-position:92% 31%}
+ 49%{background-position:68% 93%}74%{background-position:9% 72%}
+ 100%{background-position:7% 12%}
+}
+.glow-shuffle-lite .card-back::before,.glow-shuffle-lite .shuffle-surface .card-front::before{animation-play-state:paused!important;opacity:.9;}
+.stage.idle-stack .shuffle-surface:not(:first-child) .card-inner{visibility:hidden!important;}
+.selection-stage .tarot-card{transition:none;backface-visibility:visible;}
+
+
+

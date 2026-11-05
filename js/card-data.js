@@ -1,0 +1,3 @@
+// 데모 앞면. 실제 타로 덱 앞면 이미지와 해석 데이터는 별도 연동 필요.
+export const demoCards=[['THE FOOL','✧'],['THE MAGICIAN','✦'],['THE HIGH PRIESTESS','☽'],['THE EMPRESS','❀'],['THE EMPEROR','♜'],['THE HIEROPHANT','✥'],['THE LOVERS','♡'],['THE CHARIOT','✺'],['STRENGTH','♌'],['THE HERMIT','✧'],['WHEEL OF FORTUNE','☼'],['JUSTICE','⚖'],['THE HANGED MAN','◇'],['DEATH','✢'],['TEMPERANCE','⚗'],['THE DEVIL','♠'],['THE TOWER','♜'],['THE STAR','☆'],['THE MOON','☾'],['THE SUN','☀'],['JUDGEMENT','✦'],['THE WORLD','◉']];
+export function shuffledDeck(){const a=[...demoCards];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
