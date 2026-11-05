@@ -1,7 +1,7 @@
 import {CONFIG as C, stageSize} from '../../settings/config/config.js';
 import {slotPose, stackPose, mix, smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION, pressureProgress} from './finale-motion.js';
-import {runVelvet3DShuffle} from '../../effects/velvet-studio-3d.js';
+import {runTarotSphereShuffle} from '../../effects/tarot-sphere-3d.js';
 
 // Kept compatible with the existing In-between Shift app: carousel, reveal,
 // cancellation, fan, card sizing and chosen-card transition use these exports.
@@ -204,14 +204,14 @@ async function shuffleMotionFallback(els,stage,phase=()=>{}){
  * back to the previous working v6 shuffle without changing the selection UI. */
 export async function shuffleMotion(els, stage, phase=()=>{}) {
   try {
-    if (await runVelvet3DShuffle({
+    if (await runTarotSphereShuffle({
       stage, cards:els, phase,
       backUrl:els[0]?.style.getPropertyValue('--back-image'),
       sizePx:stageSize('shuffle',stage.clientWidth),
-      duration:C.shuffle.duration+Math.max(840,C.shuffle.separate)+270,
+      duration:8800,
       finishPose:(card,i)=>{card.style.transform=transform(stackPose(i,els.length));card.style.zIndex=String(100+i);}
     })) return true;
-  } catch(error) { console.warn('Velvet WebGL shuffle fallback:',error); }
+  } catch(error) { console.warn('Tarot Sphere WebGL shuffle fallback:',error); }
   return shuffleMotionFallback(els,stage,phase);
 }
 
