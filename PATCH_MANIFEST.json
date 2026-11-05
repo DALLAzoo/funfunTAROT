@@ -1,49 +1,26 @@
 {
-  "project": "In-between Shift",
-  "version": "Velvet Studio 3D v1",
-  "reference_commit": "dc062888d000",
-  "base": "DALLAzoo/funfunTAROT (existing app)",
-  "type": "non-destructive patch to existing repository",
-  "github_modified": false,
-  "preserved": [
-    "css/tarot.css",
+  "base": "InBetweenShift_벨벳스튜디오_실제3D셔플_기존사이트통합_v1_20261105.zip",
+  "version": "velvet-forest-v2",
+  "change_scope": "visual background and fan-reveal only",
+  "modified": [
+    "index.html"
+  ],
+  "added": [
+    "css/effects/12-enchanted-forest.css",
+    "js/effects/enchanted-forest.js",
+    "assets/stage/enchanted-forest.webp"
+  ],
+  "inherited": [
+    "css/effects/11-velvet-studio.css",
+    "js/effects/velvet-studio-3d.js",
+    "js/motion/animation/card-animation.js",
+    "assets/stage/velvet-studio-source.png"
+  ],
+  "unaltered_site_modules": [
     "js/screen/app/main.js",
-    "js/screen/app/shuffle-flow.js",
     "js/screen/app/reveal-flow.js",
     "js/motion/selection/carousel.js",
-    "assets/card-backs/*",
-    "assets/card-fronts/*"
-  ],
-  "files": [
-    {
-      "path": "index.html",
-      "sha256": "be6f69719a85204963ebf9f86a9c0bfe0ded14c0bcc52dc3ae8ebe1161eac75b",
-      "bytes": 2818
-    },
-    {
-      "path": "css/effects/11-velvet-studio.css",
-      "sha256": "32765589f3d1aa730698e3f90c97cc9c25ac968d8a1ccbbd923bbdd8661aeaae",
-      "bytes": 1540
-    },
-    {
-      "path": "assets/stage/velvet-studio-source.png",
-      "sha256": "61e48e32e75bc848bfb2e07dcb1eaca9ea94a3ea4b7885706443f9178a15150d",
-      "bytes": 1781931
-    },
-    {
-      "path": "js/effects/velvet-studio-3d.js",
-      "sha256": "4d813e67d5a11f12c43e25b7e116a2a7099a9e215f33693f3cca05e87ce2b3b5",
-      "bytes": 11829
-    },
-    {
-      "path": "js/motion/animation/card-animation.js",
-      "sha256": "9ae8b8061174d0806b45388d3216bd341c6cab9e3997c73fb4d7ad87f7fa3ab7",
-      "bytes": 10692
-    },
-    {
-      "path": "README_적용_검증.md",
-      "sha256": "74b0afda23de8f31d668436917437bb8a6205f49fa4ba27860044f5295d82837",
-      "bytes": 4452
-    }
+    "css/tarot.css",
+    "js/settings/config/config.js"
   ]
 }
