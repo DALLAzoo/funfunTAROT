@@ -16,6 +16,8 @@
   <div class="ambient-light" aria-hidden="true"></div>
   <div class="light-shaft" aria-hidden="true"></div>
   <canvas id="view" aria-label="3D 타로 카드"></canvas>
+  <div id="frontFallback" class="front-fallback" hidden><img id="frontFallbackImg" alt="선택한 카드 앞면"></div>
+  <div id="fallbackDeck" class="fallback-deck" hidden></div>
   <div class="foreground" aria-hidden="true"></div>
   <div class="air" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
@@ -30,6 +32,7 @@
  <!-- 이전 시험본이 사용하던 화면 문구는 모두 표시하지 않는다. -->
  <div hidden aria-hidden="true"><span id="sceneLabel"></span><span id="phaseText"></span><span id="phaseCount"></span><span id="state"></span><button type="button" id="sceneToggle"></button><input type="file" id="textureInput" accept="image/*"></div>
 </main>
+<script src="js/fallback.js"></script>
 <script src="js/studio.js"></script>
 </body>
 </html>
