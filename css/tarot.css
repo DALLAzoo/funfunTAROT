@@ -6,5 +6,5 @@
 @import url("./motion/05-selection-layout.css");
 @import url("./effects/06-reveal-overlay.css");
 @import url("./decoration/cards.css");
-/* The previous 07-selection-spotlight import pointed to a missing file. */
 @import url("./decoration/08-card-material.css");
+@import url("./motion/11-cinematic-shuffle.css");
