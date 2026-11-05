@@ -1,64 +1,68 @@
-/* In-between Shift — Cinematic stage v4.
-   One coherent key-light, no fake floor or periodically sampled card shadows.
-   Stage artwork stays behind the existing 3D deck. */
+/* In-between Shift v5 — three optical planes, one warm key light.
+   The cards always float ABOVE these planes; no false floor/contact shadow.
+   Only transform and opacity animate after initial rasterization. */
 .stage .stage-depth {
-  --scene-far-x:0px;
-  --scene-far-y:0px;
-  --scene-light-x:0px;
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none!important;
-  overflow:hidden;
-  isolation:isolate;
+  --scene-deep-x:0px;--scene-deep-y:0px;
+  --scene-mid-x:0px;--scene-mid-y:0px;--scene-light-x:0px;
+  position:absolute;inset:0;z-index:0;pointer-events:none!important;
+  overflow:hidden;isolation:isolate;contain:paint;
 }
 .stage-depth > div {position:absolute;pointer-events:none!important;}
-.stage-depth__distance {
-  inset:-6%;
+.stage-depth__distance{
+  inset:-16%;
   background:
-    radial-gradient(ellipse 64% 60% at 50% 43%, rgba(53,95,80,.29),transparent 78%),
-    radial-gradient(ellipse 30% 72% at 6% 52%, rgba(4,14,18,.70),transparent 94%),
-    radial-gradient(ellipse 35% 70% at 94% 51%, rgba(4,14,18,.75),transparent 94%),
-    linear-gradient(180deg,rgba(9,24,25,.20),rgba(7,18,20,.03) 42%,rgba(2,10,13,.35));
-  transform:translate3d(var(--scene-far-x),var(--scene-far-y),0);
-  transition:transform 350ms cubic-bezier(.2,.7,.25,1);
+    radial-gradient(ellipse 55% 52% at 49% 45%,rgba(45,98,86,.35),transparent 90%),
+    radial-gradient(ellipse 27% 60% at 10% 50%,rgba(3,17,20,.90),transparent 100%),
+    radial-gradient(ellipse 29% 60% at 90% 53%,rgba(2,13,17,.90),transparent 100%);
+  transform:translate3d(var(--scene-deep-x),var(--scene-deep-y),0);
+  transition:transform 380ms ease-out;
 }
-/* One light source: upper-left, warm neutral gold. Never moves separately
-   from an invented ground or casts a contradictory deck-shaped shadow. */
-.stage-depth__keylight {
+.stage-depth__middle{
   inset:-14%;
-  opacity:.71;
+  opacity:.88;
   background:
-    radial-gradient(ellipse 24% 75% at 37% 30%,rgba(207,189,142,.22),transparent 98%),
-    linear-gradient(110deg,transparent 33%,rgba(205,210,176,.048) 44%,rgba(243,221,167,.115) 48%,transparent 61%);
-  transform:translate3d(var(--scene-light-x),0,0) rotate(-1.4deg) scale(1.02);
-  animation:scene-keylight-glide 11s ease-in-out infinite alternate;
-  will-change:transform;
+    radial-gradient(ellipse 18% 80% at 28% 50%,rgba(38,107,91,.21),transparent 100%),
+    radial-gradient(ellipse 21% 86% at 73% 42%,rgba(38,93,84,.26),transparent 100%);
+  transform:translate3d(var(--scene-mid-x),var(--scene-mid-y),0);
+  transition:transform 400ms ease-out;
 }
-.stage-depth__edge-vignette {
+.stage-depth__keylight{
+  inset:-14%;opacity:.85;
+  background:
+    radial-gradient(ellipse 28% 58% at 33% 26%,rgba(235,208,148,.39),transparent 100%),
+    linear-gradient(108deg,transparent 27%,rgba(219,194,130,.04) 33%,rgba(255,223,146,.20) 40%,rgba(249,226,169,.32) 44%,rgba(235,189,119,.11) 49%,transparent 58%);
+  transform:translate3d(var(--scene-light-x),0,0);
+  animation:stage-beam-sweep 6s ease-in-out infinite alternate;
+}
+.stage-depth__vignette{
   inset:0;
-  background:radial-gradient(ellipse 71% 78% at 50% 44%,transparent 45%,rgba(2,10,11,.33) 100%);
+  background:radial-gradient(ellipse 72% 83% at 50% 46%,transparent 40%,rgba(2,10,14,.39) 100%);
 }
-@keyframes scene-keylight-glide {
-  from { transform:translate3d(calc(var(--scene-light-x) - 32px),-2px,0) rotate(-1.4deg) scale(1.02); }
-  to   { transform:translate3d(calc(var(--scene-light-x) + 32px), 3px,0) rotate(1.4deg) scale(1.035); }
+@keyframes stage-beam-sweep{
+  0%{transform:translate3d(calc(var(--scene-light-x) - 105px),0,0);opacity:.72;}
+  100%{transform:translate3d(calc(var(--scene-light-x) + 105px),0,0);opacity:1;}
 }
-/* Static depth, texture and lighting remain visible while motion is off. */
-html[data-space-motion="off"] .stage-depth__keylight {animation:none!important;will-change:auto;}
+/* Compared with v4, this is a visible two-plane motion: opposite pointer
+   parallax + a 210px continuous light travel. No full-viewport blur. */
+.stage .cards {z-index:1;}
+html[data-space-motion="off"] .stage-depth__keylight {animation:none!important;opacity:.85;}
 html[data-space-motion="off"] .stage-depth__distance,
-html[data-space-motion="off"] .stage-depth__keylight {transition:none!important;}
-.stage-depth-motion-toggle {
+html[data-space-motion="off"] .stage-depth__middle {transition:none!important;}
+.stage-depth-motion-toggle{
   position:absolute;right:10px;top:10px;z-index:5;
-  padding:7px 10px;border-radius:999px;
-  border:1px solid rgba(211,210,183,.23);
-  background:rgba(9,26,25,.80);color:rgba(235,230,210,.92);
-  font:500 12px/1.25 system-ui,-apple-system,'Noto Sans KR',sans-serif;
+  padding:8px 12px;border:1px solid rgba(221,200,153,.55);
+  border-radius:999px;background:rgba(10,26,25,.9);color:#f3e8c8;
+  font:600 12px/1.2 system-ui,-apple-system,'Noto Sans KR',sans-serif;
   cursor:pointer;pointer-events:auto;
 }
-.stage-depth-motion-toggle:hover {background:rgba(30,55,50,.95);}
-.stage-depth-motion-toggle:focus-visible {outline:2px solid #f1d7a2;outline-offset:3px;}
-@media(max-width:600px){.stage-depth__keylight{opacity:.56}.stage-depth-motion-toggle{top:6px;right:6px;font-size:11px;}}
+.stage-depth-motion-toggle:hover{background:#203e37;}
+.stage-depth-motion-toggle:focus-visible{outline:2px solid #efd4a0;outline-offset:3px;}
+@media(max-width:600px){
+  .stage-depth__keylight{opacity:.65;}
+  .stage-depth-motion-toggle{top:6px;right:6px;padding:7px 9px;font-size:11px;}
+}
 @media(prefers-reduced-motion:reduce){
-  html:not([data-space-motion="on"]) .stage-depth__keylight {animation:none!important;will-change:auto;}
-  html:not([data-space-motion="on"]) .stage-depth__distance {transition:none!important;}
+  html:not([data-space-motion="on"]) .stage-depth__keylight{animation:none!important;}
+  html:not([data-space-motion="on"]) .stage-depth__distance,
+  html:not([data-space-motion="on"]) .stage-depth__middle{transition:none!important;}
 }
