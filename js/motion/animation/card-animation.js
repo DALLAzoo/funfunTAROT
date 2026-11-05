@@ -1,6 +1,7 @@
 import {CONFIG as C, stageSize} from '../../settings/config/config.js';
 import {slotPose, stackPose, mix, smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION, pressureProgress} from './finale-motion.js';
+import {runVelvet3DShuffle} from '../../effects/velvet-studio-3d.js';
 
 // Kept compatible with the existing In-between Shift app: carousel, reveal,
 // cancellation, fan, card sizing and chosen-card transition use these exports.
@@ -156,7 +157,7 @@ function packetMotion(i,t,geo){
   return mix(mid,stackPose(i,geo.count),u);
 }
 
-export async function shuffleMotion(els,stage,phase=()=>{}){
+async function shuffleMotionFallback(els,stage,phase=()=>{}){
   if(!els.length)return true;
   const geo=layoutFor(els.length,stage,stageSize('shuffle',stage.clientWidth));
   const oldClass='cinematic-shuffle';
@@ -196,6 +197,22 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
     stage.classList.remove(oldClass,'glow-shuffle-lite');
     for(const el of els){el.classList.remove('cinema-shuffle__hero','cinema-shuffle__packet');}
   }
+}
+
+/** New 3D visual layer is limited to the shuffle. All existing DOM carousel,
+ * fan, card dimensions and reveal exports stay the same. WebGL failure falls
+ * back to the previous working v6 shuffle without changing the selection UI. */
+export async function shuffleMotion(els, stage, phase=()=>{}) {
+  try {
+    if (await runVelvet3DShuffle({
+      stage, cards:els, phase,
+      backUrl:els[0]?.style.getPropertyValue('--back-image'),
+      sizePx:stageSize('shuffle',stage.clientWidth),
+      duration:C.shuffle.duration+Math.max(840,C.shuffle.separate)+270,
+      finishPose:(card,i)=>{card.style.transform=transform(stackPose(i,els.length));card.style.zIndex=String(100+i);}
+    })) return true;
+  } catch(error) { console.warn('Velvet WebGL shuffle fallback:',error); }
+  return shuffleMotionFallback(els,stage,phase);
 }
 
 // The existing fan animation is left untouched to retain carousel/reveal flow.
