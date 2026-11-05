@@ -1,9 +1,7 @@
-/* Visual effects only during fanMotion(); never accepts pointer input. */
-#stage > .anime-fan-rear,
-#stage > .anime-fan-front {
+/* Fan presentation only: no new UI, no card image overlays. */
+#stage > .anime-fan-slash {
  position:absolute;inset:0;width:100%;height:100%;
- display:block;pointer-events:none!important;user-select:none;
- contain:strict;
+ pointer-events:none!important;user-select:none;contain:strict;z-index:5;
 }
-#stage > .anime-fan-rear{z-index:0}
-#stage > .anime-fan-front{z-index:5}
+/* Suppress the legacy expanding release ring only while the new fan opens. */
+#stage.anime-fan-active > .magic-rear { opacity:0; }

@@ -61,28 +61,33 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
 }
 /*
- * In-between Shift — fan reveal motion study (5 s).
- * Only the opening move is changed. The exact slotPose() target, card dimensions,
- * card data, selection handlers and reveal pipeline are untouched.
- * Composition: charge -> left-to-right arc -> fan lock -> golden afterglow.
+ * In-between Shift — chain-opening / single golden slash motion study.
+ * Preserve the same opening cards, slotPose targets, card size and public hooks.
+ * The seven cards unfold from the center outwards, settle with a small rebound,
+ * then one narrow slash sweeps over the fan. No rings, dust or comet trails.
  */
 const fanClamp=t=>Math.min(1,Math.max(0,t));
-const fanEase=t=>1-(1-fanClamp(t))**3;
-function fanAnimePose(i,count,t,from,to){
- const off=i-(count-1)/2,side=Math.sign(off),weight=1-Math.abs(off)/((count-1)/2||1);
- // Deliberately stagger the seven cards, like successive animation cels.
- const begin=.18+i*.046;
- const moveDuration=.375;
- const u=fanClamp((t-begin)/moveDuration);
- const q=fanEase(u);
- const arc=Math.sin(Math.PI*u);
+function fanChainPose(i,count,t,from,to){
+ const off=i-(count-1)/2, distance=Math.abs(off), side=Math.sign(off);
+ // Center first, then symmetric pairs: visible chain reaction, not a slow queue.
+ const begin=.08+distance*.074;
+ const u=fanClamp((t-begin)/.46);
+ const q=1-(1-u)**3;
  const current=mix(from,to,q);
- current.y-=arc*(22+weight*22);
- current.z+=arc*(64+weight*36);
- current.rot+=arc*side*-14;
- current.ry+=arc*side*19;
- current.rx-=arc*12;
- current.scale+=arc*.065;
+ // A shallow 3D lift follows the actual card movement, then vanishes.
+ const lift=Math.sin(Math.PI*u);
+ current.y-=lift*(12+distance*2);
+ current.z+=lift*(36+distance*5);
+ current.rot+=side*lift*-7;
+ current.ry+=side*lift*10;
+ current.rx-=lift*4;
+ current.scale+=lift*.024;
+ // Short, damped settling motion. Exactly slotPose at u=1.
+ if(u>.73&&u<1){
+  const v=(u-.73)/.27, rebound=Math.sin(v*Math.PI*2)*(1-v);
+  current.y-=rebound*2.5;
+  current.rot+=side*rebound*1.4;
+ }
  return current;
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
@@ -108,7 +113,7 @@ export async function fanMotion(els,stage,onStart=()=>{}){
    const frames=[];
    for(let n=0;n<=125;n++){
     const t=n/125;
-    frames.push({offset:t,transform:transform(fanAnimePose(i,els.length,t,from,to))});
+    frames.push({offset:t,transform:transform(fanChainPose(i,els.length,t,from,to))});
    }
    return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
   }));
