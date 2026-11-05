@@ -1,10 +1,12 @@
-/* In-between Shift — Design 01 / actual 3D proof of concept.
-   Renderer: dependency-free WebGL2. Rocks, cards, spotlight, haze and particles
-   share one view/projection and one time-dependent key light. No CSS fake card gloss.
-   Standalone evaluation only; no edits to the existing tarot website. */
+/* In-between Shift — CINEMA 01 / high-detail hybrid 3D stage.
+ * Environment: original high-resolution cinematic rendering with photographic depth.
+ * Cards: real WebGL2 3D geometry, shared stage camera and moving key/fill lights.
+ * The image environment is a pre-rendered 2.5D plate, NOT a live 3D rock mesh.
+ * No external runtime libraries. Website's original deck textures load by URL when online.
+ */
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('view'), stage=$('stageWrap');
-const gl=canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});
+const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false,powerPreference:'high-performance'});
 if(!gl){$('unavailable').hidden=false;$('sceneLabel').textContent='WEBGL2 미지원';$('shuffle').disabled=true;return;}
 const PI=Math.PI, TAU=2*PI;
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),smooth=t=>{t=clamp(t);return t*t*(3-2*t);},mix=(a,b,t)=>a+(b-a)*t;
@@ -74,9 +76,11 @@ if(uKind==5){
  }
  if(uKind==1){
    vec3 art=texture(uTex,vUV).rgb;
-   float lambert=clamp(.82+.62*key+cool, .56,1.48);
+   float lambert=clamp(.96+.8*key+cool, .66,1.58);
    vec3 tint=mix(art,art*vec3(1.15,1.06,.89),clamp(key,0.,.4));
-   vec3 outc=tint*lambert+vec3(1.,.81,.43)*spec*.67*uLightPower;
+   float metallicPrint=smoothstep(.065,.30,art.r-art.b)*smoothstep(.15,.52,art.r);
+   float fresnel=pow(1.-max(dot(N,V),0.),3.0);
+   vec3 outc=tint*lambert+vec3(1.,.85,.55)*spec*(.14+.88*metallicPrint)*uLightPower+vec3(.36,.29,.20)*fresnel*.17;
    float highlight=pow(max(dot(N,H),0.),12.)*.17*uLightPower;
    outc+=vec3(.85,.76,.56)*highlight;
    frag=vec4(outc,uFade);return;
@@ -92,53 +96,8 @@ function mesh(vertices){const a=new Float32Array(vertices),vao=gl.createVertexAr
 function vertex(v,p,n,uv,c){v.push(...p,...n,...uv,...c);}
 function tri(out,a,b,c,color,uvA=[0,0],uvB=[1,0],uvC=[.5,1]){const n=vec.norm(vec.cross(vec.sub(b,a),vec.sub(c,a)));vertex(out,a,n,uvA,color);vertex(out,b,n,uvB,color);vertex(out,c,n,uvC,color);}
 function quad(out,a,b,c,d,color=[1,1,1]){tri(out,a,b,c,color,[0,0],[1,0],[1,1]);tri(out,a,c,d,color,[0,0],[1,1],[0,1]);}
-const rockVerts=[];
-const icoV=[[0,1,1.618],[0,-1,1.618],[0,1,-1.618],[0,-1,-1.618],[1,1.618,0],[-1,1.618,0],[1,-1.618,0],[-1,-1.618,0],[1.618,0,1],[-1.618,0,1],[1.618,0,-1],[-1.618,0,-1]].map(vec.norm);
-const icoF=[[0,1,8],[0,8,4],[0,4,5],[0,5,9],[0,9,1],[1,6,8],[1,9,7],[1,7,6],[4,8,10],[4,10,2],[4,2,5],[5,2,11],[5,11,9],[6,7,3],[6,3,10],[6,10,8],[7,9,11],[7,11,3],[2,10,3],[2,3,11]];
-function rock(center,radii,seed,brightness=1){const r=seeded(seed),radii2=[...radii],col=[.26+.08*r(),.265+.07*r(),.26+.08*r()].map(v=>v*brightness);
- const distort=v=>{let noise=(r()-.5)*.42;return v.map((p,i)=>center[i]+p*radii2[i]*(.94+noise+(i===1?.045:0)));};
- const verts=icoV.map(distort);let faces=icoF.map(f=>[...f]);
- for(let level=0;level<2;level++){
-   const cache=new Map(),next=[];
-   function midpoint(i,j){const key=Math.min(i,j)+':'+Math.max(i,j);if(cache.has(key))return cache.get(key);
-     const point=verts[i].map((v,k)=>(v+verts[j][k])*.5),stretch=1+(r()-.5)*(level===0?.18:.12);
-     const v=point.map((v,k)=>center[k]+(v-center[k])*stretch);const id=verts.length;verts.push(v);cache.set(key,id);return id;}
-   for(const [i,j,k] of faces){const a=midpoint(i,j),b=midpoint(j,k),c=midpoint(k,i);next.push([i,a,c],[a,j,b],[c,b,k],[a,b,c]);}faces=next;
- }
- for(const f of faces)tri(rockVerts,...f.map(i=>verts[i]),col.map(q=>q*(.92+.14*r())));
-}
-// Connected limestone/basalt cave walls. They form a real 3D chamber instead of
-// a row of decorative isolated rocks; surface relief follows multiple frequencies.
-function relief(a,b,k){return Math.sin(a*2.2+k)*.23+Math.sin(b*3.7-a*1.3+k)*.14+Math.sin(a*9.5+b*5.8+k)*.075;}
-function caveWall(side){const nx=16,nz=20;
- function point(i,j){const y=-3.6+7.7*i/nx,z=-10.+8.*j/nz;
-   const x=side*(4.65+relief(y,z,side*.7)+.23*Math.sin(z*.8));
-   return [x,y,z];}
- for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){
-   const A=point(i,j),B=point(i+1,j),C=point(i+1,j+1),D=point(i,j+1);
-   const tint=[.19,.205,.215].map(v=>v*(.9+.11*Math.sin(i*1.3+j*.9)));
-   tri(rockVerts,A,B,C,tint);tri(rockVerts,A,C,D,tint);
- }
-}
-caveWall(-1);caveWall(1);
-function caveRoof(){const nx=18,nz=16;
- function pt(i,j){const x=-5.1+10.2*i/nx,z=-9.4+8.*j/nz;
- return [x,3.6+relief(x,z,.91)*.64,z];}
- for(let i=0;i<nx;i++)for(let j=0;j<nz;j++){const A=pt(i,j),B=pt(i,j+1),C=pt(i+1,j+1),D=pt(i+1,j);const col=[.19,.202,.205];tri(rockVerts,A,B,C,col);tri(rockVerts,A,C,D,col);}
-}
-caveRoof();
-// Actual three-dimensional rock volumes form an uneven arch and foreground ledges.
-for(const side of [-1,1]){
- // Deep cracked stone masses replace the exposed pile-of-icospheres silhouette.
- rock([side*5.0,.3,-5.1],[1.1,2.9,1.8],410+(side+1)*60,.50);
- rock([side*4.6,-1.9,-5.6],[.75,1.7,1.8],430+(side+1)*61,.53);
- for(let i=0;i<11;i++){const y=-3.0+i*.37+(rng()-.5)*.65;const x=side*(4.22+rng()*1.46);const z=-2.7-rng()*5.0;rock([x,y,z],[.7+rng()*.7,.62+rng()*.85,.73+rng()*1.2],i+200+(side+1)*100,.71+rng()*.26);}
- for(let i=0;i<5;i++){const y=-2.6+(rng()-.5)*.7,x=side*(2.9+rng()*2.3),z=-1.3-rng()*3.5;rock([x,y,z],[.36+rng()*.6,.5+rng()*.7,.6+rng()*.8],i+570+(side+1)*200,.88+rng()*.26);}
-}
-for(let i=0;i<14;i++){const x=-5.1+i*.71+(rng()-.5)*.36,y=4.1+rng()*1.1,z=-4.9-rng()*3.6;rock([x,y,z],[.52+rng()*.55,.48+rng()*.55,.59+rng()*.85],i+1100,.59+rng()*.24);}
-for(let i=0;i<9;i++){rock([(rng()-.5)*9,-3.7+(rng()-.5)*.42,-5.5-rng()*3],[.65+rng()*.9,.52+rng()*.65,.65+rng()*.95],i+2000,.49+rng()*.2);}
-const rocks=mesh(rockVerts);
-const background=[];quad(background,[-17,-9,-14],[17,-9,-14],[17,10,-14],[-17,10,-14]);const back=mesh(background);
+// The high-detail stone environment is a pre-rendered image plate, not a
+// procedural polygon cave. No unused rock mesh is uploaded to the GPU.
 function makeCardMeshes(){const a=[],edges=[],w=.87,h=1.47,d=.038;
  quad(a,[-w,-h,d],[w,-h,d],[w,h,d],[-w,h,d]);
  quad(a,[w,-h,-d],[-w,-h,-d],[-w,h,-d],[w,h,-d]);
@@ -170,10 +129,10 @@ function makeTextureCanvas(){const c=document.createElement('canvas');c.width=51
 let currentTex=null;
 function updateTex(source){if(!currentTex)currentTex=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,currentTex);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.generateMipmap(gl.TEXTURE_2D);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);}
 updateTex(makeTextureCanvas());
-const remote=new Image();remote.crossOrigin='anonymous';remote.onload=()=>{try{updateTex(remote);$('sceneLabel').textContent='ACTUAL TAROT BACK · 3D';}catch(e){console.warn('texture:',e.message)}};
+const remote=new Image();remote.crossOrigin='anonymous';remote.onerror=()=>{console.info('Original deck texture unavailable offline; use the sample or upload your own card back.');};remote.onload=()=>{try{updateTex(remote);$('sceneLabel').textContent='ORIGINAL DECK · 3D';}catch(e){console.warn('texture:',e.message)}};
 // The original back remains in its existing public site; network is optional.
 remote.src='https://dallazoo.github.io/funfunTAROT/assets/card-backs/back-01.webp';
-$('textureInput').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{updateTex(img);URL.revokeObjectURL(url);$('state').textContent='사용자 카드 뒷면 적용';};img.onerror=()=>URL.revokeObjectURL(url);img.src=url;});
+$('textureInput').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{updateTex(img);URL.revokeObjectURL(url);$('state').textContent='내 카드 뒷면 적용 완료';};img.onerror=()=>URL.revokeObjectURL(url);img.src=url;});
 const actorCount=22;let mobile=false,heroes=5,heroIds=[],heroMap=new Map();
 function layout(){mobile=stage.clientWidth<650;heroes=mobile?3:5;heroIds=Array.from({length:heroes},(_,j)=>Math.floor((j+.5)*actorCount/heroes));heroMap=new Map(heroIds.map((id,j)=>[id,j]));}
 layout();
@@ -197,18 +156,18 @@ let running=false,start=0,clock=0,paused=false,hoverX=0,hoverY=0,activeX=0,activ
 let shaderReady=true;
 function dimensions(){const rect=canvas.getBoundingClientRect(),scale=Math.min(window.devicePixelRatio||1,mobile?1.15:1.35);const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}return {w,h};}
 function drawMesh(m,kind,pos=I(),alpha=1){gl.uniform1i(uni.uKind,kind);gl.uniformMatrix4fv(uni.uM,false,pos);gl.uniform1f(uni.uFade,alpha);gl.bindVertexArray(m.vao);gl.drawArrays(kind===5?gl.POINTS:gl.TRIANGLES,0,m.count);}
-function render(now){const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 섞기';$('state').textContent='선택용 펼침 완료';$('phaseText').textContent='마음이 끌리는 카드를 선택하세요';$('phaseCount').textContent='05 / 05';}}else if(clock===0){};
+function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 감상 ↗';$('state').textContent='선택용 펼침 완료';$('phaseText').textContent='마음이 끌리는 카드를 선택하세요';$('phaseCount').textContent='05 / 05';}}else if(clock===0){};
  const t=clock;
  if(running){const names=t<1.04?['카드가 공중으로 떠오릅니다','01 / 05']:t<3.85?['공간 속에서 서로 다른 길로 교차합니다','02 / 05']:t<5.02?['카드가 하나의 덱으로 모입니다','03 / 05']:t<5.32?['고요한 순간','04 / 05']:['카드를 펼칩니다','05 / 05'];$('phaseText').textContent=names[0];$('phaseCount').textContent=names[1];}
  if(!paused){activeX+=(hoverX-activeX)*Math.min(1,dt*2.4);activeY+=(hoverY-activeY)*Math.min(1,dt*2.4);}else{activeX+=(0-activeX)*Math.min(1,dt*4);activeY+=(0-activeY)*Math.min(1,dt*4);}
- const forward=running?Math.sin(clamp(t/5)*PI)*.26:0;
- const eye=[activeX*.38, .44+activeY*.2, mobile?9.8-forward:8.85-forward],target=[activeX*.05,.1,-1.9];
- const light=[-1.7+(paused?0:Math.sin(now*.00041)*1.15)+activeX*.55,5.3,4.0];
+ const forward=running?Math.sin(clamp(t/5)*PI)*.25:0;
+ const eye=[activeX*.29, .38+activeY*.16, mobile?10.1-forward:9.15-forward],target=[activeX*.055,.1,-1.9];
+ const light=[-.9+(paused?0:Math.sin(now*.00046)*1.35)+activeX*.48,6.3,4.5];
  const v=lookAt(eye,target),p=perspective((mobile?50:48)*PI/180,w/h,.1,70);
- gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(.009,.022,.033,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
- gl.useProgram(pr);gl.uniformMatrix4fv(uni.uP,false,p);gl.uniformMatrix4fv(uni.uV,false,v);gl.uniform3fv(uni.uLight,light);gl.uniform3fv(uni.uEye,eye);gl.uniform1f(uni.uTime,now/1000);gl.uniform1f(uni.uLightPower,paused?.8:1.85);gl.uniform1f(uni.uBeamShift,activeX);
+ gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.depthMask(true);gl.disable(gl.BLEND);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ gl.useProgram(pr);gl.uniformMatrix4fv(uni.uP,false,p);gl.uniformMatrix4fv(uni.uV,false,v);gl.uniform3fv(uni.uLight,light);gl.uniform3fv(uni.uEye,eye);gl.uniform1f(uni.uTime,now/1000);gl.uniform1f(uni.uLightPower,paused?1.1:2.25);gl.uniform1f(uni.uBeamShift,activeX);
  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,currentTex);gl.uniform1i(uni.uTex,0);
- drawMesh(back,4);drawMesh(rocks,0);
+ /* Scenic plate is behind this transparent WebGL canvas. */
  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
  drawMesh(glow,6,I(),paused?.42:1.1);drawMesh(beam1,3,I(),paused?.27:1.15);drawMesh(beam2,3,I(),paused?.17:.72);drawMesh(dust,5,I(),paused?.21:.72);
  gl.depthMask(true);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
@@ -218,11 +177,12 @@ function render(now){const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now
  gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
  requestAnimationFrame(render);
 }
-const pointer=event=>{if(paused)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);};
-stage.addEventListener('pointermove',pointer,{passive:true});stage.addEventListener('pointerleave',()=>{hoverX=hoverY=0;},{passive:true});
-$('sceneToggle').addEventListener('click',()=>{paused=!paused;$('sceneToggle').textContent=paused?'빛·안개 정지':'빛·안개 켜짐';$('sceneToggle').setAttribute('aria-pressed',String(!paused));});
+const pointer=event=>{if(paused)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);stage.style.setProperty('--pan-x',`${(hoverX*16).toFixed(1)}px`);stage.style.setProperty('--pan-y',`${(hoverY*13).toFixed(1)}px`);};
+stage.addEventListener('pointermove',pointer,{passive:true});stage.addEventListener('pointerleave',()=>{hoverX=hoverY=0;stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');},{passive:true});
+$('sceneToggle').addEventListener('click',()=>{paused=!paused;document.documentElement.dataset.sceneMotion=paused?'off':'on';$('sceneToggle').textContent=paused?'공간·조명 움직임 켜기':'공간·조명 움직임 끄기';$('sceneToggle').setAttribute('aria-pressed',String(!paused));if(paused){stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');}});
 $('shuffle').addEventListener('click',()=>{if(running)return;clock=0;start=performance.now();running=true;$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';});
 let prevMobile=mobile;new ResizeObserver(()=>{const m=stage.clientWidth<650;if(m!==prevMobile){layout();prevMobile=m;}}).observe(stage);
-$('sceneLabel').textContent='LIVE WEBGL2 · LIGHT + MATERIAL';
+document.documentElement.dataset.sceneMotion='on';
+$('sceneLabel').textContent='LIVE 3D CARDS + CINEMATIC SCENE';
 requestAnimationFrame(render);
 })();
