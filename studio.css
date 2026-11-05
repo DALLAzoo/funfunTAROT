@@ -44,3 +44,9 @@ button{font:inherit;cursor:pointer}button:focus-visible,.theatre:focus-visible{o
 .fallback-card-front{transform:rotateY(180deg);background:#162927}
 .fallback-card-front img{display:block;width:100%;height:100%;object-fit:cover}
 .fallback-card.is-revealed{transform:translate(-50%,-50%) translate3d(0,0,40px) rotateY(180deg) scale(1.36)!important}
+
+/* v8.4: An unmistakable but card-owned selected gold border in HTML fallback. */
+.fallback-card.is-picked:not(.is-revealed) {
+ outline:2px solid #f3d08c;outline-offset:2px;
+ box-shadow:0 0 0 4px rgba(246,199,115,.17),0 0 19px rgba(244,193,94,.72),0 8px 24px rgba(0,0,0,.7);
+}
