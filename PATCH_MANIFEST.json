@@ -1,35 +1,20 @@
 {
-  "title": "In-between Shift — Cinema 01 Floating Shuffle v6",
-  "date": "2026-11-05",
-  "status": "test-only / not deployed",
-  "repository": "https://github.com/DALLAzoo/funfunTAROT",
-  "branch": "main",
-  "base_sha_by_file": {
-    "js/motion/animation/card-animation.js": "ff53d5f854e7842fab9cc791b4d00b8f38f13767",
-    "js/effects/magic-vfx.js": "1c0402ba29067f085b3fe5401e7ca76fb22d542e",
-    "css/tarot.css": "f12e8a378533e13270f906bc51492382692bc32f"
-  },
+  "name": "Cinema 01 / volumetric light v7",
+  "base_repo": "DALLAzoo/funfunTAROT",
+  "base_date": "2026-11-05",
   "replace": [
+    "css/effects/10-cinematic-vault.css",
+    "js/effects/cinematic-vault.js"
+  ],
+  "untouched": [
     "js/motion/animation/card-animation.js",
     "js/effects/magic-vfx.js",
+    "index.html",
     "css/tarot.css"
   ],
-  "add": [
-    "css/motion/11-cinematic-shuffle.css"
-  ],
-  "preserve": [
-    "index.html",
-    "css/effects/10-cinematic-vault.css",
-    "js/effects/cinematic-vault.js",
-    "js/screen/app/shuffle-flow.js",
-    "js/motion/selection/carousel.js",
-    "all artwork and images"
-  ],
-  "test": {
-    "javascript_syntax": "passed",
-    "local_mock_desktop": "passed",
-    "local_mock_mobile": "passed",
-    "local_mock_reduced_motion": "passed",
-    "live_site_and_device_performance": "not tested"
+  "status": "local trial; no GitHub changes",
+  "sha256": {
+    "css/effects/10-cinematic-vault.css": "4a29eee0ddeb509109952d3553069de83effd1b03734515fe36d05c43f3aa196",
+    "js/effects/cinematic-vault.js": "3d4e13bc1474abcd7f1572faf767925ed9cff852b06221952238b6d80a9c763e"
   }
 }
