@@ -1,0 +1,32 @@
+/* In-between Shift / Cinema 01: floating-card choreography.
+   Overlay scoped to shuffle only; original card art and other scenes stay intact.
+   The camera uses a compositor transform, not geometry reads or blur animation. */
+#stage.cinematic-shuffle > .cards {
+  transform-style:preserve-3d;
+  animation:cinema01-camera-drift 4.35s cubic-bezier(.22,.6,.24,1) both;
+}
+@keyframes cinema01-camera-drift {
+  0%   {transform:translate3d(0,0,0) rotateX(0deg)}
+  40%  {transform:translate3d(0,-5px,15px) rotateX(1.2deg)}
+  67%  {transform:translate3d(0,-6px,22px) rotateX(.8deg)}
+  100% {transform:translate3d(0,0,0) rotateX(0deg)}
+}
+#stage.cinematic-shuffle .tarot-card.cinema-shuffle__hero .card-back {
+  /* A restrained highlight tied to the card's own surface, never a neon glow. */
+  box-shadow:inset 1px 1px 1px rgba(248,233,202,.20),
+             inset -2px -3px 6px rgba(8,17,18,.18),
+             0 9px 16px rgba(0,0,0,.19)!important;
+}
+#stage.cinematic-shuffle .tarot-card.cinema-shuffle__packet .card-back {
+  box-shadow:inset 1px 1px 1px rgba(232,220,190,.10),
+             0 4px 10px rgba(0,0,0,.14)!important;
+}
+/* Non-featured cards remain visible as two layered packets, not glowing dust. */
+#stage.cinematic-shuffle .tarot-card.cinema-shuffle__packet {opacity:.66;}
+/* Respect system settings for camera-only motion. The primary shuffle is a
+   user-triggered action and still plays. The on-page scene override wins. */
+@media(prefers-reduced-motion:reduce){
+  html:not([data-cinema-motion="on"]) #stage.cinematic-shuffle > .cards {
+    animation:none!important;
+  }
+}
