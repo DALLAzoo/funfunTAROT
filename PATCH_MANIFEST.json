@@ -1,0 +1,35 @@
+{
+  "title": "In-between Shift — Cinema 01 Floating Shuffle v6",
+  "date": "2026-11-05",
+  "status": "test-only / not deployed",
+  "repository": "https://github.com/DALLAzoo/funfunTAROT",
+  "branch": "main",
+  "base_sha_by_file": {
+    "js/motion/animation/card-animation.js": "ff53d5f854e7842fab9cc791b4d00b8f38f13767",
+    "js/effects/magic-vfx.js": "1c0402ba29067f085b3fe5401e7ca76fb22d542e",
+    "css/tarot.css": "f12e8a378533e13270f906bc51492382692bc32f"
+  },
+  "replace": [
+    "js/motion/animation/card-animation.js",
+    "js/effects/magic-vfx.js",
+    "css/tarot.css"
+  ],
+  "add": [
+    "css/motion/11-cinematic-shuffle.css"
+  ],
+  "preserve": [
+    "index.html",
+    "css/effects/10-cinematic-vault.css",
+    "js/effects/cinematic-vault.js",
+    "js/screen/app/shuffle-flow.js",
+    "js/motion/selection/carousel.js",
+    "all artwork and images"
+  ],
+  "test": {
+    "javascript_syntax": "passed",
+    "local_mock_desktop": "passed",
+    "local_mock_mobile": "passed",
+    "local_mock_reduced_motion": "passed",
+    "live_site_and_device_performance": "not tested"
+  }
+}
