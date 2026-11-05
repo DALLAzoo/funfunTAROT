@@ -98,16 +98,16 @@ function tri(out,a,b,c,color,uvA=[0,0],uvB=[1,0],uvC=[.5,1]){const n=vec.norm(ve
 function quad(out,a,b,c,d,color=[1,1,1]){tri(out,a,b,c,color,[0,0],[1,0],[1,1]);tri(out,a,c,d,color,[0,0],[1,1],[0,1]);}
 // The high-detail stone environment is a pre-rendered image plate, not a
 // procedural polygon cave. No unused rock mesh is uploaded to the GPU.
-function makeCardMeshes(){const a=[],edges=[],w=.87,h=1.47,d=.038;
- quad(a,[-w,-h,d],[w,-h,d],[w,h,d],[-w,h,d]);
- quad(a,[w,-h,-d],[-w,-h,-d],[-w,h,-d],[w,h,-d]);
+function makeCardMeshes(){const back=[],front=[],edges=[],w=.87,h=1.47,d=.038;
+ quad(back,[-w,-h,d],[w,-h,d],[w,h,d],[-w,h,d]);
+ quad(front,[w,-h,-d],[-w,-h,-d],[-w,h,-d],[w,h,-d]);
  const sideCol=[.62,.50,.32];
  quad(edges,[w,-h,d],[w,-h,-d],[w,h,-d],[w,h,d],sideCol);
  quad(edges,[-w,-h,-d],[-w,-h,d],[-w,h,d],[-w,h,-d],sideCol);
  quad(edges,[-w,h,d],[w,h,d],[w,h,-d],[-w,h,-d],sideCol);
  quad(edges,[-w,-h,-d],[w,-h,-d],[w,-h,d],[-w,-h,d],sideCol);
- return [mesh(a),mesh(edges)];}
-const [cardFaces,cardEdges]=makeCardMeshes();
+ return [mesh(back),mesh(front),mesh(edges)];}
+const [cardBackFace,cardFrontFace,cardEdges]=makeCardMeshes();
 const beamBuf=[];function beamQuad(cx,cy,topW,botW,z,height){quad(beamBuf,[cx-topW/2,cy,z],[cx+topW/2,cy,z],[cx+botW/2,cy-height,z], [cx-botW/2,cy-height,z]);}
 beamQuad(-1.45,4.8,.3,5.3,-4,8.0);const beam1=mesh(beamBuf);
 const beamBuf2=[];quad(beamBuf2,[-1.25,5.,-2.2],[-.60,5.,-2.2],[2.7,-3.4,-2.2],[-3.95,-3.4,-2.2]);const beam2=mesh(beamBuf2);
@@ -123,7 +123,7 @@ function makeTextureCanvas(){const c=document.createElement('canvas');c.width=51
  for(let i=0;i<8;i++){const a=TAU*i/8;ctx.beginPath();ctx.moveTo(Math.cos(a)*8,Math.sin(a)*8);ctx.lineTo(Math.cos(a)*137,Math.sin(a)*185);ctx.stroke();}
  ctx.rotate(PI/4);ctx.lineWidth=5;ctx.strokeRect(-63,-63,126,126);ctx.lineWidth=1.5;ctx.strokeRect(-80,-80,160,160);ctx.rotate(-PI/4);
  ctx.beginPath();ctx.ellipse(0,0,65,29,0,0,TAU);ctx.stroke();ctx.fillStyle='#e9c993';ctx.beginPath();ctx.arc(0,0,21,0,TAU);ctx.fill();ctx.fillStyle='#112b2d';ctx.beginPath();ctx.arc(0,0,8,0,TAU);ctx.fill();ctx.restore();
- ctx.fillStyle='#f1d6a3';ctx.font='15px Georgia';ctx.textAlign='center';ctx.letterSpacing='6px';ctx.fillText('IN BETWEEN',w/2,104);ctx.font='10px Georgia';ctx.fillText('A MOMENT BETWEEN',w/2,h-88);
+ // No text or logo is drawn on the fallback card back.
  for(let xx of [90,w-90])for(let yy of [160,h-160]){ctx.save();ctx.translate(xx,yy);ctx.rotate(PI/4);ctx.strokeStyle='#bda474';ctx.lineWidth=2;ctx.strokeRect(-12,-12,24,24);ctx.restore();}
  return c;}
 let currentTex=null;
@@ -133,6 +133,77 @@ const remote=new Image();remote.crossOrigin='anonymous';remote.onerror=()=>{cons
 // The original back remains in its existing public site; network is optional.
 remote.src='https://dallazoo.github.io/funfunTAROT/assets/card-backs/back-01.webp';
 $('textureInput').addEventListener('change',e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file);const img=new Image();img.onload=()=>{updateTex(img);URL.revokeObjectURL(url);$('state').textContent='내 카드 뒷면 적용 완료';};img.onerror=()=>URL.revokeObjectURL(url);img.src=url;});
+const SOURCE_ROOT='https://dallazoo.github.io/funfunTAROT/';
+const ALL_CARD_IDS=[...Array.from({length:22},(_,n)=>`major-${String(n).padStart(2,'0')}`),
+ 'cups-page','wands-page','swords-page','pentacles-page',
+ 'swords-knight','wands-knight','cups-knight','pentacles-knight'];
+let deckIds=[];
+function randomDeck(){
+ const all=ALL_CARD_IDS.slice();
+ for(let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
+ deckIds=all.slice(0,22);
+}
+randomDeck();
+let userReadings=null;
+// Read the exact text already entered in the live In-between Shift site.
+// Parsing is data-only: the remote JavaScript is NEVER evaluated or executed.
+function parseOriginalReadings(source){
+ const found=new Map();
+ const re=/chosen\.cardData\.id\s*===\s*'([^']+)'\s*\?\s*`([\s\S]*?)`\s*:/g;
+ for(const m of source.matchAll(re))found.set(m[1],m[2]);
+ if(found.size<30)throw new Error('기존 상담 문구 전체를 확인하지 못했습니다.');
+ return found;
+}
+const readingsPromise=fetch(SOURCE_ROOT+'js/screen/app/reveal-flow.js')
+ .then(r=>{if(!r.ok)throw new Error('상담 문구 HTTP '+r.status);return r.text();})
+ .then(parseOriginalReadings)
+ .then(r=>(userReadings=r,r))
+ .catch(e=>{console.warn('기존 상담 문구를 읽지 못했습니다:',e);return null;});
+let frontTexture=null;
+function uploadFront(source){
+ if(!frontTexture)frontTexture=gl.createTexture();
+ gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,frontTexture);
+ gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+ gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+ gl.generateMipmap(gl.TEXTURE_2D);
+ gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+}
+function loadFrontImage(cardId){return new Promise((resolve,reject)=>{
+ const img=new Image();img.crossOrigin='anonymous';
+ img.onload=()=>{try{uploadFront(img);resolve(true);}catch(err){reject(err);}};
+ img.onerror=()=>reject(new Error('선택 카드 앞면 이미지를 불러올 수 없습니다.'));
+ img.src=SOURCE_ROOT+'assets/card-fronts/'+encodeURIComponent(cardId)+'.png';
+});}
+let revealMode='none',revealStarted=0,revealIndex=-1,revealCardId=null,revealText='';
+function resetReveal(){
+ revealMode='none';revealStarted=0;revealIndex=-1;revealCardId=null;revealText='';
+ $('resultView').hidden=true;$('resultReading').textContent='';
+ $('resultSelectionTitle').textContent='마음이 끌리는 카드를 선택하세요';
+ $('shuffle').hidden=false;$('resultAgain').hidden=true;
+ $('readingDropdown').hidden=false;$('readingOptions').hidden=true;
+}
+async function revealSelected(i){
+ if(revealMode!=='none'||!ready())return;
+ revealMode='loading';revealIndex=i;revealCardId=deckIds[i];
+ stage.classList.remove('fan-ready');
+ try{
+  const [_,texts]=await Promise.all([loadFrontImage(revealCardId),readingsPromise]);
+  if(!texts||!texts.has(revealCardId))throw new Error('이미 입력된 상담 문구를 불러오지 못했습니다.');
+  revealText=texts.get(revealCardId);
+  revealMode='flipping';revealStarted=performance.now();
+  $('shuffle').hidden=true;$('readingDropdown').hidden=true;
+ }catch(err){
+  console.warn(err);revealMode='none';revealIndex=-1;
+  stage.classList.add('fan-ready');
+  // Do not replace the user's existing reading with newly authored advice.
+  $('resultReading').textContent=err.message;
+  $('resultView').hidden=false;
+ }
+}
 const actorCount=22;let mobile=false,heroes=5,heroIds=[],heroMap=new Map();
 function layout(){mobile=stage.clientWidth<650;heroes=mobile?3:5;heroIds=Array.from({length:heroes},(_,j)=>Math.floor((j+.5)*actorCount/heroes));heroMap=new Map(heroIds.map((id,j)=>[id,j]));}
 layout();
@@ -176,7 +247,7 @@ let shaderReady=true;
 let currentV=I(),currentP=I();
 function dimensions(){const rect=canvas.getBoundingClientRect(),scale=Math.min(window.devicePixelRatio||1,mobile?1.15:1.35);const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}return {w,h};}
 function drawMesh(m,kind,pos=I(),alpha=1){gl.uniform1i(uni.uKind,kind);gl.uniformMatrix4fv(uni.uM,false,pos);gl.uniform1f(uni.uFade,alpha);gl.bindVertexArray(m.vao);gl.drawArrays(kind===5?gl.POINTS:gl.TRIANGLES,0,m.count);}
-function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 감상 ↗';$('state').textContent='카드 선택 가능 · 드래그 / 터치';$('phaseText').textContent='좌우로 밀어 카드를 이동하고, 눌러 선택하세요';$('phaseCount').textContent='4 / 22';stage.classList.add('fan-ready');}}else if(clock===0){};
+function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 섞기';$('state').textContent='카드 선택 가능 · 드래그 / 터치';$('phaseText').textContent='좌우로 밀어 카드를 이동하고, 눌러 선택하세요';$('phaseCount').textContent='4 / 22';stage.classList.add('fan-ready');}}else if(clock===0){};
  const t=clock;
  if(running){const names=t<1.04?['카드가 공중으로 떠오릅니다','01 / 05']:t<3.85?['공간 속에서 서로 다른 길로 교차합니다','02 / 05']:t<5.02?['카드가 하나의 덱으로 모입니다','03 / 05']:t<5.32?['고요한 순간','04 / 05']:['카드를 펼칩니다','05 / 05'];$('phaseText').textContent=names[0];$('phaseCount').textContent=names[1];}
  if(!paused){activeX+=(hoverX-activeX)*Math.min(1,dt*2.4);activeY+=(hoverY-activeY)*Math.min(1,dt*2.4);}else{activeX+=(0-activeX)*Math.min(1,dt*4);activeY+=(0-activeY)*Math.min(1,dt*4);}
@@ -192,9 +263,37 @@ function render(now){if(document.hidden){last=now;requestAnimationFrame(render);
  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
  drawMesh(glow,6,I(),paused?.42:1.1);drawMesh(beam1,3,I(),paused?.27:1.15);drawMesh(beam2,3,I(),paused?.17:.72);drawMesh(dust,5,I(),paused?.21:.72);
  gl.depthMask(true);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
- const actorFrames=[];for(let i=0;i<actorCount;i++){const a=poseFor(i,t);if(a.alpha<.005)continue;actorFrames.push({...a,index:i});}
+ const actorFrames=[];
+ if(revealMode==='flipping'||revealMode==='result'){
+  const secs=(now-revealStarted)/1000;
+  const centerMove=smooth(clamp(secs/.82));
+  const flip=smooth(clamp((secs-.63)/.78));
+  const from=selectedFanPose(revealIndex,visibleOffset(revealIndex));
+  const to={x:0,y:.2,z:mobile?4.1:3.9,rz:0,ry:PI,rx:0};
+  const card=mPose(from,to,centerMove);
+  card.ry=PI*flip;
+  actorFrames.push({p:card,alpha:1,index:revealIndex,selected:true});
+  if(revealMode==='flipping'&&secs>=1.6){
+   revealMode='result';
+   $('resultSelectionTitle').textContent='조언 - 당신을 위한';
+   $('resultReading').textContent=revealText;
+   $('resultView').hidden=false;
+   $('resultAgain').hidden=false;
+   $('readingDropdown').hidden=false;
+  }
+ }else{
+  for(let i=0;i<actorCount;i++){
+   const a=poseFor(i,t);
+   if(a.alpha<.005)continue;
+   actorFrames.push({...a,index:i});
+  }
+ }
  // With depth testing the 3D cards occlude one another, not merely a CSS z-index.
- for(const a of actorFrames){const mm=model(a.p);if(a.alpha<.99){gl.enable(gl.BLEND);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}drawMesh(cardEdges,2,mm,a.alpha);drawMesh(cardFaces,1,mm,a.alpha);}
+ for(const a of actorFrames){const mm=model(a.p);if(a.alpha<.99){gl.enable(gl.BLEND);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}drawMesh(cardEdges,2,mm,a.alpha);
+  gl.bindTexture(gl.TEXTURE_2D,currentTex);
+  drawMesh(cardBackFace,1,mm,a.alpha);
+  gl.bindTexture(gl.TEXTURE_2D,a.selected&&frontTexture?frontTexture:currentTex);
+  drawMesh(cardFrontFace,1,mm,a.alpha);}
  gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
  requestAnimationFrame(render);
 }
@@ -228,7 +327,7 @@ function hitCard(clientX,clientY){
  return best;
 }
 let gesture=null,dragging=false;
-const ready=()=>clock>=6.38&&!running;
+const ready=()=>clock>=6.38&&!running&&revealMode==='none';
 const gestureStep=()=>Math.max(mobile?43:55,Math.min(92,stage.clientWidth*(mobile?.145:.065)));
 function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;confirmedIndex=-1;gestureOffset=0;
  $('state').textContent=`${focusIndex+1}번째 카드 · 선택하려면 누르세요`;
@@ -238,8 +337,7 @@ function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;co
 function chooseCard(i){
  if(i<0)return;
  if(i!==focusIndex){setFocus(i);return;}
- if(pickedIndex===i){confirmedIndex=i; $('state').textContent=`${i+1}번째 카드 선택 확인`;
-  $('phaseText').textContent='선택 확인 완료 · 실제 상담 결과 기능은 연결 전입니다';return;}
+ if(pickedIndex===i){confirmedIndex=i;revealSelected(i);return;}
  pickedIndex=i;confirmedIndex=-1;
  $('state').textContent=`${i+1}번째 카드 선택됨`;
  $('phaseText').textContent='한 번 더 누르면 선택을 확인합니다';
@@ -286,7 +384,16 @@ stage.addEventListener('keydown',e=>{
  if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseCard(focusIndex);}
 });
 $('sceneToggle').addEventListener('click',()=>{paused=!paused;document.documentElement.dataset.sceneMotion=paused?'off':'on';$('sceneToggle').textContent=paused?'공간·조명 움직임 켜기':'공간·조명 움직임 끄기';$('sceneToggle').setAttribute('aria-pressed',String(!paused));if(paused){stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');}});
-$('shuffle').addEventListener('click',()=>{if(running)return;clock=0;start=performance.now();running=true;focusIndex=3;gestureOffset=0;pickedIndex=-1;confirmedIndex=-1;gesture=null;dragging=false;stage.classList.remove('fan-ready');$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';});
+function beginShuffle(){if(running)return;resetReveal();randomDeck();remote.src=SOURCE_ROOT+'assets/card-backs/back-0'+(1+Math.floor(Math.random()*8))+'.webp';clock=0;start=performance.now();running=true;focusIndex=3;gestureOffset=0;pickedIndex=-1;confirmedIndex=-1;gesture=null;dragging=false;stage.classList.remove('fan-ready');$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';}
+$('shuffle').addEventListener('click',beginShuffle);
+$('resultAgain').addEventListener('click',beginShuffle);
+$('readingDropdown').addEventListener('click',()=>{
+ const menu=$('readingOptions');menu.hidden=!menu.hidden;
+ $('readingDropdown').setAttribute('aria-expanded',String(!menu.hidden));
+});
+$('readingOptions').querySelector('button').addEventListener('click',()=>{
+ $('readingOptions').hidden=true;$('readingDropdown').setAttribute('aria-expanded','false');
+});
 let prevMobile=mobile;new ResizeObserver(()=>{const m=stage.clientWidth<650;if(m!==prevMobile){layout();prevMobile=m;}}).observe(stage);
 document.documentElement.dataset.sceneMotion='on';
 $('sceneLabel').textContent='LIVE 3D CARDS + CINEMATIC SCENE';
