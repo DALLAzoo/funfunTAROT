@@ -4,10 +4,10 @@
  * The image environment is a pre-rendered 2.5D plate, NOT a live 3D rock mesh.
  * No external runtime libraries. Website's original deck textures load by URL when online.
  */
-(()=>{'use strict';
+try{(()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('view'), stage=$('stageWrap');
 const gl=canvas.getContext('webgl2',{antialias:true,alpha:true,premultipliedAlpha:false,powerPreference:'high-performance'});
-if(!gl){$('unavailable').hidden=false;$('sceneLabel').textContent='WEBGL2 미지원';$('shuffle').disabled=true;return;}
+if(!gl){window.startTarotFallback?.();return;}
 const PI=Math.PI, TAU=2*PI;
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v)),smooth=t=>{t=clamp(t);return t*t*(3-2*t);},mix=(a,b,t)=>a+(b-a)*t;
 function seeded(n){let a=n>>>0;return()=>{a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t^=t+Math.imul(t^(t>>>7),61|t);return ((t^(t>>>14))>>>0)/4294967296;};}
@@ -154,55 +154,101 @@ function parseOriginalReadings(source){
  if(found.size<30)throw new Error('기존 상담 문구 전체를 확인하지 못했습니다.');
  return found;
 }
-const readingsPromise=fetch(SOURCE_ROOT+'js/screen/app/reveal-flow.js')
- .then(r=>{if(!r.ok)throw new Error('상담 문구 HTTP '+r.status);return r.text();})
+// Fetch the source text once during startup. Never block the card flip on it.
+let readingStatus='loading';
+const readingsPromise=fetch(SOURCE_ROOT+'js/screen/app/reveal-flow.js',{cache:'force-cache'})
+ .then(r=>{if(!r.ok)throw new Error('원본 상담 문구 HTTP '+r.status);return r.text();})
  .then(parseOriginalReadings)
- .then(r=>(userReadings=r,r))
- .catch(e=>{console.warn('기존 상담 문구를 읽지 못했습니다:',e);return null;});
-let frontTexture=null;
-function uploadFront(source){
- if(!frontTexture)frontTexture=gl.createTexture();
- gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,frontTexture);
- gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
- gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);
- gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
- gl.generateMipmap(gl.TEXTURE_2D);
- gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+ .then(r=>{userReadings=r;readingStatus='ready';return r;})
+ .catch(e=>{readingStatus='failed';console.warn('원본 상담 문구 연결 실패:',e);return null;});
+let frontTexture=null,frontLoaded=false,revealSeq=0;
+// Original PNG files are large. Decode once, then upload a card-sized bitmap
+// rather than a multi-megapixel image into video memory.
+const frontCache=new Map();
+function requestFront(cardId){
+ if(frontCache.has(cardId))return frontCache.get(cardId);
+ const task=new Promise((resolve,reject)=>{
+  const img=new Image();img.crossOrigin='anonymous';img.decoding='async';
+  img.onload=()=>resolve(img);
+  img.onerror=()=>reject(new Error('카드 앞면 이미지를 불러오지 못했습니다.'));
+  img.src=SOURCE_ROOT+'assets/card-fronts/'+encodeURIComponent(cardId)+'.png';
+ }).catch(e=>{frontCache.delete(cardId);throw e;});
+ frontCache.set(cardId,task);
+ // Keep at most three original, potentially very large, decoded PNGs in memory.
+ while(frontCache.size>3){const oldest=frontCache.keys().next().value;frontCache.delete(oldest);}
+ return task;
 }
-function loadFrontImage(cardId){return new Promise((resolve,reject)=>{
- const img=new Image();img.crossOrigin='anonymous';
- img.onload=()=>{try{uploadFront(img);resolve(true);}catch(err){reject(err);}};
- img.onerror=()=>reject(new Error('선택 카드 앞면 이미지를 불러올 수 없습니다.'));
- img.src=SOURCE_ROOT+'assets/card-fronts/'+encodeURIComponent(cardId)+'.png';
-});}
+function preloadFront(cardId){if(!cardId)return;requestFront(cardId).catch(()=>{});}
+async function uploadFrontFrom(img,seq){
+ // WebGL upload size is capped independently from the large original file.
+ let source=img,bitmap=null;
+ try{
+  if(typeof createImageBitmap==='function'){
+   bitmap=await createImageBitmap(img,{resizeWidth:448,resizeHeight:768,resizeQuality:'high'});
+   source=bitmap;
+  }else{
+   const cv=document.createElement('canvas');cv.width=448;cv.height=768;
+   cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);source=cv;
+  }
+  if(seq!==revealSeq)return false;
+  if(!frontTexture)frontTexture=gl.createTexture();
+  gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,frontTexture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+  frontLoaded=true;
+ }finally{bitmap?.close();}
+}
+async function loadFrontImage(cardId,seq){
+ const img=await requestFront(cardId);
+ if(seq!==revealSeq)return false;
+ try{return await uploadFrontFrom(img,seq)!==false;}
+ catch(e){
+  // Some desktop graphics drivers fail texture upload, though the browser can
+  // still display the PNG. Keep the original artwork visible using HTML.
+  console.warn('WebGL 앞면 업로드 실패, HTML 이미지로 전환:',e);
+  const holder=$('frontFallback'),art=$('frontFallbackImg');
+  if(holder&&art){art.src=img.src;holder.hidden=false;frontLoaded=false;return false;}
+  throw e;
+ }
+}
 let revealMode='none',revealStarted=0,revealIndex=-1,revealCardId=null,revealText='';
 function resetReveal(){
- revealMode='none';revealStarted=0;revealIndex=-1;revealCardId=null;revealText='';
- $('resultView').hidden=true;$('resultReading').textContent='';
+ revealSeq++;revealMode='none';revealStarted=0;revealIndex=-1;revealCardId=null;revealText='';
+ $('resultView').hidden=true;$('resultReading').textContent='';$('frontFallback').hidden=true;$('frontFallbackImg').removeAttribute('src');frontLoaded=false;
  $('resultSelectionTitle').textContent='마음이 끌리는 카드를 선택하세요';
  $('shuffle').hidden=false;$('resultAgain').hidden=true;
  $('readingDropdown').hidden=false;$('readingOptions').hidden=true;
 }
+// Begin the card animation immediately. The image may arrive in the meantime.
+// The reading text is populated independently; a slow text request never
+// prevents the card from turning over.
 async function revealSelected(i){
  if(revealMode!=='none'||!ready())return;
- revealMode='loading';revealIndex=i;revealCardId=deckIds[i];
+ revealMode='flipping';revealStarted=performance.now();
+ revealIndex=i;revealCardId=deckIds[i];revealText='';frontLoaded=false;
  stage.classList.remove('fan-ready');
- try{
-  const [_,texts]=await Promise.all([loadFrontImage(revealCardId),readingsPromise]);
-  if(!texts||!texts.has(revealCardId))throw new Error('이미 입력된 상담 문구를 불러오지 못했습니다.');
-  revealText=texts.get(revealCardId);
-  revealMode='flipping';revealStarted=performance.now();
-  $('shuffle').hidden=true;$('readingDropdown').hidden=true;
- }catch(err){
-  console.warn(err);revealMode='none';revealIndex=-1;
-  stage.classList.add('fan-ready');
-  // Do not replace the user's existing reading with newly authored advice.
-  $('resultReading').textContent=err.message;
-  $('resultView').hidden=false;
- }
+ $('shuffle').hidden=true;$('readingDropdown').hidden=true;
+ const revealToken=revealCardId,seq=++revealSeq;
+ loadFrontImage(revealToken,seq).catch(e=>{
+   console.warn(e);
+   if(revealCardId===revealToken&&seq===revealSeq){
+    const holder=$('frontFallback'),art=$('frontFallbackImg');
+    art.src=SOURCE_ROOT+'assets/card-fronts/'+encodeURIComponent(revealToken)+'.png';
+    holder.hidden=false;
+   }
+ });
+ readingsPromise.then(texts=>{
+  if(revealCardId!==revealToken)return;
+  if(texts?.has(revealToken)){
+    revealText=texts.get(revealToken);
+    if(revealMode==='result'){$('resultReading').textContent=revealText;$('resultView').hidden=false;}
+  }else{console.warn('상담 원문을 불러오지 못했습니다. 원본 사이트 연결을 확인해 주세요.');}
+ });
 }
 const actorCount=22;let mobile=false,heroes=5,heroIds=[],heroMap=new Map();
 function layout(){mobile=stage.clientWidth<650;heroes=mobile?3:5;heroIds=Array.from({length:heroes},(_,j)=>Math.floor((j+.5)*actorCount/heroes));heroMap=new Map(heroIds.map((id,j)=>[id,j]));}
@@ -244,10 +290,16 @@ function poseFor(i,seconds){const j=heroMap.get(i),h=j!==undefined,first=initial
 }
 let running=false,start=0,clock=0,paused=false,hoverX=0,hoverY=0,activeX=0,activeY=0,last=0;
 let shaderReady=true;
+let lastPaint=0;
+const MIN_FRAME_MS=()=>mobile?(running||revealMode==='flipping'?33:42):(running||revealMode==='flipping'?25:33);
 let currentV=I(),currentP=I();
-function dimensions(){const rect=canvas.getBoundingClientRect(),scale=Math.min(window.devicePixelRatio||1,mobile?1.15:1.35);const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}return {w,h};}
+function dimensions(){const rect=canvas.getBoundingClientRect(),scale=Math.min(window.devicePixelRatio||1,mobile?1.0:1.15);const w=Math.max(1,Math.round(rect.width*scale)),h=Math.max(1,Math.round(rect.height*scale));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;gl.viewport(0,0,w,h);}return {w,h};}
 function drawMesh(m,kind,pos=I(),alpha=1){gl.uniform1i(uni.uKind,kind);gl.uniformMatrix4fv(uni.uM,false,pos);gl.uniform1f(uni.uFade,alpha);gl.bindVertexArray(m.vao);gl.drawArrays(kind===5?gl.POINTS:gl.TRIANGLES,0,m.count);}
-function render(now){if(document.hidden){last=now;requestAnimationFrame(render);return;}const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 섞기';$('state').textContent='카드 선택 가능 · 드래그 / 터치';$('phaseText').textContent='좌우로 밀어 카드를 이동하고, 눌러 선택하세요';$('phaseCount').textContent='4 / 22';stage.classList.add('fan-ready');}}else if(clock===0){};
+function render(now){
+ requestAnimationFrame(render);
+ if(document.hidden){last=now;return;}
+ if(now-lastPaint<MIN_FRAME_MS())return;lastPaint=now;
+ const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;const {w,h}=dimensions();if(running){clock=clamp((now-start)/1000,0,6.38);if(clock>=6.38){running=false;$('shuffle').disabled=false;$('shuffle').textContent='다시 섞기';$('state').textContent='카드 선택 가능 · 드래그 / 터치';$('phaseText').textContent='좌우로 밀어 카드를 이동하고, 눌러 선택하세요';$('phaseCount').textContent='4 / 22';stage.classList.add('fan-ready');preloadFront(deckIds[focusIndex]);}}else if(clock===0){};
  const t=clock;
  if(running){const names=t<1.04?['카드가 공중으로 떠오릅니다','01 / 05']:t<3.85?['공간 속에서 서로 다른 길로 교차합니다','02 / 05']:t<5.02?['카드가 하나의 덱으로 모입니다','03 / 05']:t<5.32?['고요한 순간','04 / 05']:['카드를 펼칩니다','05 / 05'];$('phaseText').textContent=names[0];$('phaseCount').textContent=names[1];}
  if(!paused){activeX+=(hoverX-activeX)*Math.min(1,dt*2.4);activeY+=(hoverY-activeY)*Math.min(1,dt*2.4);}else{activeX+=(0-activeX)*Math.min(1,dt*4);activeY+=(0-activeY)*Math.min(1,dt*4);}
@@ -277,7 +329,7 @@ function render(now){if(document.hidden){last=now;requestAnimationFrame(render);
    revealMode='result';
    $('resultSelectionTitle').textContent='조언 - 당신을 위한';
    $('resultReading').textContent=revealText;
-   $('resultView').hidden=false;
+   $('resultView').hidden=!revealText;
    $('resultAgain').hidden=false;
    $('readingDropdown').hidden=false;
   }
@@ -292,10 +344,9 @@ function render(now){if(document.hidden){last=now;requestAnimationFrame(render);
  for(const a of actorFrames){const mm=model(a.p);if(a.alpha<.99){gl.enable(gl.BLEND);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}drawMesh(cardEdges,2,mm,a.alpha);
   gl.bindTexture(gl.TEXTURE_2D,currentTex);
   drawMesh(cardBackFace,1,mm,a.alpha);
-  gl.bindTexture(gl.TEXTURE_2D,a.selected&&frontTexture?frontTexture:currentTex);
+  gl.bindTexture(gl.TEXTURE_2D,a.selected&&frontLoaded&&frontTexture?frontTexture:currentTex);
   drawMesh(cardFrontFace,1,mm,a.alpha);}
  gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
- requestAnimationFrame(render);
 }
 const pointer=event=>{if(paused||dragging)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);stage.style.setProperty('--pan-x',`${(hoverX*16).toFixed(1)}px`);stage.style.setProperty('--pan-y',`${(hoverY*13).toFixed(1)}px`);};
 // Project a card center to the display to distinguish clicking a card from
@@ -329,7 +380,7 @@ function hitCard(clientX,clientY){
 let gesture=null,dragging=false;
 const ready=()=>clock>=6.38&&!running&&revealMode==='none';
 const gestureStep=()=>Math.max(mobile?43:55,Math.min(92,stage.clientWidth*(mobile?.145:.065)));
-function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;confirmedIndex=-1;gestureOffset=0;
+function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;confirmedIndex=-1;gestureOffset=0;preloadFront(deckIds[focusIndex]);
  $('state').textContent=`${focusIndex+1}번째 카드 · 선택하려면 누르세요`;
  $('phaseCount').textContent=`${focusIndex+1} / ${actorCount}`;
  $('phaseText').textContent='가운데 카드를 한 번 누르면 선택됩니다';
@@ -338,7 +389,7 @@ function chooseCard(i){
  if(i<0)return;
  if(i!==focusIndex){setFocus(i);return;}
  if(pickedIndex===i){confirmedIndex=i;revealSelected(i);return;}
- pickedIndex=i;confirmedIndex=-1;
+ pickedIndex=i;confirmedIndex=-1;preloadFront(deckIds[i]);
  $('state').textContent=`${i+1}번째 카드 선택됨`;
  $('phaseText').textContent='한 번 더 누르면 선택을 확인합니다';
 }
@@ -384,7 +435,7 @@ stage.addEventListener('keydown',e=>{
  if(e.key==='Enter'||e.key===' '){e.preventDefault();chooseCard(focusIndex);}
 });
 $('sceneToggle').addEventListener('click',()=>{paused=!paused;document.documentElement.dataset.sceneMotion=paused?'off':'on';$('sceneToggle').textContent=paused?'공간·조명 움직임 켜기':'공간·조명 움직임 끄기';$('sceneToggle').setAttribute('aria-pressed',String(!paused));if(paused){stage.style.setProperty('--pan-x','0px');stage.style.setProperty('--pan-y','0px');}});
-function beginShuffle(){if(running)return;resetReveal();randomDeck();remote.src=SOURCE_ROOT+'assets/card-backs/back-0'+(1+Math.floor(Math.random()*8))+'.webp';clock=0;start=performance.now();running=true;focusIndex=3;gestureOffset=0;pickedIndex=-1;confirmedIndex=-1;gesture=null;dragging=false;stage.classList.remove('fan-ready');$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';}
+function beginShuffle(){if(running)return;resetReveal();randomDeck();preloadFront(deckIds[3]);remote.src=SOURCE_ROOT+'assets/card-backs/back-0'+(1+Math.floor(Math.random()*8))+'.webp';clock=0;start=performance.now();running=true;focusIndex=3;gestureOffset=0;pickedIndex=-1;confirmedIndex=-1;gesture=null;dragging=false;stage.classList.remove('fan-ready');$('shuffle').disabled=true;$('shuffle').textContent='셔플 진행 중';$('state').textContent='3D 셔플 진행 중';$('phaseText').textContent='카드가 공중으로 떠오릅니다';}
 $('shuffle').addEventListener('click',beginShuffle);
 $('resultAgain').addEventListener('click',beginShuffle);
 $('readingDropdown').addEventListener('click',()=>{
@@ -398,4 +449,4 @@ let prevMobile=mobile;new ResizeObserver(()=>{const m=stage.clientWidth<650;if(m
 document.documentElement.dataset.sceneMotion='on';
 $('sceneLabel').textContent='LIVE 3D CARDS + CINEMATIC SCENE';
 requestAnimationFrame(render);
-})();
+})();}catch(error){console.error('3D 초기화 실패, 대체 카드 화면 실행:',error);window.startTarotFallback?.();}
