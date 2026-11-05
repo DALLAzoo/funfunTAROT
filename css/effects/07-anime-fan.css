@@ -5,3 +5,16 @@
 }
 /* Suppress the legacy expanding release ring only while the new fan opens. */
 #stage.anime-fan-active > .magic-rear { opacity:0; }
+
+/* v7: cinematic depth light for the rising 3D cards; not a particle overlay. */
+#stage.orbit-opening > .magic-rear { opacity:0; }
+#stage.orbit-opening .aura {
+ opacity:1;
+ background:radial-gradient(ellipse at center, rgba(219,180,116,.21) 0%, rgba(166,185,170,.09) 36%, transparent 71%);
+ filter:blur(25px);
+ animation:orbit-depth-breathe 3.8s ease-in-out both;
+}
+@keyframes orbit-depth-breathe {
+ 0%,100%{opacity:.18;transform:scale(.8)}
+ 45%,68%{opacity:.9;transform:scale(1.09)}
+}

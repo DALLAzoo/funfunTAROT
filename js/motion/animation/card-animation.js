@@ -1,7 +1,6 @@
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
-import {startAnimeFanVFX} from '../../effects/anime-fan-vfx.js';
 const running=new WeakMap(),samples=new WeakMap();
 export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
 export const transform=p=>pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
@@ -61,46 +60,68 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
 }
 /*
- * In-between Shift — chain-opening / single golden slash motion study.
- * Preserve the same opening cards, slotPose targets, card size and public hooks.
- * The seven cards unfold from the center outwards, settle with a small rebound,
- * then one narrow slash sweeps over the fan. No rings, dust or comet trails.
+ * In-between Shift — spatial stair/orbit opening (v7).
+ * Stage 1: the deck separates into a stepped 3D stack.
+ * Stage 2: those same seven cards rise into a rotating elliptical orbit.
+ * Stage 3: each card lands precisely on the existing slotPose target.
+ * No replacement images, card effects, selection handlers or reading logic.
  */
-const fanClamp=t=>Math.min(1,Math.max(0,t));
-function fanChainPose(i,count,t,from,to){
+const orbitClamp=t=>Math.max(0,Math.min(1,t));
+const orbitEase=t=>{t=orbitClamp(t);return t*t*(3-2*t);};
+function orbitStairPose(i,count,width,height,size){
  const off=i-(count-1)/2, distance=Math.abs(off), side=Math.sign(off);
- // Center first, then symmetric pairs: visible chain reaction, not a slow queue.
- const begin=.08+distance*.074;
- const u=fanClamp((t-begin)/.46);
- const q=1-(1-u)**3;
- const current=mix(from,to,q);
- // A shallow 3D lift follows the actual card movement, then vanishes.
- const lift=Math.sin(Math.PI*u);
- current.y-=lift*(12+distance*2);
- current.z+=lift*(36+distance*5);
- current.rot+=side*lift*-7;
- current.ry+=side*lift*10;
- current.rx-=lift*4;
- current.scale+=lift*.024;
- // Short, damped settling motion. Exactly slotPose at u=1.
- if(u>.73&&u<1){
-  const v=(u-.73)/.27, rebound=Math.sin(v*Math.PI*2)*(1-v);
-  current.y-=rebound*2.5;
-  current.rot+=side*rebound*1.4;
- }
- return current;
+ const spread=Math.min(37,width*.078), lift=Math.min(1,height/470);
+ return {
+  x:off*spread,y:(-26-(3-distance)*18)*lift,
+  z:94-distance*49+i*.8,
+  rot:off*4.4,ry:-side*(16+distance*3),rx:-9,
+  scale:1
+ };
+}
+function orbitRingPose(i,count,rotation,width,height,size){
+ const ang=-Math.PI*.5+i*Math.PI*2/count+rotation;
+ const radiusX=Math.min(250,width*.28,Math.max(64,(width-size-22)/2));
+ const radiusY=Math.min(84,height*.15);
+ const zDepth=Math.min(156,width*.29+40);
+ return {
+  x:Math.cos(ang)*radiusX,
+  y:Math.sin(ang)*radiusY-9,
+  z:Math.sin(ang+.45)*zDepth,
+  rot:Math.sin(ang)*11,
+  ry:-Math.cos(ang)*29,
+  rx:Math.sin(ang)*16,
+  scale:1
+ };
+}
+function orbitOpeningPose(i,count,t,from,to,width,height,size){
+ const off=i-(count-1)/2,side=Math.sign(off);
+ const stair=orbitStairPose(i,count,width,height,size);
+ const orbitStart=orbitRingPose(i,count,0,width,height,size);
+ const orbitEnd=orbitRingPose(i,count,Math.PI*1.03,width,height,size);
+ // 0-0.29: a deliberately visible staircase rises out of the deck.
+ if(t<.29)return mix(from,stair,orbitEase((t-.035)/.255));
+ // 0.29-0.49: open the staircase into a genuine perspective ring.
+ if(t<.49)return mix(stair,orbitStart,orbitEase((t-.29)/.20));
+ // 0.49-0.71: the ring turns in 3D, with near and far cards at different depths.
+ if(t<.71)return orbitRingPose(i,count,Math.PI*1.03*orbitEase((t-.49)/.22),width,height,size);
+ // 0.71-0.93: distinct cards land into the existing fan slots.
+ const landStart=.71+Math.abs(off)*.014;
+ const settleStart=.925+Math.abs(off)*.006;
+ const hover={...to,x:to.x*1.055,y:to.y-4,z:to.z+15,rot:to.rot+side*1.3,ry:side*-3,rx:-2.5,scale:1.018};
+ if(t<settleStart)return mix(orbitEnd,hover,orbitEase((t-landStart)/(settleStart-landStart)));
+ // Last few frames: a tiny controlled settle, ending at exactly slotPose.
+ return mix(hover,to,orbitEase((t-settleStart)/(1-settleStart)));
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
- const width=stage.clientWidth;
+ const width=stage.clientWidth,height=stage.clientHeight;
  const fromSize=stageSize('shuffle',width),toSize=stageSize('selection',width);
  cardSize(stage,'selection');
- // Keep this user-triggered fan presentation consistent on PCs and phones.
- // OS-level reduced-motion preference must not silently skip the site's chosen fan VFX.
+ // Explicitly use the same authored choreography for every OS motion setting.
  const duration=FINALE_DURATION;
  const start=stage.ownerDocument.timeline.currentTime;
  let leader,done=false;
  const clock={duration,width,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
- const fx=startAnimeFanVFX(stage,els,duration);
+ stage.classList.add('orbit-opening');
  try{
   const result=await Promise.all(els.map((el,i)=>{
    const off=i-(els.length-1)/2;
@@ -111,13 +132,13 @@ export async function fanMotion(els,stage,onStart=()=>{}){
    el.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    el.style.opacity='1';
    const frames=[];
-   for(let n=0;n<=125;n++){
-    const t=n/125;
-    frames.push({offset:t,transform:transform(fanChainPose(i,els.length,t,from,to))});
+   for(let n=0;n<=160;n++){
+    const t=n/160;
+    frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize))});
    }
    return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
   }));
   done=true;
   return result.every(Boolean);
- }finally{fx?.stop();}
+ }finally{stage.classList.remove('orbit-opening');}
 }
