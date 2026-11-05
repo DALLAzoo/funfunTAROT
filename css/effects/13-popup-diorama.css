@@ -1,0 +1,11 @@
+/* Card-owned world: three-dimensional geometry above the upper half of
+   visible cards. This layer NEVER intercepts card selection or swipes. */
+#stage.stage .cardworld-canvas{
+ position:absolute;inset:0;width:100%;height:100%;display:block;
+ z-index:9;pointer-events:none!important;touch-action:none;
+ opacity:0;transition:opacity .6s ease-out;
+ filter:none!important;
+}
+#stage.stage .cardworld-canvas.is-active{opacity:1}
+#stage.stage.velvet-3d-running .cardworld-canvas{opacity:0}
+@media(prefers-reduced-motion:reduce){#stage.stage .cardworld-canvas{transition:none}}
