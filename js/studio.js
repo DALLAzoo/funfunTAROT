@@ -55,7 +55,11 @@ if(uKind==6){
  float d=length((vUV-.5)*vec2(1.,1.7));
  float a=exp(-d*d*12.)*uFade;
  frag=vec4(vec3(.89,.73,.48)*a,a*.26);return;}
-if(uKind==5){
+if(uKind==7){
+     // Soft outer light + clear gold border (uFade distinguishes the passes).
+     float shimmer=.88+.12*sin(uTime*1.8+vUV.x*5.0);
+     frag=vec4(vec3(1.0,.77,.38)*shimmer,uFade);return;}
+ if(uKind==5){
  float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.08,.5,d))*uFade*(.18+.28*vColor.r);
  frag=vec4(.89,.79,.59,a);return;}
  vec3 N=normalize(vNormal),L=normalize(uLight-vWorld),V=normalize(uEye-vWorld),H=normalize(L+V);
@@ -108,6 +112,18 @@ function makeCardMeshes(){const back=[],front=[],edges=[],w=.87,h=1.47,d=.038;
  quad(edges,[-w,-h,-d],[w,-h,-d],[w,-h,d],[-w,-h,d],sideCol);
  return [mesh(back),mesh(front),mesh(edges)];}
 const [cardBackFace,cardFrontFace,cardEdges]=makeCardMeshes();
+// Card-owned illuminated frame: geometry follows the selected 3D card.
+// Both bands sit just above the back surface, outside its painted artwork.
+function makeCardFrame(band,extra,z){
+ const v=[],w=.87+extra,h=1.47+extra;
+ quad(v,[-w,-h,z],[w,-h,z],[w,-h+band,z],[-w,-h+band,z]);
+ quad(v,[-w,h-band,z],[w,h-band,z],[w,h,z],[-w,h,z]);
+ quad(v,[-w,-h,z],[-w+band,-h,z],[-w+band,h,z],[-w,h,z]);
+ quad(v,[w-band,-h,z],[w,-h,z],[w,h,z],[w-band,h,z]);
+ return mesh(v);
+}
+const selectionGlow=makeCardFrame(.14,.16,.061);
+const selectionRim=makeCardFrame(.028,.035,.063);
 const beamBuf=[];function beamQuad(cx,cy,topW,botW,z,height){quad(beamBuf,[cx-topW/2,cy,z],[cx+topW/2,cy,z],[cx+botW/2,cy-height,z], [cx-botW/2,cy-height,z]);}
 beamQuad(-1.45,4.8,.3,5.3,-4,8.0);const beam1=mesh(beamBuf);
 const beamBuf2=[];quad(beamBuf2,[-1.25,5.,-2.2],[-.60,5.,-2.2],[2.7,-3.4,-2.2],[-3.95,-3.4,-2.2]);const beam2=mesh(beamBuf2);
@@ -181,15 +197,12 @@ function requestFront(cardId){
 function preloadFront(cardId){if(!cardId)return;requestFront(cardId).catch(()=>{});}
 async function uploadFrontFrom(img,seq){
  // WebGL upload size is capped independently from the large original file.
- let source=img,bitmap=null;
+ let source;
  try{
-  if(typeof createImageBitmap==='function'){
-   bitmap=await createImageBitmap(img,{resizeWidth:448,resizeHeight:768,resizeQuality:'high'});
-   source=bitmap;
-  }else{
-   const cv=document.createElement('canvas');cv.width=448;cv.height=768;
-   cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);source=cv;
-  }
+  // Canvas makes the original top/bottom orientation reliable across WebGL2
+  // platforms (ImageBitmap ignores UNPACK_FLIP_Y_WEBGL in some browsers).
+  const cv=document.createElement('canvas');cv.width=448;cv.height=768;
+  cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);source=cv;
   if(seq!==revealSeq)return false;
   if(!frontTexture)frontTexture=gl.createTexture();
   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,frontTexture);
@@ -200,8 +213,8 @@ async function uploadFrontFrom(img,seq){
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
-  frontLoaded=true;
- }finally{bitmap?.close();}
+  frontLoaded=true;$('frontFallback').hidden=true;delete $('frontFallback').dataset.pending;
+ }finally{}
 }
 async function loadFrontImage(cardId,seq){
  const img=await requestFront(cardId);
@@ -212,14 +225,14 @@ async function loadFrontImage(cardId,seq){
   // still display the PNG. Keep the original artwork visible using HTML.
   console.warn('WebGL 앞면 업로드 실패, HTML 이미지로 전환:',e);
   const holder=$('frontFallback'),art=$('frontFallbackImg');
-  if(holder&&art){art.src=img.src;holder.hidden=false;frontLoaded=false;return false;}
+  if(holder&&art){art.src=img.src;holder.dataset.pending='true';holder.hidden=true;frontLoaded=false;return false;}
   throw e;
  }
 }
 let revealMode='none',revealStarted=0,revealIndex=-1,revealCardId=null,revealText='';
 function resetReveal(){
  revealSeq++;revealMode='none';revealStarted=0;revealIndex=-1;revealCardId=null;revealText='';
- $('resultView').hidden=true;$('resultReading').textContent='';$('frontFallback').hidden=true;$('frontFallbackImg').removeAttribute('src');frontLoaded=false;
+ $('resultView').hidden=true;$('resultReading').textContent='';$('frontFallback').hidden=true;delete $('frontFallback').dataset.pending;$('frontFallbackImg').removeAttribute('src');frontLoaded=false;
  $('resultSelectionTitle').textContent='마음이 끌리는 카드를 선택하세요';
  $('shuffle').hidden=false;$('resultAgain').hidden=true;
  $('readingDropdown').hidden=false;$('readingOptions').hidden=true;
@@ -239,7 +252,7 @@ async function revealSelected(i){
    if(revealCardId===revealToken&&seq===revealSeq){
     const holder=$('frontFallback'),art=$('frontFallbackImg');
     art.src=SOURCE_ROOT+'assets/card-fronts/'+encodeURIComponent(revealToken)+'.png';
-    holder.hidden=false;
+    holder.dataset.pending='true';holder.hidden=true;
    }
  });
  readingsPromise.then(texts=>{
@@ -260,7 +273,13 @@ function mPose(a,b,t){const o={};for(const k of ['x','y','z','rz','rx','ry'])o[k
 function mate(j){if(heroes===3)return j===0?2:j===2?0:-1;return j===0?1:j===1?0:j===3?4:j===4?3:-1;}
 function flying(j,phase){const a=hero(j),m=mate(j),u=smooth(clamp((phase-.05)/(heroes===5?.72:.76)));if(m<0)return {...a,y:a.y+Math.sin(u*PI)*.3,z:a.z+Math.sin(u*PI)*.35,ry:a.ry+Math.sin(u*TAU)*.08};const b=hero(m),forward=j<m,p=Math.sin(u*PI);return {...mPose(a,b,u),y:mix(a.y,b.y,u)+(forward?.73:-.55)*p,z:mix(a.z,b.z,u)+(forward?1.45:-1.45)*p,rz:mix(a.rz,b.rz,u)+(forward?-.16:.17)*p,ry:mix(a.ry,b.ry,u)+(forward?.23:-.23)*p,rx:.055+(forward?-.03:.10)*p};}
 function packetFlight(i,phase){const a=packet(i),s=smooth(clamp(phase/.82)),u=Math.sin(s*PI);return {...a,x:a.x+(i%2===0?-.18:.18)*u,y:a.y+.18*u,z:a.z+.13*u,ry:a.ry+.05*u};}
-function fanPose(j){const center=j-3;const xs=mobile?.68:.96;return {x:center*xs,y:-.15-.13*Math.abs(center)+.28*Math.abs(center/3)**2,z:.8+.02*(3-Math.abs(center)),rz:center*(mobile?-.11:-.12),ry:0,rx:0};}
+function fanPose(j){
+ const center=j-3,far=Math.abs(center),xs=mobile?.78:1.08;
+ // Every adjacent layer is separated by >.076 world units of card thickness.
+ // A restrained turn and a stable front-to-back order eliminate corner z-fighting.
+ return {x:center*xs,y:-.13-.075*far+.075*far*far,
+   z:.22+(3-far)*.26,rz:center*(mobile?-.075:-.083),ry:0,rx:0};
+}
 // A 22-card circular selection fan: the original v8 only displayed cards 0..6.
 // focusIndex and gestureOffset are updated by pointer/keyboard input below.
 let focusIndex=3,gestureOffset=0,pickedIndex=-1,confirmedIndex=-1;
@@ -269,7 +288,7 @@ const wrappedDistance=(i,center)=>circular(i-center+actorCount/2,actorCount)-act
 const visibleOffset=i=>wrappedDistance(i,focusIndex+gestureOffset);
 function selectedFanPose(i,offset){
  const p=fanPose(offset+3);
- if(i===pickedIndex && Math.abs(offset)<.55){p.y+=.36;p.z+=.50;}
+ if(i===pickedIndex && Math.abs(offset)<.55){p.y+=.25;p.z+=.52;}
  return p;
 }
 function poseFor(i,seconds){const j=heroMap.get(i),h=j!==undefined,first=initial(i);
@@ -320,6 +339,8 @@ function render(now){
   const secs=(now-revealStarted)/1000;
   const centerMove=smooth(clamp(secs/.82));
   const flip=smooth(clamp((secs-.63)/.78));
+  // HTML artwork fallback appears only AFTER the actual card faces the viewer.
+  if($('frontFallback').dataset.pending==='true'&&flip>=.53){$('frontFallback').hidden=false;}
   const from=selectedFanPose(revealIndex,visibleOffset(revealIndex));
   const to={x:0,y:.2,z:mobile?4.1:3.9,rz:0,ry:PI,rx:0};
   const card=mPose(from,to,centerMove);
@@ -340,13 +361,30 @@ function render(now){
    actorFrames.push({...a,index:i});
   }
  }
- // With depth testing the 3D cards occlude one another, not merely a CSS z-index.
- for(const a of actorFrames){const mm=model(a.p);if(a.alpha<.99){gl.enable(gl.BLEND);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}drawMesh(cardEdges,2,mm,a.alpha);
-  gl.bindTexture(gl.TEXTURE_2D,currentTex);
-  drawMesh(cardBackFace,1,mm,a.alpha);
+ // Face culling: a card's reverse side must not leak through the back.
+ // In the fan all 22 cards are face-down; ONLY the revealed card receives art.
+ gl.enable(gl.CULL_FACE);gl.cullFace(gl.BACK);
+ for(const a of actorFrames){
+  const mm=model(a.p);
+  if(a.alpha<.99){gl.enable(gl.BLEND);gl.depthMask(false);}else{gl.disable(gl.BLEND);gl.depthMask(true);}
+  drawMesh(cardEdges,2,mm,a.alpha);
+  gl.bindTexture(gl.TEXTURE_2D,currentTex);drawMesh(cardBackFace,1,mm,a.alpha);
   gl.bindTexture(gl.TEXTURE_2D,a.selected&&frontLoaded&&frontTexture?frontTexture:currentTex);
-  drawMesh(cardFrontFace,1,mm,a.alpha);}
- gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
+  drawMesh(cardFrontFace,1,mm,a.alpha);
+ }
+ // A dedicated frame attached to the selected card, not an unrelated halo.
+ if(revealMode==='none'&&pickedIndex>=0&&clock>=6.38){
+  const off=visibleOffset(pickedIndex);
+  if(Math.abs(off)<.55){
+   const mm=model(selectedFanPose(pickedIndex,off));
+   gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);
+   gl.blendFunc(gl.SRC_ALPHA,gl.ONE);gl.depthMask(false);
+   const pulse=.72+.20*Math.sin(now*.0035);
+   drawMesh(selectionGlow,7,mm,.52*pulse);
+   drawMesh(selectionRim,7,mm,.95);
+  }
+ }
+ gl.disable(gl.CULL_FACE);gl.depthMask(true);gl.disable(gl.BLEND);gl.bindVertexArray(null);
 }
 const pointer=event=>{if(paused||dragging)return;const r=stage.getBoundingClientRect();hoverX=clamp((event.clientX-r.left)/r.width*2-1,-1,1);hoverY=-clamp((event.clientY-r.top)/r.height*2-1,-1,1);stage.style.setProperty('--pan-x',`${(hoverX*16).toFixed(1)}px`);stage.style.setProperty('--pan-y',`${(hoverY*13).toFixed(1)}px`);};
 // Project a card center to the display to distinguish clicking a card from
@@ -361,21 +399,38 @@ function projectWorld(pt){
          y:r.top+(1-clip[1]/clip[3])*r.height*.5,
          pixelsPerUnit:Math.abs(currentP[5]*r.height/(2*clip[3]))};
 }
-function hitCard(clientX,clientY){
- let best=-1,score=Infinity;
- for(let i=0;i<actorCount;i++){
-   const offset=visibleOffset(i);
-   if(Math.abs(offset)>3.42)continue;
-   const screen=projectWorld(selectedFanPose(i,offset));
-   if(!screen)continue;
-   const wx=screen.pixelsPerUnit*.87,hy=screen.pixelsPerUnit*1.47;
-   const dx=Math.abs(clientX-screen.x)/Math.max(24,wx),dy=Math.abs(clientY-screen.y)/Math.max(36,hy);
-   // The generous rectangle uses the real card dimensions in screen pixels.
-   if(dx>.98||dy>.94)continue;
-   const s=dx*dx+dy*dy+Math.abs(offset)*.0001;
-   if(s<score){score=s;best=i;}
+// Hit-test projected REAL card corners instead of a broad center rectangle.
+// The visual overlap is resolved from the visible (nearest) card surface.
+function projectPoint(world){
+ const a=projectWorld(world);return a?{x:a.x,y:a.y}:null;
+}
+function insideQuad(px,py,q){
+ let sign=0;
+ for(let j=0;j<4;j++){
+  const a=q[j],b=q[(j+1)%4];
+  const d=(b.x-a.x)*(py-a.y)-(b.y-a.y)*(px-a.x);
+  if(Math.abs(d)<.0001)continue;
+  if(sign===0)sign=Math.sign(d);
+  else if(Math.sign(d)!==sign)return false;
  }
- return best;
+ return true;
+}
+function hitCard(clientX,clientY){
+ let chosen=-1,nearest=Infinity;
+ for(let i=0;i<actorCount;i++){
+  const offset=visibleOffset(i);
+  if(Math.abs(offset)>3.46)continue;
+  const pose=selectedFanPose(i,offset),m=model(pose),corners=[];
+  for(const [x,y] of [[-.87,-1.47],[.87,-1.47],[.87,1.47],[-.87,1.47]]){
+   const v=[x,y,.040,1],p=Array.from({length:3},(_,r)=>m[r]*v[0]+m[4+r]*v[1]+m[8+r]*v[2]+m[12+r]);
+   const q=projectPoint({x:p[0],y:p[1],z:p[2]});if(!q)break;corners.push(q);
+  }
+  if(corners.length!==4||!insideQuad(clientX,clientY,corners))continue;
+  // For the face-on fan, nearer z sorts over farther z at overlaps.
+  const depth=(mobile?10.1:9.15)-pose.z;
+  if(depth<nearest){nearest=depth;chosen=i;}
+ }
+ return chosen;
 }
 let gesture=null,dragging=false;
 const ready=()=>clock>=6.38&&!running&&revealMode==='none';
@@ -387,8 +442,10 @@ function setFocus(index){focusIndex=circular(index,actorCount);pickedIndex=-1;co
 }
 function chooseCard(i){
  if(i<0)return;
- if(i!==focusIndex){setFocus(i);return;}
  if(pickedIndex===i){confirmedIndex=i;revealSelected(i);return;}
+ // Side cards become selected in a single click/tap, then move to center.
+ // A second click on that same card reveals it.
+ if(i!==focusIndex)setFocus(i);
  pickedIndex=i;confirmedIndex=-1;preloadFront(deckIds[i]);
  $('state').textContent=`${i+1}번째 카드 선택됨`;
  $('phaseText').textContent='한 번 더 누르면 선택을 확인합니다';

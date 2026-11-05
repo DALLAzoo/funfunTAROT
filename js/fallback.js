@@ -29,7 +29,7 @@ window.startTarotFallback=function(){
  }
  function preload(id){const img=new Image();img.decoding='async';img.src=root+'assets/card-fronts/'+id+'.png';}
  function choose(i){if(phase!=='selection')return;
-  if(i!==focus){focus=i;picked=-1;position();preload(cards[focus].id);return;}
+  if(i!==focus)focus=i;
   if(picked===i){reveal(i);return;}
   picked=i;position();preload(cards[focus].id);
  }
