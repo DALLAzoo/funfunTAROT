@@ -89,11 +89,13 @@ export async function fanMotion(els,stage,onStart=()=>{}){
  const width=stage.clientWidth;
  const fromSize=stageSize('shuffle',width),toSize=stageSize('selection',width);
  cardSize(stage,'selection');
- const duration=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?900:FINALE_DURATION;
+ // Keep this user-triggered fan presentation consistent on PCs and phones.
+ // OS-level reduced-motion preference must not silently skip the site's chosen fan VFX.
+ const duration=FINALE_DURATION;
  const start=stage.ownerDocument.timeline.currentTime;
  let leader,done=false;
  const clock={duration,width,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
- const fx=duration===FINALE_DURATION?startAnimeFanVFX(stage,els,duration):null;
+ const fx=startAnimeFanVFX(stage,els,duration);
  try{
   const result=await Promise.all(els.map((el,i)=>{
    const off=i-(els.length-1)/2;
@@ -104,15 +106,11 @@ export async function fanMotion(els,stage,onStart=()=>{}){
    el.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    el.style.opacity='1';
    const frames=[];
-   if(duration===FINALE_DURATION){
-    for(let n=0;n<=125;n++){
-     const t=n/125;
-     frames.push({offset:t,transform:transform(fanAnimePose(i,els.length,t,from,to))});
-    }
-   }else{
-    frames.push({offset:0,transform:transform(from)},{offset:1,transform:transform(to)});
+   for(let n=0;n<=125;n++){
+    const t=n/125;
+    frames.push({offset:t,transform:transform(fanAnimePose(i,els.length,t,from,to))});
    }
-   return play(el,frames,duration,duration===FINALE_DURATION?'linear':'ease-out',start,i===0?a=>{leader=a;onStart(clock)}:null);
+   return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
   }));
   done=true;
   return result.every(Boolean);

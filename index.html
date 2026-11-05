@@ -10,7 +10,7 @@
 
 
 
-<link rel="stylesheet" href="./css/tarot.css"><script>const n=1+Math.floor(Math.random()*8);document.documentElement.dataset.initialBack='back-0'+n;const l=document.createElement('link');l.rel='preload';l.as='image';l.href='./assets/card-backs/back-0'+n+'.webp';document.head.append(l);</script><link rel="modulepreload" href="./js/screen/app/bootstrap.js"><link rel="modulepreload" href="./js/motion/animation/card-animation.js"><link rel="modulepreload" href="./js/settings/config/config.js"></head>
+<link rel="stylesheet" href="./css/tarot.css"><script>const n=Math.floor(Math.random()*20);const id=n<8?'back-0'+(n+1):'back-1-'+(n-7);const src=n<8?'./assets/card-backs/'+id+'.webp':'./assets/card-backs/'+id+'.png';document.documentElement.dataset.initialBack=id;const l=document.createElement('link');l.rel='preload';l.as='image';l.href=src;document.head.append(l);</script><link rel="modulepreload" href="./js/screen/app/bootstrap.js"><link rel="modulepreload" href="./js/motion/animation/card-animation.js"><link rel="modulepreload" href="./js/settings/config/config.js"></head>
 <body>
 <main class="tarot-app" id="tarotApp">
 
