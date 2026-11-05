@@ -1,10 +1,16 @@
 // Animated fine gold strands. Coordinates are local to the MagicVFX canvas.
+// Cache geometry for 100ms. MagicVFX previously read every card rectangle
+// on every rendered frame even though this is only a stage-center indicator.
+let recent={cards:null,origin:null,at:-Infinity,box:null};
 export function cardCloud(cards, origin={left:0,top:0}) {
+ const now=performance.now();
+ if(cards===recent.cards && origin===recent.origin && now-recent.at<100)return recent.box;
  const boxes=cards.filter(c=>!c.hidden).map(c=>c.getBoundingClientRect()).filter(b=>b.width&&b.height);
- if(!boxes.length)return null;
+ if(!boxes.length){recent={cards,origin,at:now,box:null};return null;}
  const left=Math.min(...boxes.map(b=>b.left)),right=Math.max(...boxes.map(b=>b.right));
  const top=Math.min(...boxes.map(b=>b.top)),bottom=Math.max(...boxes.map(b=>b.bottom));
- return {cx:(left+right)/2-origin.left,cy:(top+bottom)/2-origin.top,width:right-left,height:bottom-top};
+ const box={cx:(left+right)/2-origin.left,cy:(top+bottom)/2-origin.top,width:right-left,height:bottom-top};
+ recent={cards,origin,at:now,box};return box;
 }
 export function goldLines(ctx,box,seconds,alpha=1,count=3){
  if(!box||alpha<=0)return;
@@ -29,7 +35,6 @@ export function goldLines(ctx,box,seconds,alpha=1,count=3){
    ctx.lineWidth=.85+j*.12;
    ctx.beginPath();ctx.moveTo(...p);ctx.quadraticCurveTo(...m,...q);ctx.stroke();
   }
-  // Small moving highlight marks the travelling head without a bright flash.
   const p=point(head);
   ctx.fillStyle=`rgba(255,218,151,${alpha*.48})`;
   ctx.beginPath();ctx.arc(p[0],p[1],.8,0,Math.PI*2);ctx.fill();

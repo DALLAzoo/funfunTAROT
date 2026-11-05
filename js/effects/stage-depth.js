@@ -1,66 +1,67 @@
-/** Cinematic stage v4. No interval, card-geometry sampling, full-stage blur or continuous JS paint loop.
- * The stage is intentionally a floating, floorless dark space.
- * Motion preference applies to THIS atmospheric layer only; users can override it on-page.
+/** In-between Shift v5 — optical-depth stage. No per-card bounding boxes,
+ * no intervals, no JS animation loop. Only one pointer RAF while moving.
+ * The user can turn motion on even when Windows asks to reduce motion.
  */
 const stage = document.getElementById('stage');
 if (stage && !stage.querySelector('.stage-depth')) {
-  const backdrop = document.createElement('div');
-  backdrop.className = 'stage-depth';
-  backdrop.setAttribute('aria-hidden', 'true');
-  for (const name of ['distance','keylight','edge-vignette']) {
-    const el = document.createElement('div');
-    el.className = `stage-depth__${name}`;
-    backdrop.appendChild(el);
+  const layer = document.createElement('div');
+  layer.className = 'stage-depth';
+  layer.setAttribute('aria-hidden','true');
+  for (const name of ['distance','middle','keylight','vignette']) {
+    const div = document.createElement('div');
+    div.className = `stage-depth__${name}`;
+    layer.appendChild(div);
   }
-  stage.prepend(backdrop);
-
-  const motionPref = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const storageKey = 'inbetween-stage-depth-motion';
-  let chosen = null;
-  try { const v = localStorage.getItem(storageKey); if (v==='on'||v==='off') chosen=v; } catch (_) {}
-  const control = document.createElement('button');
-  control.className = 'stage-depth-motion-toggle';
-  control.type = 'button';
-  control.setAttribute('aria-label','공간 움직임 설정');
-  stage.appendChild(control);
-  let enabled = false;
-  let pointerRaf = 0;
-  let cachedBounds = null;
-  let pointerX = 0, pointerY = 0;
-  function applyPointer() {
-    pointerRaf = 0;
-    backdrop.style.setProperty('--scene-far-x', `${(-pointerX*.24).toFixed(1)}px`);
-    backdrop.style.setProperty('--scene-far-y', `${(-pointerY*.17).toFixed(1)}px`);
-    backdrop.style.setProperty('--scene-light-x', `${(pointerX*.38).toFixed(1)}px`);
+  stage.prepend(layer);
+  const key = 'inbetween-stage-depth-motion-v5'; // Do not inherit old trial toggle state.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let userChoice = null;
+  try {const saved = localStorage.getItem(key); if(saved==='on'||saved==='off') userChoice=saved;} catch (_) {}
+  const toggle = document.createElement('button');
+  toggle.type='button';
+  toggle.className='stage-depth-motion-toggle';
+  toggle.setAttribute('aria-label','공간 모션 설정');
+  stage.append(toggle);
+  let on=false;
+  let pointerFrame=0;
+  let bounds=null;
+  let px=0,py=0;
+  const apply=()=>{
+    pointerFrame=0;
+    layer.style.setProperty('--scene-deep-x',`${(-px*.30).toFixed(1)}px`);
+    layer.style.setProperty('--scene-deep-y',`${(-py*.23).toFixed(1)}px`);
+    layer.style.setProperty('--scene-mid-x',`${(px*.45).toFixed(1)}px`);
+    layer.style.setProperty('--scene-mid-y',`${(py*.27).toFixed(1)}px`);
+    layer.style.setProperty('--scene-light-x',`${(px*.62).toFixed(1)}px`);
+  };
+  const schedule=()=>{if(!pointerFrame)pointerFrame=requestAnimationFrame(apply);};
+  const reset=()=>{px=py=0;schedule();};
+  function setMode(){
+    on=userChoice===null?!reduce.matches:userChoice==='on';
+    document.documentElement.dataset.spaceMotion=on?'on':'off';
+    toggle.textContent=on?'공간 모션 끄기':'공간 모션 켜기';
+    toggle.setAttribute('aria-pressed',String(on));
+    if(!on)reset();
   }
-  function schedulePointer(){if(!pointerRaf)pointerRaf=requestAnimationFrame(applyPointer);}
-  function resetPointer(){pointerX=pointerY=0;schedulePointer();}
-  function updateMotionState() {
-    enabled = chosen === null ? !motionPref.matches : chosen === 'on';
-    document.documentElement.dataset.spaceMotion = enabled ? 'on' : 'off';
-    control.textContent = enabled ? '공간 모션 끄기' : '공간 모션 켜기';
-    control.setAttribute('aria-pressed',String(enabled));
-    if (!enabled) resetPointer();
-  }
-  control.addEventListener('click',()=>{
-    chosen = enabled?'off':'on';
-    try{localStorage.setItem(storageKey,chosen);}catch(_){}
-    updateMotionState();
+  toggle.addEventListener('click',()=>{
+    userChoice=on?'off':'on';
+    try{localStorage.setItem(key,userChoice);}catch(_){}
+    setMode();
   });
-  if(motionPref.addEventListener)motionPref.addEventListener('change',updateMotionState);
-  else motionPref.addListener(updateMotionState);
-  stage.addEventListener('pointerenter',()=>{cachedBounds=stage.getBoundingClientRect();},{passive:true});
-  stage.addEventListener('pointermove',(event)=>{
-    if(!enabled || (event.pointerType && event.pointerType!=='mouse'))return;
-    const b=cachedBounds || (cachedBounds=stage.getBoundingClientRect());
-    if(b.width<1||b.height<1)return;
-    pointerX = Math.max(-1,Math.min(1,2*(event.clientX-b.left)/b.width-1))*40;
-    pointerY = Math.max(-1,Math.min(1,2*(event.clientY-b.top)/b.height-1))*24;
-    schedulePointer();
+  if(reduce.addEventListener)reduce.addEventListener('change',setMode);
+  else reduce.addListener(setMode);
+  stage.addEventListener('pointerenter',()=>{bounds=stage.getBoundingClientRect();},{passive:true});
+  stage.addEventListener('pointermove',e=>{
+    if(!on || (e.pointerType && e.pointerType!=='mouse'))return;
+    const b=bounds||(bounds=stage.getBoundingClientRect());
+    if(!b.width||!b.height)return;
+    px=Math.max(-1,Math.min(1,(e.clientX-b.left)/b.width*2-1))*55;
+    py=Math.max(-1,Math.min(1,(e.clientY-b.top)/b.height*2-1))*32;
+    schedule();
   },{passive:true});
-  stage.addEventListener('pointerleave',()=>{cachedBounds=null;resetPointer();},{passive:true});
-  window.addEventListener('resize',()=>{cachedBounds=null;},{passive:true});
-  window.addEventListener('scroll',()=>{cachedBounds=null;},{passive:true});
-  window.addEventListener('pagehide',()=>{if(pointerRaf)cancelAnimationFrame(pointerRaf);},{once:true});
-  updateMotionState();
+  stage.addEventListener('pointerleave',()=>{bounds=null;reset();},{passive:true});
+  window.addEventListener('resize',()=>{bounds=null;},{passive:true});
+  window.addEventListener('scroll',()=>{bounds=null;},{passive:true});
+  window.addEventListener('pagehide',()=>{if(pointerFrame)cancelAnimationFrame(pointerFrame);},{once:true});
+  setMode();
 }
