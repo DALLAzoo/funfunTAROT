@@ -1,80 +1,66 @@
-/** In-between Shift — independent spatial atmosphere layer.
- * No changes to shuffle, fan, selection, reveal, or card art.
- * Uses on-screen card rectangles, so the shadow follows Web Animations as well.
+/** Cinematic stage v4. No interval, card-geometry sampling, full-stage blur or continuous JS paint loop.
+ * The stage is intentionally a floating, floorless dark space.
+ * Motion preference applies to THIS atmospheric layer only; users can override it on-page.
  */
 const stage = document.getElementById('stage');
-const cardsHost = document.getElementById('cards');
-if (stage && cardsHost && !stage.querySelector('.stage-depth')) {
-  const layer = document.createElement('div');
-  layer.className = 'stage-depth';
-  layer.setAttribute('aria-hidden','true');
-  for (const part of ['distance','beams','air','floor','horizon','deck-shadow','floor-glint','focus-shadow']) {
-    const child = document.createElement('div');
-    child.className = `stage-depth__${part}`;
-    layer.appendChild(child);
+if (stage && !stage.querySelector('.stage-depth')) {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'stage-depth';
+  backdrop.setAttribute('aria-hidden', 'true');
+  for (const name of ['distance','keylight','edge-vignette']) {
+    const el = document.createElement('div');
+    el.className = `stage-depth__${name}`;
+    backdrop.appendChild(el);
   }
-  stage.prepend(layer);
+  stage.prepend(backdrop);
 
-  // Mild mouse parallax on desktop. Touch dragging still belongs to the carousel.
-  let pointerFrame = 0;
-  let nextX = 0;
-  let nextY = 0;
-  const applyPointer = () => {
-    pointerFrame = 0;
-    const vars = {
-      '--space-far-x': -nextX*.30, '--space-far-y': -nextY*.25,
-      '--space-beam-x': -nextX*.10, '--space-beam-y': -nextY*.08,
-      '--space-air-x': nextX*.38, '--space-air-y': nextY*.20,
-      '--space-floor-x': nextX*.10
-    };
-    for (const [name,value] of Object.entries(vars))
-      layer.style.setProperty(name,`${value.toFixed(1)}px`);
-  };
-  stage.addEventListener('pointermove',event => {
-    if (event.pointerType && event.pointerType !== 'mouse') return;
-    const r=stage.getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    nextX = ((event.clientX-r.left)/r.width-.5)*22;
-    nextY = ((event.clientY-r.top)/r.height-.5)*14;
-    if (!pointerFrame) pointerFrame=requestAnimationFrame(applyPointer);
-  },{passive:true});
-  stage.addEventListener('pointerleave',()=>{
-    nextX=0;nextY=0;
-    if (!pointerFrame)pointerFrame=requestAnimationFrame(applyPointer);
+  const motionPref = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const storageKey = 'inbetween-stage-depth-motion';
+  let chosen = null;
+  try { const v = localStorage.getItem(storageKey); if (v==='on'||v==='off') chosen=v; } catch (_) {}
+  const control = document.createElement('button');
+  control.className = 'stage-depth-motion-toggle';
+  control.type = 'button';
+  control.setAttribute('aria-label','공간 움직임 설정');
+  stage.appendChild(control);
+  let enabled = false;
+  let pointerRaf = 0;
+  let cachedBounds = null;
+  let pointerX = 0, pointerY = 0;
+  function applyPointer() {
+    pointerRaf = 0;
+    backdrop.style.setProperty('--scene-far-x', `${(-pointerX*.24).toFixed(1)}px`);
+    backdrop.style.setProperty('--scene-far-y', `${(-pointerY*.17).toFixed(1)}px`);
+    backdrop.style.setProperty('--scene-light-x', `${(pointerX*.38).toFixed(1)}px`);
+  }
+  function schedulePointer(){if(!pointerRaf)pointerRaf=requestAnimationFrame(applyPointer);}
+  function resetPointer(){pointerX=pointerY=0;schedulePointer();}
+  function updateMotionState() {
+    enabled = chosen === null ? !motionPref.matches : chosen === 'on';
+    document.documentElement.dataset.spaceMotion = enabled ? 'on' : 'off';
+    control.textContent = enabled ? '공간 모션 끄기' : '공간 모션 켜기';
+    control.setAttribute('aria-pressed',String(enabled));
+    if (!enabled) resetPointer();
+  }
+  control.addEventListener('click',()=>{
+    chosen = enabled?'off':'on';
+    try{localStorage.setItem(storageKey,chosen);}catch(_){}
+    updateMotionState();
   });
-
-  // Sample a few times per second to avoid competing with the existing 3D render.
-  // The deck silhouette is a soft shadow, not a real-time duplicate of card art.
-  function update() {
-    if (document.hidden || !stage.isConnected || !stage.getClientRects().length) return;
-    const sr=stage.getBoundingClientRect();
-    if(sr.width<10||sr.height<10)return;
-    const visible=[...cardsHost.querySelectorAll('.tarot-card')]
-      .filter(c=>!c.hidden && c.getClientRects().length);
-    if(!visible.length)return;
-    let left=Infinity,right=-Infinity,selected=null,nearWidth=0;
-    for(const c of visible){
-      const b=c.getBoundingClientRect();
-      if(!b.width||!b.height)continue;
-      left=Math.min(left,b.left);right=Math.max(right,b.right);
-      nearWidth=Math.max(nearWidth,b.width);
-      if(c.classList.contains('is-picked'))selected=b;
-    }
-    if(!Number.isFinite(left))return;
-    const center=(left+right)/2-sr.left;
-    const spread=Math.max(nearWidth*1.12,Math.min(sr.width*.94,(right-left)*.86));
-    const active=stage.classList.contains('selection-stage');
-    const shuffling=!active && !stage.classList.contains('idle-stack');
-    layer.style.setProperty('--space-group-x',`${center.toFixed(1)}px`);
-    layer.style.setProperty('--space-shadow-width',`${spread.toFixed(1)}px`);
-    layer.style.setProperty('--space-shadow-alpha',shuffling?'.39':'.55');
-    if(selected)layer.style.setProperty('--space-focus-x',`${(selected.left+selected.width/2-sr.left).toFixed(1)}px`);
-    stage.classList.toggle('has-depth-choice',Boolean(selected&&active));
-  }
-  update();
-  const timer=window.setInterval(update,85);
-  window.addEventListener('pagehide',()=>{
-    clearInterval(timer);
-    if(pointerFrame)cancelAnimationFrame(pointerFrame);
-  },{once:true});
+  if(motionPref.addEventListener)motionPref.addEventListener('change',updateMotionState);
+  else motionPref.addListener(updateMotionState);
+  stage.addEventListener('pointerenter',()=>{cachedBounds=stage.getBoundingClientRect();},{passive:true});
+  stage.addEventListener('pointermove',(event)=>{
+    if(!enabled || (event.pointerType && event.pointerType!=='mouse'))return;
+    const b=cachedBounds || (cachedBounds=stage.getBoundingClientRect());
+    if(b.width<1||b.height<1)return;
+    pointerX = Math.max(-1,Math.min(1,2*(event.clientX-b.left)/b.width-1))*40;
+    pointerY = Math.max(-1,Math.min(1,2*(event.clientY-b.top)/b.height-1))*24;
+    schedulePointer();
+  },{passive:true});
+  stage.addEventListener('pointerleave',()=>{cachedBounds=null;resetPointer();},{passive:true});
+  window.addEventListener('resize',()=>{cachedBounds=null;},{passive:true});
+  window.addEventListener('scroll',()=>{cachedBounds=null;},{passive:true});
+  window.addEventListener('pagehide',()=>{if(pointerRaf)cancelAnimationFrame(pointerRaf);},{once:true});
+  updateMotionState();
 }
