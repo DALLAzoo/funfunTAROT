@@ -121,3 +121,157 @@ html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__shaft {transit
   html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__halo,
   html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__haze {animation:none!important;}
 }
+
+/* -------------------------------------------------------------
+   CINEMA 01 / Light rig v7 — distinct static light + perceptible motion.
+   All scenery remains behind existing cards. No card image changes.
+   ------------------------------------------------------------- */
+#stage.cinema-vault {
+  background:radial-gradient(ellipse 85% 77% at 49% 43%,#243739 0%,#132629 44%,#0b171b 76%,#050d13 100%);
+}
+#stage.cinema-vault .cinema-vault__rocks{opacity:.94;filter:brightness(1.35) saturate(.78);}
+#stage.cinema-vault .cinema-vault__halo{
+  background:radial-gradient(ellipse 37% 60% at 49% 35%,rgba(248,228,184,.35),rgba(223,195,143,.13) 49%,transparent 81%);
+  opacity:.92;
+}
+#stage.cinema-vault .cinema-vault__shaft {
+  width:72%;height:124%;top:-25%;opacity:.78;
+  background:linear-gradient(90deg,transparent 0%,rgba(246,232,195,.04) 15%,rgba(250,227,170,.19) 36%,rgba(255,242,215,.32) 47%,rgba(251,221,154,.18) 60%,transparent 85%);
+  clip-path:polygon(43% 0,57% 0,91% 100%,5% 100%);
+}
+#stage.cinema-vault .cinema-vault__archlight,
+#stage.cinema-vault .cinema-vault__beam,
+#stage.cinema-vault .cinema-vault__bounce,
+#stage.cinema-vault .cinema-vault__light-dust{
+  position:absolute;pointer-events:none;transform-origin:50% 4%;
+}
+#stage.cinema-vault .cinema-vault__archlight{
+  inset:-16% -8% -4%;
+  background:radial-gradient(ellipse 18% 21% at 47% 15%,rgba(255,246,218,.68),rgba(241,217,173,.19) 48%,transparent 90%);
+  opacity:.84;mix-blend-mode:screen;
+}
+#stage.cinema-vault .cinema-vault__beam--wide {
+  left:15%;top:-28%;width:74%;height:141%;
+  clip-path:polygon(44% 0%,55% 0%,97% 100%,3% 100%);
+  background:linear-gradient(90deg,transparent 3%,rgba(241,213,165,.08) 26%,rgba(251,235,199,.23) 47%,rgba(242,211,158,.13) 64%,transparent 95%);
+  mix-blend-mode:screen;opacity:.92;
+}
+#stage.cinema-vault .cinema-vault__beam--core{
+  left:29%;top:-22%;width:45%;height:117%;
+  clip-path:polygon(39% 0%,54% 0%,88% 100%,10% 100%);
+  background:linear-gradient(90deg,transparent 0%,rgba(255,231,187,.06) 16%,rgba(255,241,207,.35) 44%,rgba(255,238,200,.27) 54%,rgba(245,212,156,.065) 78%,transparent 100%);
+  opacity:.80;mix-blend-mode:screen;
+}
+#stage.cinema-vault .cinema-vault__bounce{
+  inset:5% 0 -8%;
+  background:radial-gradient(ellipse 32% 38% at 50% 46%,rgba(246,214,146,.15),transparent 90%),radial-gradient(ellipse 49% 12% at 50% 75%,rgba(247,213,157,.12),transparent 94%);
+  mix-blend-mode:screen;opacity:.88;
+}
+#stage.cinema-vault .cinema-vault__light-dust{
+  inset:0;
+  background-image:radial-gradient(circle,rgba(255,242,204,.88) 0 .85px,transparent 1.65px),radial-gradient(circle,rgba(236,220,192,.64) 0 .55px,transparent 1.5px);
+  background-size:186px 153px,245px 219px;
+  background-position:62px 27px,112px 118px;
+  opacity:.39;
+  clip-path:polygon(39% 0%,56% 0%,86% 100%,18% 100%);
+}
+#stage.cinema-vault .cinema-vault__haze--rear{
+  background:radial-gradient(ellipse 57% 54% at 46% 49%,rgba(205,213,202,.22),rgba(159,184,174,.08) 62%,transparent 89%);
+  opacity:.68;
+}
+#stage.cinema-vault .cinema-vault__haze--near{
+  background:radial-gradient(ellipse 59% 51% at 49% 50%,rgba(191,210,202,.19),rgba(146,173,172,.075) 61%,transparent 89%);
+  opacity:.48;
+}
+#stage.cinema-vault .cinema-vault__shade{
+  background:radial-gradient(ellipse 72% 85% at 49% 45%,transparent 53%,rgba(1,7,11,.48) 100%);
+}
+/* Clear, slow sweep of the *cone*, not a small invisible gradient nudge. */
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__beam--core{
+  animation:cinema-light-core-v7 5.8s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__beam--wide{
+  animation:cinema-light-wide-v7 7.1s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__archlight{
+  animation:cinema-light-source-v7 5.8s ease-in-out infinite alternate;
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__light-dust{
+  animation:cinema-light-dust-v7 14s linear infinite alternate;
+}
+@keyframes cinema-light-core-v7 {
+  from{transform:translate3d(-43px,0,0) rotate(-7deg);opacity:.42;}
+  to{transform:translate3d(45px,0,0) rotate(6deg);opacity:1;}
+}
+@keyframes cinema-light-wide-v7 {
+  from{transform:translate3d(-54px,0,0) rotate(-5deg);opacity:.46;}
+  to{transform:translate3d(53px,0,0) rotate(4deg);opacity:.97;}
+}
+@keyframes cinema-light-source-v7 {
+  from{transform:translate3d(-23px,0,0);opacity:.58;}
+  to{transform:translate3d(24px,0,0);opacity:1;}
+}
+@keyframes cinema-light-dust-v7 {
+  from{transform:translate3d(-12px,15px,0);opacity:.25;}
+  to{transform:translate3d(17px,-12px,0);opacity:.48;}
+}
+/* Brightness follows the stage: card faces turn through its key light.
+   Existing gold art is not edited. Visible only on primary flying cards. */
+#stage.cinema-vault.cinematic-shuffle .tarot-card.shuffle-surface.cinema-shuffle__hero .card-back::after,
+#stage.cinema-vault.cinematic-shuffle .tarot-card.shuffle-surface.cinema-shuffle__hero .card-front::after {
+  content:""!important;display:block!important;position:absolute!important;
+  inset:0!important;border:0!important;border-radius:inherit!important;
+  pointer-events:none!important;z-index:4!important;
+  background:linear-gradient(108deg,
+     rgba(255,245,222,0) calc(var(--cinema-spec-x,48%) - 32%),
+     rgba(255,242,216,.12) calc(var(--cinema-spec-x,48%) - 13%),
+     rgba(255,244,218,.46) var(--cinema-spec-x,48%),
+     rgba(240,209,152,.14) calc(var(--cinema-spec-x,48%) + 16%),
+     rgba(255,245,221,0) calc(var(--cinema-spec-x,48%) + 36%)),
+     radial-gradient(ellipse 82% 66% at 40% 18%,rgba(255,247,223,.25),transparent 88%)!important;
+  background-size:100% 100%!important;
+  opacity:var(--cinema-spec-power,.35)!important;
+  mix-blend-mode:screen!important;
+  box-shadow:inset 0 0 18px rgba(7,20,21,.10)!important;
+}
+#stage.cinema-vault.cinematic-shuffle .tarot-card.shuffle-surface.cinema-shuffle__hero .card-edge {
+  border-color:rgba(243,218,174,.46)!important;
+}
+#stage.cinema-vault.cinematic-shuffle .tarot-card.shuffle-surface.cinema-shuffle__hero {
+  filter:drop-shadow(0 9px 15px rgba(0,0,0,.35));
+}
+/* A shuffle lifts light in the chamber but does not add rings or bursts. */
+#stage.cinema-vault.cinematic-shuffle .cinema-vault__bounce{opacity:1;}
+#stage.cinema-vault.cinematic-shuffle .cinema-vault__beam--core{filter:brightness(1.16);}
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__beam,
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__archlight,
+html[data-cinema-motion="off"] #stage.cinema-vault .cinema-vault__light-dust {
+  animation:none!important;transition:none!important;
+}
+@media(max-width:600px){
+  #stage.cinema-vault .cinema-vault__beam--wide{left:1%;width:98%;opacity:.70;}
+  #stage.cinema-vault .cinema-vault__beam--core{left:18%;width:67%;opacity:.68;}
+  #stage.cinema-vault .cinema-vault__light-dust{opacity:.25;}
+  #stage.cinema-vault.cinematic-shuffle .tarot-card.shuffle-surface.cinema-shuffle__hero{filter:none;}
+}
+@media(prefers-reduced-motion:reduce){
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__beam,
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__archlight,
+  html:not([data-cinema-motion="on"]) #stage.cinema-vault .cinema-vault__light-dust{animation:none!important;}
+}
+
+/* Feather the shafts: a soft volumetric source, not hard triangles. */
+#stage.cinema-vault .cinema-vault__shaft{
+  opacity:.32;
+  -webkit-mask-image:radial-gradient(ellipse 57% 78% at 50% 45%,#000 35%,transparent 97%);
+  mask-image:radial-gradient(ellipse 57% 78% at 50% 45%,#000 35%,transparent 97%);
+}
+html[data-cinema-motion="on"] #stage.cinema-vault .cinema-vault__shaft{animation:none!important;}
+#stage.cinema-vault .cinema-vault__beam--wide{
+  -webkit-mask-image:radial-gradient(ellipse 61% 80% at 50% 42%,#000 29%,transparent 93%);
+  mask-image:radial-gradient(ellipse 61% 80% at 50% 42%,#000 29%,transparent 93%);
+}
+#stage.cinema-vault .cinema-vault__beam--core{
+  -webkit-mask-image:radial-gradient(ellipse 59% 82% at 48% 43%,#000 39%,transparent 94%);
+  mask-image:radial-gradient(ellipse 59% 82% at 48% 43%,#000 39%,transparent 94%);
+}
