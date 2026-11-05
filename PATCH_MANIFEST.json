@@ -1,26 +1,39 @@
 {
-  "base": "InBetweenShift_벨벳스튜디오_실제3D셔플_기존사이트통합_v1_20261105.zip",
-  "version": "velvet-forest-v2",
-  "change_scope": "visual background and fan-reveal only",
-  "modified": [
-    "index.html"
+  "project": "In-between Shift",
+  "version": "card pop-up diorama v2",
+  "changes": [
+    "js/effects/popup-diorama.js",
+    "preview.html",
+    "README_적용_검증.md"
   ],
-  "added": [
-    "css/effects/12-enchanted-forest.css",
-    "js/effects/enchanted-forest.js",
-    "assets/stage/enchanted-forest.webp"
-  ],
-  "inherited": [
+  "integration_files": [
+    "index.html",
     "css/effects/11-velvet-studio.css",
+    "css/effects/13-popup-diorama.css",
     "js/effects/velvet-studio-3d.js",
+    "js/effects/popup-diorama.js",
     "js/motion/animation/card-animation.js",
     "assets/stage/velvet-studio-source.png"
   ],
-  "unaltered_site_modules": [
-    "js/screen/app/main.js",
-    "js/screen/app/reveal-flow.js",
-    "js/motion/selection/carousel.js",
-    "css/tarot.css",
-    "js/settings/config/config.js"
-  ]
+  "not_for_deployment": [
+    "preview.html",
+    "qa/",
+    "README_적용_검증.md",
+    "PATCH_MANIFEST.json"
+  ],
+  "checksums": {
+    "preview.html": "f34acc05c51f3d3ca8ba689ccdf4c721b6cdaea6c58352d818851910bc091138",
+    "index.html": "407493e212b04501a643a932f68057a1b65b6f7d285cf195ccabdd6232fb9f58",
+    "README_적용_검증.md": "37453b1f63d8d2d50a7170f036dd731339a113f82d3f5599edddb81015aa539e",
+    "qa/pc_world_v2.png": "0a10283950381fa653e1b13126e23bd59836fee977f1ee5d00c7f1157247dc6f",
+    "qa/mobile_3d_world.png": "8497af4af7d66f47a41d12947d11fdc8956ce169464a8303f2b7a615559666f1",
+    "qa/mobile_world_v2.png": "a930a3fadc288f3da6762adae2cda48b5fd26b26284194f3b008c499fe167b60",
+    "qa/pc_3d_world.png": "ab6f8d37f47a097a89a646713970ac05177f3223cab2bb66b7d026534782621c",
+    "css/effects/13-popup-diorama.css": "d767f6527f583271b48f715f1f580cf6dabb0667a4f670745aaf49947d810de3",
+    "css/effects/11-velvet-studio.css": "32765589f3d1aa730698e3f90c97cc9c25ac968d8a1ccbbd923bbdd8661aeaae",
+    "assets/stage/velvet-studio-source.png": "61e48e32e75bc848bfb2e07dcb1eaca9ea94a3ea4b7885706443f9178a15150d",
+    "js/effects/velvet-studio-3d.js": "4d813e67d5a11f12c43e25b7e116a2a7099a9e215f33693f3cca05e87ce2b3b5",
+    "js/effects/popup-diorama.js": "8cef1e497bff87cb9c7f4debdd8d4cf758f73f1a11317a03899cd8c3bf986371",
+    "js/motion/animation/card-animation.js": "9ae8b8061174d0806b45388d3216bd341c6cab9e3997c73fb4d7ad87f7fa3ab7"
+  }
 }
