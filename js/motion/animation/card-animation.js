@@ -1,5 +1,5 @@
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
-import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
+import {slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION,pressureProgress} from './finale-motion.js';
 const running=new WeakMap(),samples=new WeakMap();
 export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
@@ -18,46 +18,50 @@ export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
 export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
-// A fixed, smoothly blended depth lane per card avoids sudden frame-by-frame
-// repulsion (which caused the revision-4 stutter). It improves visual ordering,
-// but does not claim to implement full rigid-body collision detection.
-function shuffleLanePose(i,t,w,h,count){
- const p=travelPose(i,t,w,h,count);
- const lane=((i*7)%count-(count-1)/2)*7.5;
- const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
- return {...p,z:p.z+lane*envelope};
-}
-// The airborne orbit stays untouched. Only the final gathering uses a
-// continuous, staggered landing: cards approach the deck from the viewer side
-// and settle in order rather than cutting through the finished stack.
-function gatherPose(i,t,w,h,count){
- const start=.78, finish=.985;
- const order=i; // Stable stacking order, no mid-flight repulsion.
- const begin=start+order*.004;
- const end=finish-(count-1-order)*.001;
- const origin=shuffleLanePose(i,1,w,h,count), target=stackPose(i,count);
- if(t<=begin)return origin;
- const u=smooth((t-begin)/(end-begin));
- const p=mix(origin,target,u);
- // Lift in depth while traveling inward; fades to zero at both ends.
- // A card near the stack approaches from the front rather than behind it.
- const lift=Math.sin(Math.PI*u)*Math.max(125,stageSize('shuffle',w)*1.2);
- return {...p,z:p.z+lift};
-}
+
+/* Two-packet, ordered riffle choreography.
+   - The deck splits into two cohesive stacks rather than 22 crossing orbits.
+   - Just ONE card moves at a time during the interleave, avoiding midair
+     card-to-card flight intersections and reducing simultaneous GPU animations.
+   - Existing stackPose and fanMotion contracts remain unchanged.
+   This is directed choreography, not a full physics/collision simulation. */
 export async function shuffleMotion(els,stage,phase=()=>{}){
- stage.classList.add('glow-shuffle-lite');
- const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
- if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
- phase('vortex');
- const result=await Promise.all(els.map((el,i)=>{
-  const frames=[];
-  for(let n=0;n<=100;n++){
-   const t=n/100;
-   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):gatherPose(i,t,w,h,count);
-   frames.push({offset:t,transform:transform(p)});
+ const count=els.length;
+ if(!count)return true;
+ const w=stage.clientWidth, size=stageSize('shuffle',w);
+ const splitX=Math.min(w*.31,size*1.30);
+ const from=new Array(count);
+ stage.classList.add('glow-shuffle-lite','cinematic-riffle');
+ phase('charge');
+ try{
+  const split=await Promise.all(els.map((el,i)=>{
+   const side=i%2===0?-1:1;
+   const pileIndex=Math.floor(i/2);
+   const at={x:side*splitX+(i%3-1)*1.1,y:-6+(pileIndex%3)*.75,
+             z:-pileIndex*2.5,rot:side*5.5,ry:side*5,rx:0,scale:1};
+   from[i]=at;
+   el.style.zIndex=String(30+pileIndex);
+   return animateTo(el,at,C.shuffle.separate);
+  }));
+  if(!split.every(Boolean))return false;
+  phase('vortex');
+  const left=[],right=[];
+  for(let i=count-1;i>=0;i--)(i%2===0?left:right).push(i);
+  const order=[];
+  while(left.length||right.length){if(left.length)order.push(left.shift());if(right.length)order.push(right.shift());}
+  const eachDuration=Math.max(90,C.shuffle.duration/count);
+  for(let k=0;k<order.length;k++){
+   const index=order[k], el=els[index], start=from[index], target=stackPose(index,count);
+   const mid={...mix(start,target,.47),y:-44,z:Math.max(90,size*.55)+k*.10,
+              rot:start.rot*.38,ry:start.ry*.35,rx:0,scale:1.03};
+   el.style.zIndex=String(100+k);
+   const ok=await play(el,[{offset:0,transform:transform(start)},
+     {offset:.46,transform:transform(mid)},
+     {offset:1,transform:transform(target)}],eachDuration,'cubic-bezier(.3,.1,.45,1)');
+   if(!ok)return false;
   }
-  return play(el,frames,C.shuffle.duration,'linear');
- }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
+  return true;
+ } finally {stage.classList.remove('glow-shuffle-lite','cinematic-riffle');}
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
  const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);
@@ -66,7 +70,6 @@ export async function fanMotion(els,stage,onStart=()=>{}){
  const clock={duration:FINALE_DURATION,width:stage.clientWidth,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
  const result=await Promise.all(els.map((el,i)=>{
   const off=i-(els.length-1)/2,from=stackPose(i,els.length),to=slotPose(off,stage.clientWidth),frames=[];
-  // Animate transform only, avoiding width/height layout work on mobile.
   const initial={...from,scale:fromSize/toSize};
   el.style.width=toSize+'px';el.style.height=toSize*C.aspect+'px';
   el.style.transform=transform(initial);
