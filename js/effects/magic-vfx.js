@@ -2,14 +2,14 @@ import {CONFIG as C} from '../settings/config/config.js';
 import {cardCloud} from './gold-lines.js';
 import {startScreenSparkles} from './sparkle-field.js';
 import {samplePressure,waveRadius} from '../motion/animation/finale-motion.js';
-// Body-owned fixed Canvas cannot be covered by cards advancing in stage 3D space.
+// Keep all original public methods. Only the active cinematic shuffle's
+// competing spinning light rings are suppressed; the fan finale remains.
 export class MagicVFX {
  constructor(stage){
-  this.stage=stage;this.active=false;this.trails=[];this.name='off';
-  startScreenSparkles(); // Single viewport-fixed effect across every stage, including result.
+  this.stage=stage;this.active=false;this.trails=[];this.name='off';this.lastCloudRead=0;this.quietClear=false;
+  startScreenSparkles();
   this.canvas=document.createElement('canvas');this.canvas.className='magic-canvas magic-front';this.canvas.setAttribute('aria-hidden','true');document.body.append(this.canvas);
   this.ctx=this.canvas.getContext('2d');
-  // Restore the original rear-layer light during shuffle and fan opening.
   this.rearCanvas=document.createElement('canvas');this.rearCanvas.className='magic-canvas magic-rear';this.rearCanvas.setAttribute('aria-hidden','true');stage.append(this.rearCanvas);this.rearCtx=this.rearCanvas.getContext('2d');this.resizeObserver=new ResizeObserver(()=>this.resize());this.resizeObserver.observe(stage);
   window.addEventListener('resize',()=>this.resize());window.addEventListener('scroll',()=>this.resize(),{passive:true});
   document.addEventListener('visibilitychange',()=>{this.last=performance.now();this.trails=[];});this.resize();
@@ -19,30 +19,42 @@ export class MagicVFX {
   Object.assign(this.canvas.style,{left:b.left+'px',top:b.top+'px',width:b.width+'px',height:b.height+'px'});
   this.dpr=Math.min(devicePixelRatio||1,this.w<C.breakpoint?C.vfx.mobileDpr:C.vfx.desktopDpr);
   this.canvas.width=Math.round(this.w*this.dpr);this.canvas.height=Math.round(this.h*this.dpr);this.ctx?.setTransform(this.dpr,0,0,this.dpr,0,0);
-  this.rearCanvas.width=Math.round(this.w*this.dpr);this.rearCanvas.height=Math.round(this.h*this.dpr);this.rearCtx?.setTransform(this.dpr,0,0,this.dpr,0,0);this.trails=[];
+  this.rearCanvas.width=Math.round(this.w*this.dpr);this.rearCanvas.height=Math.round(this.h*this.dpr);this.rearCtx?.setTransform(this.dpr,0,0,this.dpr,0,0);this.trails=[];this.quietClear=false;
  }
  phase(name){this.name=name;this.phaseAt=performance.now();this.canvas.dataset.phase=name;}
  idle(cards){this.start(cards,'idle');}
  start(cards,phase='charge'){
-  // Continue the same clock and canvas through idle -> shuffle; never add a layer.
   this.cards=cards;this.trails=[];this.resize();this.phase(phase);
   if(this.active)return;this.active=true;this.last=performance.now();this.frame=requestAnimationFrame(t=>this.draw(t));
  }
  release(clock){this.waveClock=clock;this.phase('release');this.trails=[];}
  finish(){this.phase('fade');}
- stop(){this.active=false;cancelAnimationFrame(this.frame);this.trails=[];this.phase('off');this.ctx?.clearRect(0,0,this.w,this.h);this.rearCtx?.clearRect(0,0,this.w,this.h);this.waveClock=null;}
+ stop(){
+  this.active=false;cancelAnimationFrame(this.frame);this.trails=[];this.phase('off');
+  this.ctx?.clearRect(0,0,this.w,this.h);this.rearCtx?.clearRect(0,0,this.w,this.h);this.waveClock=null;this.quietClear=false;
+ }
  draw(now){
   if(!this.active)return;
   const ctx=this.ctx;if(!ctx){this.stop();return;}
   const age=(now-this.phaseAt)/1000,fade=this.name==='fade'?Math.max(0,1-age/(C.finale.afterglow/1000)):1;
   if(this.name==='fade'&&!fade){this.stop();return;}
-  ctx.clearRect(0,0,this.w,this.h);
-  this.drawRear(now,age,fade);
-  const box=cardCloud(this.cards,this.bounds);this.canvas.dataset.center=box?`${box.cx.toFixed(2)},${box.cy.toFixed(2)}`:'';
-  // Screen sparkles run on their own fixed canvas; never follow cards or drag.
+  const quiet=this.stage.classList.contains('cinematic-shuffle')&&(this.name==='charge'||this.name==='vortex');
+  if(quiet){
+   if(!this.quietClear){ctx.clearRect(0,0,this.w,this.h);this.rearCtx?.clearRect(0,0,this.w,this.h);this.quietClear=true;}
+  }else{
+   this.quietClear=false;
+   ctx.clearRect(0,0,this.w,this.h);
+   this.drawRear(now,age,fade);
+  }
+  // Original cardCloud read every animated card's bounds on EVERY frame.
+  // Its dataset display is informational; sampling at 8 Hz is sufficient.
+  if(now-this.lastCloudRead>125){
+   this.lastCloudRead=now;
+   const box=cardCloud(this.cards||[],this.bounds);
+   this.canvas.dataset.center=box?`${box.cx.toFixed(2)},${box.cy.toFixed(2)}`:'';
+  }
   this.frame=requestAnimationFrame(t=>this.draw(t));
  }
- // Rear light is separate from the new front orbit, so cards can pass in front of it.
  drawRear(now,age,fade){
   const ctx=this.rearCtx;if(!ctx)return;
   ctx.clearRect(0,0,this.w,this.h);
@@ -57,11 +69,15 @@ export class MagicVFX {
     ctx.save();ctx.translate(this.w/2,this.h/2-8);ctx.scale(1,.34);ctx.rotate(rotation);
     ctx.strokeStyle=`rgba(237,195,111,${alpha*energy*fade})`;ctx.lineWidth=1.4;
     ctx.beginPath();ctx.ellipse(0,0,r,r,0,0,Math.PI*2);ctx.stroke();
-    for(let i=0;i<12;i++){const a=i*Math.PI/6;ctx.beginPath();ctx.moveTo(Math.cos(a)*(r-5),Math.sin(a)*(r-5));ctx.lineTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.stroke();}
+    for(let i=0;i<12;i++){
+     const a=i*Math.PI/6;ctx.beginPath();ctx.moveTo(Math.cos(a)*(r-5),Math.sin(a)*(r-5));ctx.lineTo(Math.cos(a)*(r+5),Math.sin(a)*(r+5));ctx.stroke();
+    }
     ctx.restore();
    }
-   if(condense>0){const r=Math.max(66,Math.min(130,this.w*.18));const g=ctx.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,r);
-    g.addColorStop(0,`rgba(250,205,126,${condense*.65*fade})`);g.addColorStop(1,'rgba(222,170,82,0)');ctx.fillStyle=g;ctx.fillRect(this.w/2-r,this.h/2-8-r,r*2,r*2);}
+   if(condense>0){
+    const r=Math.max(66,Math.min(130,this.w*.18));const g=ctx.createRadialGradient(this.w/2,this.h/2-8,0,this.w/2,this.h/2-8,r);
+    g.addColorStop(0,`rgba(250,205,126,${condense*.65*fade})`);g.addColorStop(1,'rgba(222,170,82,0)');ctx.fillStyle=g;ctx.fillRect(this.w/2-r,this.h/2-8-r,r*2,r*2);
+   }
   }
   if((this.name==='release'||this.name==='fade')&&this.waveClock){
    const t=Math.max(0,Math.min(1,this.waveClock.progress()));
