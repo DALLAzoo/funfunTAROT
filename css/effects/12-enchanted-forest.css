@@ -1,0 +1,151 @@
+/* In-between Shift | Enchanted World after fan-out.
+   Overlay only. Existing cards, controls, result, sizes, border radius,
+   selection logic and reading text remain exclusively owned by the site.
+   Generated forest art: background only, never the actual card artwork. */
+#stage.stage .forest-world {
+  position:absolute;inset:0;z-index:0;opacity:0;
+  isolation:isolate;overflow:hidden;pointer-events:none;
+  transition:opacity 1850ms cubic-bezier(.21,.59,.22,1);
+  --pick-x:50%;--pick-y:50%;
+}
+#stage.stage.selection-stage .forest-world {opacity:1;}
+#stage.stage .forest-world * {pointer-events:none!important;box-sizing:border-box}
+#stage.stage .forest-art {
+  position:absolute;inset:-3%;background:
+    linear-gradient(180deg,rgba(5,11,11,.12) 0%,rgba(11,14,19,.02) 38%,rgba(4,14,16,.24) 100%),
+    url('../../assets/stage/enchanted-forest.webp') 50% 43% /cover no-repeat;
+  transform:scale(1.13);filter:saturate(1.02) brightness(.91);
+  transition:transform 6500ms cubic-bezier(.17,.65,.18,1);
+}
+#stage.stage.selection-stage .forest-art{transform:scale(1.01)}
+#stage.stage .forest-sky {
+  position:absolute;inset:0;mix-blend-mode:screen;
+  background:radial-gradient(ellipse 43% 37% at 16% 8%,rgba(255,201,103,.23),transparent 88%),
+    radial-gradient(ellipse 42% 40% at 82% 10%,rgba(147,146,252,.13),transparent 85%);
+  animation:forest-cycle 40s ease-in-out infinite alternate;
+}
+@keyframes forest-cycle{
+  0%,22%{filter:hue-rotate(-13deg);opacity:1}
+  55%,100%{filter:hue-rotate(30deg);opacity:.48}
+}
+#stage.stage .forest-night {
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(13,15,54,.54),rgba(15,34,47,.25) 52%,rgba(4,15,19,.05));
+  opacity:0;animation:forest-nightfall 45s ease-in-out infinite;
+}
+@keyframes forest-nightfall{0%,21%{opacity:0}47%,75%{opacity:.65}95%,100%{opacity:0}}
+#stage.stage .forest-sun,#stage.stage .forest-moon{
+  position:absolute;border-radius:50%;pointer-events:none;
+}
+#stage.stage .forest-sun{
+  width:42px;height:42px;left:16%;top:10%;opacity:.46;
+  background:radial-gradient(circle at 47% 48%,#fff7d5 0 15%,rgba(255,224,143,.94) 36%,rgba(255,192,104,.34) 59%,transparent 73%);
+  box-shadow:0 0 28px 18px rgba(249,205,144,.14),0 0 65px 45px rgba(245,183,92,.12);
+  animation:forest-sunrise 45s linear infinite;
+}
+#stage.stage .forest-moon{
+  width:32px;height:32px;left:80%;top:13%;opacity:0;
+  background:radial-gradient(circle at 42% 38%,#fffcef 0%,#e5ebf6 32%,#a9b7d9 60%,#697daa 100%);
+  box-shadow:0 0 19px rgba(211,220,255,.7),0 0 48px rgba(153,175,251,.24);
+  animation:forest-moonrise 45s linear infinite;
+}
+@keyframes forest-sunrise{
+  0%{transform:translate(-55% ,78px) scale(.73);opacity:0}
+  12%{opacity:.52}35%{transform:translate(17%,-20px) scale(1.12);opacity:.57}
+  53%,100%{transform:translate(85%,70px) scale(.8);opacity:0}
+}
+@keyframes forest-moonrise{
+  0%,28%{transform:translateY(74px) scale(.75);opacity:0}
+  49%,72%{transform:translateY(-12px) scale(1);opacity:.53}
+  95%,100%{transform:translateY(65px) scale(.75);opacity:0}
+}
+#stage.stage .forest-water{position:absolute;left:35%;right:16%;bottom:11%;height:12%;
+  background:repeating-radial-gradient(ellipse at 52% 45%,rgba(181,227,240,.09) 0 1px,transparent 2px 16px);
+  border-radius:50%;mix-blend-mode:screen;opacity:.75;animation:forest-waterflow 5s ease-in-out infinite alternate;}
+@keyframes forest-waterflow{from{transform:scaleX(.89) translateY(1px);opacity:.36}to{transform:scaleX(1.09) translateY(-1px);opacity:.72}}
+#stage.stage .forest-leaf,#stage.stage .forest-flower,#stage.stage .forest-grass,
+#stage.stage .forest-firefly,#stage.stage .forest-star {position:absolute;display:block;transform-origin:50% 100%;}
+#stage.stage .forest-leaf{
+  left:var(--x);top:var(--y);width:var(--s);height:calc(var(--s) * .55);
+  border-radius:88% 0 80% 0;background:linear-gradient(110deg,rgba(174,221,107,.77),rgba(38,102,49,.92));
+  box-shadow:inset 0 0 0 1px rgba(236,241,158,.15);
+  opacity:0;transform:rotate(var(--r)) scale(0);
+  animation:forest-leaf-grow 1450ms cubic-bezier(.22,.89,.3,1.05) forwards,
+             forest-leaf-sway 3.5s ease-in-out infinite alternate;
+  animation-delay:var(--delay),calc(var(--delay) + 1450ms);
+}
+@keyframes forest-leaf-grow{to{opacity:.7;transform:rotate(var(--r)) scale(1)}}
+@keyframes forest-leaf-sway{0%{translate:-2px 1px}100%{translate:3px -2px}}
+#stage.stage .forest-grass{
+  left:var(--x);bottom:var(--bottom);width:2px;height:var(--h);
+  border-radius:90% 6% 0 0;
+  background:linear-gradient(0deg,rgba(55,119,44,.3),rgba(182,226,107,.8));
+  opacity:0;transform:rotate(var(--r)) scaleY(0);
+  animation:forest-grass-grow 1550ms ease-out forwards,forest-grass-sway 2.6s ease-in-out infinite alternate;
+  animation-delay:var(--delay),calc(var(--delay) + 1500ms)
+}
+@keyframes forest-grass-grow{to{opacity:.75;transform:rotate(var(--r)) scaleY(1)}}
+@keyframes forest-grass-sway{from{translate:-1px 0}to{translate:2px 0}}
+#stage.stage .forest-flower{left:var(--x);bottom:var(--bottom);width:var(--s);aspect-ratio:1;
+  opacity:0;transform:scale(.1) rotate(-70deg);
+  animation:forest-flower-bloom 1300ms cubic-bezier(.17,.93,.27,1.18) forwards,forest-flower-wind 4s ease-in-out infinite alternate;
+  animation-delay:var(--delay),calc(var(--delay) + 1300ms)}
+#stage.stage .forest-flower::before{content:'✿';display:block;width:100%;height:100%;font:700 var(--s)/1 Georgia,serif;
+  color:var(--color);text-shadow:0 0 8px rgba(255,210,177,.42),0 2px 4px #15280d9e}
+@keyframes forest-flower-bloom{to{opacity:.9;transform:scale(1) rotate(0)}}
+@keyframes forest-flower-wind{from{translate:-1px 0}to{translate:2px 2px}}
+#stage.stage .forest-firefly{left:var(--x);top:var(--y);width:var(--s);height:var(--s);border-radius:50%;opacity:0;
+  background:#ffe7ad;box-shadow:0 0 8px 2px rgba(255,215,125,.7),0 0 18px 5px rgba(254,182,100,.21);
+  animation:forest-firefly-drift var(--t) ease-in-out infinite alternate;
+  animation-delay:var(--delay)}
+@keyframes forest-firefly-drift{0%{transform:translate(-12px,8px);opacity:.07}50%{opacity:.85}100%{transform:translate(13px,-16px);opacity:.14}}
+#stage.stage .forest-star{left:var(--x);top:var(--y);height:2px;width:2px;border-radius:50%;background:#e9edfa;
+  box-shadow:0 0 8px 2px rgba(214,220,255,.52);animation:forest-star-twinkle 45s linear infinite,forest-star-flicker 3s ease-in-out infinite alternate;
+  animation-delay:0s,var(--delay)}
+@keyframes forest-star-twinkle{0%,26%,97%,100%{opacity:0}48%,79%{opacity:.7}}
+@keyframes forest-star-flicker{from{scale:.68}to{scale:1.4}}
+#stage.stage .forest-focus{position:absolute;left:var(--pick-x);top:var(--pick-y);
+  width:160px;height:170px;transform:translate(-50%,-50%);
+  opacity:0;transition:opacity 400ms;
+  background:radial-gradient(ellipse at 50% 50%,rgba(245,207,133,.20),transparent 70%);
+  filter:blur(7px)}
+#stage.stage .forest-world.is-picked .forest-focus{opacity:.7;animation:forest-focus-breathe 3s ease-in-out infinite alternate}
+@keyframes forest-focus-breathe{from{scale:.88;opacity:.38}to{scale:1.12;opacity:.82}}
+#stage.stage .forest-rabbit{position:absolute;bottom:22%;left:7%;width:38px;height:38px;opacity:.84;
+  animation:forest-rabbit-hop 13s ease-in-out infinite;filter:drop-shadow(0 4px 5px rgba(0,0,0,.5))}
+#stage.stage .forest-deer{position:absolute;bottom:24%;right:12%;width:53px;height:59px;opacity:.75;
+  transform-origin:55% 80%;animation:forest-deer-drink 8s ease-in-out infinite;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.38))}
+@keyframes forest-rabbit-hop{
+  0%,8%{transform:translate(0,0) scaleX(1)}
+  13%{transform:translate(13px,-9px) scaleX(1)}
+  17%{transform:translate(24px,0) scaleX(1)}
+  24%{transform:translate(31px,-7px)}
+  29%,64%{transform:translate(41px,0)}
+  71%{transform:translate(32px,-6px) scaleX(-1)}
+  77%,100%{transform:translate(0,0) scaleX(-1)}
+}
+@keyframes forest-deer-drink{
+  0%,20%,90%,100%{transform:rotate(0deg)}
+  37%,70%{transform:rotate(12deg)}
+}
+@media(max-width:600px){
+ #stage.stage .forest-art{background-position:51% 44%;}
+ #stage.stage .forest-sun{width:28px;height:28px}
+ #stage.stage .forest-moon{width:24px;height:24px}
+ #stage.stage .forest-rabbit{left:2%;width:26px;height:26px}
+ #stage.stage .forest-deer{right:3%;width:34px;height:42px}
+ #stage.stage .forest-leaf:nth-child(3n),#stage.stage .forest-firefly:nth-child(3n){display:none}
+}
+@media(prefers-reduced-motion:reduce){
+ #stage.stage .forest-world,#stage.stage .forest-art{transition:none}
+ #stage.stage .forest-world *{animation:none!important}
+ #stage.stage .forest-art{transform:scale(1.01)}
+ #stage.stage .forest-night{opacity:.1}
+ #stage.stage .forest-sun{opacity:.45}
+ #stage.stage .forest-moon{opacity:.3}
+ #stage.stage .forest-flower{opacity:.8;transform:scale(1)}
+ #stage.stage .forest-grass{opacity:.6;transform:scaleY(1)}
+ #stage.stage .forest-leaf{opacity:.6;transform:scale(1)}
+ #stage.stage .forest-firefly{opacity:.25}
+}
