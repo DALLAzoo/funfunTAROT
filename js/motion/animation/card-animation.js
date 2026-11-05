@@ -19,49 +19,71 @@ export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transf
 export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
 
-/* Two-packet, ordered riffle choreography.
-   - The deck splits into two cohesive stacks rather than 22 crossing orbits.
-   - Just ONE card moves at a time during the interleave, avoiding midair
-     card-to-card flight intersections and reducing simultaneous GPU animations.
-   - Existing stackPose and fanMotion contracts remain unchanged.
-   This is directed choreography, not a full physics/collision simulation. */
+/* In-between Shift v5 — cinematic orbital shuffle, not an interleaved riffle.
+   Three depth-separated orbital lanes. Cards in the same lane maintain their
+   angular order (no passing); landing is staggered above the stack.
+   This is art-directed motion, not a physics-based collision solver. */
+const PI = Math.PI;
+function orbitPose(i,count,t,w,h,size){
+ const lane=i%3,rank=Math.floor(i/3);
+ const lanes=[Math.ceil(count/3),Math.ceil((count-1)/3),Math.floor(count/3)];
+ const slots=lanes[lane];
+ const angle0=-PI*.55+2*PI*rank/slots+lane*.21;
+ const spins=[1.12,-.98,1.06], angle=angle0+2*PI*spins[lane]*smooth(t);
+ const mobile=w<600;
+ const rx=Math.min(w*(mobile?.31:.31),mobile?155:345)*[1,.77,.55][lane];
+ const ry=Math.min(h*.31,mobile?112:185)*[1,.80,.62][lane];
+ const depth=[110,-80,-240][lane];
+ return {
+  x:Math.cos(angle)*rx,
+  y:Math.sin(angle)*ry-10,
+  z:depth+Math.sin(angle)*12,
+  rot:Math.sin(angle)*11,
+  ry:Math.cos(angle)*16,
+  rx:Math.sin(angle)*7,
+  scale:mobile?.53:.57
+ };
+}
+function landingPose(i,count,t,w,h,size){
+ const endOrbit=orbitPose(i,count,1,w,h,size);
+ const begin=.68+i*.0085;
+ const end=Math.min(.996,begin+.125);
+ if(t<=begin)return endOrbit;
+ const u=smooth((t-begin)/(end-begin));
+ const target=stackPose(i,count);
+ const p=mix(endOrbit,target,u);
+ // Approach the pile from the viewer's side, instead of slicing through it.
+ p.z+=Math.sin(PI*u)*Math.min(170,size*.95);
+ return p;
+}
 export async function shuffleMotion(els,stage,phase=()=>{}){
  const count=els.length;
  if(!count)return true;
- const w=stage.clientWidth, size=stageSize('shuffle',w);
- const splitX=Math.min(w*.31,size*1.30);
- const from=new Array(count);
- stage.classList.add('glow-shuffle-lite','cinematic-riffle');
+ const w=stage.clientWidth,h=stage.clientHeight,size=stageSize('shuffle',w);
+ stage.classList.add('glow-shuffle-lite');
  phase('charge');
- try{
-  const split=await Promise.all(els.map((el,i)=>{
-   const side=i%2===0?-1:1;
-   const pileIndex=Math.floor(i/2);
-   const at={x:side*splitX+(i%3-1)*1.1,y:-6+(pileIndex%3)*.75,
-             z:-pileIndex*2.5,rot:side*5.5,ry:side*5,rx:0,scale:1};
-   from[i]=at;
-   el.style.zIndex=String(30+pileIndex);
-   return animateTo(el,at,C.shuffle.separate);
+ try {
+  const launched=await Promise.all(els.map((el,i)=>{
+   el.style.zIndex=String(100+i);
+   return play(el,[
+    {transform:el.style.transform||transform(stackPose(i,count))},
+    {transform:transform(orbitPose(i,count,0,w,h,size))}
+   ],C.shuffle.separate,'cubic-bezier(.2,.62,.22,1)');
   }));
-  if(!split.every(Boolean))return false;
+  if(!launched.every(Boolean))return false;
   phase('vortex');
-  const left=[],right=[];
-  for(let i=count-1;i>=0;i--)(i%2===0?left:right).push(i);
-  const order=[];
-  while(left.length||right.length){if(left.length)order.push(left.shift());if(right.length)order.push(right.shift());}
-  const eachDuration=Math.max(90,C.shuffle.duration/count);
-  for(let k=0;k<order.length;k++){
-   const index=order[k], el=els[index], start=from[index], target=stackPose(index,count);
-   const mid={...mix(start,target,.47),y:-44,z:Math.max(90,size*.55)+k*.10,
-              rot:start.rot*.38,ry:start.ry*.35,rx:0,scale:1.03};
-   el.style.zIndex=String(100+k);
-   const ok=await play(el,[{offset:0,transform:transform(start)},
-     {offset:.46,transform:transform(mid)},
-     {offset:1,transform:transform(target)}],eachDuration,'cubic-bezier(.3,.1,.45,1)');
-   if(!ok)return false;
-  }
-  return true;
- } finally {stage.classList.remove('glow-shuffle-lite','cinematic-riffle');}
+  const steps=42; // 43 compositor keyframes per card rather than 101.
+  const result=await Promise.all(els.map((el,i)=>{
+   const frames=[];
+   for(let k=0;k<=steps;k++){
+    const t=k/steps;
+    const p=t<=.68?orbitPose(i,count,t/.68,w,h,size):landingPose(i,count,t,w,h,size);
+    frames.push({offset:t,transform:transform(p)});
+   }
+   return play(el,frames,C.shuffle.duration,'linear');
+  }));
+  return result.every(Boolean);
+ } finally {stage.classList.remove('glow-shuffle-lite');}
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
  const fromSize=stageSize('shuffle',stage.clientWidth),toSize=stageSize('selection',stage.clientWidth);
