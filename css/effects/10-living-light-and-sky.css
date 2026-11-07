@@ -1,0 +1,82 @@
+/* AD1 v11 — restore moving masked gold light in shuffle and fan,
+   and add genuinely moving distant aurora + celestial circle.
+   Additive patch: no card images, HTML, JS, layout or navigation changes. */
+
+/* v10's fan optimization stops the mask animation. Keep it alive when
+   the fan is stationary and while the shuffle is underway. The moving
+   highlight remains restricted to the original glow mask and artwork. */
+#stage .tarot-card.shuffle-surface .card-back::before,
+#stage .tarot-card.shuffle-surface .card-front::before,
+#stage.selection-stage .tarot-card .card-back::before,
+#stage.selection-stage .tarot-card .card-front::before,
+#stage.glow-shuffle-lite .tarot-card.shuffle-surface .card-back::before,
+#stage.glow-shuffle-lite .tarot-card.shuffle-surface .card-front::before {
+  animation: ad1-ink-light-travel 8.6s linear infinite !important;
+  animation-play-state: running !important;
+  opacity: .76;
+}
+@keyframes ad1-ink-light-travel {
+  0%   { background-position: 8% 14%; }
+  25%  { background-position: 91% 35%; }
+  52%  { background-position: 68% 91%; }
+  76%  { background-position: 12% 71%; }
+  100% { background-position: 8% 14%; }
+}
+
+/* Aurora now moves in space; v10 only pulsed its opacity. Independent
+   radial-gradient centers drift very slowly behind the card stage. */
+body::after {
+  background:
+    radial-gradient(ellipse 42% 28% at 18% 30%, rgba(116,54,169,.21), transparent 100%),
+    radial-gradient(ellipse 34% 44% at 82% 66%, rgba(28,166,158,.18), transparent 100%),
+    radial-gradient(ellipse 60% 17% at 48% 14%, rgba(43,96,159,.12), transparent 100%);
+  background-repeat: no-repeat;
+  background-size: 125% 120%, 120% 135%, 130% 120%;
+  animation: ad1-aurora-flow 36s ease-in-out infinite alternate,
+             aurora-pulse 17s ease-in-out infinite alternate;
+  will-change: background-position, opacity;
+}
+@keyframes ad1-aurora-flow {
+  0%   { background-position: -12% 12%, 110% 95%, 35% -12%; }
+  50%  { background-position: 16% 1%, 85% 66%, 60% 8%; }
+  100% { background-position: 35% 18%, 50% 26%, 80% -6%; }
+}
+/* A separate, very faint rotating celestial circle; no floor or walls. */
+.tarot-app::before {
+  content: "";
+  position: fixed;
+  width: min(70vw, 650px);
+  height: min(70vw, 650px);
+  left: 50%; top: 44%;
+  border-radius: 50%;
+  border: 1px solid rgba(187, 157, 224, .085);
+  box-shadow: 0 0 28px rgba(90, 76, 135, .035), inset 0 0 30px rgba(89, 114, 166, .028);
+  background: conic-gradient(from 12deg, transparent 0deg 48deg,
+    rgba(158, 142, 196, .055) 60deg, transparent 80deg 220deg,
+    rgba(100, 164, 181, .047) 260deg, transparent 300deg 360deg);
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(0deg) scaleY(.76);
+  transform-origin: center;
+  animation: ad1-celestial-rotate 95s linear infinite;
+  z-index: 0;
+}
+@keyframes ad1-celestial-rotate {
+  to { transform: translate(-50%, -50%) rotate(360deg) scaleY(.76); }
+}
+/* Keep all original app content above the celestial ring. */
+.tarot-app > .intro, .tarot-app > .stage, .tarot-app > .controls {
+  position: relative;
+  z-index: 1;
+}
+/* A shuffle gently brightens the distant aurora without stopping movement. */
+body:has(#stage.orbit-opening)::after {
+  animation: ad1-aurora-flow 36s ease-in-out infinite alternate,
+             aurora-release 3.5s ease-in-out both;
+}
+/* Respect devices requesting fewer animations. */
+@media (prefers-reduced-motion: reduce) {
+  .tarot-app::before { animation: none !important; }
+  body::after { animation: none !important; }
+  #stage .tarot-card .card-back::before,
+  #stage .tarot-card .card-front::before { animation: none !important; }
+}
