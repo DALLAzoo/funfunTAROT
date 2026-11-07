@@ -1,60 +1,27 @@
-/* Tarot-tab backdrop only. Cards, interactions, and layout are unchanged. */
-body { background: #04050c; }
+/* Fixed deep-space atmosphere shared by shuffle, fan, and final reveal. */
+body { background:#03050b!important; }
 body::before {
-  content: "";
-  position: fixed;
-  inset: -3%;
-  z-index: 0;
-  pointer-events: none;
-  background: #03040a url("../../assets/backgrounds/tarot-cosmos.webp") center center / cover no-repeat;
-  opacity: .88;
-  transform: scale(1.025);
-  animation: tarot-cosmos-drift 28s ease-in-out infinite alternate;
+ content:"";position:fixed;inset:-3%;z-index:0;pointer-events:none;
+ background:#03040a url("../../assets/backgrounds/tarot-cosmos.webp") center/cover no-repeat;
+ opacity:.93;transform:translate3d(0,0,0) scale(1.04);
+ animation:cosmos-drift 42s ease-in-out infinite alternate;
+ will-change:transform;
 }
 body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 12% 22%, rgba(104,45,180,.14), transparent 38%),
-    radial-gradient(ellipse at 86% 77%, rgba(22,160,181,.11), transparent 42%);
-  opacity: .65;
-  animation: tarot-aurora-breathe 15s ease-in-out infinite alternate;
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+ background:radial-gradient(ellipse at 12% 24%,rgba(122,46,183,.15),transparent 37%),
+            radial-gradient(ellipse at 88% 74%,rgba(26,154,174,.14),transparent 40%);
+ opacity:.64;animation:aurora-pulse 17s ease-in-out infinite alternate;
 }
-body:has(#stage.orbit-opening)::before,
-body:has(#stage.magic-orbit-active)::before {
-  animation: tarot-cosmos-drift 28s ease-in-out infinite alternate,
-             tarot-cosmos-resonate 2.7s ease-in-out both;
-}
-body:has(#stage.orbit-opening)::after,
-body:has(#stage.magic-orbit-active)::after {
-  animation: tarot-aurora-resonate 2.7s ease-in-out both;
-}
-.tarot-app { position: relative; z-index: 1; }
-.result-view { z-index: 1; }
-@keyframes tarot-cosmos-drift {
-  from { transform: scale(1.025) translate3d(-.6%, .35%, 0); }
-  to { transform: scale(1.065) translate3d(.6%, -.5%, 0); }
-}
-@keyframes tarot-aurora-breathe {
-  from { opacity: .42; }
-  to { opacity: .78; }
-}
-@keyframes tarot-cosmos-resonate {
-  0%,100% { filter: brightness(1); }
-  40% { filter: brightness(1.22); }
-  72% { filter: brightness(1.1); }
-}
-@keyframes tarot-aurora-resonate {
-  0%,100% { opacity: .65; }
-  45% { opacity: 1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  body::before, body::after,
-  body:has(#stage.orbit-opening)::before,
-  body:has(#stage.magic-orbit-active)::before,
-  body:has(#stage.orbit-opening)::after,
-  body:has(#stage.magic-orbit-active)::after { animation: none; }
-}
+.tarot-app,.result-view{position:relative;z-index:1;}
+/* The old emerald result backdrop must not cover the space background. */
+.result-view {background:transparent!important;}
+/* Freeze expensive full-screen backdrop compositing while a pointer drags cards. */
+body:has(#stage.is-dragging)::before,
+body:has(#stage.is-dragging)::after{animation-play-state:paused!important;}
+/* Gentle light response when the cards enter their orbit. No full-screen filters. */
+body:has(#stage.orbit-opening)::after{animation:aurora-release 3.5s ease-in-out both;}
+@keyframes cosmos-drift{from{transform:translate3d(-.45%,.35%,0) scale(1.04)}to{transform:translate3d(.45%,-.45%,0) scale(1.065)}}
+@keyframes aurora-pulse{from{opacity:.40}to{opacity:.70}}
+@keyframes aurora-release{0%,100%{opacity:.60}48%{opacity:.88}}
+@media(prefers-reduced-motion:reduce){body::before,body::after{animation:none!important;}}

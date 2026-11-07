@@ -1,0 +1,30 @@
+/* v10: the reverse face in the shuffle and the fan always uses the selected deck-back artwork. */
+#stage .tarot-card .card-front {
+ background-image:var(--back-image)!important;
+ background-size:100% 100%!important;
+ background-position:center!important;
+ background-repeat:no-repeat!important;
+ background-color:transparent!important;
+ border:0!important;
+ padding:0!important;
+}
+/* Only the final revealed card, moved to #resultView, may show the actual front. */
+#stage .tarot-card .card-front > * {visibility:hidden!important;}
+#stage .tarot-card .card-back,
+#stage .tarot-card .card-front {backface-visibility:hidden!important;-webkit-backface-visibility:hidden!important;}
+/* Remove the gray edges exposed by steep 3-D tilts during shuffle. */
+#stage .tarot-card.shuffle-surface .card-edge {visibility:hidden!important;}
+/* The fan carousel has no card flip. In its stationary fan state the surfaces
+   face backwards, so no front image can leak out during drag. */
+#stage.selection-stage .tarot-card .card-front {transform:rotateY(180deg)!important;}
+/* Preserve existing gold-frame treatment on the selected card but stop 20
+   per-card animated mask gradients from repainting during pointer movement. */
+#stage.selection-stage .card-back::before,
+#stage.selection-stage .card-front::before,
+#stage.is-dragging .card-back::before,
+#stage.is-dragging .card-front::before {animation:none!important;}
+#stage.is-dragging .tarot-card {filter:none!important;}
+#stage.is-dragging .tarot-card .card-face{box-shadow:none!important;}
+/* Do not accidentally inherit the back picture onto the actual result card. */
+#resultView .result-card .card-front {background-image:none!important;}
+#resultView .result-card .card-front > * {visibility:visible!important;}
