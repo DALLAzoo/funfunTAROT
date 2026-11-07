@@ -1,0 +1,60 @@
+/* Tarot-tab backdrop only. Cards, interactions, and layout are unchanged. */
+body { background: #04050c; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: -3%;
+  z-index: 0;
+  pointer-events: none;
+  background: #03040a url("../../assets/backgrounds/tarot-cosmos.webp") center center / cover no-repeat;
+  opacity: .88;
+  transform: scale(1.025);
+  animation: tarot-cosmos-drift 28s ease-in-out infinite alternate;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 12% 22%, rgba(104,45,180,.14), transparent 38%),
+    radial-gradient(ellipse at 86% 77%, rgba(22,160,181,.11), transparent 42%);
+  opacity: .65;
+  animation: tarot-aurora-breathe 15s ease-in-out infinite alternate;
+}
+body:has(#stage.orbit-opening)::before,
+body:has(#stage.magic-orbit-active)::before {
+  animation: tarot-cosmos-drift 28s ease-in-out infinite alternate,
+             tarot-cosmos-resonate 2.7s ease-in-out both;
+}
+body:has(#stage.orbit-opening)::after,
+body:has(#stage.magic-orbit-active)::after {
+  animation: tarot-aurora-resonate 2.7s ease-in-out both;
+}
+.tarot-app { position: relative; z-index: 1; }
+.result-view { z-index: 1; }
+@keyframes tarot-cosmos-drift {
+  from { transform: scale(1.025) translate3d(-.6%, .35%, 0); }
+  to { transform: scale(1.065) translate3d(.6%, -.5%, 0); }
+}
+@keyframes tarot-aurora-breathe {
+  from { opacity: .42; }
+  to { opacity: .78; }
+}
+@keyframes tarot-cosmos-resonate {
+  0%,100% { filter: brightness(1); }
+  40% { filter: brightness(1.22); }
+  72% { filter: brightness(1.1); }
+}
+@keyframes tarot-aurora-resonate {
+  0%,100% { opacity: .65; }
+  45% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, body::after,
+  body:has(#stage.orbit-opening)::before,
+  body:has(#stage.magic-orbit-active)::before,
+  body:has(#stage.orbit-opening)::after,
+  body:has(#stage.magic-orbit-active)::after { animation: none; }
+}
