@@ -1,104 +1,109 @@
-/* AD1 v13: keep gold movement only in the fan stage. The idle pile and the
-   actual shuffle stay still, while the background gains visible but restrained motion. */
+/* AD1 v14 — background motion without an additional circle, extra stars,
+   blur/compositing filters, or changes to any card geometry or shuffle timeline.
+   The live layers are limited to two compositor-friendly transforms. */
+
+/* Cards: existing gold-ink light runs only after the fan is laid out.
+   Drag freezes the per-card light for smooth pointer handling. */
 #stage.selection-stage:not(.is-dragging) .tarot-card .card-back::before,
 #stage.selection-stage:not(.is-dragging) .tarot-card .card-front::before {
- animation: ad1-fan-gold 9s linear infinite !important;
- animation-play-state: running !important;
- opacity:.76;
+  animation: ad1-fan-gold 9s linear infinite !important;
+  animation-play-state: running !important;
+  opacity: .76;
 }
 @keyframes ad1-fan-gold {
- 0% {background-position:8% 14%}
- 25% {background-position:91% 35%}
- 52% {background-position:68% 91%}
- 76% {background-position:12% 71%}
- 100% {background-position:8% 14%}
+  0%   { background-position: 8% 14%; }
+  25%  { background-position: 91% 35%; }
+  52%  { background-position: 68% 91%; }
+  76%  { background-position: 12% 71%; }
+  100% { background-position: 8% 14%; }
 }
 #stage:not(.selection-stage) .tarot-card.shuffle-surface .card-back::before,
 #stage:not(.selection-stage) .tarot-card.shuffle-surface .card-front::before,
 #stage.is-dragging .tarot-card .card-back::before,
 #stage.is-dragging .tarot-card .card-front::before {
- animation: none !important;
+  animation: none !important;
 }
 
-/* Main deep-space artwork: a slow pan that is obvious enough to read as motion,
-   but still calm behind the cards. */
+/* Original WebP stays in body::before from 08-cosmic-background.css.
+   Move the actual picture slowly enough to look distant, but far enough that
+   a user sees change without waiting a minute. No repainting filters. */
 body::before {
- inset:-10%;
- background-size:cover;
- opacity:.97;
- animation:ad1-cosmos-drift 30s ease-in-out infinite alternate !important;
- will-change:transform;
+  inset: -9% !important;
+  opacity: .95;
+  background-size: cover;
+  animation: ad1-space-pan 24s ease-in-out infinite alternate !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
-@keyframes ad1-cosmos-drift {
- from {transform:translate3d(-4.2%, 2.4%, 0) scale(1.08)}
- to   {transform:translate3d(4.2%, -2.6%, 0) scale(1.12)}
+@keyframes ad1-space-pan {
+  0%   { transform: translate3d(-3.5%, 1.9%, 0) scale(1.06); }
+  100% { transform: translate3d(3.5%, -2.1%, 0) scale(1.10); }
 }
 
-/* Primary aurora veil: moves across the whole screen, not just pulsing opacity. */
+/* The original background is fairly purple and uniform. Two soft moving
+   aurora veils add clearly perceivable turquoise/violet color travel.
+   No extra sparkle animation, no full-screen blur and no blend mode. */
 body::after {
- inset:-24%;
- background:
-  radial-gradient(ellipse 32% 18% at 18% 24%,rgba(121,74,210,.33),transparent 100%),
-  radial-gradient(ellipse 46% 13% at 51% 31%,rgba(61,170,200,.22),transparent 100%),
-  radial-gradient(ellipse 30% 22% at 83% 66%,rgba(46,194,176,.24),transparent 100%),
-  radial-gradient(ellipse 35% 16% at 56% 86%,rgba(101,82,176,.17),transparent 100%);
- background-repeat:no-repeat;
- opacity:.82;
- filter:blur(10px);
- animation:ad1-aurora-sway 18s ease-in-out infinite alternate !important;
- will-change:transform,opacity;
+  inset: -12% !important;
+  opacity: .78;
+  background:
+    linear-gradient(115deg,
+      transparent 8%,
+      rgba(30,100,145,.02) 21%,
+      rgba(53,170,198,.25) 34%,
+      rgba(71,128,205,.12) 39%,
+      transparent 51%,
+      rgba(104,65,169,.04) 61%,
+      rgba(88,159,180,.18) 71%,
+      transparent 83%),
+    radial-gradient(ellipse 42% 27% at 39% 46%,
+      rgba(141,67,183,.22) 0%,
+      rgba(83,129,191,.08) 57%,
+      transparent 100%);
+  background-repeat: no-repeat;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  animation: ad1-aurora-flow 17s ease-in-out infinite alternate !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
-@keyframes ad1-aurora-sway {
- from {transform:translate3d(-8%, 4%, 0) rotate(-3.6deg);opacity:.56}
- to   {transform:translate3d(8%, -5%, 0) rotate(3.6deg);opacity:.94}
+@keyframes ad1-aurora-flow {
+  0%   { transform: translate3d(-6%, 3%, 0) rotate(-1.5deg); }
+  100% { transform: translate3d(6%, -3%, 0) rotate(1.5deg); }
 }
 
-/* Extra atmospheric veil so the background no longer reads as a flat purple still.
-   It stays behind the stage and does not add star sparkles. */
+/* Remove v12/v13's unapproved ornamental ring and extra nebula layer.
+   The screen-owned star sparkles from the original JS are preserved. */
+.tarot-app::before,
 .tarot-app::after {
- content:""; position:fixed; inset:-28%; pointer-events:none; z-index:0;
- background:
-  radial-gradient(ellipse 38% 17% at 27% 58%, rgba(175,120,255,.12), transparent 72%),
-  radial-gradient(ellipse 34% 15% at 66% 46%, rgba(120,210,255,.10), transparent 74%),
-  radial-gradient(ellipse 22% 26% at 82% 77%, rgba(70,190,180,.08), transparent 78%);
- mix-blend-mode:screen;
- opacity:.52;
- filter:blur(26px);
- animation:ad1-nebula-float 26s ease-in-out infinite alternate;
-}
-@keyframes ad1-nebula-float {
- from {transform:translate3d(3%, -2%, 0) scale(1.00)}
- to   {transform:translate3d(-4%, 3%, 0) scale(1.08)}
+  content: none !important;
+  display: none !important;
+  animation: none !important;
 }
 
-/* Rotating celestial ring: subtle, separate from the baked backdrop artwork. */
-.tarot-app::before {
- content:""; position:fixed; width:min(74vw,700px); height:min(74vw,700px);
- left:50%; top:44%; border-radius:50%; pointer-events:none; z-index:0;
- border:1px solid rgba(183,159,215,.18);
- box-shadow:0 0 34px rgba(100,84,156,.06);
- background:conic-gradient(from 0deg,
-  transparent 0deg 26deg,
-  rgba(196,175,220,.15) 34deg,
-  transparent 42deg 138deg,
-  rgba(95,172,188,.14) 147deg,
-  transparent 156deg 276deg,
-  rgba(192,164,221,.10) 286deg,
-  transparent 298deg);
- transform:translate(-50%,-50%) rotate(0deg) scaleY(.77);
- animation:ad1-circle-turn 44s linear infinite;
-}
-@keyframes ad1-circle-turn {
- to {transform:translate(-50%,-50%) rotate(360deg) scaleY(.77)}
-}
-
-.tarot-app>.intro,.tarot-app>.stage,.tarot-app>.controls{position:relative;z-index:1}
+/* Do not let old drag/shuffle state rules pause only the background layers.
+   The overlays remain a fixed depth layer behind the cards. */
 body:has(#stage.is-dragging)::before,
-body:has(#stage.is-dragging)::after,
-body:has(#stage.is-dragging) .tarot-app::before,
-body:has(#stage.is-dragging) .tarot-app::after {animation-play-state:running!important}
-@media(prefers-reduced-motion:reduce){
- body::before,body::after,.tarot-app::before,.tarot-app::after{animation:none!important}
- #stage.selection-stage .tarot-card .card-back::before,
- #stage.selection-stage .tarot-card .card-front::before{animation:none!important}
+body:has(#stage.is-dragging)::after {
+  animation-play-state: running !important;
+}
+
+/* Product requirement: the same authored motion must play even when Windows,
+   Android, or iOS reports prefers-reduced-motion: reduce. Earlier imported
+   stylesheets explicitly disabled the backdrop in this setting. Reassert the
+   SAME animation names and times here, after those imports, with !important.
+   This does not alter the existing JS/WAAPI shuffle/reveal durations. */
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: ad1-space-pan 24s ease-in-out infinite alternate !important;
+  }
+  body::after {
+    animation: ad1-aurora-flow 17s ease-in-out infinite alternate !important;
+  }
+  #stage.selection-stage:not(.is-dragging) .tarot-card .card-back::before,
+  #stage.selection-stage:not(.is-dragging) .tarot-card .card-front::before {
+    animation: ad1-fan-gold 9s linear infinite !important;
+  }
 }
