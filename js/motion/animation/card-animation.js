@@ -1,6 +1,7 @@
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
+import {startMagicOrbitVFX} from '../../effects/magic-orbit-vfx.js';
 const running=new WeakMap(),samples=new WeakMap();
 export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
 export const transform=p=>pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
@@ -119,7 +120,7 @@ export async function fanMotion(els,stage,onStart=()=>{}){
  // Explicitly use the same authored choreography for every OS motion setting.
  const duration=FINALE_DURATION;
  const start=stage.ownerDocument.timeline.currentTime;
- let leader,done=false;
+ let leader,done=false,vfx=null;
  const clock={duration,width,count:els.length,progress:()=>done?1:(leader?.effect.getComputedTiming().progress??0)};
  stage.classList.add('orbit-opening');
  try{
@@ -136,9 +137,9 @@ export async function fanMotion(els,stage,onStart=()=>{}){
     const t=n/160;
     frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize))});
    }
-   return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;onStart(clock)}:null);
+   return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;vfx=startMagicOrbitVFX(stage,clock);onStart(clock)}:null);
   }));
   done=true;
   return result.every(Boolean);
- }finally{stage.classList.remove('orbit-opening');}
+ }finally{vfx?.stop();stage.classList.remove('orbit-opening');}
 }
