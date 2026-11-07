@@ -117,7 +117,9 @@ export class Carousel {
    };requestAnimationFrame(frame);
   });
   if(this.destroyed)return;
-  this.index=mod(this.index+shift,this.cards.length);this.selectedCard=null;
+  // Keep the user's selected card until another card is explicitly chosen.
+  // Dragging changes which cards are visible, not the active selection.
+  this.index=mod(this.index+shift,this.cards.length);
   this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
