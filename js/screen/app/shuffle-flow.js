@@ -21,9 +21,19 @@ export async function startShuffleFlow(ctx){
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
  resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
  ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);
+
+ // AD1 v15: prepare the next fan off-DOM before starting the shuffle.
+ // At the handoff do not generate 20 buttons / assign 20 images on the
+ // animation-critical frame. The choreography, timings, sizes stay untouched.
+ const preparedPool=selectionPool(ctx.catalog);
+ const waitingHost=document.createElement('div');
+ const preparedCards=renderCards(waitingHost,preparedPool,ctx.back);
+ preparedCards.forEach(c=>{c.hidden=true;c.disabled=true;});
+
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(ctx.cards);
  if(!await shuffleMotion(ctx.cards,stage,name=>magic.phase(name))||current!==ctx.token){magic.stop();return;}
- ctx.pool=selectionPool(ctx.catalog);ctx.cards=renderCards(container,ctx.pool,ctx.back);ctx.cards.forEach(c=>{c.hidden=true;c.disabled=true;});
+ ctx.pool=preparedPool;ctx.cards=preparedCards;
+ container.replaceChildren(...preparedCards);
  const ids=visibleIndices(0,ctx.pool.length,C.counts.visible),opening=ids.map(i=>ctx.cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=ctx.cards;stage.classList.add('selection-stage');
  if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==ctx.token){magic.stop();return;}

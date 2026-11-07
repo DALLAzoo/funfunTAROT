@@ -12,10 +12,14 @@ export class Carousel {
    if(e.detail!==0)return;
    if(!this.busy&&!this.pointer&&Math.abs(this.distance(i))<=(C.counts.visible-1)/2)this.tap(card);
   },opt));
-  stage.addEventListener('pointerdown',e=>this.down(e),opt);
+  // AD1 v15: capture-phase down also sees input started on a disabled button;
+  // capture immediately instead of after the first movement to prevent touch
+  // sequences going missing at overlapping fan-card edges.
+  stage.addEventListener('pointerdown',e=>this.down(e),{...opt,capture:true});
   window.addEventListener('pointermove',e=>this.move(e),opt);
   window.addEventListener('pointerup',e=>this.up(e),opt);
   window.addEventListener('pointercancel',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
+  stage.addEventListener('lostpointercapture',e=>{if(this.pointer?.id===e.pointerId)this.cancel();},opt);
   stage.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();this.step(e.key==='ArrowRight'?1:-1)}},opt);
   this.aura=document.createElement('div');this.aura.className='selection-backlight';this.aura.setAttribute('aria-hidden','true');stage.prepend(this.aura);
  }
@@ -77,17 +81,17 @@ export class Carousel {
   if(this.lastReportedIndex!==this.index){this.lastReportedIndex=this.index;this.onIndex(this.index);}
  }
  updateGlow(){}
- down(e){if(this.busy||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;
+ down(e){
+  if(this.busy||this.pointer||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;
   this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};
+  if(this.stage.setPointerCapture)try{this.stage.setPointerCapture(e.pointerId);}catch(_){}
  }
  move(e){
   const p=this.pointer;if(!p||e.pointerId!==p.id)return;
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){
-   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');
-    if(this.stage.setPointerCapture)try{this.stage.setPointerCapture(e.pointerId);}catch(_){}
-   }
+   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
    const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
    this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));
    if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
@@ -98,7 +102,7 @@ export class Carousel {
   const p=this.pointer;if(!p||e.pointerId!==p.id)return;
   this.pointer=null;this.releasePointer(e.pointerId);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
-  if(p.dragged){this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
+  if(p.dragged){this.layout();this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
   else this.stage.classList.remove('is-dragging');
  }
  async snap(shift){
@@ -117,7 +121,7 @@ export class Carousel {
   this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
- releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){}}
+ releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){} }
  cancel(){
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}

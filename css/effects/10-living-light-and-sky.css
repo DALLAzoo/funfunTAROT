@@ -2,10 +2,13 @@
    blur/compositing filters, or changes to any card geometry or shuffle timeline.
    The live layers are limited to two compositor-friendly transforms. */
 
-/* Cards: existing gold-ink light runs only after the fan is laid out.
-   Drag freezes the per-card light for smooth pointer handling. */
-#stage.selection-stage:not(.is-dragging) .tarot-card .card-back::before,
-#stage.selection-stage:not(.is-dragging) .tarot-card .card-front::before {
+/* Cards: the approved gold-ink light moves on the first visible pile and
+   once the fan is fully settled; only the actual shuffle/orbit and dragging
+   have stationary highlights to avoid extra per-frame image repaints. */
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::before,
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::before,
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-back::before,
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-front::before {
   animation: ad1-fan-gold 9s linear infinite !important;
   animation-play-state: running !important;
   opacity: .76;
@@ -17,8 +20,12 @@
   76%  { background-position: 12% 71%; }
   100% { background-position: 8% 14%; }
 }
-#stage:not(.selection-stage) .tarot-card.shuffle-surface .card-back::before,
-#stage:not(.selection-stage) .tarot-card.shuffle-surface .card-front::before,
+#stage:not(.idle-stack):not(.selection-stage) .tarot-card.shuffle-surface .card-back::before,
+#stage:not(.idle-stack):not(.selection-stage) .tarot-card.shuffle-surface .card-front::before,
+#stage.orbit-opening .tarot-card .card-back::before,
+#stage.orbit-opening .tarot-card .card-front::before,
+#stage.idle-stack .tarot-card.shuffle-surface:not(:first-child) .card-back::before,
+#stage.idle-stack .tarot-card.shuffle-surface:not(:first-child) .card-front::before,
 #stage.is-dragging .tarot-card .card-back::before,
 #stage.is-dragging .tarot-card .card-front::before {
   animation: none !important;
@@ -102,8 +109,10 @@ body:has(#stage.is-dragging)::after {
   body::after {
     animation: ad1-aurora-flow 17s ease-in-out infinite alternate !important;
   }
-  #stage.selection-stage:not(.is-dragging) .tarot-card .card-back::before,
-  #stage.selection-stage:not(.is-dragging) .tarot-card .card-front::before {
+  #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::before,
+  #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::before,
+  #stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-back::before,
+  #stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-front::before {
     animation: ad1-fan-gold 9s linear infinite !important;
   }
 }
