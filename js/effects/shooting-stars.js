@@ -1,4 +1,4 @@
-/* AD1 v18 — randomized meteor groups, sometimes crossing in front of cards.
+/* AD1 v19 — visible, irregular meteor clusters; some cross in front of cards.
  * Background and foreground are lightweight, pointer-transparent DOM layers.
  * No carousel, shuffle, star-sparkle, or card-surface code is changed.
  * Requested motion plays at the same speed with prefers-reduced-motion on/off.
@@ -67,9 +67,9 @@ if (roots.length) {
       y = random(vh*.06,vh*.67);
     }
     const sky = isFront ? layersNow.front : layersNow.back;
-    const duration = random(720,1200);
-    const length = Math.min(vw*.33,random(isFront?42:48,isFront?80:94));
-    const alpha = random(isFront?.36:.41,isFront?.60:.74);
+    const duration = random(1150,1750);
+    const length = Math.min(vw*.33,random(isFront?48:55,isFront?88:104));
+    const alpha = random(isFront?.45:.54,isFront?.70:.82);
     const angle = Math.atan2(dy,dx)*180/Math.PI;
     const element = document.createElement('span');
     element.className = 'ad1-meteor';
@@ -96,11 +96,14 @@ if (roots.length) {
 
   function burst() {
     if (disposed || document.hidden) return;
-    // One, two, or three meteors per event. Occasionally two appear nearly together.
+    // 2–5 per event, usually 3–4. They overlap visibly rather than appearing
+    // one after another. Frequency and number are independent random values.
     const dice = Math.random();
-    const count = dice < .30 ? 1 : dice < .76 ? 2 : 3;
+    const count = dice < .15 ? 2 : dice < .53 ? 3 : dice < .86 ? 4 : 5;
+    const stagger = randomInt(90,170);
     for (let i=0; i<count; i++) {
-      const delay = i===0 ? 0 : randomInt(80,430);
+      // Even the last star begins before the first one finishes.
+      const delay = i===0 ? 0 : i*stagger + randomInt(0,45);
       const foreground = Math.random() < .24;
       if (delay === 0) shoot(foreground);
       else {
@@ -116,12 +119,12 @@ if (roots.length) {
   function schedule(first=false) {
     if (disposed || document.hidden) return;
     if (nextBurst !== null) clearTimeout(nextBurst);
-    // More activity than v16/v17, but never a continuous meteor shower.
+    // Bursts have quiet intervals. The screen is not a continuous meteor shower.
     nextBurst = setTimeout(() => {
       nextBurst = null;
       burst();
       schedule();
-    },first ? randomInt(2200,4800) : randomInt(6500,11500));
+    }, first ? randomInt(950,1900) : randomInt(3800,6500));
   }
 
   document.addEventListener('visibilitychange',() => {
