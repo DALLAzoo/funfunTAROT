@@ -1,0 +1,44 @@
+/* AD1 v13 — make the startup deck read clearly as a stacked paper pile.
+   Only the first idle screen is affected; shuffle/fan/reveal behavior stays intact. */
+
+/* Undo the global edge hiding while the startup stack is shown. */
+#stage.idle-stack .tarot-card.shuffle-surface .card-edge {
+ visibility:visible!important;
+ opacity:1!important;
+ border-radius:var(--card-radius,8px)!important;
+ background:repeating-linear-gradient(180deg,
+   rgba(224,188,131,.92) 0px, rgba(224,188,131,.92) .55px,
+   rgba(54,34,25,.98) 1.05px, rgba(124,84,54,.96) 1.82px,
+   rgba(30,20,17,.99) 2.62px)!important;
+ border:1px solid rgba(122,84,50,.86)!important;
+ box-shadow:inset 0 0 10px rgba(17,9,7,.62)!important;
+}
+
+/* Strengthen the visible paper-cut strips on the frontmost card so the user can
+   actually read the pile depth on refresh. */
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-inner::after,
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-inner::before {
+ content:""!important;
+ position:absolute;
+ z-index:9;
+ pointer-events:none;
+ background:repeating-linear-gradient(180deg,
+   rgba(219,180,116,.94) 0px, rgba(219,180,116,.94) .6px,
+   rgba(52,31,21,.99) 1.12px, rgba(128,87,56,.98) 1.88px,
+   rgba(29,19,17,.99) 2.7px)!important;
+ box-shadow:inset 0 0 8px rgba(13,8,6,.68), 0 0 8px rgba(0,0,0,.14);
+}
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-inner::after {
+ left:2px!important; right:2px!important; bottom:-1px!important; height:13px!important;
+ border-radius:0 0 7px 7px!important;
+}
+#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-inner::before {
+ top:3px!important; right:-1px!important; bottom:10px!important; width:10px!important;
+ border-radius:0 7px 6px 0!important;
+}
+
+/* Give the visible stack a slight depth shadow so the paper edge does not merge
+   into the dark background. */
+#stage.idle-stack .tarot-card.shuffle-surface:first-child {
+ filter:drop-shadow(0 7px 14px rgba(0,0,0,.30));
+}
