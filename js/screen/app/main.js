@@ -5,6 +5,7 @@ import {MagicVFX} from '../../effects/magic-vfx.js';
 import {RevealVFX} from '../../effects/reveal-vfx.js';
 import {bindEvents} from './events.js';
 import {initializeApp} from './bootstrap.js';
+import '../../effects/shooting-stars.js'; // AD1 v16: distant meteors, background only
 
 const $ = selector => document.querySelector(selector);
 const stage = $('#stage');

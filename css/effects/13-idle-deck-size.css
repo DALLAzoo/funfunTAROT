@@ -1,0 +1,15 @@
+/* AD1 v16 — STARTUP PILE ONLY.
+   Approved trial sizes: PC 245px, mobile 170px, same 2128:1240 artwork ratio.
+   On shuffle start idle-stack is removed and original JS cardSize('shuffle') wins. */
+#stage.idle-stack .tarot-card.shuffle-surface {
+  width:245px!important;
+  height:420.45px!important;
+}
+/* JS switches to mobile sizes when the actual stage is less than 600px;
+   ~640px viewport allows for the site's horizontal padding. */
+@media(max-width:640px) {
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    width:170px!important;
+    height:291.74px!important;
+  }
+}

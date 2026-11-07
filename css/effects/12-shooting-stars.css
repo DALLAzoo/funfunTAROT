@@ -1,0 +1,36 @@
+/* AD1 v16 — occasional background meteors, separate from approved gold sparkle VFX.
+   The two hosts never show at once. The layer lives BEHIND the cards and UI. */
+.ad1-meteor-sky {
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  overflow:hidden;
+  contain:layout paint;
+  isolation:isolate;
+}
+.ad1-meteor {
+  position:absolute;
+  width:var(--meteor-length,70px);
+  height:1.4px;
+  border-radius:999px;
+  pointer-events:none;
+  will-change:transform,opacity;
+  opacity:0;
+  transform-origin:0 50%;
+  background:linear-gradient(to right,transparent 0%,rgba(137,201,229,.09) 24%,rgba(179,217,239,.33) 74%,rgba(238,244,255,.72) 100%);
+  box-shadow:0 0 4px rgba(167,213,240,.17);
+}
+.ad1-meteor::after {
+  content:"";
+  position:absolute;
+  width:2.5px;
+  height:2.5px;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  border-radius:50%;
+  background:rgba(239,244,255,.8);
+  box-shadow:0 0 5px rgba(200,224,246,.35);
+}
+/* No reduced-motion media query intentionally: the approved motion runs in both modes. */
