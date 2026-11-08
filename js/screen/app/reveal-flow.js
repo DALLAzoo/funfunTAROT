@@ -1,4 +1,3 @@
-import {cardSounds} from '../../effects/card-motion-sound.js';
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {prepareFront,screenTransition} from '../../motion/reveal/transition.js';
 import {moveToCenter} from '../../motion/reveal/center-motion.js';
@@ -7,8 +6,6 @@ export async function chooseFlow(ctx,chosen){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
  if(getState()!=='selection'||ctx.carousel?.busy||chosen.hidden)return;
  setState('revealing','선택한 카드를 준비하고 있어요…');
- // The first part of reveal prepares the image; audio decodes in parallel.
- const soundsReady=cardSounds.prepare('travel','flip');
  try{await prepareFront(chosen.cardData);}catch(e){ctx.carousel.busy=false;ctx.carousel.layout();setState('selection',e.message);return;}
  // Finish the 22px pick lift before sampling its final on-screen pose.
  await Promise.all(chosen.getAnimations().map(a=>a.finished.catch(()=>{})));
@@ -259,9 +256,7 @@ export async function chooseFlow(ctx,chosen){
   const titleBottom=heading.getBoundingClientRect().bottom;
   const viewTop=resultView.getBoundingClientRect().top;
   resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+12)+'px');
-  await soundsReady;
   setState('revealing','선택한 카드를 공개하고 있어요…');
-  cardSounds.play('travel',{durationMs:C.reveal.travel,volume:.35});
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
     (card,duration)=>revealMagic.orbit(card,duration));
   await new Promise(resolve=>setTimeout(resolve,C.reveal.pauseBeforeFlip));
@@ -274,7 +269,6 @@ export async function chooseFlow(ctx,chosen){
    {transform:`translate(${before.left-after.left}px,${before.top-after.top}px)`},
    {transform:'translate(0px,0px)'}
   ],{duration:C.reveal.flip,easing:'cubic-bezier(.22,.68,.22,1)'});
-  cardSounds.play('flip',{durationMs:C.reveal.flip,volume:.47});
   await Promise.all([screenTransition(result),shift.finished]);
   revealMagic.stars(result);
   resultView.classList.add('is-revealed');

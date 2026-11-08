@@ -1,4 +1,3 @@
-import {cardSounds} from '../../effects/card-motion-sound.js';
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {randomOrder,selectionPool,visibleIndices} from '../../motion/core/cinema-core.js';
 import {randomBack} from '../../settings/data/back-config.js';
@@ -9,7 +8,6 @@ import {Carousel} from '../../motion/selection/carousel.js';
 export async function startShuffleFlow(ctx){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
  if(!['idle','selection','result'].includes(getState()))return;
- cardSounds.stopMotion();
  const previous=getState(),current=++ctx.token,previousText=instruction.textContent;setState('preparing','카드 이미지를 준비하고 있어요…');
  // The first shuffle must use the back already shown in the idle deck.
  // Subsequent reshuffles keep the existing random-back behavior.
@@ -32,22 +30,17 @@ export async function startShuffleFlow(ctx){
  const preparedCards=renderCards(waitingHost,preparedPool,ctx.back);
  preparedCards.forEach(c=>{c.hidden=true;c.disabled=true;});
 
- // First sound is decoded before the first card moves; missed sound never plays late.
- await cardSounds.prepare('shuffle');
  if(current!==ctx.token)return;
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(ctx.cards);
  if(!await shuffleMotion(ctx.cards,stage,name=>{
   magic.phase(name);
-  if(name==='charge')cardSounds.play('shuffle',{durationMs:C.shuffle.separate+C.shuffle.duration,volume:.42});
  })||current!==ctx.token){magic.stop();return;}
  ctx.pool=preparedPool;ctx.cards=preparedCards;
  container.replaceChildren(...preparedCards);
  const ids=visibleIndices(0,ctx.pool.length,C.counts.visible),opening=ids.map(i=>ctx.cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=ctx.cards;stage.classList.add('selection-stage');
- await cardSounds.prepare('fan');
  if(current!==ctx.token)return;
  if(!await fanMotion(opening,stage,clock=>{
-  cardSounds.play('fan',{durationMs:C.finale.duration,volume:.39});
   magic.release(clock);
  })||current!==ctx.token){magic.stop();return;}
  magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');

@@ -1,4 +1,3 @@
-import {cardSounds} from '../../effects/card-motion-sound.js';
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {slotPose,mod} from '../core/cinema-core.js';
 import {transform,cardSize} from '../animation/card-animation.js';
@@ -50,7 +49,6 @@ export class Carousel {
    {transform:transform({...resting,scale:1,z:0,ry:0,rx:0})},
    {transform:transform({...raised,scale:1,z:0,ry:0,rx:0})}
   ],{duration:C.carousel.selectedLiftDuration,easing:'cubic-bezier(.2,.75,.25,1)'});
-  cardSounds.play('pick',{durationMs:C.carousel.selectedLiftDuration,volume:.42});
   if(old&&old!==card)old.getAnimations().forEach(animation=>animation.cancel());
  }
  confirm(){if(this.selectedCard&&!this.selectedCard.hidden&&!this.busy)this.onChoose(this.selectedCard);}
@@ -93,8 +91,7 @@ export class Carousel {
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){
-   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');cardSounds.startDrag();}
-   cardSounds.dragMove(Math.abs(dx-(p.lastDx||0)));p.lastDx=dx;
+   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
    const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
    this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));
    if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
@@ -104,7 +101,6 @@ export class Carousel {
  up(e){
   const p=this.pointer;if(!p||e.pointerId!==p.id)return;
   this.pointer=null;this.releasePointer(e.pointerId);
-  cardSounds.stopDrag();
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
   if(p.dragged){this.layout();this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
   else this.stage.classList.remove('is-dragging');
@@ -112,7 +108,6 @@ export class Carousel {
  async snap(shift){
   if(this.busy)return;this.busy=true;
   const start=this.offset,end=-shift,duration=Math.max(160,C.carousel.move),begin=performance.now();
-  if(Math.abs(end-start)>.035)cardSounds.play('slide',{durationMs:duration,volume:.20,requestedAt:begin});
   await new Promise(resolve=>{
    const frame=t=>{
     if(this.destroyed){resolve();return;}
@@ -130,14 +125,12 @@ export class Carousel {
  step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){} }
  cancel(){
-  cardSounds.stopDrag();
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
   this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');
   if(!this.busy)this.layout();
  }
  destroy(){
-  cardSounds.stopDrag();
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf)cancelAnimationFrame(this.raf);
   this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;
