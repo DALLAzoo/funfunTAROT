@@ -1,4 +1,4 @@
-/* AD1 v25 — all meteor groups travel upper-right to lower-left; longer tails.
+/* AD1 v30 — all meteor groups travel upper-right to lower-left; longer tails + random cosmic palette.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -31,6 +31,7 @@ if (roots.length) {
   let nextBurst = null;
   let disposed = false;
   let groupIndex = 0;
+  const meteorPalettes = ['teal','purple','amber','gold'];
 
   const visibleLayer = () => layers.find(({root}) =>
     !root.hidden && window.getComputedStyle(root).display !== 'none') || null;
@@ -99,8 +100,9 @@ if (roots.length) {
     const x = clamp(group.center.x - dx*.5 + perpX + Math.cos(group.angle)*ahead, -35, vw+25);
     const y = clamp(group.center.y - dy*.5 + perpY + Math.sin(group.angle)*ahead, -35, vh+25);
 
+    const palette = meteorPalettes[randomInt(0, meteorPalettes.length-1)];
     const element = document.createElement('span');
-    element.className = `ad1-meteor ad1-meteor--${depth}`;
+    element.className = `ad1-meteor ad1-meteor--${depth} ad1-meteor--${palette}`;
     element.dataset.meteorGroup = String(group.id);
     element.dataset.meteorAngle = group.angle.toFixed(6);
     element.dataset.meteorDepth = depth;
@@ -143,7 +145,7 @@ if (roots.length) {
     };
     const stagger = randomInt(85,165);
     for (let i=0; i<count; i++) {
-      // All share one group angle, including those passing in front.
+      // All share one group angle, including those passing in front. Colors can differ per meteor.
       const diceDepth = Math.random();
       const depth = diceDepth < .24 ? 'front' : diceDepth < .56 ? 'near' : 'far';
       const delay = i===0 ? 0 : i*stagger + randomInt(0,38);

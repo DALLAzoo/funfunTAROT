@@ -1,6 +1,7 @@
-/* AD1 v25 — longer meteor tails + visible meteor shape, without turning into a heavy meteor shower.
-   Count/timing logic stays in JS. This file only strengthens the visual presence
-   of each meteor: a clearer core, a soft glow halo, and a more readable tail. */
+/* AD1 v30 — meteor palette matched to the cosmic background.
+   Uses per-meteor CSS variables so each meteor can randomly pick
+   purple, orange-gold, teal, or gold while keeping the same shape,
+   right-top -> left-bottom direction, and longer tails from v25. */
 .ad1-meteor-sky {
   position:fixed;
   inset:0;
@@ -23,29 +24,33 @@
   will-change:transform,opacity;
   opacity:0;
   transform-origin:0 50%;
+  --meteor-head-core: rgba(255,255,255,.98);
+  --meteor-tail-mid: rgba(191,230,255,.60);
+  --meteor-tail-glow: rgba(143,217,209,.25);
+  --meteor-tail-soft: rgba(154,141,218,.08);
+  --meteor-halo: rgba(145,203,240,.24);
   background:linear-gradient(to right,
-    rgba(144,205,238,0) 0%,
-    rgba(144,205,238,.05) 14%,
-    rgba(170,216,244,.26) 42%,
-    rgba(202,232,251,.62) 76%,
-    rgba(247,251,255,.98) 100%);
+    rgba(255,255,255,0) 0%,
+    color-mix(in srgb, var(--meteor-tail-soft) 60%, transparent) 14%,
+    color-mix(in srgb, var(--meteor-tail-glow) 92%, transparent) 42%,
+    var(--meteor-tail-mid) 76%,
+    var(--meteor-head-core) 100%);
   box-shadow:
-    0 0 8px rgba(166,218,250,.28),
-    0 0 14px rgba(112,180,228,.12);
+    0 0 9px color-mix(in srgb, var(--meteor-tail-glow) 70%, transparent),
+    0 0 16px color-mix(in srgb, var(--meteor-halo) 55%, transparent);
 }
-/* Soft bloom around the tail so the streak reads against the dark purple background. */
 .ad1-meteor::before {
   content:"";
   position:absolute;
   inset:-2.2px 0;
   border-radius:999px;
   background:linear-gradient(to right,
-    rgba(140,200,235,0) 0%,
-    rgba(158,214,244,.04) 18%,
-    rgba(189,228,250,.13) 46%,
-    rgba(220,241,255,.28) 82%,
-    rgba(255,255,255,.48) 100%);
-  filter:blur(1.4px);
+    rgba(255,255,255,0) 0%,
+    color-mix(in srgb, var(--meteor-tail-soft) 42%, transparent) 18%,
+    color-mix(in srgb, var(--meteor-tail-glow) 60%, transparent) 46%,
+    color-mix(in srgb, var(--meteor-tail-mid) 46%, transparent) 82%,
+    color-mix(in srgb, var(--meteor-head-core) 55%, transparent) 100%);
+  filter:blur(1.5px);
   opacity:.92;
 }
 .ad1-meteor::after {
@@ -58,49 +63,76 @@
   transform:translateY(-50%);
   border-radius:50%;
   background:radial-gradient(circle,
-    rgba(255,255,255,.98) 0%,
-    rgba(233,246,255,.95) 30%,
-    rgba(176,220,249,.72) 56%,
-    rgba(135,199,239,0) 100%);
+    var(--meteor-head-core) 0%,
+    color-mix(in srgb, var(--meteor-tail-mid) 88%, white) 30%,
+    color-mix(in srgb, var(--meteor-tail-glow) 75%, white 10%) 58%,
+    rgba(255,255,255,0) 100%);
   box-shadow:
-    0 0 8px rgba(213,234,252,.56),
-    0 0 16px rgba(145,203,240,.24);
+    0 0 9px color-mix(in srgb, var(--meteor-tail-mid) 55%, white 14%),
+    0 0 18px color-mix(in srgb, var(--meteor-halo) 70%, transparent);
 }
 
-/* Far plane: still subtle, but no longer invisible. */
+/* Background-matched palettes */
+.ad1-meteor--teal {
+  --meteor-head-core: rgba(244,251,255,.98);
+  --meteor-tail-mid: rgba(176,244,236,.88);
+  --meteor-tail-glow: rgba(95,221,203,.48);
+  --meteor-tail-soft: rgba(117,234,220,.18);
+  --meteor-halo: rgba(88,215,200,.40);
+}
+.ad1-meteor--purple {
+  --meteor-head-core: rgba(250,247,255,.98);
+  --meteor-tail-mid: rgba(214,187,255,.86);
+  --meteor-tail-glow: rgba(169,129,238,.46);
+  --meteor-tail-soft: rgba(154,120,222,.18);
+  --meteor-halo: rgba(160,120,235,.38);
+}
+.ad1-meteor--amber {
+  --meteor-head-core: rgba(255,249,238,.98);
+  --meteor-tail-mid: rgba(255,210,150,.90);
+  --meteor-tail-glow: rgba(241,155,78,.46);
+  --meteor-tail-soft: rgba(227,135,59,.18);
+  --meteor-halo: rgba(240,161,87,.38);
+}
+.ad1-meteor--gold {
+  --meteor-head-core: rgba(255,248,232,.98);
+  --meteor-tail-mid: rgba(242,208,129,.88);
+  --meteor-tail-glow: rgba(205,161,63,.44);
+  --meteor-tail-soft: rgba(193,145,46,.18);
+  --meteor-halo: rgba(214,174,78,.36);
+}
+
 .ad1-meteor--far {
   height:1.35px;
-  box-shadow:0 0 5px rgba(165,208,235,.18),0 0 10px rgba(120,180,224,.08);
+  box-shadow:
+    0 0 5px color-mix(in srgb, var(--meteor-tail-glow) 42%, transparent),
+    0 0 10px color-mix(in srgb, var(--meteor-halo) 32%, transparent);
 }
 .ad1-meteor--far::before { inset:-1.6px 0; opacity:.72; }
 .ad1-meteor--far::after {
   width:3.2px;
   height:3.2px;
-  box-shadow:0 0 6px rgba(200,224,246,.34),0 0 11px rgba(145,203,240,.14);
+  box-shadow:
+    0 0 7px color-mix(in srgb, var(--meteor-tail-mid) 38%, white 10%),
+    0 0 11px color-mix(in srgb, var(--meteor-halo) 34%, transparent);
 }
 
-/* Middle plane: the default readable meteor shape. */
-.ad1-meteor--near {
-  height:2px;
-}
-.ad1-meteor--near::after {
-  width:4.8px;
-  height:4.8px;
-}
+.ad1-meteor--near { height:2px; }
+.ad1-meteor--near::after { width:4.8px; height:4.8px; }
 
-/* Foreground: slightly broader and brighter since it can cross over cards. */
 .ad1-meteor--front {
   height:2.6px;
-  box-shadow:0 0 10px rgba(177,224,250,.34),0 0 18px rgba(128,192,238,.14);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--meteor-tail-glow) 72%, transparent),
+    0 0 18px color-mix(in srgb, var(--meteor-halo) 44%, transparent);
 }
-.ad1-meteor--front::before {
-  inset:-2.8px 0;
-  opacity:1;
-}
+.ad1-meteor--front::before { inset:-2.8px 0; opacity:1; }
 .ad1-meteor--front::after {
   width:6.2px;
   height:6.2px;
-  box-shadow:0 0 10px rgba(220,238,255,.68),0 0 20px rgba(145,203,240,.30);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--meteor-tail-mid) 62%, white 12%),
+    0 0 20px color-mix(in srgb, var(--meteor-halo) 54%, transparent);
 }
 
 @media(max-width:699px){
