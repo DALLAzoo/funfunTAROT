@@ -1,4 +1,4 @@
-/* AD1 v36 — original meteor whoosh + v31 directional, long-tail, four-color meteor groups.
+/* AD1 v38 — crystalline meteor stardust + v31 directional, long-tail, four-color meteor groups.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -26,51 +26,54 @@ if (roots.length) {
   const random = (min,max) => min + Math.random() * (max-min);
   const randomInt = (min,max) => Math.floor(random(min,max+1));
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
-  /* AD1 v36 — original, gentle stereo whoosh. The BGM remains unchanged.
+  /* AD1 v38 — descending crystalline stardust chimes, synchronized to each meteor group. The BGM remains unchanged.
    Browsers forbid surprise autoplay: unlock on an actual user gesture only.
    The meteor group (not each of its 2–5 stars) receives one sound,
    initially once after interaction and thereafter every 3–4 groups. */
-  const meteorSoundUrl = new URL('../../assets/audio/meteor-whoosh.mp3', import.meta.url).href;
-  let whooshContext = null;
-  let whooshBuffer = null;
-  let whooshLoading = null;
+  const meteorSoundUrl = new URL('../../assets/audio/meteor-stardust.mp3', import.meta.url).href;
+  let stardustContext = null;
+  let stardustBuffer = null;
+  let stardustLoading = null;
   let silentGroupsRemaining = 0;
-  let lastWhooshAt = -Infinity;
+  let lastStardustAt = -Infinity;
 
-  function unlockWhoosh(event) {
+  function unlockStardust(event) {
     if (event.type === 'keydown' && !['Enter',' ','ArrowLeft','ArrowRight'].includes(event.key)) return;
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
     try {
-      if (!whooshContext) whooshContext = new AudioCtx();
-      if (whooshContext.state === 'suspended') {
-        whooshContext.resume().catch(() => {});
+      if (!stardustContext) stardustContext = new AudioCtx();
+      if (stardustContext.state === 'suspended') {
+        stardustContext.resume().catch(() => {});
       }
-      if (!whooshLoading) {
-        whooshLoading = fetch(meteorSoundUrl)
+      if (!stardustLoading) {
+        stardustLoading = fetch(meteorSoundUrl)
           .then(response => {if (!response.ok) throw new Error('meteor audio unavailable'); return response.arrayBuffer();})
-          .then(data => whooshContext.decodeAudioData(data))
-          .then(buffer => {whooshBuffer = buffer;})
-          .catch(() => {whooshLoading = null;});
+          .then(data => stardustContext.decodeAudioData(data))
+          .then(buffer => {stardustBuffer = buffer;})
+          .catch(() => {stardustLoading = null;});
       }
     } catch (_) { /* Browser audio can be unsupported or blocked. Visual meteors continue. */ }
   }
-  document.addEventListener('pointerdown', unlockWhoosh, {passive:true});
-  document.addEventListener('keydown', unlockWhoosh);
+  document.addEventListener('pointerdown', unlockStardust, {passive:true});
+  document.addEventListener('keydown', unlockStardust);
 
-  function playWhooshOnGroup() {
-    if (!whooshContext || whooshContext.state !== 'running' || !whooshBuffer || document.hidden) return;
+  function playStardustOnGroup(groupVisibleMs) {
+    if (!stardustContext || stardustContext.state !== 'running' || !stardustBuffer || document.hidden) return;
     if (silentGroupsRemaining > 0) {silentGroupsRemaining -= 1; return;}
-    if (performance.now() - lastWhooshAt < 9000) return;
+    if (performance.now() - lastStardustAt < 9000) return;
     silentGroupsRemaining = randomInt(2, 3); // one sound per 3–4 groups
-    lastWhooshAt = performance.now();
+    lastStardustAt = performance.now();
     try {
-      const source = whooshContext.createBufferSource();
-      const gain = whooshContext.createGain();
-      source.buffer = whooshBuffer;
-      gain.gain.value = .16; // quiet under the user's BGM
+      const source = stardustContext.createBufferSource();
+      const gain = stardustContext.createGain();
+      source.buffer = stardustBuffer;
+      // The stardust cascade fills the same time window as the visible 2–5-star group.
+      // A little faster for short nearby stars, a little slower for distant stars.
+      source.playbackRate.value = stardustBuffer.duration / Math.max(1.15, groupVisibleMs/1000);
+      gain.gain.value = .19; // soft foreground glints under the user's BGM
       source.connect(gain);
-      gain.connect(whooshContext.destination);
+      gain.connect(stardustContext.destination);
       source.onended = () => {source.disconnect(); gain.disconnect();};
       source.start();
     } catch (_) { /* Audio errors never interrupt the shooting-star animation. */ }
@@ -122,7 +125,15 @@ if (roots.length) {
     return {x:random(vw*.22,vw*.78),y:random(vh*.23,vh*.71)};
   }
 
-  function shoot(group, depth, index) {
+  // Same original depth ranges as v36. Durations are chosen before the burst,
+  // letting the sound finish with the last meteor's fade-out.
+  const specs = {
+    far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
+    near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
+    front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
+  };
+
+  function shoot(group, depth, index, duration) {
     if (disposed || document.hidden) return;
     const layer = visibleLayer();
     if (!layer) return;
@@ -131,11 +142,6 @@ if (roots.length) {
 
     // Depth: far travels less, appears thinner and lasts longer;
     // foreground appears slightly larger and moves quicker.
-    const specs = {
-      far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
-      near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
-      front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
-    };
     const spec = specs[depth];
     const distance = Math.min(Math.hypot(vw,vh)*.56,random(...spec.distance));
     const dx = Math.cos(group.angle)*distance;
@@ -162,7 +168,6 @@ if (roots.length) {
     layer[depth].append(element);
 
     const alpha = random(...spec.alpha);
-    const duration = random(...spec.duration);
     const angleDegrees = group.angle*180/Math.PI;
     const animation = element.animate([
       {offset:0,opacity:0,transform:`translate3d(0,0,0) rotate(${angleDegrees}deg)`},
@@ -185,7 +190,6 @@ if (roots.length) {
     if (disposed || document.hidden) return;
     const layer = visibleLayer();
     if (!layer) return;
-    playWhooshOnGroup();
     const dice = Math.random();
     const count = dice < .15 ? 2 : dice < .53 ? 3 : dice < .86 ? 4 : 5;
     const group = {
@@ -195,20 +199,27 @@ if (roots.length) {
       center: chooseCenter(layer,window.innerWidth,window.innerHeight)
     };
     const stagger = randomInt(85,165);
+    const planned = [];
     for (let i=0; i<count; i++) {
-      // All share one group angle, including those passing in front. Colors can differ per meteor.
+      // All share one direction; keep the approved count, speed, depth, and delay ranges.
       const diceDepth = Math.random();
       const depth = diceDepth < .24 ? 'front' : diceDepth < .56 ? 'near' : 'far';
       const delay = i===0 ? 0 : i*stagger + randomInt(0,38);
-      if (delay === 0) shoot(group,depth,i);
+      const duration = random(...specs[depth].duration);
+      planned.push({depth,delay,duration});
+    }
+    const groupVisibleMs = Math.max(...planned.map(p => p.delay + p.duration));
+    playStardustOnGroup(groupVisibleMs);
+    planned.forEach(({depth,delay,duration},i) => {
+      if (delay === 0) shoot(group,depth,i,duration);
       else {
         const id = setTimeout(() => {
           pending.delete(id);
-          shoot(group,depth,i);
+          shoot(group,depth,i,duration);
         },delay);
         pending.add(id);
       }
-    }
+    });
   }
 
   function schedule(first=false) {
@@ -252,9 +263,9 @@ if (roots.length) {
     clearActive();
     if (frame) cancelAnimationFrame(frame);
     window.removeEventListener('pointermove',onPointerMove);
-    document.removeEventListener('pointerdown',unlockWhoosh);
-    document.removeEventListener('keydown',unlockWhoosh);
-    if (whooshContext) whooshContext.close().catch(() => {});
+    document.removeEventListener('pointerdown',unlockStardust);
+    document.removeEventListener('keydown',unlockStardust);
+    if (stardustContext) stardustContext.close().catch(() => {});
   },{once:true});
   schedule(true);
 }

@@ -1,52 +1,83 @@
-/* AD1 v35: isolated BGM toggle; other buttons and the reading menu are untouched. */
+/* v38 — draggable lower-left floating music note; small temporary side label.
+   Separate from the card/shuffle/dropdown controls. */
 .ad1-bgm-control {
-  position:fixed;
-  z-index:400;
-  top:max(12px, env(safe-area-inset-top));
-  right:max(14px, env(safe-area-inset-right));
-  pointer-events:none;
+  position: fixed;
+  z-index: 400;
+  left: max(16px,env(safe-area-inset-left));
+  bottom: max(22px,env(safe-area-inset-bottom));
+  width: 44px;
+  height: 44px;
+  pointer-events: none;
+  overflow: visible;
 }
 .ad1-bgm-toggle {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  min-width:105px;
-  height:34px;
-  padding:0 12px;
-  box-sizing:border-box;
-  background:rgba(38,28,23,.84);
-  border:1px solid rgba(172,132,81,.58);
-  border-radius:10px;
-  color:#D9B77B;
-  font:inherit;
-  font-size:11px;
-  line-height:1;
-  white-space:nowrap;
-  cursor:pointer;
-  pointer-events:auto;
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
-  box-shadow:0 3px 12px rgba(0,0,0,.22);
-  transition:background-color 180ms ease,border-color 180ms ease,color 180ms ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: rgba(38,28,23,.91);
+  border: 1px solid rgba(172,132,81,.72);
+  border-radius: 24px;
+  color: #D9B77B;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: grab;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+  box-shadow: 0 3px 12px rgba(0,0,0,.28);
+  transition: width 300ms cubic-bezier(.24,.7,.25,1),
+    background-color 180ms ease, border-color 180ms ease, color 180ms ease;
 }
-.ad1-bgm-toggle .ad1-bgm-icon {
-  font-size:16px;
-  line-height:1;
+.ad1-bgm-toggle.is-expanded { width: 126px; }
+.ad1-bgm-toggle[data-expand-side="left"] {
+  left: auto;
+  right: 0;
+  flex-direction: row-reverse;
+}
+.ad1-bgm-toggle.is-dragging { cursor: grabbing; transition: none; }
+.ad1-bgm-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  font-size: 22px;
+  line-height: 1;
+}
+.ad1-bgm-label {
+  overflow: hidden;
+  flex: 0 0 auto;
+  max-width: 0;
+  opacity: 0;
+  color: inherit;
+  transition: max-width 250ms ease, opacity 220ms ease;
+}
+.ad1-bgm-toggle.is-expanded .ad1-bgm-label {
+  max-width: 77px;
+  opacity: 1;
 }
 .ad1-bgm-toggle:hover,
 .ad1-bgm-toggle:focus-visible {
-  background:#3A2B20;
-  border-color:#CCA06A;
-  color:#F1D5A0;
+  background: #3A2B20;
+  border-color: #CCA06A;
+  color: #F1D5A0;
 }
-.ad1-bgm-toggle:focus-visible {outline:2px solid #D9B77B;outline-offset:3px;}
+.ad1-bgm-toggle:focus-visible { outline: 2px solid #D9B77B; outline-offset: 3px; }
 .ad1-bgm-toggle[aria-pressed="true"] {
-  background:rgba(58,42,30,.92);
-  border-color:#C6A06E;
-  color:#F0D19A;
-}
-@media(max-width:600px){
-  .ad1-bgm-control{top:max(8px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));}
-  .ad1-bgm-toggle{height:32px;min-width:100px;padding:0 9px;font-size:10px;}
+  background: rgba(58,42,30,.94);
+  border-color: #C6A06E;
+  color: #F0D19A;
 }

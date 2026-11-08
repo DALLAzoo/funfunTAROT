@@ -3,12 +3,12 @@
    The live layers are limited to two compositor-friendly transforms. */
 
 /* Cards: the approved gold-ink light moves on the first visible pile and
-   once the fan is fully settled; only the actual shuffle/orbit and dragging
-   have stationary highlights to avoid extra per-frame image repaints. */
+   continuously while the fan is visible, including pointer dragging and
+   snapping; only the actual shuffle/orbit has stationary highlights. */
 #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::before,
 #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::before,
-#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-back::before,
-#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-front::before {
+#stage.selection-stage:not(.orbit-opening) .tarot-card .card-back::before,
+#stage.selection-stage:not(.orbit-opening) .tarot-card .card-front::before {
   animation: ad1-fan-gold 9s linear infinite !important;
   animation-play-state: running !important;
   opacity: .76;
@@ -25,9 +25,7 @@
 #stage.orbit-opening .tarot-card .card-back::before,
 #stage.orbit-opening .tarot-card .card-front::before,
 #stage.idle-stack .tarot-card.shuffle-surface:not(:first-child) .card-back::before,
-#stage.idle-stack .tarot-card.shuffle-surface:not(:first-child) .card-front::before,
-#stage.is-dragging .tarot-card .card-back::before,
-#stage.is-dragging .tarot-card .card-front::before {
+#stage.idle-stack .tarot-card.shuffle-surface:not(:first-child) .card-front::before {
   animation: none !important;
 }
 
@@ -111,8 +109,8 @@ body:has(#stage.is-dragging)::after {
   }
   #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::before,
   #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::before,
-  #stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-back::before,
-  #stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card .card-front::before {
+  #stage.selection-stage:not(.orbit-opening) .tarot-card .card-back::before,
+  #stage.selection-stage:not(.orbit-opening) .tarot-card .card-front::before {
     animation: ad1-fan-gold 9s linear infinite !important;
   }
 }
