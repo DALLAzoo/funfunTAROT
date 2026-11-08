@@ -32,15 +32,24 @@ export async function startShuffleFlow(ctx){
  const preparedCards=renderCards(waitingHost,preparedPool,ctx.back);
  preparedCards.forEach(c=>{c.hidden=true;c.disabled=true;});
 
+ // First sound is decoded before the first card moves; missed sound never plays late.
+ await cardSounds.prepare('shuffle');
+ if(current!==ctx.token)return;
  setState('shuffling','카드를 섞고 있어요…');instruction.textContent='';magic.start(ctx.cards);
- cardSounds.play('shuffle',{durationMs:C.shuffle.separate+C.shuffle.duration,volume:.42});
- if(!await shuffleMotion(ctx.cards,stage,name=>magic.phase(name))||current!==ctx.token){magic.stop();return;}
+ if(!await shuffleMotion(ctx.cards,stage,name=>{
+  magic.phase(name);
+  if(name==='charge')cardSounds.play('shuffle',{durationMs:C.shuffle.separate+C.shuffle.duration,volume:.42});
+ })||current!==ctx.token){magic.stop();return;}
  ctx.pool=preparedPool;ctx.cards=preparedCards;
  container.replaceChildren(...preparedCards);
  const ids=visibleIndices(0,ctx.pool.length,C.counts.visible),opening=ids.map(i=>ctx.cards[i]);opening.forEach(c=>c.hidden=false);
  magic.cards=ctx.cards;stage.classList.add('selection-stage');
- cardSounds.play('fan',{volume:.39});
- if(!await fanMotion(opening,stage,clock=>magic.release(clock))||current!==ctx.token){magic.stop();return;}
+ await cardSounds.prepare('fan');
+ if(current!==ctx.token)return;
+ if(!await fanMotion(opening,stage,clock=>{
+  cardSounds.play('fan',{durationMs:C.finale.duration,volume:.39});
+  magic.release(clock);
+ })||current!==ctx.token){magic.stop();return;}
  magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
  instruction.textContent='';
 }

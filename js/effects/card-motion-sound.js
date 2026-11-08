@@ -1,9 +1,10 @@
-/* v39 — quiet card-surface foley. No meteor sound. No change to card choreography.
-   Web Audio starts only after a user gesture; a failure never blocks the cards. */
+/* v40 — match sound playback to actual WAAPI motion start.
+   Decode before motion and do not play a late sound from its beginning. */
 const urls = {
   shuffle: new URL('../../assets/audio/card-shuffle.mp3', import.meta.url).href,
   fan: new URL('../../assets/audio/card-fan.mp3', import.meta.url).href,
   drag: new URL('../../assets/audio/card-drag.mp3', import.meta.url).href,
+  slide: new URL('../../assets/audio/card-slide.mp3', import.meta.url).href,
   pick: new URL('../../assets/audio/card-pick.mp3', import.meta.url).href,
   travel: new URL('../../assets/audio/card-travel.mp3', import.meta.url).href,
   flip: new URL('../../assets/audio/card-flip.mp3', import.meta.url).href
@@ -51,6 +52,14 @@ async function getBuffer(name) {
   );
   return decodes.get(name);
 }
+// Called while the cards/images are being prepared; never delays the animation indefinitely.
+async function prepare(...names) {
+  const list = names.length ? names : Object.keys(urls);
+  await Promise.race([
+    Promise.all(list.map(n => getBuffer(n).catch(() => null))),
+    new Promise(resolve => setTimeout(resolve, 1000))
+  ]);
+}
 function disconnectVoice(voice) {
   voices.delete(voice);
   if (dragVoice === voice) dragVoice = null;
@@ -80,13 +89,22 @@ function makeVoice(buffer, volume, loop = false) {
   return voice;
 }
 async function play(name, options = {}) {
-  const at = performance.now(), token = generation;
+  // 'requestedAt' is the exact start of the on-screen movement.
+  const requestedAt = options.requestedAt ?? performance.now();
+  const token = generation;
   const buffer = await getBuffer(name);
-  if (!buffer || token !== generation || document.hidden || performance.now()-at > 650) return;
+  if (!buffer || token !== generation || document.hidden) return;
+  const speed = options.durationMs ? Math.max(.65,Math.min(1.8,buffer.duration/(options.durationMs/1000))) : 1;
+  const elapsed = Math.max(0,(performance.now() - requestedAt)/1000);
+  const expectedDuration = buffer.duration/speed;
+  // A late decode should never create a sound that visibly lags behind the card.
+  // Instead skip the elapsed fragment (or entirely skip stale short cues).
+  if (elapsed > Math.min(.28,expectedDuration*.65)) return;
   const voice = makeVoice(buffer, options.volume ?? .34);
   if (!voice) return;
-  if (options.durationMs) voice.source.playbackRate.value = Math.max(.7, Math.min(1.4, buffer.duration/(options.durationMs/1000)));
-  try {voice.source.start();} catch (_) {disconnectVoice(voice);}
+  voice.source.playbackRate.value = speed;
+  const offset = Math.min(buffer.duration-.002,elapsed*speed);
+  try {voice.source.start(0,offset);} catch (_) {disconnectVoice(voice);}
 }
 async function startDrag() {
   if (dragWanted) return;
@@ -98,15 +116,19 @@ async function startDrag() {
   if (!voice) return;
   dragVoice = voice;
   const now = context.currentTime;
-  voice.gain.gain.setValueAtTime(.01,now);
-  voice.gain.gain.linearRampToValueAtTime(.14,now+.07);
+  voice.gain.gain.setValueAtTime(.001,now);
   try {voice.source.start();} catch (_) {dragVoice = null;disconnectVoice(voice);}
 }
 function dragMove(distance = 5) {
   if (!dragVoice || !context) return;
   const now = context.currentTime;
   const level = Math.min(.24, .08 + Math.min(40,Math.abs(distance))*.004);
-  dragVoice.gain.gain.setTargetAtTime(level, now, .08);
+  // Each pointer movement renews a short pulse; holding still becomes silent.
+  const g=dragVoice.gain.gain;
+  g.cancelScheduledValues(now);
+  g.setValueAtTime(Math.max(.001,g.value),now);
+  g.linearRampToValueAtTime(level,now+.018);
+  g.exponentialRampToValueAtTime(.001,now+.14);
 }
 function stopDrag() {
   dragWanted = false;
@@ -123,4 +145,4 @@ function stopMotion() {
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMotion();});
 window.addEventListener('pagehide',stopMotion);
-export const cardSounds = {play, startDrag, dragMove, stopDrag, stopMotion};
+export const cardSounds = {prepare, play, startDrag, dragMove, stopDrag, stopMotion};

@@ -42,7 +42,6 @@ export class Carousel {
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
   const old=this.selectedCard;this.selectedCard=card;this.layout();
-  cardSounds.play('pick',{volume:.46});
   const index=this.cards.indexOf(card),off=this.distance(index)+this.offset;
   const resting=slotPose(off,this.stage.clientWidth);
   const raised={...resting,y:resting.y-C.carousel.selectedLift};
@@ -51,6 +50,7 @@ export class Carousel {
    {transform:transform({...resting,scale:1,z:0,ry:0,rx:0})},
    {transform:transform({...raised,scale:1,z:0,ry:0,rx:0})}
   ],{duration:C.carousel.selectedLiftDuration,easing:'cubic-bezier(.2,.75,.25,1)'});
+  cardSounds.play('pick',{durationMs:C.carousel.selectedLiftDuration,volume:.42});
   if(old&&old!==card)old.getAnimations().forEach(animation=>animation.cancel());
  }
  confirm(){if(this.selectedCard&&!this.selectedCard.hidden&&!this.busy)this.onChoose(this.selectedCard);}
@@ -112,6 +112,7 @@ export class Carousel {
  async snap(shift){
   if(this.busy)return;this.busy=true;
   const start=this.offset,end=-shift,duration=Math.max(160,C.carousel.move),begin=performance.now();
+  if(Math.abs(end-start)>.035)cardSounds.play('slide',{durationMs:duration,volume:.20,requestedAt:begin});
   await new Promise(resolve=>{
    const frame=t=>{
     if(this.destroyed){resolve();return;}
@@ -126,7 +127,7 @@ export class Carousel {
   this.index=mod(this.index+shift,this.cards.length);
   this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
- step(direction){if(this.busy||this.pointer)return;cardSounds.play('pick',{volume:.26});this.offset=0;this.snap(direction);}
+ step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){} }
  cancel(){
   cardSounds.stopDrag();
