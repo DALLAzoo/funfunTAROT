@@ -1,40 +1,50 @@
-/* AD1 v19: visible but restrained random meteor groups, some passing in front of cards.
- * Separate layers are transparent to all mouse/touch/drag interactions. */
+/* AD1 v20 — depth-separated, coherent-direction meteor groups.
+   CSS does not override reduced-motion: requested animations keep their time.
+   Both background layers remain behind the cards; front can cross the cards. */
 .ad1-meteor-sky {
- position:fixed;
- inset:0;
- pointer-events:none!important;
- overflow:hidden;
- contain:layout paint;
- isolation:isolate;
+  position:fixed;
+  inset:0;
+  pointer-events:none!important;
+  overflow:hidden;
+  contain:layout paint;
+  isolation:isolate;
+  transition:transform 420ms ease-out;
 }
-.ad1-meteor-sky--back {z-index:0;}
+.ad1-meteor-sky--far, .ad1-meteor-sky--back {z-index:0;}
+.ad1-meteor-sky--near {z-index:0;}
 .ad1-meteor-sky--front {z-index:4;}
 .ad1-meteor {
- position:absolute;
- width:var(--meteor-length,70px);
- height:1.6px;
- border-radius:999px;
- pointer-events:none!important;
- will-change:transform,opacity;
- opacity:0;
- transform-origin:0 50%;
- background:linear-gradient(to right,
-    transparent 0%, rgba(137,201,229,.10) 24%,
-    rgba(179,217,239,.43) 74%, rgba(238,244,255,.82) 100%);
- box-shadow:0 0 4px rgba(167,213,240,.22);
+  position:absolute;
+  width:var(--meteor-length,80px);
+  height:1.5px;
+  border-radius:999px;
+  pointer-events:none!important;
+  will-change:transform,opacity;
+  opacity:0;
+  transform-origin:0 50%;
+  background:linear-gradient(to right,
+    transparent 0%,rgba(135,197,229,.10) 23%,
+    rgba(178,218,238,.43) 73%,rgba(241,247,255,.86) 100%);
+  box-shadow:0 0 5px rgba(166,218,250,.20);
 }
 .ad1-meteor::after {
- content:"";
- position:absolute;
- width:2.5px;height:2.5px;
- right:0;top:50%;transform:translateY(-50%);
- border-radius:50%;
- background:rgba(239,244,255,.82);
- box-shadow:0 0 5px rgba(200,224,246,.37);
+  content:"";
+  position:absolute;
+  width:2.8px;height:2.8px;
+  right:0;top:50%;transform:translateY(-50%);
+  border-radius:50%;
+  background:rgba(240,247,255,.88);
+  box-shadow:0 0 6px rgba(203,228,251,.40);
 }
-.ad1-meteor-sky--front .ad1-meteor {
- height:1.25px;
- box-shadow:0 0 3px rgba(167,213,240,.14);
+/* Far plane: smaller/fainter/longer travel time. */
+.ad1-meteor--far {height:1px;box-shadow:0 0 3px rgba(165,208,235,.13);}
+.ad1-meteor--far::after {width:1.7px;height:1.7px;}
+/* Middle plane: the default shooting-star appearance. */
+.ad1-meteor--near {height:1.5px;}
+/* Foreground occasionally crosses the deck, but never intercepts input. */
+.ad1-meteor--front {height:2px;box-shadow:0 0 7px rgba(177,224,250,.25);}
+.ad1-meteor--front::after {width:3.4px;height:3.4px;}
+@media(max-width:699px){
+  .ad1-meteor-sky {transition:none;}
+  .ad1-meteor--front {height:1.65px;}
 }
-/* Do not shorten or omit the user's requested motion in reduced-motion mode. */

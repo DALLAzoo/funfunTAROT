@@ -1,29 +1,36 @@
-/* AD1 v19 — visible, irregular meteor clusters; some cross in front of cards.
- * Background and foreground are lightweight, pointer-transparent DOM layers.
- * No carousel, shuffle, star-sparkle, or card-surface code is changed.
- * Requested motion plays at the same speed with prefers-reduced-motion on/off.
+/* AD1 v20 — one direction per meteor group + restrained depth/parallax.
+ * Based on v19. All group members share EXACTLY the same travel angle, while
+ * their size, distance, start point, brightness, and speed can differ.
+ * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
+ * Layers are pointer-transparent; no changes to shuffle/carousel/reveal.
+ * No reduced-motion override: user-approved animations retain their timing.
  */
 const rootIds = ['tarotApp', 'resultView'];
 const roots = rootIds.map(id => document.getElementById(id)).filter(Boolean);
 
 if (roots.length) {
   const layers = roots.map(root => {
-    const back = document.createElement('div');
-    back.className = 'ad1-meteor-sky ad1-meteor-sky--back';
-    back.setAttribute('aria-hidden', 'true');
-    const front = document.createElement('div');
-    front.className = 'ad1-meteor-sky ad1-meteor-sky--front';
-    front.setAttribute('aria-hidden', 'true');
-    root.prepend(back, front);
-    return {root,back,front};
+    function layer(depth) {
+      const el = document.createElement('div');
+      el.className = `ad1-meteor-sky ad1-meteor-sky--${depth}`;
+      el.setAttribute('aria-hidden', 'true');
+      return el;
+    }
+    const far = layer('far');
+    const near = layer('near');
+    const front = layer('front');
+    root.prepend(far, near, front);
+    return {root,far,near,front};
   });
 
-  const random = (min,max) => min + Math.random()*(max-min);
+  const random = (min,max) => min + Math.random() * (max-min);
   const randomInt = (min,max) => Math.floor(random(min,max+1));
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
   const pending = new Set();
   const active = new Set();
-  let nextBurst = null, disposed = false;
+  let nextBurst = null;
+  let disposed = false;
+  let groupIndex = 0;
 
   const visibleLayer = () => layers.find(({root}) =>
     !root.hidden && window.getComputedStyle(root).display !== 'none') || null;
@@ -42,46 +49,75 @@ if (roots.length) {
     pending.clear();
   }
 
-  function shoot(isFront = false) {
+  // One angle is chosen ONCE per burst. Every member of that burst uses it.
+  // Allow either diagonal direction, with occasional shallow trajectories.
+  function chooseAngle() {
+    const toRight = Math.random() < .72;
+    const descent = random(18,51) * Math.PI / 180;
+    return toRight ? descent : Math.PI - descent;
+  }
+
+  function chooseCenter(layer, vw, vh) {
+    const cardArea = layer.root.querySelector('#stage') ||
+                     layer.root.querySelector('#resultCardHost');
+    const area = cardArea?.getBoundingClientRect();
+    // Sometimes the entire group crosses the card area. Otherwise it comes
+    // from another region of the sky, instead of always following the deck.
+    if (area && Math.random() < .42) {
+      return {
+        x: clamp(area.left + area.width*random(.40,.60),vw*.18,vw*.82),
+        y: clamp(area.top + area.height*random(.38,.61),vh*.20,vh*.79)
+      };
+    }
+    return {x:random(vw*.22,vw*.78),y:random(vh*.23,vh*.71)};
+  }
+
+  function shoot(group, depth, index) {
     if (disposed || document.hidden) return;
-    const layersNow = visibleLayer();
-    if (!layersNow) return;
+    const layer = visibleLayer();
+    if (!layer) return;
     const vw = window.innerWidth, vh = window.innerHeight;
     if (vw < 1 || vh < 1) return;
 
-    const rightward = Math.random() < .78;
-    const dx = (rightward ? 1 : -1) * Math.min(vw * .40, random(110, 225));
-    const dy = Math.min(vh * .32, random(80, 165));
-    let x, y;
-    if (isFront) {
-      // Choose a trajectory through the central card area, not the buttons.
-      const target = layersNow.root.querySelector('#resultCardHost') ||
-                     layersNow.root.querySelector('#stage');
-      const rect = target?.getBoundingClientRect();
-      const anchorX = rect ? rect.left + rect.width*random(.42,.58) : vw*.50;
-      const anchorY = rect ? rect.top + rect.height*random(.43,.59) : vh*.45;
-      x = clamp(anchorX - dx*random(.30,.70), 8, vw-15);
-      y = clamp(anchorY - dy*random(.30,.70), 8, vh-15);
-    } else {
-      x = rightward ? random(vw*.06,vw*.73) : random(vw*.27,vw*.90);
-      y = random(vh*.06,vh*.67);
-    }
-    const sky = isFront ? layersNow.front : layersNow.back;
-    const duration = random(1150,1750);
-    const length = Math.min(vw*.33,random(isFront?48:55,isFront?88:104));
-    const alpha = random(isFront?.45:.54,isFront?.70:.82);
-    const angle = Math.atan2(dy,dx)*180/Math.PI;
+    // Depth: far travels less, appears thinner and lasts longer;
+    // foreground appears slightly larger and moves quicker.
+    const specs = {
+      far:   {distance:[145,225],duration:[1550,2100],length:[54,88], alpha:[.37,.57]},
+      near:  {distance:[190,285],duration:[1290,1780],length:[73,112],alpha:[.50,.76]},
+      front: {distance:[225,340],duration:[1100,1520],length:[92,144],alpha:[.54,.78]}
+    };
+    const spec = specs[depth];
+    const distance = Math.min(Math.hypot(vw,vh)*.56,random(...spec.distance));
+    const dx = Math.cos(group.angle)*distance;
+    const dy = Math.sin(group.angle)*distance;
+    // Same group center, staggered starting positions: like a loose cluster,
+    // not unrelated shooting stars from several random directions.
+    const lateral = (index-(group.count-1)/2)*random(18,37);
+    const jitter = random(-17,17);
+    const perpX = -Math.sin(group.angle)*(lateral+jitter);
+    const perpY = Math.cos(group.angle)*(lateral+jitter);
+    const ahead = random(-30,30);
+    const x = clamp(group.center.x - dx*.5 + perpX + Math.cos(group.angle)*ahead, -35, vw+25);
+    const y = clamp(group.center.y - dy*.5 + perpY + Math.sin(group.angle)*ahead, -35, vh+25);
+
     const element = document.createElement('span');
-    element.className = 'ad1-meteor';
+    element.className = `ad1-meteor ad1-meteor--${depth}`;
+    element.dataset.meteorGroup = String(group.id);
+    element.dataset.meteorAngle = group.angle.toFixed(6);
+    element.dataset.meteorDepth = depth;
     element.style.left = `${x}px`;
     element.style.top = `${y}px`;
-    element.style.setProperty('--meteor-length',`${length}px`);
-    sky.append(element);
+    element.style.setProperty('--meteor-length',`${Math.min(vw*.36,random(...spec.length))}px`);
+    layer[depth].append(element);
+
+    const alpha = random(...spec.alpha);
+    const duration = random(...spec.duration);
+    const angleDegrees = group.angle*180/Math.PI;
     const animation = element.animate([
-      {offset:0,opacity:0,transform:`translate3d(0,0,0) rotate(${angle}deg)`},
-      {offset:.19,opacity:alpha,transform:`translate3d(${dx*.19}px,${dy*.19}px,0) rotate(${angle}deg)`},
-      {offset:.70,opacity:alpha*.84,transform:`translate3d(${dx*.70}px,${dy*.70}px,0) rotate(${angle}deg)`},
-      {offset:1,opacity:0,transform:`translate3d(${dx}px,${dy}px,0) rotate(${angle}deg)`}
+      {offset:0,opacity:0,transform:`translate3d(0,0,0) rotate(${angleDegrees}deg)`},
+      {offset:.15,opacity:alpha,transform:`translate3d(${dx*.15}px,${dy*.15}px,0) rotate(${angleDegrees}deg)`},
+      {offset:.73,opacity:alpha*.86,transform:`translate3d(${dx*.73}px,${dy*.73}px,0) rotate(${angleDegrees}deg)`},
+      {offset:1,opacity:0,transform:`translate3d(${dx}px,${dy}px,0) rotate(${angleDegrees}deg)`}
     ],{duration,easing:'linear',fill:'both'});
     const entry = {element,animation};
     active.add(entry);
@@ -96,21 +132,28 @@ if (roots.length) {
 
   function burst() {
     if (disposed || document.hidden) return;
-    // 2–5 per event, usually 3–4. They overlap visibly rather than appearing
-    // one after another. Frequency and number are independent random values.
+    const layer = visibleLayer();
+    if (!layer) return;
     const dice = Math.random();
     const count = dice < .15 ? 2 : dice < .53 ? 3 : dice < .86 ? 4 : 5;
-    const stagger = randomInt(90,170);
+    const group = {
+      id: ++groupIndex,
+      count,
+      angle: chooseAngle(),
+      center: chooseCenter(layer,window.innerWidth,window.innerHeight)
+    };
+    const stagger = randomInt(85,165);
     for (let i=0; i<count; i++) {
-      // Even the last star begins before the first one finishes.
-      const delay = i===0 ? 0 : i*stagger + randomInt(0,45);
-      const foreground = Math.random() < .24;
-      if (delay === 0) shoot(foreground);
+      // All share one group angle, including those passing in front.
+      const diceDepth = Math.random();
+      const depth = diceDepth < .24 ? 'front' : diceDepth < .56 ? 'near' : 'far';
+      const delay = i===0 ? 0 : i*stagger + randomInt(0,38);
+      if (delay === 0) shoot(group,depth,i);
       else {
         const id = setTimeout(() => {
           pending.delete(id);
-          shoot(foreground);
-        }, delay);
+          shoot(group,depth,i);
+        },delay);
         pending.add(id);
       }
     }
@@ -119,13 +162,33 @@ if (roots.length) {
   function schedule(first=false) {
     if (disposed || document.hidden) return;
     if (nextBurst !== null) clearTimeout(nextBurst);
-    // Bursts have quiet intervals. The screen is not a continuous meteor shower.
     nextBurst = setTimeout(() => {
       nextBurst = null;
       burst();
       schedule();
     }, first ? randomInt(950,1900) : randomInt(3800,6500));
   }
+
+  // Desktop-only subtle parallax. The card stage NEVER moves; only the
+  // pointer-transparent distant/near/foreground sky layers shift slightly.
+  // Avoid pointer-driven work during card dragging or on touch devices.
+  let frame = 0, mouseX = 0, mouseY = 0;
+  function updateParallax() {
+    frame = 0;
+    for (const layer of layers) {
+      layer.far.style.transform = `translate3d(${(mouseX*3).toFixed(2)}px,${(mouseY*2).toFixed(2)}px,0)`;
+      layer.near.style.transform = `translate3d(${(mouseX*7).toFixed(2)}px,${(mouseY*5).toFixed(2)}px,0)`;
+      layer.front.style.transform = `translate3d(${(mouseX*11).toFixed(2)}px,${(mouseY*8).toFixed(2)}px,0)`;
+    }
+  }
+  function onPointerMove(e) {
+    if (disposed || e.pointerType === 'touch' || window.innerWidth < 700 ||
+        document.getElementById('stage')?.classList.contains('is-dragging')) return;
+    mouseX = clamp(e.clientX/Math.max(1,window.innerWidth)*2-1,-1,1);
+    mouseY = clamp(e.clientY/Math.max(1,window.innerHeight)*2-1,-1,1);
+    if (!frame) frame = requestAnimationFrame(updateParallax);
+  }
+  window.addEventListener('pointermove',onPointerMove,{passive:true});
 
   document.addEventListener('visibilitychange',() => {
     if (document.hidden) {clearPending();clearActive();}
@@ -135,6 +198,8 @@ if (roots.length) {
     disposed = true;
     clearPending();
     clearActive();
+    if (frame) cancelAnimationFrame(frame);
+    window.removeEventListener('pointermove',onPointerMove);
   },{once:true});
   schedule(true);
 }
