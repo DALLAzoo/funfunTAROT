@@ -6,6 +6,7 @@ import {RevealVFX} from '../../effects/reveal-vfx.js';
 import {bindEvents} from './events.js';
 import {initializeApp} from './bootstrap.js';
 import '../../effects/shooting-stars.js'; // AD1 v16: distant meteors, background only
+import '../../effects/button-impact.js'; // AD1 v28: gold press and lingering feedback
 
 const $ = selector => document.querySelector(selector);
 const stage = $('#stage');

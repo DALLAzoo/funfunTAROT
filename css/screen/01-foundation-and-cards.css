@@ -344,3 +344,130 @@ body{overflow-x:hidden}
   background: #433126;
   color: #F0D4A2;
 }
+
+/* AD1 v28 — tactile gold press: strong instant hit, long smooth afterglow.
+   The existing brown/gold palette, geometry and rounded corners remain.
+   JS adds --down on pointer/key press and --linger for 900ms after release. */
+#shuffleBtn, #resultAgain, #readingDropdown {
+  position:relative;
+  border-radius:10px!important;
+  background-clip:padding-box;
+  transition:background-color 140ms ease, color 140ms ease,
+             border-color 140ms ease, box-shadow 550ms ease-out;
+}
+#shuffleBtn.ad1-gold-hit--down,
+#resultAgain.ad1-gold-hit--down,
+#readingDropdown.ad1-gold-hit--down,
+#shuffleBtn:active:not(:disabled),
+#resultAgain:active:not(:disabled),
+#readingDropdown:active:not(:disabled) {
+  background-color:#65462C!important;
+  color:#FFF2CE!important;
+  border-color:#F0C77C!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,220,157,.66),
+    inset 0 0 17px rgba(245,185,89,.26),
+    0 0 0 1px rgba(218,174,101,.48),
+    0 0 15px rgba(222,173,96,.55),
+    0 0 30px rgba(193,130,52,.24)!important;
+  transition-duration:0ms!important;
+}
+/* After release, the button stays visibly golden before slowly returning. */
+#shuffleBtn.ad1-gold-hit--linger,
+#resultAgain.ad1-gold-hit--linger,
+#readingDropdown.ad1-gold-hit--linger {
+  animation:ad1-gold-button-linger 900ms ease-out both!important;
+  border-radius:10px!important;
+}
+/* Keep the confirmation flash visible even if shuffle temporarily disables it. */
+#shuffleBtn.ad1-gold-hit--linger:disabled,
+#resultAgain.ad1-gold-hit--linger:disabled,
+#readingDropdown.ad1-gold-hit--linger:disabled {
+  opacity:1!important;
+}
+@keyframes ad1-gold-button-linger {
+  0%, 18% {
+    background-color:#65462C;
+    border-color:#F0C77C;
+    color:#FFF2CE;
+    box-shadow:inset 0 0 0 1px rgba(255,220,157,.66),
+               inset 0 0 17px rgba(245,185,89,.26),
+               0 0 0 1px rgba(218,174,101,.48),
+               0 0 15px rgba(222,173,96,.55),
+               0 0 30px rgba(193,130,52,.24);
+  }
+  55% {
+    background-color:#4A3527;
+    border-color:#CBA467;
+    color:#F0D5A4;
+    box-shadow:inset 0 0 0 1px rgba(248,210,143,.31),
+               inset 0 0 10px rgba(245,185,89,.12),
+               0 0 0 1px rgba(218,174,101,.15),
+               0 0 9px rgba(222,173,96,.27),
+               0 0 17px rgba(193,130,52,.09);
+  }
+  100% {
+    background-color:#30251D;
+    border-color:#8A6B44;
+    color:#D9B77B;
+    box-shadow:none;
+  }
+}
+/* Small internal gold reflection. Never changes the layout or click target. */
+#shuffleBtn::before, #resultAgain::before, #readingDropdown::before {
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:9px;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(115deg,
+     transparent 4%,rgba(255,224,171,.03) 28%,
+     rgba(255,232,184,.34) 48%,rgba(255,224,171,.09) 61%,transparent 85%);
+  transform:translateX(-58%);
+}
+#shuffleBtn::after, #resultAgain::after, #readingDropdown::after {
+  content:"";
+  position:absolute;
+  inset:1px;
+  border-radius:9px;
+  pointer-events:none;
+  opacity:0;
+  box-shadow:inset 0 0 0 1px rgba(255,226,164,.9);
+}
+#shuffleBtn.ad1-gold-hit--down::before,
+#resultAgain.ad1-gold-hit--down::before,
+#readingDropdown.ad1-gold-hit--down::before {
+  opacity:.95;
+  transform:translateX(0);
+}
+#shuffleBtn.ad1-gold-hit--down::after,
+#resultAgain.ad1-gold-hit--down::after,
+#readingDropdown.ad1-gold-hit--down::after {opacity:1;}
+#shuffleBtn.ad1-gold-hit--linger::before,
+#resultAgain.ad1-gold-hit--linger::before,
+#readingDropdown.ad1-gold-hit--linger::before {
+  animation:ad1-gold-reflection 900ms ease-out both;
+}
+#shuffleBtn.ad1-gold-hit--linger::after,
+#resultAgain.ad1-gold-hit--linger::after,
+#readingDropdown.ad1-gold-hit--linger::after {
+  animation:ad1-gold-inner-ring 900ms ease-out both;
+}
+@keyframes ad1-gold-reflection {
+  0%{opacity:.9;transform:translateX(-42%)}
+  35%{opacity:.9;transform:translateX(12%)}
+  100%{opacity:0;transform:translateX(54%)}
+}
+@keyframes ad1-gold-inner-ring {
+  0%,23%{opacity:1}
+  100%{opacity:0}
+}
+@media (prefers-reduced-motion:reduce) {
+  /* Keep the explicitly requested press effect on both OS animation settings. */
+  #shuffleBtn.ad1-gold-hit--linger,
+  #resultAgain.ad1-gold-hit--linger,
+  #readingDropdown.ad1-gold-hit--linger {
+    animation:ad1-gold-button-linger 900ms ease-out both!important;
+  }
+}
