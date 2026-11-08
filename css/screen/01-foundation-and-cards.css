@@ -240,3 +240,41 @@ body{overflow-x:hidden}
 @media (max-width: 699px) and (orientation: portrait) {
   .result-view .result-actions { bottom: var(--mobile-actions-bottom, calc(clamp(15px, 3vw, 30px) + 22px)); }
 }
+
+/* AD1 v26 — The two primary controls share the approved brown/gold palette.
+   The same palette follows the duplicate controls after a card is revealed.
+   Only colors/interactions change; no geometry, layout or behavior changes. */
+#shuffleBtn,
+#resultAgain,
+.reading-dropdown-trigger {
+  background-color:#30251D;
+  color:#D9B77B;
+  border-color:#8A6B44;
+  transition:background-color .18s ease, color .18s ease, border-color .18s ease;
+}
+#shuffleBtn:hover:not(:disabled),
+#resultAgain:hover:not(:disabled),
+.reading-dropdown-trigger:hover:not(:disabled) {
+  background-color:#3B2D23;
+  color:#E5C693;
+  border-color:#A18155;
+}
+#shuffleBtn:focus-visible,
+#resultAgain:focus-visible,
+.reading-dropdown-trigger:focus-visible {
+  outline:2px solid #D9B77B;
+  outline-offset:2px;
+}
+/* The reading options use the same colors when the menu is opened. */
+.reading-dropdown-menu {
+  background-color:#211914;
+  border-color:#8A6B44;
+}
+.reading-option {
+  color:#D9B77B;
+}
+.reading-option:hover,
+.reading-option:focus-visible {
+  background-color:#3B2D23;
+  color:#E5C693;
+}
