@@ -6,7 +6,6 @@ import {RevealVFX} from '../../effects/reveal-vfx.js';
 import {bindEvents} from './events.js';
 import {initializeApp} from './bootstrap.js';
 import '../../effects/shooting-stars.js'; // AD1 v16: distant meteors, background only
-import {installCardBackFoil} from '../../effects/card-back-foil.js'; // AD1 v21: preserve image, add masked relief
 
 const $ = selector => document.querySelector(selector);
 const stage = $('#stage');
@@ -34,6 +33,5 @@ Object.assign(ctx, {
 const startShuffle = () => startShuffleFlow(ctx);
 ctx.choose = chosen => chooseFlow(ctx, chosen);
 
-installCardBackFoil(stage);
 bindEvents({ctx, $, shuffleBtn, startShuffle, getState});
 await initializeApp({ctx, $, stage, container, status, setState});
