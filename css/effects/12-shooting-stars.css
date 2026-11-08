@@ -1,6 +1,6 @@
-/* AD1 v20 — depth-separated, coherent-direction meteor groups.
-   CSS does not override reduced-motion: requested animations keep their time.
-   Both background layers remain behind the cards; front can cross the cards. */
+/* AD1 v23 — more visible meteor shape, without turning into a heavy meteor shower.
+   Count/timing logic stays in JS. This file only strengthens the visual presence
+   of each meteor: a clearer core, a soft glow halo, and a more readable tail. */
 .ad1-meteor-sky {
   position:fixed;
   inset:0;
@@ -13,38 +13,101 @@
 .ad1-meteor-sky--far, .ad1-meteor-sky--back {z-index:0;}
 .ad1-meteor-sky--near {z-index:0;}
 .ad1-meteor-sky--front {z-index:4;}
+
 .ad1-meteor {
   position:absolute;
-  width:var(--meteor-length,80px);
-  height:1.5px;
+  width:var(--meteor-length,92px);
+  height:2px;
   border-radius:999px;
   pointer-events:none!important;
   will-change:transform,opacity;
   opacity:0;
   transform-origin:0 50%;
   background:linear-gradient(to right,
-    transparent 0%,rgba(135,197,229,.10) 23%,
-    rgba(178,218,238,.43) 73%,rgba(241,247,255,.86) 100%);
-  box-shadow:0 0 5px rgba(166,218,250,.20);
+    rgba(144,205,238,0) 0%,
+    rgba(144,205,238,.05) 14%,
+    rgba(170,216,244,.26) 42%,
+    rgba(202,232,251,.62) 76%,
+    rgba(247,251,255,.98) 100%);
+  box-shadow:
+    0 0 8px rgba(166,218,250,.28),
+    0 0 14px rgba(112,180,228,.12);
+}
+/* Soft bloom around the tail so the streak reads against the dark purple background. */
+.ad1-meteor::before {
+  content:"";
+  position:absolute;
+  inset:-2.2px 0;
+  border-radius:999px;
+  background:linear-gradient(to right,
+    rgba(140,200,235,0) 0%,
+    rgba(158,214,244,.04) 18%,
+    rgba(189,228,250,.13) 46%,
+    rgba(220,241,255,.28) 82%,
+    rgba(255,255,255,.48) 100%);
+  filter:blur(1.4px);
+  opacity:.92;
 }
 .ad1-meteor::after {
   content:"";
   position:absolute;
-  width:2.8px;height:2.8px;
-  right:0;top:50%;transform:translateY(-50%);
+  width:4.8px;
+  height:4.8px;
+  right:-0.4px;
+  top:50%;
+  transform:translateY(-50%);
   border-radius:50%;
-  background:rgba(240,247,255,.88);
-  box-shadow:0 0 6px rgba(203,228,251,.40);
+  background:radial-gradient(circle,
+    rgba(255,255,255,.98) 0%,
+    rgba(233,246,255,.95) 30%,
+    rgba(176,220,249,.72) 56%,
+    rgba(135,199,239,0) 100%);
+  box-shadow:
+    0 0 8px rgba(213,234,252,.56),
+    0 0 16px rgba(145,203,240,.24);
 }
-/* Far plane: smaller/fainter/longer travel time. */
-.ad1-meteor--far {height:1px;box-shadow:0 0 3px rgba(165,208,235,.13);}
-.ad1-meteor--far::after {width:1.7px;height:1.7px;}
-/* Middle plane: the default shooting-star appearance. */
-.ad1-meteor--near {height:1.5px;}
-/* Foreground occasionally crosses the deck, but never intercepts input. */
-.ad1-meteor--front {height:2px;box-shadow:0 0 7px rgba(177,224,250,.25);}
-.ad1-meteor--front::after {width:3.4px;height:3.4px;}
+
+/* Far plane: still subtle, but no longer invisible. */
+.ad1-meteor--far {
+  height:1.35px;
+  box-shadow:0 0 5px rgba(165,208,235,.18),0 0 10px rgba(120,180,224,.08);
+}
+.ad1-meteor--far::before { inset:-1.6px 0; opacity:.72; }
+.ad1-meteor--far::after {
+  width:3.2px;
+  height:3.2px;
+  box-shadow:0 0 6px rgba(200,224,246,.34),0 0 11px rgba(145,203,240,.14);
+}
+
+/* Middle plane: the default readable meteor shape. */
+.ad1-meteor--near {
+  height:2px;
+}
+.ad1-meteor--near::after {
+  width:4.8px;
+  height:4.8px;
+}
+
+/* Foreground: slightly broader and brighter since it can cross over cards. */
+.ad1-meteor--front {
+  height:2.6px;
+  box-shadow:0 0 10px rgba(177,224,250,.34),0 0 18px rgba(128,192,238,.14);
+}
+.ad1-meteor--front::before {
+  inset:-2.8px 0;
+  opacity:1;
+}
+.ad1-meteor--front::after {
+  width:6.2px;
+  height:6.2px;
+  box-shadow:0 0 10px rgba(220,238,255,.68),0 0 20px rgba(145,203,240,.30);
+}
+
 @media(max-width:699px){
   .ad1-meteor-sky {transition:none;}
-  .ad1-meteor--front {height:1.65px;}
+  .ad1-meteor {height:1.8px;}
+  .ad1-meteor::before {inset:-1.8px 0;}
+  .ad1-meteor::after {width:4.2px;height:4.2px;}
+  .ad1-meteor--front {height:2.2px;}
+  .ad1-meteor--front::after {width:5.2px;height:5.2px;}
 }
