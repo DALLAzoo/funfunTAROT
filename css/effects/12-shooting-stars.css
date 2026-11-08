@@ -1,4 +1,4 @@
-/* AD1 v23 — more visible meteor shape, without turning into a heavy meteor shower.
+/* AD1 v25 — longer meteor tails + visible meteor shape, without turning into a heavy meteor shower.
    Count/timing logic stays in JS. This file only strengthens the visual presence
    of each meteor: a clearer core, a soft glow halo, and a more readable tail. */
 .ad1-meteor-sky {
@@ -16,7 +16,7 @@
 
 .ad1-meteor {
   position:absolute;
-  width:var(--meteor-length,92px);
+  width:var(--meteor-length,128px);
   height:2px;
   border-radius:999px;
   pointer-events:none!important;

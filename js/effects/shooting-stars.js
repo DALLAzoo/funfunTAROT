@@ -1,4 +1,4 @@
-/* AD1 v24 — all meteor groups travel upper-right to lower-left; same depth/parallax.
+/* AD1 v25 — all meteor groups travel upper-right to lower-left; longer tails.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -81,9 +81,9 @@ if (roots.length) {
     // Depth: far travels less, appears thinner and lasts longer;
     // foreground appears slightly larger and moves quicker.
     const specs = {
-      far:   {distance:[145,225],duration:[1550,2100],length:[54,88], alpha:[.37,.57]},
-      near:  {distance:[190,285],duration:[1290,1780],length:[73,112],alpha:[.50,.76]},
-      front: {distance:[225,340],duration:[1100,1520],length:[92,144],alpha:[.54,.78]}
+      far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
+      near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
+      front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
     };
     const spec = specs[depth];
     const distance = Math.min(Math.hypot(vw,vh)*.56,random(...spec.distance));
