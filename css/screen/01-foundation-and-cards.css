@@ -278,3 +278,69 @@ body{overflow-x:hidden}
   background-color:#3B2D23;
   color:#E5C693;
 }
+
+
+/* AD1 v27 — Fix the rectangular/green touch response on the TWO main controls.
+   Previous v26 specified palette at rest, but the mobile native tap highlight
+   and pressed state were not set. These rules leave size, layout and JS intact. */
+#shuffleBtn,
+#resultAgain,
+#readingDropdown {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 10px !important;
+  background: #30251D;
+  color: #D9B77B;
+  border: 1px solid #8A6B44;
+  background-clip: padding-box;
+  outline: none;
+  box-shadow: none;
+  transition: background-color 160ms ease,
+              color 160ms ease,
+              border-color 160ms ease,
+              box-shadow 160ms ease;
+}
+/* Limit hover feedback to actual pointing devices; avoids sticky mobile hover. */
+@media (hover:hover) and (pointer:fine) {
+  #shuffleBtn:hover:not(:disabled),
+  #resultAgain:hover:not(:disabled),
+  #readingDropdown:hover:not(:disabled) {
+    background: #3B2D23;
+    color: #E5C693;
+    border-color: #A18155;
+  }
+}
+#shuffleBtn:active:not(:disabled),
+#resultAgain:active:not(:disabled),
+#readingDropdown:active:not(:disabled) {
+  border-radius: 10px !important;
+  background: #433126;
+  color: #F0D4A2;
+  border-color: #C19B62;
+  box-shadow: inset 0 0 0 1px rgba(217,183,123,.21),
+              0 0 10px rgba(193,155,98,.20);
+}
+/* Keyboard focus retains an accessible GOLD outline with the SAME rounding. */
+#shuffleBtn:focus-visible,
+#resultAgain:focus-visible,
+#readingDropdown:focus-visible {
+  border-radius: 10px !important;
+  outline: 2px solid #D9B77B;
+  outline-offset: 2px;
+}
+#shuffleBtn:focus:not(:focus-visible),
+#resultAgain:focus:not(:focus-visible),
+#readingDropdown:focus:not(:focus-visible) {
+  outline: none;
+}
+/* Dropdown choices also suppress native rectangular flashes; their panel
+   already owns its approved 10px rounded clipping. */
+.reading-dropdown-menu,
+.reading-option {
+  -webkit-tap-highlight-color: transparent;
+}
+.reading-option:active:not(:disabled) {
+  background: #433126;
+  color: #F0D4A2;
+}
