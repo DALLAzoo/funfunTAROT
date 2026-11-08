@@ -471,3 +471,102 @@ body{overflow-x:hidden}
     animation:ad1-gold-button-linger 900ms ease-out both!important;
   }
 }
+
+/* AD1 v31 — Upward reading-selection panel.
+   Width is locked to its own trigger, NEVER over the adjacent Shuffle button.
+   The list scrolls inside itself if more reading types are added. */
+#tarotApp .reading-dropdown,
+#resultView .reading-dropdown {
+  position:relative;
+  isolation:isolate;
+}
+#tarotApp .reading-dropdown-menu,
+#resultView .reading-dropdown-menu {
+  position:absolute;
+  top:auto;
+  bottom:calc(100% + 8px);
+  left:0;
+  right:0;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  z-index:70;
+  max-height:min(320px, calc(100dvh - 130px));
+  padding:6px;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#886842 #241913;
+  background:linear-gradient(180deg,#2B201A 0%,#211811 100%);
+  color:#D9B77B;
+  border:1px solid #8A6B44;
+  border-radius:10px;
+  box-shadow:0 8px 26px rgba(0,0,0,.58),0 0 12px rgba(185,140,75,.13);
+}
+#tarotApp .reading-dropdown-menu:not([hidden]),
+#resultView .reading-dropdown-menu:not([hidden]) {
+  animation:ad1-reading-menu-rise 160ms ease-out both;
+}
+@keyframes ad1-reading-menu-rise {
+  from{opacity:.6;translate:0 5px;}
+  to{opacity:1;translate:0 0;}
+}
+#tarotApp .reading-dropdown-menu .reading-option,
+#resultView .reading-dropdown-menu .reading-option {
+  display:block;
+  width:100%;
+  min-width:0;
+  margin:0;
+  padding:12px 9px;
+  border:0;
+  border-radius:7px;
+  box-sizing:border-box;
+  background:transparent;
+  color:#D9B77B;
+  font-size:13px;
+  line-height:1.4;
+  overflow-wrap:break-word;
+  text-align:center;
+  -webkit-tap-highlight-color:transparent;
+}
+#tarotApp .reading-dropdown-menu .reading-option + .reading-option,
+#resultView .reading-dropdown-menu .reading-option + .reading-option {
+  margin-top:3px;
+}
+#tarotApp .reading-dropdown-menu .reading-option[aria-selected="true"],
+#resultView .reading-dropdown-menu .reading-option[aria-selected="true"] {
+  background:#37291F;
+  color:#EED2A0;
+  box-shadow:inset 0 0 0 1px rgba(182,140,79,.38);
+}
+#tarotApp .reading-dropdown-menu .reading-option:hover,
+#resultView .reading-dropdown-menu .reading-option:hover,
+#tarotApp .reading-dropdown-menu .reading-option:focus-visible,
+#resultView .reading-dropdown-menu .reading-option:focus-visible {
+  background:#463327;
+  color:#FFE4B0;
+  outline:1px solid rgba(220,176,104,.66);
+  outline-offset:-1px;
+}
+#tarotApp .reading-dropdown-menu .reading-option:active,
+#resultView .reading-dropdown-menu .reading-option:active {
+  background:#60452F;
+  color:#FFF0CE;
+}
+/* Existing down-chevron points up only while expanded. */
+#readingDropdown > span[aria-hidden="true"] {
+  display:inline-block;
+  transition:transform 180ms ease;
+}
+#readingDropdown[aria-expanded="true"] > span[aria-hidden="true"] {
+  transform:rotate(180deg);
+}
+@media (max-width:640px) {
+  #tarotApp .reading-dropdown-menu,
+  #resultView .reading-dropdown-menu {
+    max-height:min(285px, calc(100dvh - 112px));
+  }
+}
