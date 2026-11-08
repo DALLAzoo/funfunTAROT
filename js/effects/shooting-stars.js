@@ -1,4 +1,4 @@
-/* AD1 v20 — one direction per meteor group + restrained depth/parallax.
+/* AD1 v24 — all meteor groups travel upper-right to lower-left; same depth/parallax.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -49,12 +49,11 @@ if (roots.length) {
     pending.clear();
   }
 
-  // One angle is chosen ONCE per burst. Every member of that burst uses it.
-  // Allow either diagonal direction, with occasional shallow trajectories.
+  // One fixed travel direction for ALL groups: upper-right to lower-left.
+  // 145 degrees means dx < 0 and dy > 0. Cluster members still vary in
+  // starting point, depth, speed, length and launch delay, not direction.
   function chooseAngle() {
-    const toRight = Math.random() < .72;
-    const descent = random(18,51) * Math.PI / 180;
-    return toRight ? descent : Math.PI - descent;
+    return 145 * Math.PI / 180;
   }
 
   function chooseCenter(layer, vw, vh) {
