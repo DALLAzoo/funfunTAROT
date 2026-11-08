@@ -1,4 +1,4 @@
-/* AD1 v30 — all meteor groups travel upper-right to lower-left; longer tails + random cosmic palette.
+/* AD1 v36 — original meteor whoosh + v31 directional, long-tail, four-color meteor groups.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -26,6 +26,56 @@ if (roots.length) {
   const random = (min,max) => min + Math.random() * (max-min);
   const randomInt = (min,max) => Math.floor(random(min,max+1));
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
+  /* AD1 v36 — original, gentle stereo whoosh. The BGM remains unchanged.
+   Browsers forbid surprise autoplay: unlock on an actual user gesture only.
+   The meteor group (not each of its 2–5 stars) receives one sound,
+   initially once after interaction and thereafter every 3–4 groups. */
+  const meteorSoundUrl = new URL('../../assets/audio/meteor-whoosh.mp3', import.meta.url).href;
+  let whooshContext = null;
+  let whooshBuffer = null;
+  let whooshLoading = null;
+  let silentGroupsRemaining = 0;
+  let lastWhooshAt = -Infinity;
+
+  function unlockWhoosh(event) {
+    if (event.type === 'keydown' && !['Enter',' ','ArrowLeft','ArrowRight'].includes(event.key)) return;
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    try {
+      if (!whooshContext) whooshContext = new AudioCtx();
+      if (whooshContext.state === 'suspended') {
+        whooshContext.resume().catch(() => {});
+      }
+      if (!whooshLoading) {
+        whooshLoading = fetch(meteorSoundUrl)
+          .then(response => {if (!response.ok) throw new Error('meteor audio unavailable'); return response.arrayBuffer();})
+          .then(data => whooshContext.decodeAudioData(data))
+          .then(buffer => {whooshBuffer = buffer;})
+          .catch(() => {whooshLoading = null;});
+      }
+    } catch (_) { /* Browser audio can be unsupported or blocked. Visual meteors continue. */ }
+  }
+  document.addEventListener('pointerdown', unlockWhoosh, {passive:true});
+  document.addEventListener('keydown', unlockWhoosh);
+
+  function playWhooshOnGroup() {
+    if (!whooshContext || whooshContext.state !== 'running' || !whooshBuffer || document.hidden) return;
+    if (silentGroupsRemaining > 0) {silentGroupsRemaining -= 1; return;}
+    if (performance.now() - lastWhooshAt < 9000) return;
+    silentGroupsRemaining = randomInt(2, 3); // one sound per 3–4 groups
+    lastWhooshAt = performance.now();
+    try {
+      const source = whooshContext.createBufferSource();
+      const gain = whooshContext.createGain();
+      source.buffer = whooshBuffer;
+      gain.gain.value = .16; // quiet under the user's BGM
+      source.connect(gain);
+      gain.connect(whooshContext.destination);
+      source.onended = () => {source.disconnect(); gain.disconnect();};
+      source.start();
+    } catch (_) { /* Audio errors never interrupt the shooting-star animation. */ }
+  }
+
   const pending = new Set();
   const active = new Set();
   let nextBurst = null;
@@ -135,6 +185,7 @@ if (roots.length) {
     if (disposed || document.hidden) return;
     const layer = visibleLayer();
     if (!layer) return;
+    playWhooshOnGroup();
     const dice = Math.random();
     const count = dice < .15 ? 2 : dice < .53 ? 3 : dice < .86 ? 4 : 5;
     const group = {
@@ -201,6 +252,9 @@ if (roots.length) {
     clearActive();
     if (frame) cancelAnimationFrame(frame);
     window.removeEventListener('pointermove',onPointerMove);
+    document.removeEventListener('pointerdown',unlockWhoosh);
+    document.removeEventListener('keydown',unlockWhoosh);
+    if (whooshContext) whooshContext.close().catch(() => {});
   },{once:true});
   schedule(true);
 }
