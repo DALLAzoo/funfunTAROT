@@ -589,3 +589,10 @@ body{overflow-x:hidden}
     max-height:min(285px, calc(100dvh - 112px));
   }
 }
+
+/* AD1 v33 — Gold reflections must not create horizontal/vertical page overflow.
+   Only the moving ::before/::after layers are clipped to the 10px button.
+   External gold box-shadow on the button itself remains visible. */
+#shuffleBtn, #resultAgain, #readingDropdown {
+  overflow: hidden !important;
+}

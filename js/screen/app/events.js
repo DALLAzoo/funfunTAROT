@@ -31,7 +31,8 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
     dropdown.firstChild.textContent = '조언 - 당신을 위한 ';
     options.hidden = true;
     dropdown.setAttribute('aria-expanded', 'false');
-    dropdown.focus();
+    // Focus restoration must not scroll the page after a menu selection.
+    try { dropdown.focus({preventScroll:true}); } catch (_) { dropdown.focus(); }
   });
   document.addEventListener('click', e => {
     if (!dropdown.parentElement.contains(e.target)) {
