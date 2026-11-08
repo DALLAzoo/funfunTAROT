@@ -1,4 +1,4 @@
-/* AD1 v39 — silent meteor visuals + v31 directional, long-tail, four-color meteor groups.
+/* AD1 v42 — meteor groups travel upper-right to lower-left; stronger sequential stagger within each group.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -26,7 +26,6 @@ if (roots.length) {
   const random = (min,max) => min + Math.random() * (max-min);
   const randomInt = (min,max) => Math.floor(random(min,max+1));
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
-  // v39: meteor visuals only. No meteor audio listeners or playback.
   const pending = new Set();
   const active = new Set();
   let nextBurst = null;
@@ -73,14 +72,7 @@ if (roots.length) {
     return {x:random(vw*.22,vw*.78),y:random(vh*.23,vh*.71)};
   }
 
-  // Preserve approved meteor depth, duration and tail-length ranges.
-  const specs = {
-    far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
-    near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
-    front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
-  };
-
-  function shoot(group, depth, index, duration) {
+  function shoot(group, depth, index) {
     if (disposed || document.hidden) return;
     const layer = visibleLayer();
     if (!layer) return;
@@ -89,6 +81,11 @@ if (roots.length) {
 
     // Depth: far travels less, appears thinner and lasts longer;
     // foreground appears slightly larger and moves quicker.
+    const specs = {
+      far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
+      near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
+      front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
+    };
     const spec = specs[depth];
     const distance = Math.min(Math.hypot(vw,vh)*.56,random(...spec.distance));
     const dx = Math.cos(group.angle)*distance;
@@ -115,6 +112,7 @@ if (roots.length) {
     layer[depth].append(element);
 
     const alpha = random(...spec.alpha);
+    const duration = random(...spec.duration);
     const angleDegrees = group.angle*180/Math.PI;
     const animation = element.animate([
       {offset:0,opacity:0,transform:`translate3d(0,0,0) rotate(${angleDegrees}deg)`},
@@ -145,26 +143,34 @@ if (roots.length) {
       angle: chooseAngle(),
       center: chooseCenter(layer,window.innerWidth,window.innerHeight)
     };
-    const stagger = randomInt(85,165);
-    const planned = [];
+
+    // Instead of a nearly simultaneous burst, each group now cascades in.
+    // Every group picks its own rhythm, then members appear one after another
+    // with small but visible time gaps. This keeps the same "single flock"
+    // feeling while removing the abrupt "all at once" look.
+    const paceRoll = Math.random();
+    const stepRange = paceRoll < .22
+      ? [80, 115]   // fast cluster
+      : paceRoll < .76
+        ? [120, 185] // normal cluster
+        : [185, 255]; // more relaxed cluster
+    let accumulatedDelay = 0;
+
     for (let i=0; i<count; i++) {
-      // All share one direction; keep the approved count, speed, depth, and delay ranges.
+      // All share one group angle, including those passing in front. Colors can differ per meteor.
       const diceDepth = Math.random();
       const depth = diceDepth < .24 ? 'front' : diceDepth < .56 ? 'near' : 'far';
-      const delay = i===0 ? 0 : i*stagger + randomInt(0,38);
-      const duration = random(...specs[depth].duration);
-      planned.push({depth,delay,duration});
-    }
-    planned.forEach(({depth,delay,duration},i) => {
-      if (delay === 0) shoot(group,depth,i,duration);
+      const delay = accumulatedDelay;
+      if (delay === 0) shoot(group,depth,i);
       else {
         const id = setTimeout(() => {
           pending.delete(id);
-          shoot(group,depth,i,duration);
+          shoot(group,depth,i);
         },delay);
         pending.add(id);
       }
-    });
+      accumulatedDelay += randomInt(...stepRange);
+    }
   }
 
   function schedule(first=false) {
