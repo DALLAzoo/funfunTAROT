@@ -1,4 +1,4 @@
-/* AD1 v38 — crystalline meteor stardust + v31 directional, long-tail, four-color meteor groups.
+/* AD1 v39 — silent meteor visuals + v31 directional, long-tail, four-color meteor groups.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -26,59 +26,7 @@ if (roots.length) {
   const random = (min,max) => min + Math.random() * (max-min);
   const randomInt = (min,max) => Math.floor(random(min,max+1));
   const clamp = (n,min,max) => Math.max(min,Math.min(max,n));
-  /* AD1 v38 — descending crystalline stardust chimes, synchronized to each meteor group. The BGM remains unchanged.
-   Browsers forbid surprise autoplay: unlock on an actual user gesture only.
-   The meteor group (not each of its 2–5 stars) receives one sound,
-   initially once after interaction and thereafter every 3–4 groups. */
-  const meteorSoundUrl = new URL('../../assets/audio/meteor-stardust.mp3', import.meta.url).href;
-  let stardustContext = null;
-  let stardustBuffer = null;
-  let stardustLoading = null;
-  let silentGroupsRemaining = 0;
-  let lastStardustAt = -Infinity;
-
-  function unlockStardust(event) {
-    if (event.type === 'keydown' && !['Enter',' ','ArrowLeft','ArrowRight'].includes(event.key)) return;
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    if (!AudioCtx) return;
-    try {
-      if (!stardustContext) stardustContext = new AudioCtx();
-      if (stardustContext.state === 'suspended') {
-        stardustContext.resume().catch(() => {});
-      }
-      if (!stardustLoading) {
-        stardustLoading = fetch(meteorSoundUrl)
-          .then(response => {if (!response.ok) throw new Error('meteor audio unavailable'); return response.arrayBuffer();})
-          .then(data => stardustContext.decodeAudioData(data))
-          .then(buffer => {stardustBuffer = buffer;})
-          .catch(() => {stardustLoading = null;});
-      }
-    } catch (_) { /* Browser audio can be unsupported or blocked. Visual meteors continue. */ }
-  }
-  document.addEventListener('pointerdown', unlockStardust, {passive:true});
-  document.addEventListener('keydown', unlockStardust);
-
-  function playStardustOnGroup(groupVisibleMs) {
-    if (!stardustContext || stardustContext.state !== 'running' || !stardustBuffer || document.hidden) return;
-    if (silentGroupsRemaining > 0) {silentGroupsRemaining -= 1; return;}
-    if (performance.now() - lastStardustAt < 9000) return;
-    silentGroupsRemaining = randomInt(2, 3); // one sound per 3–4 groups
-    lastStardustAt = performance.now();
-    try {
-      const source = stardustContext.createBufferSource();
-      const gain = stardustContext.createGain();
-      source.buffer = stardustBuffer;
-      // The stardust cascade fills the same time window as the visible 2–5-star group.
-      // A little faster for short nearby stars, a little slower for distant stars.
-      source.playbackRate.value = stardustBuffer.duration / Math.max(1.15, groupVisibleMs/1000);
-      gain.gain.value = .19; // soft foreground glints under the user's BGM
-      source.connect(gain);
-      gain.connect(stardustContext.destination);
-      source.onended = () => {source.disconnect(); gain.disconnect();};
-      source.start();
-    } catch (_) { /* Audio errors never interrupt the shooting-star animation. */ }
-  }
-
+  // v39: meteor visuals only. No meteor audio listeners or playback.
   const pending = new Set();
   const active = new Set();
   let nextBurst = null;
@@ -125,8 +73,7 @@ if (roots.length) {
     return {x:random(vw*.22,vw*.78),y:random(vh*.23,vh*.71)};
   }
 
-  // Same original depth ranges as v36. Durations are chosen before the burst,
-  // letting the sound finish with the last meteor's fade-out.
+  // Preserve approved meteor depth, duration and tail-length ranges.
   const specs = {
     far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
     near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
@@ -208,8 +155,6 @@ if (roots.length) {
       const duration = random(...specs[depth].duration);
       planned.push({depth,delay,duration});
     }
-    const groupVisibleMs = Math.max(...planned.map(p => p.delay + p.duration));
-    playStardustOnGroup(groupVisibleMs);
     planned.forEach(({depth,delay,duration},i) => {
       if (delay === 0) shoot(group,depth,i,duration);
       else {
@@ -263,9 +208,6 @@ if (roots.length) {
     clearActive();
     if (frame) cancelAnimationFrame(frame);
     window.removeEventListener('pointermove',onPointerMove);
-    document.removeEventListener('pointerdown',unlockStardust);
-    document.removeEventListener('keydown',unlockStardust);
-    if (stardustContext) stardustContext.close().catch(() => {});
   },{once:true});
   schedule(true);
 }

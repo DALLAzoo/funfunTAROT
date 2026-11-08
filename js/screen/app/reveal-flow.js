@@ -1,3 +1,4 @@
+import {cardSounds} from '../../effects/card-motion-sound.js';
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {prepareFront,screenTransition} from '../../motion/reveal/transition.js';
 import {moveToCenter} from '../../motion/reveal/center-motion.js';
@@ -257,6 +258,7 @@ export async function chooseFlow(ctx,chosen){
   const viewTop=resultView.getBoundingClientRect().top;
   resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+12)+'px');
   setState('revealing','선택한 카드를 공개하고 있어요…');
+  cardSounds.play('travel',{durationMs:C.reveal.travel,volume:.35});
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
     (card,duration)=>revealMagic.orbit(card,duration));
   await new Promise(resolve=>setTimeout(resolve,C.reveal.pauseBeforeFlip));
@@ -269,6 +271,7 @@ export async function chooseFlow(ctx,chosen){
    {transform:`translate(${before.left-after.left}px,${before.top-after.top}px)`},
    {transform:'translate(0px,0px)'}
   ],{duration:C.reveal.flip,easing:'cubic-bezier(.22,.68,.22,1)'});
+  cardSounds.play('flip',{durationMs:C.reveal.flip,volume:.47});
   await Promise.all([screenTransition(result),shift.finished]);
   revealMagic.stars(result);
   resultView.classList.add('is-revealed');

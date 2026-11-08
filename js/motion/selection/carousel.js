@@ -1,3 +1,4 @@
+import {cardSounds} from '../../effects/card-motion-sound.js';
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {slotPose,mod} from '../core/cinema-core.js';
 import {transform,cardSize} from '../animation/card-animation.js';
@@ -41,6 +42,7 @@ export class Carousel {
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
   const old=this.selectedCard;this.selectedCard=card;this.layout();
+  cardSounds.play('pick',{volume:.46});
   const index=this.cards.indexOf(card),off=this.distance(index)+this.offset;
   const resting=slotPose(off,this.stage.clientWidth);
   const raised={...resting,y:resting.y-C.carousel.selectedLift};
@@ -91,7 +93,8 @@ export class Carousel {
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){
-   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
+   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');cardSounds.startDrag();}
+   cardSounds.dragMove(Math.abs(dx-(p.lastDx||0)));p.lastDx=dx;
    const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
    this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));
    if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
@@ -101,6 +104,7 @@ export class Carousel {
  up(e){
   const p=this.pointer;if(!p||e.pointerId!==p.id)return;
   this.pointer=null;this.releasePointer(e.pointerId);
+  cardSounds.stopDrag();
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
   if(p.dragged){this.layout();this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
   else this.stage.classList.remove('is-dragging');
@@ -122,15 +126,17 @@ export class Carousel {
   this.index=mod(this.index+shift,this.cards.length);
   this.offset=0;this.busy=false;this.stage.classList.remove('is-dragging');this.layout();
  }
- step(direction){if(this.busy||this.pointer)return;this.offset=0;this.snap(direction);}
+ step(direction){if(this.busy||this.pointer)return;cardSounds.play('pick',{volume:.26});this.offset=0;this.snap(direction);}
  releasePointer(id){if(this.stage.hasPointerCapture?.(id))try{this.stage.releasePointerCapture(id);}catch(_){} }
  cancel(){
+  cardSounds.stopDrag();
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
   this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');
   if(!this.busy)this.layout();
  }
  destroy(){
+  cardSounds.stopDrag();
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf)cancelAnimationFrame(this.raf);
   this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;
