@@ -1,56 +1,75 @@
-/* AD1 v21 - Image-preserving, masked metallic-depth reaction for tarot backs.
-   The original PNG/WebP, its UV placement and approved gold mask are unchanged.
-   No card transform, scale, outline, z-index or shuffle duration is modified. */
+/* AD1 v22 — clearly visible, image-preserving gold relief.
+   The source back image, its layout, card transforms, approved border and
+   existing animated gold mask are untouched. Only the gold-mask surface is lit.
+   Only idle top card / hovered or picked fan card uses this new layer. */
 
-/* Add ONE thin foil relief layer to the top idle card or the visible fan cards.
-   Use the existing gold-only mask so the effect cannot cover the background art. */
+/* The masked metallic bevel has stronger light/dark contrast than v21.
+   Full card artwork remains exactly the source image beneath this foil. */
 #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::after,
 #stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::after,
-#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.selectable .card-back::after,
-#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.selectable .card-front::after {
- content:"";
- position:absolute;
- inset:0;
- border-radius:inherit;
- pointer-events:none!important;
- background:
-   radial-gradient(ellipse 51% 36% at var(--ad1-foil-x, 54%) var(--ad1-foil-y, 38%),
-      rgba(255,250,210,.56) 0%,rgba(255,230,159,.26) 31%,rgba(244,181,82,.08) 58%,transparent 80%),
-   radial-gradient(ellipse 63% 44% at var(--ad1-foil-shadow-x, 33%) var(--ad1-foil-shadow-y, 66%),
-      rgba(31,14,4,.25),rgba(49,21,7,.07) 44%,transparent 77%);
- -webkit-mask-image:var(--glow-mask);
- mask-image:var(--glow-mask);
- -webkit-mask-position:center;
- mask-position:center;
- -webkit-mask-size:100% 100%;
- mask-size:100% 100%;
- -webkit-mask-repeat:no-repeat;
- mask-repeat:no-repeat;
- opacity:.25;
- z-index:2;
- transition:opacity 160ms ease-out;
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.ad1-foil-active .card-back::after,
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.ad1-foil-active .card-front::after,
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.is-picked .card-back::after,
+#stage.selection-stage:not(.orbit-opening):not(.is-dragging) .tarot-card.is-picked .card-front::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none!important;
+  z-index:2;
+  opacity:.91;
+  background:
+    linear-gradient(112deg,
+      rgba(21,10,6,.47) 2%,
+      rgba(70,32,9,.30) 24%,
+      rgba(244,178,75,.23) 39%,
+      rgba(255,253,222,.96) 46%,
+      rgba(255,230,145,.83) 50%,
+      rgba(185,111,30,.34) 57%,
+      rgba(40,19,8,.20) 70%,
+      transparent 90%),
+    radial-gradient(ellipse 43% 34% at var(--ad1-foil-x, 54%) var(--ad1-foil-y, 40%),
+      rgba(255,249,190,.74),rgba(239,174,71,.23) 53%,transparent 83%);
+  background-repeat:no-repeat;
+  background-size:265% 100%,100% 100%;
+  background-position:var(--ad1-foil-sweep, 12%) 50%,center;
+  -webkit-mask-image:var(--glow-mask);
+  mask-image:var(--glow-mask);
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  -webkit-mask-position:center;
+  mask-position:center;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  /* Tiny offset highlights make the gold read as raised without shifting art. */
+  filter:drop-shadow(-.65px -.65px 0 rgba(255,232,168,.52))
+         drop-shadow(.75px .75px 0 rgba(48,22,8,.60));
+  animation:ad1-v22-foil-sweep 6.6s ease-in-out infinite alternate;
+}
+/* A perceptible moving light sweep even when the user doesn't touch the card. */
+@keyframes ad1-v22-foil-sweep {
+  0%  {background-position:3% 50%,center;opacity:.76;}
+  48% {opacity:.98;}
+  100%{background-position:98% 50%,center;opacity:.88;}
+}
+/* Input takes priority over the automatic sweep so the reflection follows
+   the viewing position instead of drifting away from the user's finger. */
+#stage .tarot-card.ad1-foil-active .card-back::after,
+#stage .tarot-card.ad1-foil-active .card-front::after {
+  animation:none!important;
+  opacity:.99;
 }
 
-/* Only the card being pointed to or chosen receives the stronger response.
-   Other fan cards retain a very quiet static embossed sheen. */
-#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-back::after,
-#stage.idle-stack .tarot-card.shuffle-surface:first-child .card-front::after {
- opacity:.42;
-}
-#stage.selection-stage .tarot-card.ad1-foil-active .card-back::after,
-#stage.selection-stage .tarot-card.ad1-foil-active .card-front::after,
-#stage.selection-stage .tarot-card.is-picked .card-back::after,
-#stage.selection-stage .tarot-card.is-picked .card-front::after {
- opacity:.43;
-}
-
-/* Preserve the original card and mask when the surface is in flight. */
+/* The active effect is deliberately absent during shuffle, orbit opening and
+   while swiping fan cards: no added full-screen compositing or pointer capture. */
+#stage:not(.idle-stack):not(.selection-stage) .tarot-card .card-back::after,
+#stage:not(.idle-stack):not(.selection-stage) .tarot-card .card-front::after,
 #stage.orbit-opening .tarot-card .card-back::after,
 #stage.orbit-opening .tarot-card .card-front::after,
 #stage.is-dragging .tarot-card .card-back::after,
 #stage.is-dragging .tarot-card .card-front::after {
- content:none!important;
+  content:none!important;
+  animation:none!important;
 }
-
-/* This is a pointer-responsive finish, not a substitute for existing gold
-   animation. Reduced-motion preference does not suppress its requested effect. */
+/* There is intentionally no prefers-reduced-motion override here.
+   The same declared effect and duration run in either OS setting. */
