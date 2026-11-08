@@ -10,7 +10,8 @@
 
 
 
-<link rel="stylesheet" href="./css/tarot.css"><script>const n=Math.floor(Math.random()*20);const id=n<8?'back-0'+(n+1):'back-1-'+(n-7);const src=n<8?'./assets/card-backs/'+id+'.webp':'./assets/card-backs/'+id+'.png';document.documentElement.dataset.initialBack=id;const l=document.createElement('link');l.rel='preload';l.as='image';l.href=src;document.head.append(l);</script><link rel="modulepreload" href="./js/screen/app/bootstrap.js"><link rel="modulepreload" href="./js/motion/animation/card-animation.js"><link rel="modulepreload" href="./js/settings/config/config.js"></head>
+<link rel="stylesheet" href="./css/tarot.css">
+<link rel="stylesheet" href="./css/effects/15-background-music.css"><script>const n=Math.floor(Math.random()*20);const id=n<8?'back-0'+(n+1):'back-1-'+(n-7);const src=n<8?'./assets/card-backs/'+id+'.webp':'./assets/card-backs/'+id+'.png';document.documentElement.dataset.initialBack=id;const l=document.createElement('link');l.rel='preload';l.as='image';l.href=src;document.head.append(l);</script><link rel="modulepreload" href="./js/screen/app/bootstrap.js"><link rel="modulepreload" href="./js/motion/animation/card-animation.js"><link rel="modulepreload" href="./js/settings/config/config.js"></head>
 <body>
 <main class="tarot-app" id="tarotApp">
 
@@ -43,7 +44,7 @@
 <div class="actions">
 <button id="shuffleBtn" class="primary">카드 섞기</button>
 <div class="reading-dropdown">
-<button id="readingDropdown" type="button" class="reading-dropdown-trigger" aria-expanded="false" aria-controls="readingOptions">조언 - 당신을 위한 <span aria-hidden="true">⌄</span></button>
+<button id="readingDropdown" type="button" class="reading-dropdown-trigger" aria-expanded="false" aria-controls="readingOptions">무엇이 궁금하세요? <span aria-hidden="true">⌄</span></button>
 <div id="readingOptions" class="reading-dropdown-menu" hidden>
 <button type="button" class="reading-option" aria-selected="true">조언 - 당신을 위한</button>
 </div>
@@ -67,6 +68,16 @@
 <button id="resultAgain" class="primary" hidden>다시 섞기</button>
 </div>
 </section>
+<!-- AD1 v35: optional single-track background music control. -->
+<div class="ad1-bgm-control" aria-label="배경음 설정">
+  <button id="bgmToggle" class="ad1-bgm-toggle" type="button" aria-pressed="false" aria-label="배경음 켜기" title="배경음 켜기">
+    <span class="ad1-bgm-icon" aria-hidden="true">♫</span><span id="bgmLabel">음악 켜기</span>
+  </button>
+</div>
+<audio id="bgmAudio" preload="none" loop playsinline aria-hidden="true">
+  <source src="./assets/audio/bgm-deep-day-3.mp3" type="audio/mpeg">
+</audio>
+<script type="module" src="./js/effects/background-music.js"></script>
 <script type="module" src="./js/screen/app/main.js">
 </script>
 </body>
