@@ -1,7 +1,7 @@
-/* AD1 v30 — meteor palette matched to the cosmic background.
-   Uses per-meteor CSS variables so each meteor can randomly pick
-   purple, orange-gold, teal, or gold while keeping the same shape,
-   right-top -> left-bottom direction, and longer tails from v25. */
+/* AD1 v45 — meteor palette matched to the cosmic background.
+   Adds more noticeable size irregularity so meteors no longer feel too uniform.
+   Each meteor now has random tail thickness, glow width and head size, while
+   keeping the same right-top -> left-bottom direction and color palettes. */
 .ad1-meteor-sky {
   position:fixed;
   inset:0;
@@ -18,7 +18,7 @@
 .ad1-meteor {
   position:absolute;
   width:var(--meteor-length,128px);
-  height:2px;
+  height:var(--meteor-thickness,2px);
   border-radius:999px;
   pointer-events:none!important;
   will-change:transform,opacity;
@@ -29,6 +29,10 @@
   --meteor-tail-glow: rgba(143,217,209,.25);
   --meteor-tail-soft: rgba(154,141,218,.08);
   --meteor-halo: rgba(145,203,240,.24);
+  --meteor-glow-height: 6px;
+  --meteor-head-size: 4.8px;
+  --meteor-shadow-a: 9px;
+  --meteor-shadow-b: 16px;
   background:linear-gradient(to right,
     rgba(255,255,255,0) 0%,
     color-mix(in srgb, var(--meteor-tail-soft) 60%, transparent) 14%,
@@ -36,13 +40,17 @@
     var(--meteor-tail-mid) 76%,
     var(--meteor-head-core) 100%);
   box-shadow:
-    0 0 9px color-mix(in srgb, var(--meteor-tail-glow) 70%, transparent),
-    0 0 16px color-mix(in srgb, var(--meteor-halo) 55%, transparent);
+    0 0 var(--meteor-shadow-a) color-mix(in srgb, var(--meteor-tail-glow) 70%, transparent),
+    0 0 var(--meteor-shadow-b) color-mix(in srgb, var(--meteor-halo) 55%, transparent);
 }
 .ad1-meteor::before {
   content:"";
   position:absolute;
-  inset:-2.2px 0;
+  left:0;
+  right:0;
+  top:50%;
+  height:var(--meteor-glow-height);
+  transform:translateY(-50%);
   border-radius:999px;
   background:linear-gradient(to right,
     rgba(255,255,255,0) 0%,
@@ -56,8 +64,8 @@
 .ad1-meteor::after {
   content:"";
   position:absolute;
-  width:4.8px;
-  height:4.8px;
+  width:var(--meteor-head-size);
+  height:var(--meteor-head-size);
   right:-0.4px;
   top:50%;
   transform:translateY(-50%);
@@ -68,8 +76,8 @@
     color-mix(in srgb, var(--meteor-tail-glow) 75%, white 10%) 58%,
     rgba(255,255,255,0) 100%);
   box-shadow:
-    0 0 9px color-mix(in srgb, var(--meteor-tail-mid) 55%, white 14%),
-    0 0 18px color-mix(in srgb, var(--meteor-halo) 70%, transparent);
+    0 0 calc(var(--meteor-head-size) * 1.9) color-mix(in srgb, var(--meteor-tail-mid) 55%, white 14%),
+    0 0 calc(var(--meteor-head-size) * 3.8) color-mix(in srgb, var(--meteor-halo) 70%, transparent);
 }
 
 /* Background-matched palettes */
@@ -102,44 +110,20 @@
   --meteor-halo: rgba(214,174,78,.36);
 }
 
+/* Depth still affects brightness and halo strength, but size is now largely
+   driven by per-meteor variables from JS so clusters look less uniform. */
 .ad1-meteor--far {
-  height:1.35px;
   box-shadow:
-    0 0 5px color-mix(in srgb, var(--meteor-tail-glow) 42%, transparent),
-    0 0 10px color-mix(in srgb, var(--meteor-halo) 32%, transparent);
+    0 0 calc(var(--meteor-shadow-a) * .62) color-mix(in srgb, var(--meteor-tail-glow) 42%, transparent),
+    0 0 calc(var(--meteor-shadow-b) * .64) color-mix(in srgb, var(--meteor-halo) 32%, transparent);
 }
-.ad1-meteor--far::before { inset:-1.6px 0; opacity:.72; }
-.ad1-meteor--far::after {
-  width:3.2px;
-  height:3.2px;
-  box-shadow:
-    0 0 7px color-mix(in srgb, var(--meteor-tail-mid) 38%, white 10%),
-    0 0 11px color-mix(in srgb, var(--meteor-halo) 34%, transparent);
-}
-
-.ad1-meteor--near { height:2px; }
-.ad1-meteor--near::after { width:4.8px; height:4.8px; }
-
+.ad1-meteor--near {}
 .ad1-meteor--front {
-  height:2.6px;
   box-shadow:
-    0 0 10px color-mix(in srgb, var(--meteor-tail-glow) 72%, transparent),
-    0 0 18px color-mix(in srgb, var(--meteor-halo) 44%, transparent);
-}
-.ad1-meteor--front::before { inset:-2.8px 0; opacity:1; }
-.ad1-meteor--front::after {
-  width:6.2px;
-  height:6.2px;
-  box-shadow:
-    0 0 10px color-mix(in srgb, var(--meteor-tail-mid) 62%, white 12%),
-    0 0 20px color-mix(in srgb, var(--meteor-halo) 54%, transparent);
+    0 0 calc(var(--meteor-shadow-a) * 1.08) color-mix(in srgb, var(--meteor-tail-glow) 72%, transparent),
+    0 0 calc(var(--meteor-shadow-b) * 1.12) color-mix(in srgb, var(--meteor-halo) 44%, transparent);
 }
 
 @media(max-width:699px){
   .ad1-meteor-sky {transition:none;}
-  .ad1-meteor {height:1.8px;}
-  .ad1-meteor::before {inset:-1.8px 0;}
-  .ad1-meteor::after {width:4.2px;height:4.2px;}
-  .ad1-meteor--front {height:2.2px;}
-  .ad1-meteor--front::after {width:5.2px;height:5.2px;}
 }

@@ -1,4 +1,4 @@
-/* AD1 v42 — meteor groups travel upper-right to lower-left; stronger sequential stagger within each group.
+/* AD1 v45 — meteor groups travel upper-right to lower-left; stronger sequential stagger and more irregular sizes within each group.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -87,6 +87,16 @@ if (roots.length) {
       front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
     };
     const spec = specs[depth];
+
+    // Give each meteor a more irregular physical presence.
+    // Instead of looking evenly manufactured, some feel slimmer and some broader.
+    const sizeRoll = Math.random();
+    const sizeScale = depth === 'far'
+      ? (sizeRoll < .18 ? random(.62,.76) : sizeRoll < .78 ? random(.82,1.12) : random(1.16,1.34))
+      : depth === 'near'
+        ? (sizeRoll < .16 ? random(.72,.88) : sizeRoll < .74 ? random(.92,1.20) : random(1.24,1.48))
+        : (sizeRoll < .12 ? random(.82,.98) : sizeRoll < .70 ? random(1.02,1.28) : random(1.30,1.62));
+
     const distance = Math.min(Math.hypot(vw,vh)*.56,random(...spec.distance));
     const dx = Math.cos(group.angle)*distance;
     const dy = Math.sin(group.angle)*distance;
@@ -108,7 +118,18 @@ if (roots.length) {
     element.dataset.meteorDepth = depth;
     element.style.left = `${x}px`;
     element.style.top = `${y}px`;
-    element.style.setProperty('--meteor-length',`${Math.min(vw*.36,random(...spec.length))}px`);
+    const meteorLength = Math.min(vw*.40, random(...spec.length) * random(.90, 1.18) * Math.max(.92, sizeScale*.96));
+    const meteorThickness = clamp((depth === 'far' ? 1.35 : depth === 'near' ? 2.0 : 2.6) * sizeScale, 1.0, 4.2);
+    const meteorGlowHeight = clamp(meteorThickness * random(2.5, 3.4), 3.6, 11.8);
+    const meteorHead = clamp(meteorThickness * random(2.1, 2.95), 2.8, 10.4);
+    const shadowA = clamp(6.5 * sizeScale + random(.2, 2.0), 4.5, 14.5);
+    const shadowB = clamp(12.0 * sizeScale + random(.8, 4.0), 8.0, 26.0);
+    element.style.setProperty('--meteor-length',`${meteorLength}px`);
+    element.style.setProperty('--meteor-thickness',`${meteorThickness.toFixed(2)}px`);
+    element.style.setProperty('--meteor-glow-height',`${meteorGlowHeight.toFixed(2)}px`);
+    element.style.setProperty('--meteor-head-size',`${meteorHead.toFixed(2)}px`);
+    element.style.setProperty('--meteor-shadow-a',`${shadowA.toFixed(2)}px`);
+    element.style.setProperty('--meteor-shadow-b',`${shadowB.toFixed(2)}px`);
     layer[depth].append(element);
 
     const alpha = random(...spec.alpha);
