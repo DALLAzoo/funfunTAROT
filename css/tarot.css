@@ -26,3 +26,6 @@
 
 /* v54: rotated phone site + tablet portrait-like selection and PC-like result. */
 @import url("./screen/19-phone-portrait-lock-tablet-result.css");
+
+/* v55: one stationary button bar on tablet landscape, from shuffle through result. */
+@import url("./screen/20-tablet-landscape-fixed-actions.css");
