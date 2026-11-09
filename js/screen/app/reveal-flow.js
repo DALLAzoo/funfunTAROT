@@ -20,7 +20,9 @@ export async function chooseFlow(ctx,chosen){
  // Record this viewport anchor for the mobile portrait fallback; the CSS keeps
  // landscape controls fixed in the identical position on both screens.
  const shuffleActions=main.querySelector('.controls .actions');
- const shuffleActionsBottom=shuffleActions.getBoundingClientRect().bottom;
+ const shuffleActionsRect=shuffleActions.getBoundingClientRect();
+ const shuffleActionsBottom=shuffleActionsRect.bottom;
+ const shuffleActionsTop=shuffleActionsRect.top;
  heading.textContent=ctx.readingSelection || '조언 - 당신을 위한';
  const origin=chosen.getBoundingClientRect();
  const sourceWidth=chosen.offsetWidth;
@@ -258,6 +260,12 @@ export async function chooseFlow(ctx,chosen){
   // Measure relative to the result container, not an assumed viewport inset.
   resultView.style.setProperty('--mobile-actions-bottom',
     Math.max(0,Math.round(resultView.getBoundingClientRect().bottom-shuffleActionsBottom))+'px');
+  // Portrait tablets: retain the first-screen button bar position during reveal.
+  // The original actions were measured before their parent was hidden.
+  const resultTop=resultView.getBoundingClientRect().top;
+  const tabletActionTop=Math.max(8,Math.min(innerHeight-shuffleActionsRect.height-8,
+    shuffleActionsTop-resultTop));
+  resultView.style.setProperty('--tablet-actions-top',Math.round(tabletActionTop)+'px');
   const titleBottom=heading.getBoundingClientRect().bottom;
   const viewTop=resultView.getBoundingClientRect().top;
   const tabletCardGap=window.matchMedia?.('(min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)').matches?24:12;

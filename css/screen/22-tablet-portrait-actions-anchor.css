@@ -1,0 +1,28 @@
+/* v58 — Tablet controls remain at the original first-screen coordinates.
+   The landscape tablet keeps the v55 bottom-center anchor unchanged.
+   Portrait tablet uses the measured selection-control top on the result view.
+   No change to phone or desktop buttons. */
+@media (orientation:portrait) and (min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse) {
+  #resultView .result-actions {
+    position:absolute;
+    top:var(--tablet-actions-top, 75dvh);
+    bottom:auto!important;
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    margin:0!important;
+    z-index:30;
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    max-height:max(30px,calc(var(--tablet-actions-top, 75dvh) - var(--reveal-top,125px) - var(--result-height,326px) - 22px));
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+}
+/* Wide touch tablets place text beside the card, so their reading starts
+   at --reveal-top rather than below the card. */
+@media (orientation:portrait) and (min-width:900px) and (min-height:550px) and (hover:none) and (pointer:coarse) {
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    max-height:max(30px,calc(var(--tablet-actions-top, 75dvh) - var(--reveal-top,125px) - 22px));
+  }
+}

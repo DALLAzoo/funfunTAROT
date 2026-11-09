@@ -32,3 +32,6 @@
 
 /* v57: tablet result card typography + content-fit reading; mobile landscape heading anchor. */
 @import url("./screen/21-responsive-reading-and-phone-heading.css");
+
+/* v58: keep result controls at the same initial button location on portrait tablets. */
+@import url("./screen/22-tablet-portrait-actions-anchor.css");

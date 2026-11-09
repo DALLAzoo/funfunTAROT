@@ -60,6 +60,31 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       host.style.width = w + 'px';host.style.height = w * C.aspect + 'px';
       $('#resultView').style.setProperty('--result-width',w+'px');
       $('#resultView').style.setProperty('--result-height',w*C.aspect+'px');
+      // Recalculate the selection-screen button anchor after tablet resize/rotation.
+      // A layout-only replica preserves the original first-screen placement while
+      // #tarotApp is hidden and its shared heading lives inside #resultView.
+      const portraitTablet=window.matchMedia?.(
+        '(orientation:portrait) and (min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)'
+      ).matches;
+      if (portraitTablet) {
+        const original=$('#tarotApp');
+        const replica=document.createElement('main');
+        replica.className=original.className;
+        replica.style.cssText='position:absolute;left:0;top:0;width:100%;visibility:hidden;pointer-events:none;z-index:-1;';
+        const intro=$('#sharedIntro').cloneNode(true);
+        const title=intro.querySelector('h1');
+        if (title) title.textContent='마음이 끌리는 카드를 선택하세요';
+        replica.append(intro);
+        const stage=document.createElement('section');stage.className=$('#stage').className;
+        replica.append(stage);
+        replica.append(original.querySelector('.controls').cloneNode(true));
+        document.body.append(replica);
+        const action=replica.querySelector('.controls .actions').getBoundingClientRect();
+        replica.remove();
+        $('#resultView').style.setProperty('--tablet-actions-top',Math.round(
+          Math.max(8,Math.min(innerHeight-action.height-8,action.top))
+        )+'px');
+      }
       const heading = $('#resultSelectionTitle');
       if (heading) {
         $('#resultView').style.setProperty('--reveal-top',Math.round(
