@@ -20,15 +20,11 @@ export const CONFIG = {
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
+// A rotated phone keeps portrait sizing for all phases, including the final card.
+// Stage width is already narrow because the portrait shell stays narrow.
 export function stageSize(phase,width,config=CONFIG){
- const size=config.sizes[width<config.breakpoint?'mobile':'desktop'][phase];
- // v50: mobile landscape has a short viewport even with a wide stage.
- // Keep authored travel/rotation formulas intact; only fit card dimensions.
- if ((phase==='shuffle'||phase==='selection') &&
-     typeof window!=='undefined' &&
-     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches) {
-   const maxCardWidth=Math.max(70,Math.floor((window.innerHeight-36)/(config.aspect*1.18)));
-   return Math.min(size,maxCardWidth);
- }
- return size;
+ const phoneLandscape = typeof window !== 'undefined' &&
+   window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
+ const effectiveWidth = phoneLandscape ? Math.min(width,window.innerHeight) : width;
+ return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
 }

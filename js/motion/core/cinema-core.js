@@ -40,7 +40,7 @@ export function slotPose(offset,width,c=C){
  let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
  if (typeof window!=='undefined' &&
-     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches) {
+     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches && width >= 600) {
    // Reserve the projected half-width of outer rotated cards.
    const endAngle=23*Math.PI/180;
    const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;

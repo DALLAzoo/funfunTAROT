@@ -1,59 +1,124 @@
-/* In-between Shift v51 — keep the approved horizontal shuffle visibility. */
-/* Setting overflow-x: visible with overflow-y: hidden would compute to auto.
-   Clip vertically without clipping left/right card travel. */
+/* v52 — Keep the original portrait *layout* when a PHONE is rotated.
+   The browser remains landscape, so the user may scroll the portrait-shaped
+   layout; do not hide the site, block input, or show a rotation message.
+   Small-screen + coarse pointer prevents ordinary tablet / PC changes.
+*/
 #stage {
+  /* Existing v50 fix: let cards travel beyond the left/right stage edges,
+     while keeping the vertical stage cutout. */
   overflow: visible;
   clip-path: inset(0 -100vw 0 -100vw);
   contain: layout;
 }
 
-/* Ordinary mobile websites cannot lock the physical screen orientation.
-   In phone landscape, prevent use of an unapproved landscape layout;
-   keep the mounted UI and its progress intact until portrait returns.
-   Large tablet landscape and desktop are intentionally unaffected. */
-@media (orientation: landscape) and (max-height: 560px) and (max-width: 1000px) and (hover: none) and (pointer: coarse) {
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 1100px) and (hover: none) and (pointer: coarse) {
   html, body {
     width: 100%;
-    height: 100%;
-    overflow: hidden !important;
-    overscroll-behavior: none;
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: auto;
   }
-
-  /* Keep DOM and state; hide only while the phone is sideways. */
-  #tarotApp, #resultView, .ad1-bgm-control, .ad1-image-error {
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
-
-  /* No explanatory message: a small portrait/rotation pictogram only. */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: 2147483646;
-    background: radial-gradient(ellipse at 50% 40%, #162825, #080e10 75%);
-    pointer-events: auto;
-  }
-  body::after {
-    content: "↻";
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    z-index: 2147483647;
-    width: 57px;
-    height: 86px;
+  #tarotApp.tarot-app {
+    box-sizing: border-box;
     display: flex;
+    flex-direction: column;
+    width: min(100%, 100dvh, 430px);
+    max-width: 430px;
+    min-height: 100vw;
+    height: auto;
+    margin-inline: auto;
+    padding: 15px;
+  }
+  #tarotApp > .intro {
+    margin: 18px 0 0;
+    text-align: center;
+  }
+  #tarotApp > .intro .eyebrow { font-size: 11px; }
+  #tarotApp > .intro h1 {
+    font-size: 26px;
+    line-height: 1.3;
+    margin: 12px 0;
+  }
+  #tarotApp #stage {
+    flex: 1 1 auto;
+    min-height: 380px;
+    max-height: 500px;
+    width: 100%;
+  }
+  #tarotApp > .controls {
+    width: 100%;
+    padding: 8px 0 16px;
+  }
+  #tarotApp .controls .actions {
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    border: 2px solid #c49b61;
-    border-radius: 10px;
-    background: rgba(30, 36, 31, .94);
-    box-shadow: 0 0 28px rgba(211, 157, 66, .17), inset 0 -6px 0 -3px rgba(196, 155, 97, .65);
-    transform: translate(-50%, -50%);
-    color: #e4c58f;
-    font-family: Arial, sans-serif;
-    font-size: 41px;
-    line-height: 1;
-    pointer-events: none;
+    gap: 10px;
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  #tarotApp .controls .actions > #shuffleBtn {
+    width: auto;
+    min-width: 100px;
+    padding: 0 12px;
+    height: 44px;
+    font-size: 13px;
+  }
+  #tarotApp .controls .reading-dropdown { width: auto; min-width: 175px; }
+  #tarotApp .controls .reading-dropdown-trigger {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    font-size: 13px;
+    padding: 0 10px;
+  }
+
+  #resultView.result-view {
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: min(100%, 100dvh, 430px);
+    max-width: 430px;
+    min-height: 100vw;
+    height: 100vw;
+    margin-inline: auto;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+  #resultView > .intro h1 { font-size: 26px; }
+  /* Override the wide-layout result rules, which otherwise match the
+     physical landscape viewport and move the card/reading into columns. */
+  #resultView.is-revealed .result-card-host {
+    left: calc(50% - var(--result-width,190px) / 2);
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    left: 50%;
+    right: auto;
+    width: min(calc(100% - 28px), 520px);
+    transform: translateX(-50%);
+    top: calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px);
+    bottom: 84px;
+    margin: 0 !important;
+  }
+  #resultView .result-reading { font-size: 14px; padding: 12px 14px; }
+  #resultView .result-actions {
+    left: 50%;
+    bottom: var(--mobile-actions-bottom, 30px);
+    transform: translateX(-50%);
+  }
+  #resultView .result-actions > #resultAgain {
+    min-width: 100px;
+    height: 44px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+  #resultView .result-actions .reading-dropdown { min-width: 175px; }
+  #resultView .result-actions .reading-dropdown-trigger {
+    height: 44px;
+    font-size: 13px;
   }
 }
