@@ -25,6 +25,10 @@ export function isTabletLandscape(){
  return typeof window !== 'undefined' &&
   !!window.matchMedia?.('(orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse)').matches;
 }
+export function isTabletPortrait(){
+ return typeof window !== 'undefined' &&
+  !!window.matchMedia?.('(orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse)').matches;
+}
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
@@ -43,14 +47,21 @@ export function stageSize(phase,width,config=CONFIG){
  }
  if (isTabletLandscape()) {
    if (phase==='result') {
-     // Reserve title and bottom buttons in compact tablet landscape views.
-     return Math.min(config.sizes.desktop.result,
-       Math.max(150, (window.innerHeight-265)/config.aspect));
+     // Larger tablet card, bounded by the real usable height above fixed controls.
+     const titleZone=Math.min(175,Math.max(105,window.innerHeight*.19));
+     return Math.min(345,Math.max(145,
+       Math.min(width*.32,(window.innerHeight-titleZone-112)/config.aspect)));
    }
    if (phase==='selection') return Math.min(config.sizes.desktop.selection,
      Math.max(150,Math.min(width*.32,window.innerHeight*.29)));
    if (phase==='shuffle') return Math.min(config.sizes.desktop.shuffle,
      Math.max(110,Math.min(width*.25,window.innerHeight*.22)));
+ }
+ if (phase==='result' && isTabletPortrait()) {
+   // Keep the existing tablet portrait layout, enlarge only its card.
+   const tabletWidth=width<900?Math.min(325,width*.42):Math.min(350,width*.35);
+   const heightCap=(window.innerHeight-365)/config.aspect;
+   return Math.min(tabletWidth,Math.max(170,heightCap));
  }
  return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
 }

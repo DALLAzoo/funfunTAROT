@@ -63,7 +63,8 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       const heading = $('#resultSelectionTitle');
       if (heading) {
         $('#resultView').style.setProperty('--reveal-top',Math.round(
-          heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+12)+'px');
+          heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+
+          (window.matchMedia?.('(min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)').matches?24:12))+'px');
       }
     }
   });

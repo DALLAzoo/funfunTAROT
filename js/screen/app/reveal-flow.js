@@ -260,7 +260,8 @@ export async function chooseFlow(ctx,chosen){
     Math.max(0,Math.round(resultView.getBoundingClientRect().bottom-shuffleActionsBottom))+'px');
   const titleBottom=heading.getBoundingClientRect().bottom;
   const viewTop=resultView.getBoundingClientRect().top;
-  resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+12)+'px');
+  const tabletCardGap=window.matchMedia?.('(min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)').matches?24:12;
+  resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+tabletCardGap)+'px');
   setState('revealing','선택한 카드를 공개하고 있어요…');
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
     (card,duration)=>revealMagic.orbit(card,duration));

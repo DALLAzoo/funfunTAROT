@@ -29,3 +29,6 @@
 
 /* v55: one stationary button bar on tablet landscape, from shuffle through result. */
 @import url("./screen/20-tablet-landscape-fixed-actions.css");
+
+/* v57: tablet result card typography + content-fit reading; mobile landscape heading anchor. */
+@import url("./screen/21-responsive-reading-and-phone-heading.css");
