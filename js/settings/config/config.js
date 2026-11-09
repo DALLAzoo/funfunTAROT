@@ -19,6 +19,12 @@ export const CONFIG = {
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'238,190,103'},
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
+// On a touch tablet in landscape, size cards to the LEFT stage width.
+// This does not run on desktop, tablet portrait, or rotated phones.
+export function isTabletLandscape(){
+ return typeof window !== 'undefined' &&
+  !!window.matchMedia?.('(orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse)').matches;
+}
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
@@ -26,5 +32,10 @@ export function stageSize(phase,width,config=CONFIG){
  const phoneLandscape = typeof window !== 'undefined' &&
    window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
  const effectiveWidth = phoneLandscape ? Math.min(width,window.innerHeight) : width;
+ if (isTabletLandscape()) {
+   // Smaller fan is required in the left column; preserves the 7:12 aspect.
+   if (phase==='shuffle') return Math.min(160,Math.max(104,width*.21));
+   if (phase==='selection') return Math.min(190,Math.max(110,width*.245));
+ }
  return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
 }
