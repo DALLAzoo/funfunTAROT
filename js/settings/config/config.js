@@ -29,13 +29,19 @@ export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
 export function stageSize(phase,width,config=CONFIG){
- const phoneLandscape = typeof window !== 'undefined' &&
+ const phoneLandscape = typeof window!=='undefined' &&
    window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
- const effectiveWidth = phoneLandscape ? Math.min(width,window.innerHeight) : width;
+ const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
  if (isTabletLandscape()) {
-   // Smaller fan is required in the left column; preserves the 7:12 aspect.
-   if (phase==='shuffle') return Math.min(160,Math.max(104,width*.21));
-   if (phase==='selection') return Math.min(190,Math.max(110,width*.245));
+   if (phase==='result') {
+     // Reserve title and bottom buttons in compact tablet landscape views.
+     return Math.min(config.sizes.desktop.result,
+       Math.max(150, (window.innerHeight-265)/config.aspect));
+   }
+   if (phase==='selection') return Math.min(config.sizes.desktop.selection,
+     Math.max(150,Math.min(width*.32,window.innerHeight*.29)));
+   if (phase==='shuffle') return Math.min(config.sizes.desktop.shuffle,
+     Math.max(110,Math.min(width*.25,window.innerHeight*.22)));
  }
  return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
 }

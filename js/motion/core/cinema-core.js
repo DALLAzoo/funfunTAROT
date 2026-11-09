@@ -39,15 +39,9 @@ export function slotPose(offset,width,c=C){
  // One formula on all devices; only available stage width changes the spacing.
  let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
- if (isTabletLandscape()) {
-   // Fit the outer rotated card (not merely its center) inside the left stage.
-   const endAngle=23*Math.PI/180;
-   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
-   const freeHalf=Math.max(0,(width-28)/2-outerHalf);
-   fit=Math.min(fit,Math.max(.28,freeHalf/(steps[0]+steps[1]+steps[2])));
- }
+
  if (typeof window!=='undefined' &&
-     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches && width >= 600) {
+     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches && width >= 600 && !isTabletLandscape()) {
    // Reserve the projected half-width of outer rotated cards.
    const endAngle=23*Math.PI/180;
    const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
@@ -67,9 +61,7 @@ export function travelPose(index,t,width,height,count,c=C){
  const phase=k*2.399963,dir=k%3===1?-1:1;
  const a=phase+dir*t*Math.PI*2*(c.shuffle.turns+(k%4)*.075);
  const radius=.66+(k%5)*.075;
- // Fit the shuffle orbit within the left tablet column without changing timing.
- const radiusX=isTabletLandscape()?Math.min(c.shuffle.radiusX,.30):c.shuffle.radiusX;
- const x=side*Math.cos(a)*width*radiusX*radius;
+ const x=side*Math.cos(a)*width*c.shuffle.radiusX*radius;
  const y=side*(Math.sin(a)*Math.cos(k*.37)*height*c.shuffle.radiusY+Math.cos(a)*height*.065);
  const middle=(c.shuffle.nearDepth+c.shuffle.farDepth)/2*c.camera.perspective;
  const depth=(c.shuffle.nearDepth-c.shuffle.farDepth)/2*c.camera.perspective;

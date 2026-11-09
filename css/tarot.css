@@ -23,3 +23,6 @@
 @import url("./screen/17-landscape-and-shuffle-visibility.css");
 /* v53: tablet landscape first-screen / shuffle / fan layout. */
 @import url("./screen/18-tablet-landscape-shuffle-layout.css");
+
+/* v54: rotated phone site + tablet portrait-like selection and PC-like result. */
+@import url("./screen/19-phone-portrait-lock-tablet-result.css");
