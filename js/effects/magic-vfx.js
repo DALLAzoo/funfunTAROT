@@ -22,7 +22,15 @@ export class MagicVFX {
   this.rearCanvas.width=Math.round(this.w*this.dpr);this.rearCanvas.height=Math.round(this.h*this.dpr);this.rearCtx?.setTransform(this.dpr,0,0,this.dpr,0,0);this.trails=[];
  }
  phase(name){this.name=name;this.phaseAt=performance.now();this.canvas.dataset.phase=name;}
- idle(cards){this.start(cards,'idle');}
+ // The idle deck is static. Its visible gold lighting is handled by CSS,
+ // and screen sparkles run in their own canvas. The MagicVFX frame loop only
+ // clears blank canvases and measures all cards during idle, so leave it off
+ // until the user actually starts a shuffle.
+ idle(cards){
+  this.stop();
+  this.cards=cards;
+  this.phase('idle');
+ }
  start(cards,phase='charge'){
   // Continue the same clock and canvas through idle -> shuffle; never add a layer.
   this.cards=cards;this.trails=[];this.resize();this.phase(phase);
