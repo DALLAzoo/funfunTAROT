@@ -1,98 +1,59 @@
-/* In-between Shift v50: reveal the left/right travel area without changing
-   the stage's top/bottom clipping. overflow-x: visible + overflow-y: hidden
-   computes to overflow-x: auto in CSS, so use clip-path with horizontal outsets. */
+/* In-between Shift v51 — keep the approved horizontal shuffle visibility. */
+/* Setting overflow-x: visible with overflow-y: hidden would compute to auto.
+   Clip vertically without clipping left/right card travel. */
 #stage {
   overflow: visible;
   clip-path: inset(0 -100vw 0 -100vw);
   contain: layout;
 }
 
-/* Touch phones in landscape: fit the idle pile, fan and primary controls in
-   one viewport. This deliberately leaves desktop and portrait unchanged. */
-@media (orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse) {
-  html, body { height:100%; overflow-x:hidden; overflow-y:hidden; }
-  #tarotApp.tarot-app {
-    box-sizing:border-box;
-    display:grid;
-    grid-template-columns:minmax(185px,32%) minmax(0,1fr);
-    grid-template-rows:minmax(0,1fr) auto;
-    gap:0 clamp(4px,1.2vw,14px);
-    height:100dvh;
-    min-height:0;
-    max-width:none;
-    width:100%;
-    padding: max(9px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+/* Ordinary mobile websites cannot lock the physical screen orientation.
+   In phone landscape, prevent use of an unapproved landscape layout;
+   keep the mounted UI and its progress intact until portrait returns.
+   Large tablet landscape and desktop are intentionally unaffected. */
+@media (orientation: landscape) and (max-height: 560px) and (max-width: 1000px) and (hover: none) and (pointer: coarse) {
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden !important;
+    overscroll-behavior: none;
   }
-  #tarotApp > .intro {
-    grid-column:1;
-    grid-row:1;
-    margin:0;
-    align-self:end;
-    padding:0 8px clamp(14px,4vh,24px);
-    position:relative;
-    z-index:2;
+
+  /* Keep DOM and state; hide only while the phone is sideways. */
+  #tarotApp, #resultView, .ad1-bgm-control, .ad1-image-error {
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
-  #tarotApp > .intro .eyebrow {
-    font-size:clamp(8px,1.5vh,11px);
-    letter-spacing:.18em;
-    margin:0;
+
+  /* No explanatory message: a small portrait/rotation pictogram only. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 2147483646;
+    background: radial-gradient(ellipse at 50% 40%, #162825, #080e10 75%);
+    pointer-events: auto;
   }
-  #tarotApp > .intro h1 {
-    font-size:clamp(17px,4.7vh,24px);
-    line-height:1.2;
-    text-wrap:balance;
-    word-break:keep-all;
-    margin:8px 0 0;
-  }
-  #tarotApp > .intro #instruction {
-    display:none!important;
-  }
-  #tarotApp #stage {
-    grid-column:2;
-    grid-row:1 / 3;
-    min-width:0;
-    min-height:0;
-    max-height:none;
-    height:100%;
-    width:100%;
-    align-self:stretch;
-    z-index:1;
-  }
-  #tarotApp > .controls {
-    grid-column:1;
-    grid-row:2;
-    align-self:end;
-    min-width:0;
-    width:100%;
-    padding:0 8px clamp(10px,3.5vh,18px);
-    position:relative;
-    z-index:3;
-  }
-  #tarotApp .controls .actions {
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    align-items:stretch;
-    width:100%;
-    max-width:230px;
-    margin:0 auto;
-  }
-  #tarotApp .controls .actions > #shuffleBtn,
-  #tarotApp .controls .reading-dropdown,
-  #tarotApp .controls .reading-dropdown-trigger {
-    box-sizing:border-box;
-    width:100%;
-    min-width:0;
-    max-width:100%;
-  }
-  #tarotApp .controls .actions > #shuffleBtn,
-  #tarotApp .controls .reading-dropdown-trigger {
-    height:clamp(37px,10.4vh,44px);
-    font-size:clamp(11px,2.9vh,14px);
-  }
-  #stage.idle-stack .tarot-card.shuffle-surface {
-    --v50-landscape-idle-w:min(186px,calc((100dvh - 42px) * .52));
-    width:var(--v50-landscape-idle-w)!important;
-    height:calc(var(--v50-landscape-idle-w) * 1.7161290323)!important;
+  body::after {
+    content: "↻";
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 2147483647;
+    width: 57px;
+    height: 86px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #c49b61;
+    border-radius: 10px;
+    background: rgba(30, 36, 31, .94);
+    box-shadow: 0 0 28px rgba(211, 157, 66, .17), inset 0 -6px 0 -3px rgba(196, 155, 97, .65);
+    transform: translate(-50%, -50%);
+    color: #e4c58f;
+    font-family: Arial, sans-serif;
+    font-size: 41px;
+    line-height: 1;
+    pointer-events: none;
   }
 }
