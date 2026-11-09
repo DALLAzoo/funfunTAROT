@@ -32,6 +32,15 @@ export function stageSize(phase,width,config=CONFIG){
  const phoneLandscape = typeof window!=='undefined' &&
    window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
  const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
+ if (phoneLandscape) {
+   const h=window.innerHeight;
+   if (phase==='result') return Math.min(config.sizes.mobile.result,
+     Math.max(98,(h-128)/config.aspect));
+   if (phase==='selection') return Math.min(config.sizes.mobile.selection,
+     Math.max(110,(h-116)/config.aspect));
+   if (phase==='shuffle') return Math.min(config.sizes.mobile.shuffle,
+     Math.max(84,(h-118)/config.aspect));
+ }
  if (isTabletLandscape()) {
    if (phase==='result') {
      // Reserve title and bottom buttons in compact tablet landscape views.

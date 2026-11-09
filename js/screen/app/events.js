@@ -62,11 +62,8 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       $('#resultView').style.setProperty('--result-height',w*C.aspect+'px');
       const heading = $('#resultSelectionTitle');
       if (heading) {
-        const rotatedPhone=window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
-        const intro=$('#sharedIntro');
-        $('#resultView').style.setProperty('--reveal-top',Math.round(rotatedPhone?
-          (intro.offsetTop+heading.offsetTop+heading.offsetHeight+12):
-          (heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+12))+'px');
+        $('#resultView').style.setProperty('--reveal-top',Math.round(
+          heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+12)+'px');
       }
     }
   });

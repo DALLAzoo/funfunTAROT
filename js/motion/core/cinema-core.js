@@ -39,6 +39,15 @@ export function slotPose(offset,width,c=C){
  // One formula on all devices; only available stage width changes the spacing.
  let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
+ // A phone in landscape uses a half-width card stage; include the projected
+ // width of the angled outer card so the fan avoids the right-side controls.
+ if (typeof window!=='undefined' &&
+     window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches) {
+   const endAngle=23*Math.PI/180;
+   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
+   const freeHalf=Math.max(0,width/2-outerHalf-10);
+   fit=Math.min(fit,Math.max(.23,freeHalf/(steps[0]+steps[1]+steps[2])));
+ }
 
  if (typeof window!=='undefined' &&
      window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches && width >= 600 && !isTabletLandscape()) {

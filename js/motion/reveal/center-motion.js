@@ -4,11 +4,9 @@ import {CONFIG as C} from '../../settings/config/config.js';
 export function travelFrames(origin, destination, angle, scale=1) {
  const dx=origin.left+origin.width/2-destination.left-destination.width/2;
  const dy=origin.top+origin.height/2-destination.top-destination.height/2;
- const rotatedPhone=window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
- // The ancestor body rotates 90 degrees clockwise; convert physical deltas
- // back to the card's local (portrait) coordinate system.
- const localX=rotatedPhone?dy:dx;
- const localY=rotatedPhone?-dx:dy;
+ // v56: both the source card and destination host use viewport coordinates.
+ const localX=dx;
+ const localY=dy;
  return [
   {transform:`translate(${localX}px,${localY}px) rotateZ(${angle}deg) scale(${scale})`},
   {transform:'translate(0px,0px) rotateZ(0deg) scale(1)'}

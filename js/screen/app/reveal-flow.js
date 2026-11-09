@@ -16,13 +16,11 @@ export async function chooseFlow(ctx,chosen){
  // The consultation title is an independent display, not a dropdown DOM child.
  const heading=$('#resultSelectionTitle');
  const intro=$('#sharedIntro');
- const rotatedPhone=window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
- const introTop=rotatedPhone?intro.offsetTop:intro.getBoundingClientRect().top;
- // Capture the actual shuffle-screen button position before changing screens.
+ const introTop=intro.getBoundingClientRect().top;
+ // Record this viewport anchor for the mobile portrait fallback; the CSS keeps
+ // landscape controls fixed in the identical position on both screens.
  const shuffleActions=main.querySelector('.controls .actions');
- const shuffleActionsBottom=rotatedPhone?
-   (shuffleActions.closest('.controls').offsetTop+shuffleActions.offsetTop+shuffleActions.offsetHeight):
-   shuffleActions.getBoundingClientRect().bottom;
+ const shuffleActionsBottom=shuffleActions.getBoundingClientRect().bottom;
  heading.textContent=ctx.readingSelection || '조언 - 당신을 위한';
  const origin=chosen.getBoundingClientRect();
  const sourceWidth=chosen.offsetWidth;
@@ -259,11 +257,9 @@ export async function chooseFlow(ctx,chosen){
   // Match the result buttons to the shuffle buttons on narrow screens.
   // Measure relative to the result container, not an assumed viewport inset.
   resultView.style.setProperty('--mobile-actions-bottom',
-    Math.max(0,Math.round((rotatedPhone?resultView.clientHeight:resultView.getBoundingClientRect().bottom)-shuffleActionsBottom))+'px');
-  const titleBottom=rotatedPhone?
-    (intro.offsetTop+heading.offsetTop+heading.offsetHeight):
-    heading.getBoundingClientRect().bottom;
-  const viewTop=rotatedPhone?0:resultView.getBoundingClientRect().top;
+    Math.max(0,Math.round(resultView.getBoundingClientRect().bottom-shuffleActionsBottom))+'px');
+  const titleBottom=heading.getBoundingClientRect().bottom;
+  const viewTop=resultView.getBoundingClientRect().top;
   resultView.style.setProperty('--reveal-top',Math.round(titleBottom-viewTop+12)+'px');
   setState('revealing','선택한 카드를 공개하고 있어요…');
   await moveToCenter(result,host,origin,sourceWidth,angle,rw,
@@ -276,7 +272,7 @@ export async function chooseFlow(ctx,chosen){
   const after=host.getBoundingClientRect();
   const physicalDx=before.left-after.left,physicalDy=before.top-after.top;
   const shift=host.animate([
-   {transform:`translate(${rotatedPhone?physicalDy:physicalDx}px,${rotatedPhone?-physicalDx:physicalDy}px)`},
+   {transform:`translate(${physicalDx}px,${physicalDy}px)`},
    {transform:'translate(0px,0px)'}
   ],{duration:C.reveal.flip,easing:'cubic-bezier(.22,.68,.22,1)'});
   await Promise.all([screenTransition(result),shift.finished]);
