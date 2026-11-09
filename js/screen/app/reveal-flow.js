@@ -5,8 +5,12 @@ import {Carousel} from '../../motion/selection/carousel.js';
 export async function chooseFlow(ctx,chosen){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
  if(getState()!=='selection'||ctx.carousel?.busy||chosen.hidden)return;
+ // Lock the fan immediately on the second tap, before awaiting the front image.
+ const selectingCarousel=ctx.carousel;
+ selectingCarousel.busy=true;
+ ctx.errorNotice.hide();
  setState('revealing','선택한 카드를 준비하고 있어요…');
- try{await prepareFront(chosen.cardData);}catch(e){ctx.carousel.busy=false;ctx.carousel.layout();setState('selection',e.message);return;}
+ try{await prepareFront(chosen.cardData,chosen);}catch(e){selectingCarousel.busy=false;selectingCarousel.layout();setState('selection',e.message);ctx.errorNotice.show('앞면 이미지를 불러오지 못했어요.',()=>chooseFlow(ctx,chosen));return;}
  // Finish the 22px pick lift before sampling its final on-screen pose.
  await Promise.all(chosen.getAnimations().map(a=>a.finished.catch(()=>{})));
  // The consultation title is an independent display, not a dropdown DOM child.

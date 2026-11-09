@@ -1,11 +1,13 @@
 import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {slotPose,mod} from '../core/cinema-core.js';
 import {transform,cardSize} from '../animation/card-animation.js';
+import {prepareFront} from '../reveal/transition.js';
 export class Carousel {
  constructor(cards,stage,onIndex,onChoose){
   this.cards=cards;this.stage=stage;this.index=0;this.busy=false;this.onIndex=onIndex;this.onChoose=onChoose;
   this.pointer=null;this.lastDrag=-Infinity;this.offset=0;this.selectedCard=null;this.abort=new AbortController();
   this.cachedWidth=0;this.lastReportedIndex=-1;this.raf=0;
+  this.pendingTap=null;
   const opt={signal:this.abort.signal};
   stage.addEventListener('click',e=>this.clickSlot(e),opt);
   cards.forEach((card,i)=>card.addEventListener('click',e=>{
@@ -26,21 +28,19 @@ export class Carousel {
  clickSlot(e){
   if(this.busy||this.pointer||performance.now()-this.lastDrag<=C.carousel.clickGuard)return;
   if(e.target.closest('button:not(.tarot-card)')||e.detail===0)return;
-  const bounds=this.stage.getBoundingClientRect(),w=this.stage.clientWidth;
-  const x=e.clientX-bounds.left-w/2,y=e.clientY-bounds.top-bounds.height/2;
-  const radius=(C.counts.visible-1)/2,cardW=stageSize('selection',w),cardH=cardW*C.aspect;
-  const slots=[];
-  for(let d=-radius;d<=radius;d++){
-   const pose=slotPose(d+this.offset,w);slots.push({d,x:pose.x,y:pose.y});
-  }
-  const nearest=slots.reduce((best,slot)=>Math.abs(x-slot.x)<Math.abs(x-best.x)?slot:best);
-  if(Math.abs(y-nearest.y)>cardH*.55||x<slots[0].x-cardW*.5||x>slots[slots.length-1].x+cardW*.5)return;
-  const index=mod(this.index+nearest.d,this.cards.length),card=this.cards[index];
-  if(!card.hidden&&!card.disabled)this.tap(card);
+  // Stage pointer capture changes click.target to the stage. Use the card that
+  // actually received pointerdown, not the nearest mathematical slot center.
+  const pending=this.pendingTap;
+  this.pendingTap=null;
+  const card=(pending && performance.now()-pending.at<700 ? pending.card : null)
+    || e.target.closest('.tarot-card');
+  if(card && this.cards.includes(card) && !card.hidden && !card.disabled) this.tap(card);
  }
  tap(card){
   if(this.selectedCard===card){this.onChoose(card);return;}
   const old=this.selectedCard;this.selectedCard=card;this.layout();
+  // Prepare only this selected front; a second tap awaits the same request.
+  prepareFront(card.cardData,card).catch(()=>{});
   const index=this.cards.indexOf(card),off=this.distance(index)+this.offset;
   const resting=slotPose(off,this.stage.clientWidth);
   const raised={...resting,y:resting.y-C.carousel.selectedLift};
@@ -83,7 +83,11 @@ export class Carousel {
  updateGlow(){}
  down(e){
   if(this.busy||this.pointer||e.button!==0||e.target.closest('button:not(.tarot-card)'))return;
-  this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0};
+  // Capture the real top visible card before setting pointer capture on stage.
+  const target=e.target.closest('.tarot-card');
+  const hit=target && this.cards.includes(target) && !target.hidden && !target.disabled ? target : null;
+  this.pendingTap=null;
+  this.pointer={id:e.pointerId,x:e.clientX,y:e.clientY,dragged:false,offset:0,hit};
   if(this.stage.setPointerCapture)try{this.stage.setPointerCapture(e.pointerId);}catch(_){}
  }
  move(e){
@@ -91,7 +95,7 @@ export class Carousel {
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){
-   if(!p.dragged){p.dragged=true;this.stage.classList.add('is-dragging');}
+   if(!p.dragged){p.dragged=true;this.pendingTap=null;this.stage.classList.add('is-dragging');}
    const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
    this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));
    if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
@@ -102,8 +106,8 @@ export class Carousel {
   const p=this.pointer;if(!p||e.pointerId!==p.id)return;
   this.pointer=null;this.releasePointer(e.pointerId);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
-  if(p.dragged){this.layout();this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
-  else this.stage.classList.remove('is-dragging');
+  if(p.dragged){this.pendingTap=null;this.layout();this.lastDrag=performance.now();e.preventDefault();const shift=Math.round(-this.offset);this.snap(shift);}
+  else {this.pendingTap={card:p.hit,at:performance.now()};this.stage.classList.remove('is-dragging');}
  }
  async snap(shift){
   if(this.busy)return;this.busy=true;
@@ -127,13 +131,13 @@ export class Carousel {
  cancel(){
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf){cancelAnimationFrame(this.raf);this.raf=0;}
-  this.pointer=null;this.offset=0;this.stage.classList.remove('is-dragging');
+  this.pointer=null;this.pendingTap=null;this.offset=0;this.stage.classList.remove('is-dragging');
   if(!this.busy)this.layout();
  }
  destroy(){
   if(this.pointer)this.releasePointer(this.pointer.id);
   if(this.raf)cancelAnimationFrame(this.raf);
-  this.destroyed=true;this.abort.abort();this.pointer=null;this.busy=true;
+  this.destroyed=true;this.abort.abort();this.pointer=null;this.pendingTap=null;this.busy=true;
   this.aura.remove();this.stage.classList.remove('is-dragging');
  }
 }

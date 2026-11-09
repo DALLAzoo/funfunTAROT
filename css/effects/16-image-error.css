@@ -1,0 +1,6 @@
+/* Visible only when an image fails to load; does not affect deck geometry. */
+.ad1-image-error[hidden]{display:none!important}
+.ad1-image-error{position:fixed;z-index:450;left:50%;bottom:calc(92px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);box-sizing:border-box;width:min(380px,calc(100vw - 32px));padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px solid #a98555;border-radius:12px;background:rgba(35,25,22,.96);box-shadow:0 14px 35px #0009;color:#f3dfbb;font-size:13px;line-height:1.5}
+.ad1-image-error-message{flex:1;min-width:0}
+.ad1-image-error-retry{flex:none;padding:8px 10px;border:1px solid #c5a36c;border-radius:8px;background:#39291d;color:#f4d6a4;cursor:pointer}
+.ad1-image-error-retry[hidden]{display:none!important}

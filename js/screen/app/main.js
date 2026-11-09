@@ -5,6 +5,7 @@ import {MagicVFX} from '../../effects/magic-vfx.js';
 import {RevealVFX} from '../../effects/reveal-vfx.js';
 import {bindEvents} from './events.js';
 import {initializeApp} from './bootstrap.js';
+import {createImageError} from './image-error.js';
 import '../../effects/shooting-stars.js'; // AD1 v16: distant meteors, background only
 import '../../effects/button-impact.js'; // AD1 v28: gold press and lingering feedback
 
@@ -18,7 +19,7 @@ const main = $('#tarotApp');
 const resultView = $('#resultView');
 
 // Single shared state object passed to shuffle, selection and reveal flows.
-const ctx = {catalog: [], cards: [], pool: [], back: null, carousel: null, token: 0};
+const ctx = {catalog: [], cards: [], pool: [], back: null, carousel: null, token: 0, errorNotice:createImageError()};
 const uiContext = {status, shuffleBtn, $, state: 'idle'};
 const getState = () => uiContext.state;
 const setState = (next, label) => setStateUI(uiContext, next, label);

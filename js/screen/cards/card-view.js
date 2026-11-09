@@ -5,7 +5,7 @@ export function renderCards(container,deck,back){
   el.style.setProperty('--glow-mask',`url("${new URL(`./assets/glow-masks/${back.id}-gold-mask.png`,document.baseURI).href}")`);
   el.innerHTML='<span class="card-edge edge-1"></span><span class="card-edge edge-2"></span><span class="card-edge edge-3"></span><span class="card-inner"><span class="card-face card-back"></span><span class="card-face card-front" aria-hidden="true"><span class="front-symbol"></span><span class="front-name"></span><span class="front-sub"></span></span></span>';
   const front=el.querySelector('.card-front');
-  if(data.frontImage){const image=document.createElement('img');image.src=new URL(data.frontImage,document.baseURI).href;image.alt=data.name;image.draggable=false;front.replaceChildren(image);front.classList.add('has-image');}
+  if(data.frontImage){const image=document.createElement('img');image.dataset.frontSrc=new URL(data.frontImage,document.baseURI).href;image.alt=data.name;image.draggable=false;front.replaceChildren(image);front.classList.add('has-image');}
   else{front.querySelector('.front-symbol').textContent=data.symbol||'✧';front.querySelector('.front-name').textContent=data.name;front.querySelector('.front-sub').textContent='';}
   container.append(el);return el;
  });
