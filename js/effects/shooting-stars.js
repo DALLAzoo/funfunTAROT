@@ -1,4 +1,4 @@
-/* AD1 v45 — meteor groups travel upper-right to lower-left; stronger sequential stagger and more irregular sizes within each group.
+/* AD1 v46 — meteor groups travel upper-right to lower-left; stronger sequential stagger, irregular sizes, and more varied on-screen duration.
  * Based on v19. All group members share EXACTLY the same travel angle, while
  * their size, distance, start point, brightness, and speed can differ.
  * Far and near are BEHIND the cards. Some meteors cross IN FRONT.
@@ -82,9 +82,9 @@ if (roots.length) {
     // Depth: far travels less, appears thinner and lasts longer;
     // foreground appears slightly larger and moves quicker.
     const specs = {
-      far:   {distance:[160,240],duration:[1600,2180],length:[80,130], alpha:[.37,.57]},
-      near:  {distance:[205,300],duration:[1340,1840],length:[110,170],alpha:[.50,.76]},
-      front: {distance:[240,355],duration:[1140,1580],length:[140,215],alpha:[.54,.78]}
+      far:   {distance:[160,240],duration:[1700,2550],length:[80,145], alpha:[.37,.57]},
+      near:  {distance:[205,300],duration:[1450,2250],length:[110,190],alpha:[.50,.76]},
+      front: {distance:[240,355],duration:[1220,1980],length:[140,235],alpha:[.54,.78]}
     };
     const spec = specs[depth];
 
@@ -133,12 +133,25 @@ if (roots.length) {
     layer[depth].append(element);
 
     const alpha = random(...spec.alpha);
-    const duration = random(...spec.duration);
+
+    // More varied visible time: some meteors flash by, some linger a bit longer.
+    // This changes not just total duration, but also how long they stay readable
+    // before fading out.
+    const durationMood = Math.random();
+    const durationScale = durationMood < .20
+      ? random(.86,.98)      // quicker pass
+      : durationMood < .78
+        ? random(1.00,1.22)  // normal / slightly longer
+        : random(1.24,1.52); // clearly lingering pass
+    const duration = random(...spec.duration) * durationScale;
+    const fadeInAt = random(.08,.17);
+    const sustainUntil = random(.72,.88);
+    const holdOpacity = alpha * random(.82,.94);
     const angleDegrees = group.angle*180/Math.PI;
     const animation = element.animate([
       {offset:0,opacity:0,transform:`translate3d(0,0,0) rotate(${angleDegrees}deg)`},
-      {offset:.15,opacity:alpha,transform:`translate3d(${dx*.15}px,${dy*.15}px,0) rotate(${angleDegrees}deg)`},
-      {offset:.73,opacity:alpha*.86,transform:`translate3d(${dx*.73}px,${dy*.73}px,0) rotate(${angleDegrees}deg)`},
+      {offset:fadeInAt,opacity:alpha,transform:`translate3d(${(dx*fadeInAt).toFixed(2)}px,${(dy*fadeInAt).toFixed(2)}px,0) rotate(${angleDegrees}deg)`},
+      {offset:sustainUntil,opacity:holdOpacity,transform:`translate3d(${(dx*sustainUntil).toFixed(2)}px,${(dy*sustainUntil).toFixed(2)}px,0) rotate(${angleDegrees}deg)`},
       {offset:1,opacity:0,transform:`translate3d(${dx}px,${dy}px,0) rotate(${angleDegrees}deg)`}
     ],{duration,easing:'linear',fill:'both'});
     const entry = {element,animation};
