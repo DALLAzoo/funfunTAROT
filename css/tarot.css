@@ -35,3 +35,6 @@
 
 /* v58: keep result controls at the same initial button location on portrait tablets. */
 @import url("./screen/22-tablet-portrait-actions-anchor.css");
+
+/* v59: unified portrait-responsive sizes and vertical result layout. */
+@import url("./screen/23-portrait-responsive-scale.css");

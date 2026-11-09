@@ -30,6 +30,14 @@ export function isTabletPortrait(){
   !!window.matchMedia?.('(orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse)').matches;
 }
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
+// Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
+// Screen width determines the preferred size, available height can only reduce it.
+export function isTouchPortrait(){
+ return typeof window !== 'undefined' &&
+  !!window.matchMedia?.('(orientation:portrait) and (hover:none) and (pointer:coarse)').matches;
+}
+const portraitWidth=(value,min,max)=>
+ Math.min(max,Math.max(min,min+(Math.min(820,Math.max(390,value))-390)*(max-min)/430));
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
 export function stageSize(phase,width,config=CONFIG){
@@ -44,6 +52,20 @@ export function stageSize(phase,width,config=CONFIG){
      Math.max(110,(h-116)/config.aspect));
    if (phase==='shuffle') return Math.min(config.sizes.mobile.shuffle,
      Math.max(84,(h-118)/config.aspect));
+ }
+ if (isTouchPortrait()) {
+   const vw=window.innerWidth, vh=window.innerHeight;
+   if (phase==='shuffle') return portraitWidth(vw,104,164);
+   if (phase==='selection') return portraitWidth(vw,146,210);
+   if (phase==='transition') return portraitWidth(vw,160,240);
+   if (phase==='result') {
+     const preferred=portraitWidth(vw,190,325);
+     // Budget for the unchanged top title, a readable scroll pane and buttons.
+     // Short portrait screens may go below the preferred minimum rather than clip.
+     const anchor=Math.min(vh*.79,830);
+     const reserve=(vw>=700?165:145)+(vw>=700?120:70);
+     return Math.max(120,Math.min(preferred,(anchor-reserve)/config.aspect));
+   }
  }
  if (isTabletLandscape()) {
    if (phase==='result') {

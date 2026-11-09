@@ -1,0 +1,104 @@
+/* v59 — ONE responsive scale for portrait touch screens. No landscape or PC
+   geometry is changed by these rules. Approved layout remains vertical:
+   title above stage, actions below; result: title, card, reading and actions.
+   390px / 820px are interpolation anchors, NOT per-device breakpoints. */
+@media (orientation:portrait) and (hover:none) and (pointer:coarse) {
+  :root {
+    --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
+    --portrait-title-size:clamp(26px, calc(16.02px + 2.56vw), 37px);
+    --portrait-reading-size:clamp(14px, calc(10.37px + .93vw), 18px);
+    --portrait-small-button:clamp(100px, calc(89.12px + 2.79vw), 112px);
+    --portrait-menu-button:clamp(175px, calc(161.39px + 3.49vw), 190px);
+    --portrait-button-gap:clamp(8px,calc(6.19px + .465vw),10px);
+  }
+  /* The 22-card pile has an explicit CSS width; match it to the same scale. */
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    width:var(--portrait-idle-width)!important;
+    height:calc(var(--portrait-idle-width) * 1.7161290323)!important;
+  }
+  /* Original stage remains in the same column. Only cap its usable height so
+     compact portrait screens can keep the two buttons within the viewport. */
+  #tarotApp #stage,
+  .tarot-app > .stage {
+    min-height:min(380px, calc(100dvh - 240px));
+    max-height:min(650px, calc(500px + (100vw - 390px) * .35), calc(100dvh - 240px));
+  }
+  .tarot-app > .intro h1,
+  #resultView > .intro h1 {
+    font-family:Georgia,serif;
+    font-weight:400;
+    font-size:var(--portrait-title-size);
+    line-height:1.25;
+  }
+  .tarot-app > .intro .eyebrow,
+  #resultView > .intro .eyebrow {
+    font-size:11px;
+  }
+  /* Exact same responsive dimensions for the two control pairs. */
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    gap:var(--portrait-button-gap);
+    max-width:calc(100vw - 24px);
+    flex-wrap:nowrap;
+  }
+  #tarotApp .controls .actions > #shuffleBtn,
+  #resultView .result-actions > #resultAgain {
+    flex:0 0 auto;
+    width:var(--portrait-small-button);
+    min-width:0;
+    height:44px;
+    padding:0 9px;
+    font-size:clamp(13px,calc(12.09px + .233vw),14px);
+  }
+  #tarotApp .controls .reading-dropdown,
+  #resultView .result-actions > .reading-dropdown {
+    flex:0 0 auto;
+    width:var(--portrait-menu-button);
+    min-width:0;
+  }
+  #tarotApp .reading-dropdown-trigger,
+  #resultView .reading-dropdown-trigger {
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    height:44px;
+    padding:0 8px;
+    font-size:clamp(13px,calc(12.09px + .233vw),14px);
+  }
+  /* Keep the approved result vertical on ALL portrait tablets, including
+     those wider than the old desktop 900px media query. */
+  #resultView.is-final .result-card-host,
+  #resultView.is-revealed .result-card-host {
+    left:calc(50% - var(--result-width,190px) / 2);
+    top:var(--reveal-top,125px);
+    transition:none;
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:min(calc(100% - 28px),520px);
+    top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px);
+    bottom:auto!important;
+    height:auto!important;
+    max-height:max(64px,calc(var(--portrait-actions-top, 80dvh) - var(--reveal-top,125px) - var(--result-height,326px) - 22px));
+    min-height:0!important;
+    padding:clamp(12px, 1.3vw, 16px) clamp(14px, 1.7vw, 18px);
+    font-size:var(--portrait-reading-size);
+    line-height:1.7;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  /* The source controls are measured once before reveal, so the new controls
+     occupy the same visual coordinates instead of snapping to screen bottom. */
+  #resultView .result-actions {
+    position:absolute;
+    left:50%;
+    right:auto;
+    top:var(--portrait-actions-top, 75dvh);
+    bottom:auto!important;
+    transform:translateX(-50%);
+    margin:0!important;
+    z-index:40;
+  }
+}

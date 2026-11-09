@@ -63,10 +63,10 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       // Recalculate the selection-screen button anchor after tablet resize/rotation.
       // A layout-only replica preserves the original first-screen placement while
       // #tarotApp is hidden and its shared heading lives inside #resultView.
-      const portraitTablet=window.matchMedia?.(
-        '(orientation:portrait) and (min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)'
+      const touchPortrait=window.matchMedia?.(
+        '(orientation:portrait) and (hover:none) and (pointer:coarse)'
       ).matches;
-      if (portraitTablet) {
+      if (touchPortrait) {
         const original=$('#tarotApp');
         const replica=document.createElement('main');
         replica.className=original.className;
@@ -81,9 +81,13 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
         document.body.append(replica);
         const action=replica.querySelector('.controls .actions').getBoundingClientRect();
         replica.remove();
-        $('#resultView').style.setProperty('--tablet-actions-top',Math.round(
-          Math.max(8,Math.min(innerHeight-action.height-8,action.top))
-        )+'px');
+        const sourceActionTop=Math.round(
+          Math.max(8,Math.min(innerHeight-action.height-8,action.top)));
+        const view=$('#resultView');
+        view.style.setProperty('--portrait-actions-top',sourceActionTop+'px');
+        if (window.matchMedia('(min-width:700px)').matches) {
+          view.style.setProperty('--tablet-actions-top',sourceActionTop+'px');
+        }
       }
       const heading = $('#resultSelectionTitle');
       if (heading) {

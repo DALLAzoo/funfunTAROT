@@ -266,6 +266,8 @@ export async function chooseFlow(ctx,chosen){
   const tabletActionTop=Math.max(8,Math.min(innerHeight-shuffleActionsRect.height-8,
     shuffleActionsTop-resultTop));
   resultView.style.setProperty('--tablet-actions-top',Math.round(tabletActionTop)+'px');
+  // Shared portrait anchor: use the actual first-screen control coordinates.
+  resultView.style.setProperty('--portrait-actions-top',Math.round(tabletActionTop)+'px');
   const titleBottom=heading.getBoundingClientRect().bottom;
   const viewTop=resultView.getBoundingClientRect().top;
   const tabletCardGap=window.matchMedia?.('(min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)').matches?24:12;
