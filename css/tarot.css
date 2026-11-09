@@ -18,3 +18,6 @@
 @import url("./effects/13-idle-deck-size.css");
 @import url("./effects/14-selected-glow-persistence.css");
 @import url('./effects/16-image-error.css');
+
+/* v50: landscape mobile layout and horizontal shuffle visibility. */
+@import url("./screen/17-landscape-and-shuffle-visibility.css");

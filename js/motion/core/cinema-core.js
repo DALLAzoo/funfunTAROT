@@ -37,8 +37,16 @@ export function slotPose(offset,width,c=C){
  const size=stageSize('selection',width,c);
  const a=Math.abs(offset),sgn=Math.sign(offset);
  // One formula on all devices; only available stage width changes the spacing.
- const fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
+ let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
+ if (typeof window!=='undefined' &&
+     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches) {
+   // Reserve the projected half-width of outer rotated cards.
+   const endAngle=23*Math.PI/180;
+   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
+   const freeHalf=Math.max(0,(width-28)/2-outerHalf);
+   fit=Math.min(fit,Math.max(.28,freeHalf/(steps[0]+steps[1]+steps[2])));
+ }
  const displacement=(Math.min(a,1)*steps[0]+Math.max(0,Math.min(a-1,1))*steps[1]+Math.max(0,Math.min(a-2,1))*steps[2]+Math.max(0,a-3)*steps[2]*.9)*fit;
  const rotation=sgn*(Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*9+Math.max(0,a-2)*6);
  const drop=Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*13+Math.max(0,a-2)*14;

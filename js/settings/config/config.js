@@ -20,4 +20,15 @@ export const CONFIG = {
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
-export function stageSize(phase,width,config=CONFIG){return config.sizes[width<config.breakpoint?'mobile':'desktop'][phase];}
+export function stageSize(phase,width,config=CONFIG){
+ const size=config.sizes[width<config.breakpoint?'mobile':'desktop'][phase];
+ // v50: mobile landscape has a short viewport even with a wide stage.
+ // Keep authored travel/rotation formulas intact; only fit card dimensions.
+ if ((phase==='shuffle'||phase==='selection') &&
+     typeof window!=='undefined' &&
+     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches) {
+   const maxCardWidth=Math.max(70,Math.floor((window.innerHeight-36)/(config.aspect*1.18)));
+   return Math.min(size,maxCardWidth);
+ }
+ return size;
+}
