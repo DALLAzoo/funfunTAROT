@@ -19,6 +19,22 @@ export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
 export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
+/** First screen only: preserve the thick right-hand deck edge while keeping
+ * rear cards below the leading card's top edge. The next shuffle restores
+ * the original floatLayout, so its choreography is unchanged. */
+export function alignIdleDeck(els){
+ const mid=(els.length-1)/2;
+ els.forEach((el,i)=>{
+  // The artwork card always paints in front of rear paper-edge layers.
+  el.style.zIndex=String(els.length-i);
+  const x=-mid*2+i*3.1;
+  const y=-8+i*.85;
+  const z=-70-i*3;
+  const rotation=-mid*.7+i*.38;
+  el.style.transform=pose(x,y,z,rotation);
+ });
+}
+
 // A fixed, smoothly blended depth lane per card avoids sudden frame-by-frame
 // repulsion (which caused the revision-4 stutter). It improves visual ordering,
 // but does not claim to implement full rigid-body collision detection.

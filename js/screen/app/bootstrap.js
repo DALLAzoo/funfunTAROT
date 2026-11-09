@@ -4,7 +4,7 @@ import {makeCatalog,validateConfig,randomOrder} from '../../motion/core/cinema-c
 import {backs,randomBack} from '../../settings/data/back-config.js';
 import {prepareBack} from '../assets/back-loader.js';
 import {renderCards} from '../cards/card-view.js';
-import {cardSize,floatLayout} from '../../motion/animation/card-animation.js';
+import {cardSize,floatLayout,alignIdleDeck} from '../../motion/animation/card-animation.js';
 
 /** Prepare catalog, back artwork, deck DOM and initial app state. */
 export async function initializeApp({ctx, $, stage, container, status, setState}) {
@@ -13,7 +13,7 @@ export async function initializeApp({ctx, $, stage, container, status, setState}
    ctx.back=backs.find(b=>b.id===document.documentElement.dataset.initialBack)||randomBack();setState('preparing','카드 이미지를 준비하고 있어요…');
    // Decode the back artwork before creating visible cards to avoid a texture-only first paint.
    await prepareBack(ctx.back);
-   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,'selection');stage.classList.add('idle-stack');requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
+   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,'selection');stage.classList.add('idle-stack');alignIdleDeck(ctx.cards);requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
    catch(e){ctx.back=null;setState('idle','카드 이미지를 불러오지 못했어요. 카드 섞기를 눌러 다시 시도해 주세요.');}
   }catch(e){setState('error',e.message);status.setAttribute('role','alert');}
 }
