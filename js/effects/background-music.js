@@ -1,5 +1,5 @@
-/* v38 — existing single-track BGM + movable music-note button.
-   Short click toggles BGM with fade; dragging only repositions the icon. */
+/* v44 — three-track BGM playlist (2 → 4 → 5), random starting song.
+   Movable note button; clicks toggle music; dragging only repositions it. */
 const audio = document.getElementById('bgmAudio');
 const button = document.getElementById('bgmToggle');
 const label = document.getElementById('bgmLabel');
@@ -18,7 +18,37 @@ if (audio && button && label && control) {
   let drag = null;
   let suppressNextClick = false;
   let position = null;
+  // Randomize only the FIRST song. After that, advance 2 → 4 → 5 → 2...
+  const playlist = [
+    './assets/audio/bgm-track-2.mp3',
+    './assets/audio/bgm-track-4.mp3',
+    './assets/audio/bgm-track-5.mp3'
+  ];
+  let trackIndex = Math.floor(Math.random() * playlist.length);
+  audio.src = playlist[trackIndex];
+  audio.loop = false;
   audio.volume = 0;
+
+  function playNextTrack() {
+    if (!enabled) return;
+    trackIndex = (trackIndex + 1) % playlist.length;
+    audio.src = playlist[trackIndex];
+    // Each track uses the same user-chosen playback state and BGM volume.
+    audio.volume = targetVolume;
+    const attempt = audio.play();
+    if (attempt && typeof attempt.catch === 'function') {
+      attempt.catch(() => {
+        if (!enabled) return;
+        operation += 1;
+        enabled = false;
+        audio.pause();
+        audio.volume = 0;
+        updateButton(false);
+        showHint('재생 실패');
+      });
+    }
+  }
+  audio.addEventListener('ended',playNextTrack);
 
   const clamp = (v, min, max) => Math.min(Math.max(v,min),Math.max(min,max));
   function insideViewport(x,y) {

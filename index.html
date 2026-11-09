@@ -68,15 +68,13 @@
 <button id="resultAgain" class="primary" hidden>다시 섞기</button>
 </div>
 </section>
-<!-- v38: draggable floating music note; same single-track BGM. -->
+<!-- v44: draggable music button, three-track playlist; random starting song. -->
 <div class="ad1-bgm-control" aria-label="배경음 설정">
   <button id="bgmToggle" class="ad1-bgm-toggle" type="button" aria-pressed="false" aria-label="배경음 켜기" title="배경음 켜기">
     <span class="ad1-bgm-icon" aria-hidden="true">♫</span><span id="bgmLabel" class="ad1-bgm-label">음악 켜기</span>
   </button>
 </div>
-<audio id="bgmAudio" preload="none" loop playsinline aria-hidden="true">
-  <source src="./assets/audio/bgm-deep-day-3.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgmAudio" preload="none" playsinline aria-hidden="true"></audio>
 <script type="module" src="./js/effects/background-music.js"></script>
 <script type="module" src="./js/screen/app/main.js">
 </script>
