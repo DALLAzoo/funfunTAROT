@@ -41,17 +41,19 @@ const portraitWidth=(value,min,max)=>
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
 export function stageSize(phase,width,config=CONFIG){
+ // v60: one shared landscape scale follows available stage width AND screen height.
+ // Topology remains the approved phone-left-controls-right or tablet-centered layout.
  const phoneLandscape = typeof window!=='undefined' &&
-   window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
+   window.matchMedia?.('(orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
  const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
  if (phoneLandscape) {
    const h=window.innerHeight;
-   if (phase==='result') return Math.min(config.sizes.mobile.result,
-     Math.max(98,(h-128)/config.aspect));
-   if (phase==='selection') return Math.min(config.sizes.mobile.selection,
-     Math.max(110,(h-116)/config.aspect));
-   if (phase==='shuffle') return Math.min(config.sizes.mobile.shuffle,
-     Math.max(84,(h-118)/config.aspect));
+   const fit=(min,max,widthRatio,heightReserve)=>
+     Math.max(min,Math.min(max,width*widthRatio,(h-heightReserve)/config.aspect));
+   if (phase==='result') return fit(82,170,.29,105);
+   if (phase==='selection') return fit(88,160,.39,115);
+   if (phase==='shuffle') return fit(72,115,.27,130);
+   if (phase==='transition') return fit(82,175,.32,105);
  }
  if (isTouchPortrait()) {
    const vw=window.innerWidth, vh=window.innerHeight;
@@ -74,10 +76,10 @@ export function stageSize(phase,width,config=CONFIG){
      return Math.min(345,Math.max(145,
        Math.min(width*.32,(window.innerHeight-titleZone-112)/config.aspect)));
    }
-   if (phase==='selection') return Math.min(config.sizes.desktop.selection,
-     Math.max(150,Math.min(width*.32,window.innerHeight*.29)));
-   if (phase==='shuffle') return Math.min(config.sizes.desktop.shuffle,
-     Math.max(110,Math.min(width*.25,window.innerHeight*.22)));
+   if (phase==='selection') return Math.max(150,
+     Math.min(255,width*.27,window.innerHeight*.31));
+   if (phase==='shuffle') return Math.max(110,
+     Math.min(185,width*.21,window.innerHeight*.24));
  }
  if (phase==='result' && isTabletPortrait()) {
    // Keep the existing tablet portrait layout, enlarge only its card.

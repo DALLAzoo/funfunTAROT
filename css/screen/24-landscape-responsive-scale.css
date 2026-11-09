@@ -1,0 +1,133 @@
+/* v60 — shared proportional sizing for TOUCH LANDSCAPE screens.
+   Uses viewport width AND height; no per-model widths.  No portrait/PC changes.
+   Existing layout approved by user is preserved:
+   - short landscape: title + deck left; actions right; result card left, reading right.
+   - roomy landscape tablet: centered title/deck/actions, result card left/reading right.
+   The entire button pair has ONE anchor on both screens per layout. */
+@media (orientation:landscape) and (hover:none) and (pointer:coarse) {
+  :root {
+    --land-title:clamp(18px, min(2.5vw, 4.8dvh), 36px);
+    --land-reading-type:clamp(12px, min(1.52vw, 2.25dvh), 19px);
+    --land-button-h:clamp(36px, min(4.6vw, 7dvh), 48px);
+    --land-gap:clamp(6px, .8vw, 12px);
+  }
+  #tarotApp > .intro h1,
+  #resultView > .intro h1 {
+    font-family:Georgia,serif;
+    font-weight:400;
+    font-size:var(--land-title);
+    line-height:1.25;
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    box-sizing:border-box;
+    height:auto!important;
+    bottom:auto!important;
+    min-height:0!important;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    font-size:var(--land-reading-type);
+    line-height:1.65;
+  }
+  #tarotApp .reading-dropdown-menu,
+  #resultView .reading-dropdown-menu {
+    max-height:calc(3 * 44px + 2px);
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+}
+/* Compact, phone-like LANDSCAPE: approved left stage / right fixed controls. */
+@media (orientation:landscape) and (max-width:1100px) and (max-height:559px) and (hover:none) and (pointer:coarse) {
+  #tarotApp > .intro h1,
+  #resultView > .intro h1 {font-size:clamp(18px,min(2.5vw,5.7dvh),25px);}
+  #tarotApp #stage {
+    top:clamp(79px, 24dvh, 116px);
+    bottom:var(--land-gap);
+  }
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    --phone-landscape-idle-w:clamp(99px, min(34dvh, 22vw), 175px);
+    width:var(--phone-landscape-idle-w)!important;
+    height:calc(var(--phone-landscape-idle-w) * 1.7161290323)!important;
+  }
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    position:fixed!important;
+    top:auto!important;
+    left:auto!important;
+    right:clamp(8px,1.6vw,22px)!important;
+    bottom:clamp(10px,3dvh,22px)!important;
+    transform:none!important;
+    gap:var(--land-gap);
+    z-index:70;
+    max-width:calc(49vw - 10px);
+    margin:0!important;
+  }
+  #tarotApp .controls .actions > #shuffleBtn,
+  #resultView .result-actions > #resultAgain {
+    box-sizing:border-box;
+    width:clamp(80px, min(12.5vw,23dvh),112px);
+    min-width:0;
+    height:var(--land-button-h);
+    padding:0 clamp(6px,.8vw,11px);
+    font-size:clamp(11px,1.4vw,13px);
+  }
+  #tarotApp .controls .reading-dropdown,
+  #resultView .result-actions > .reading-dropdown {
+    box-sizing:border-box;
+    min-width:0;
+    width:clamp(134px, min(20.5vw,45dvh),190px);
+  }
+  #tarotApp .controls .reading-dropdown-trigger,
+  #resultView .result-actions .reading-dropdown-trigger {
+    height:var(--land-button-h)!important;
+    padding:0 6px;
+    font-size:clamp(11px,1.4vw,13px);
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    top:clamp(75px,21dvh,112px)!important;
+    max-height:max(48px,calc(100dvh - clamp(75px,21dvh,112px) - var(--land-button-h) - 2 * var(--land-gap) - 28px));
+    font-size:clamp(12px,min(1.65vw,3.4dvh),14px);
+  }
+}
+/* Spacious TABLET LANDSCAPE: approved portrait-like selection + PC-like result. */
+@media (orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse) {
+  #tarotApp > .intro h1,
+  #resultView > .intro h1 {font-size:var(--land-title);}
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    --v54-tablet-idle-width:clamp(145px,min(26dvh,21vw),245px);
+  }
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    position:fixed!important;
+    top:auto!important;
+    bottom:clamp(16px,3dvh,32px)!important;
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    gap:var(--land-gap);
+    z-index:70;
+    margin:0!important;
+    max-width:calc(100vw - 24px);
+  }
+  #tarotApp .controls .actions > #shuffleBtn,
+  #resultView .result-actions > #resultAgain {
+    min-width:0;
+    width:clamp(108px,10vw,125px);
+    height:var(--land-button-h);
+    padding:0 10px;
+    font-size:clamp(13px,1vw,15px);
+  }
+  #tarotApp .controls .reading-dropdown,
+  #resultView .result-actions > .reading-dropdown {
+    min-width:0;
+    width:clamp(170px,17vw,205px);
+  }
+  #tarotApp .controls .reading-dropdown-trigger,
+  #resultView .result-actions .reading-dropdown-trigger {
+    height:var(--land-button-h)!important;
+    font-size:clamp(13px,1vw,15px);
+  }
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    max-height:max(72px,calc(100dvh - clamp(105px,19dvh,175px) - var(--land-button-h) - clamp(16px,3dvh,32px) - 28px));
+    font-size:clamp(16px,min(1.48vw,2.2dvh),19px);
+  }
+}

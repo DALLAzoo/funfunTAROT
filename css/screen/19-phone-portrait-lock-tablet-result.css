@@ -3,7 +3,7 @@
    at lower right through idle, shuffle, fan, transition and result.
    Result: PC-like card-left / reading-right without changing heading font.
    Portrait phone, landscape tablet, portrait tablet and desktop are untouched. */
-@media (orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse) {
+@media (orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse) {
   html {width:auto;height:auto;overflow:hidden!important;}
   body {
     position:static!important;
