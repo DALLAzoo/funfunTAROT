@@ -1,0 +1,10 @@
+/* AD2 2026-11-11: paragraphs inside the existing scrollable reading box. */
+.result-reading > .ad2-reading-paragraph {
+  display: block;
+  white-space: normal;
+  word-break: inherit;
+  overflow-wrap: inherit;
+}
+.result-reading > .ad2-reading-paragraph + .ad2-reading-paragraph {
+  margin-block-start: 7px;
+}

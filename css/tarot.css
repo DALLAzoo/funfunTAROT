@@ -43,3 +43,6 @@
 
 /* AD2 2026-11-11: adaptive short-touch landscape and tablet button anchor. */
 @import url("./screen/25-landscape-adaptive-layout.css");
+
+/* AD2 2026-11-11: semantic paragraph spacing; same wrapping/layout. */
+@import url("./screen/26-reading-paragraphs.css");
