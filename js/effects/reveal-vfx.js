@@ -1,19 +1,23 @@
 import {CONFIG as C} from '../settings/config/config.js';
+import {cardCloud} from './gold-lines.js';
 export class RevealVFX {
  constructor(host){
   this.host=host;this.canvas=document.createElement('canvas');this.canvas.className='reveal-magic';this.canvas.setAttribute('aria-hidden','true');document.body.append(this.canvas);this.ctx=this.canvas.getContext('2d');this.frame=0;this.active=false;
   window.addEventListener('resize',()=>this.resize());this.resize();
  }
  resize(){const b=this.canvas.getBoundingClientRect();this.bounds=b;const d=Math.min(devicePixelRatio||1,2);this.canvas.width=Math.round(b.width*d);this.canvas.height=Math.round(b.height*d);this.ctx?.setTransform(d,0,0,d,0,0);}
- stop(){this.active=false;cancelAnimationFrame(this.frame);clearTimeout(this.orbitTimer);this.orbitTimer=null;this.resolve?.();this.resolve=null;this.canvas.dataset.phase='off';this.ctx?.clearRect(0,0,this.bounds.width,this.bounds.height);}
+ stop(){this.active=false;cancelAnimationFrame(this.frame);this.resolve?.();this.resolve=null;this.canvas.dataset.phase='off';this.ctx?.clearRect(0,0,this.bounds.width,this.bounds.height);}
  async orbit(card,duration=C.reveal.travel){
   this.stop();this.resize();if(!this.ctx)return;
-  // No visible orbit art is drawn by this phase; retain its duration and
-  // cancel behavior without a full-screen clear or DOM read on every frame.
-  this.active=true;this.canvas.dataset.phase='orbit';
-  await new Promise(resolve=>{this.resolve=resolve;
-   this.orbitTimer=setTimeout(()=>{if(this.active)this.stop();resolve();},duration);
-  });
+  this.active=true;this.canvas.dataset.phase='orbit';const start=performance.now();
+  await new Promise(resolve=>{this.resolve=resolve;const draw=now=>{
+   if(!this.active){resolve();return;}
+   const t=Math.min(1,(now-start)/duration),box=cardCloud([card],this.bounds);
+   this.ctx.clearRect(0,0,this.bounds.width,this.bounds.height);
+   const alpha=Math.sin(Math.min(1,t/.12)*Math.PI/2)*Math.pow(1-t, .65);
+   // Ambient sparkles are viewport-fixed and continue independently.
+   if(t<1)this.frame=requestAnimationFrame(draw);else{this.stop();}
+  };this.frame=requestAnimationFrame(draw);});
  }
  stars(card){
   this.stop();this.resize();if(!this.ctx)return;

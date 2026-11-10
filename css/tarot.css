@@ -33,7 +33,8 @@
 /* v57: tablet result card typography + content-fit reading; mobile landscape heading anchor. */
 @import url("./screen/21-responsive-reading-and-phone-heading.css");
 
-/* Portrait rules are now consolidated in 23, legacy 22 retained but not loaded. */
+/* v58: keep result controls at the same initial button location on portrait tablets. */
+@import url("./screen/22-tablet-portrait-actions-anchor.css");
 
 /* v59: unified portrait-responsive sizes and vertical result layout. */
 @import url("./screen/23-portrait-responsive-scale.css");

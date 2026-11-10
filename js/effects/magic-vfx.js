@@ -1,4 +1,5 @@
 import {CONFIG as C} from '../settings/config/config.js';
+import {cardCloud} from './gold-lines.js';
 import {startScreenSparkles} from './sparkle-field.js';
 import {samplePressure,waveRadius} from '../motion/animation/finale-motion.js';
 // Body-owned fixed Canvas cannot be covered by cards advancing in stage 3D space.
@@ -43,9 +44,9 @@ export class MagicVFX {
   const ctx=this.ctx;if(!ctx){this.stop();return;}
   const age=(now-this.phaseAt)/1000,fade=this.name==='fade'?Math.max(0,1-age/(C.finale.afterglow/1000)):1;
   if(this.name==='fade'&&!fade){this.stop();return;}
-  // The foreground canvas has no active drawing operation.
+  ctx.clearRect(0,0,this.w,this.h);
   this.drawRear(now,age,fade);
-  // Front canvas is intentionally blank. Rear light and other visible effects remain.
+  const box=cardCloud(this.cards,this.bounds);this.canvas.dataset.center=box?`${box.cx.toFixed(2)},${box.cy.toFixed(2)}`:'';
   // Screen sparkles run on their own fixed canvas; never follow cards or drag.
   this.frame=requestAnimationFrame(t=>this.draw(t));
  }

@@ -1,231 +1,110 @@
-/* Portrait layout owner: one grid for selection and reveal.  The existing
-   desktop/landscape layout remains under 01/19/20/24.  No device-name
-   breakpoints: layout follows orientation and available height. */
-@media (orientation:portrait) {
+/* v59 — ONE responsive scale for portrait touch screens. No landscape or PC
+   geometry is changed by these rules. Approved layout remains vertical:
+   title above stage, actions below; result: title, card, reading and actions.
+   390px / 820px are interpolation anchors, NOT per-device breakpoints. */
+@media (orientation:portrait) and (hover:none) and (pointer:coarse) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:clamp(23px, calc(16.02px + 2.56vw), 37px);
+    --portrait-title-size:clamp(26px, calc(16.02px + 2.56vw), 37px);
     --portrait-reading-size:clamp(14px, calc(10.37px + .93vw), 18px);
     --portrait-small-button:clamp(100px, calc(89.12px + 2.79vw), 112px);
     --portrait-menu-button:clamp(175px, calc(161.39px + 3.49vw), 190px);
-    --portrait-button-gap:clamp(8px, calc(6.19px + .465vw), 10px);
-    --portrait-bottom-pad:clamp(14px, 2.5dvh, 32px);
-    --portrait-reading-gap:clamp(8px, 1.1dvh, 16px);
+    --portrait-button-gap:clamp(8px,calc(6.19px + .465vw),10px);
   }
+  /* The 22-card pile has an explicit CSS width; match it to the same scale. */
   #stage.idle-stack .tarot-card.shuffle-surface {
     width:var(--portrait-idle-width)!important;
     height:calc(var(--portrait-idle-width) * 1.7161290323)!important;
   }
-  /* The stage owns the elastic region; the controls never overlap it. */
-  #tarotApp.tarot-app {
-    display:grid;
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto minmax(0,1fr) auto;
-    height:100dvh;
-    min-height:0;
-    max-width:1100px;
-    padding:clamp(12px,2vw,26px) clamp(12px,2.5vw,30px) var(--portrait-bottom-pad);
-    overflow:hidden;
+  /* Original stage remains in the same column. Only cap its usable height so
+     compact portrait screens can keep the two buttons within the viewport. */
+  #tarotApp #stage,
+  .tarot-app > .stage {
+    min-height:min(380px, calc(100dvh - 240px));
+    max-height:min(650px, calc(500px + (100vw - 390px) * .35), calc(100dvh - 240px));
   }
-  #tarotApp > .intro {
-    position:relative;
-    grid-row:1;
-    min-height:0;
-    width:100%;
-    margin:clamp(12px,2dvh,25px) 0 0;
-    text-align:center;
-    z-index:3;
-  }
-  #tarotApp > .intro #instruction {display:none!important;}
-  #tarotApp #stage {
-    position:relative;
-    grid-row:2;
-    width:100%;
-    height:100%;
-    flex:none;
-    min-height:0;
-    max-height:none;
-    margin:0;
-  }
-  #tarotApp > .controls {
-    position:relative;
-    grid-row:3;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    width:100%;
-    min-height:44px;
-    margin:0;
-    padding:0;
-    z-index:15;
-  }
-  #tarotApp .controls .actions,
-  #resultView .result-actions {
-    position:relative!important;
-    top:auto!important;
-    left:auto!important;
-    right:auto!important;
-    bottom:auto!important;
-    transform:none!important;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-wrap:nowrap;
-    gap:var(--portrait-button-gap);
-    width:max-content;
-    max-width:100%;
-    margin:0!important;
-    padding:0;
-    z-index:30;
-  }
-  #tarotApp .controls .actions > #shuffleBtn,
-  #resultView .result-actions > #resultAgain {
-    flex:0 0 auto;
-    box-sizing:border-box;
-    width:var(--portrait-small-button);
-    min-width:0;
-    height:44px;
-    padding:0 9px;
-    font-size:clamp(12px,calc(12.09px + .233vw),14px);
-  }
-  #tarotApp .controls .reading-dropdown,
-  #resultView .result-actions > .reading-dropdown {
-    position:relative;
-    flex:0 0 auto;
-    box-sizing:border-box;
-    width:var(--portrait-menu-button);
-    min-width:0;
-  }
-  #tarotApp .reading-dropdown-trigger,
-  #resultView .reading-dropdown-trigger {
-    width:100%;
-    min-width:0;
-    height:44px;
-    box-sizing:border-box;
-    padding:0 8px;
-    font-size:clamp(12px,calc(12.09px + .233vw),14px);
-  }
-  #tarotApp > .intro h1,
+  .tarot-app > .intro h1,
   #resultView > .intro h1 {
     font-family:Georgia,serif;
     font-weight:400;
     font-size:var(--portrait-title-size);
     line-height:1.25;
-    margin:9px 0 12px;
   }
-  #tarotApp > .intro .eyebrow,
-  #resultView > .intro .eyebrow {font-size:10px;}
-
-  /* The result view mirrors the selection view: title/card/reading/actions.
-     Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
-  #resultView.result-view {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    gap:var(--portrait-reading-gap)!important;
-    box-sizing:border-box;
-    position:relative;
-    width:100%;
-    height:100dvh;
-    min-height:0;
-    padding:clamp(12px,2vw,26px) clamp(12px,2.5vw,30px) var(--portrait-bottom-pad)!important;
-    overflow:hidden;
-    container:tarot-result / inline-size;
+  .tarot-app > .intro .eyebrow,
+  #resultView > .intro .eyebrow {
+    font-size:11px;
   }
-  #resultView.result-view[hidden] {display:none!important;}
-  #resultView > .intro {
+  /* Exact same responsive dimensions for the two control pairs. */
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    gap:var(--portrait-button-gap);
+    max-width:calc(100vw - 24px);
+    flex-wrap:nowrap;
+  }
+  #tarotApp .controls .actions > #shuffleBtn,
+  #resultView .result-actions > #resultAgain {
     flex:0 0 auto;
-    position:relative!important;
-    top:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    right:auto!important;
-    width:100%;
-    margin:clamp(12px,2dvh,25px) 0 0;
-    padding:0;
-    pointer-events:none;
+    width:var(--portrait-small-button);
+    min-width:0;
+    height:44px;
+    padding:0 9px;
+    font-size:clamp(13px,calc(12.09px + .233vw),14px);
   }
-  #resultView .result-card-host,
+  #tarotApp .controls .reading-dropdown,
+  #resultView .result-actions > .reading-dropdown {
+    flex:0 0 auto;
+    width:var(--portrait-menu-button);
+    min-width:0;
+  }
+  #tarotApp .reading-dropdown-trigger,
+  #resultView .reading-dropdown-trigger {
+    box-sizing:border-box;
+    width:100%;
+    min-width:0;
+    height:44px;
+    padding:0 8px;
+    font-size:clamp(13px,calc(12.09px + .233vw),14px);
+  }
+  /* Keep the approved result vertical on ALL portrait tablets, including
+     those wider than the old desktop 900px media query. */
   #resultView.is-final .result-card-host,
   #resultView.is-revealed .result-card-host {
-    flex:0 0 auto;
-    position:relative;
-    top:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    right:auto!important;
-    width:var(--result-width,190px);
-    height:var(--result-height,326px);
-    min-height:0;
-    transform:none!important;
-    transition:none!important;
-    margin:0!important;
+    left:calc(50% - var(--result-width,190px) / 2);
+    top:var(--reveal-top,125px);
+    transition:none;
   }
-  #resultView > .result-reading-group {
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-    flex:1 1 auto;
-    min-height:0;
-    overflow:hidden;
-    width:min(100%,520px);
-    gap:var(--portrait-reading-gap);
-    margin:0;
-    padding:0;
-  }
-  #resultView .result-reading,
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    flex:0 1 auto;
-    align-self:stretch;
-    position:relative;
-    top:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    right:auto!important;
-    transform:none!important;
-    width:min(100%,520px);
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    margin:0!important;
-    padding:clamp(12px,1.4vw,18px);
-    overflow-x:hidden;
-    overflow-y:auto;
-    overscroll-behavior:contain;
-    font-size:var(--portrait-reading-size);
-    line-height:1.7;
-  }
-  #resultView .result-reading[hidden] {display:none!important;}
-  #resultView .result-actions {
-    flex:0 0 auto;
-    align-self:center;
-    margin:0!important;
-    margin-top:auto!important;
-  }
-  #resultView #resultNotice:not([hidden]) {
-    flex:0 0 auto;
-    z-index:10;
-  }
-}
-/* Short-height portrait screens must scroll the reading itself. The button
-   bar is always the last grid row and never covers reading text. */
-@media (orientation:portrait) and (max-height:570px) {
-  #tarotApp > .intro {margin-top:3px;}
-  #resultView > .intro {margin-top:3px;}
-  #tarotApp > .intro h1,
-  #resultView > .intro h1 {margin:5px 0;}
-  #resultView.result-view,
-  #resultView > .result-reading-group {gap:5px!important;}
+
 }
 
-/* Container query: reading comfort follows the actual result panel width,
-   not a named phone/tablet model. The card/reading order never changes. */
-@container tarot-result (max-width:460px) {
-  #resultView .result-reading,
+/* Mobile portrait retains its existing first-screen button position and
+   reading height; tablet portrait now has a separate unified anchor in v58. */
+@media (orientation:portrait) and (max-width:699px) and (hover:none) and (pointer:coarse) {
   #resultView.is-revealed .result-reading:not([hidden]) {
-    padding:11px 13px;
-    font-size:14px;
-    line-height:1.65;
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:min(calc(100% - 28px),520px);
+    top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px);
+    bottom:auto!important;
+    height:auto!important;
+    max-height:max(64px,calc(var(--portrait-actions-top, 80dvh) - var(--reveal-top,125px) - var(--result-height,326px) - 22px));
+    min-height:0!important;
+    padding:clamp(12px, 1.3vw, 16px) clamp(14px, 1.7vw, 18px);
+    font-size:var(--portrait-reading-size);
+    line-height:1.7;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  /* The source controls are measured once before reveal, so the new controls
+     occupy the same visual coordinates instead of snapping to screen bottom. */
+  #resultView .result-actions {
+    position:absolute;
+    left:50%;
+    right:auto;
+    top:var(--portrait-actions-top, 75dvh);
+    bottom:auto!important;
+    transform:translateX(-50%);
+    margin:0!important;
+    z-index:40;
   }
 }
