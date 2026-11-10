@@ -38,6 +38,12 @@ export function isTabletPortrait(){
  return typeof window !== 'undefined' &&
   !!window.matchMedia?.('(orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse)').matches;
 }
+// A compact stage must reserve genuine travel room for the ENTIRE rotated
+// card, even at the front of the 3-D orbit. This is geometric, not device-named.
+export function compactShuffleWidth(stageWidth,stageHeight,viewportHeight,config=CONFIG){
+ const allowance=Math.max(78,(stageHeight/2-34)/1.22);
+ return Math.max(78,Math.min(110,stageWidth*.30,viewportHeight*.31,allowance));
+}
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
 // Screen width determines the preferred size, available height can only reduce it.
@@ -62,7 +68,7 @@ export function stageSize(phase,width,config=CONFIG){
    const angle=23*Math.PI/180;
    const projectedFanHalf=config.aspect/2*Math.cos(angle)+.5*Math.sin(angle);
    const fanLimit=Math.max(78,(stageHeight/2-41)/projectedFanHalf);
-   const idleLimit=Math.max(78,Math.min(135,width*.32,h*.34));
+   const idleLimit=compactShuffleWidth(width,stageHeight,h,config);
    if (phase==='shuffle') return idleLimit;
    if (phase==='selection') return Math.max(78,Math.min(134,width*.32,fanLimit));
    if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));

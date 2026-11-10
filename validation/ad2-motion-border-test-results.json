@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-11",
+  "scope": [
+    "shuffle motion on touch landscape",
+    "complete motion bounds",
+    "gold border mask"
+  ],
+  "browser_full_site": "not_run: ERR_BLOCKED_BY_ADMINISTRATOR",
+  "geometry_simulated": [
+    {
+      "viewport": "667x375",
+      "shuffle_px": 90.98,
+      "fan_px": 98.24,
+      "bound_exceed_px": 0
+    },
+    {
+      "viewport": "800x360",
+      "shuffle_px": 86.89,
+      "fan_px": 100.49,
+      "bound_exceed_px": 0
+    },
+    {
+      "viewport": "844x390",
+      "shuffle_px": 96.31,
+      "fan_px": 112.16,
+      "bound_exceed_px": 0
+    },
+    {
+      "viewport": "700x320",
+      "shuffle_px": 78.0,
+      "fan_px": 83.23,
+      "bound_exceed_px": 0
+    }
+  ],
+  "frame_sample_count_per_card": 81,
+  "animated_cards": 22,
+  "shuffle_duration_ms": 3800,
+  "source_assets_untouched": true,
+  "derived_alpha_masks": 20,
+  "status_guidance_unchanged": true,
+  "notes": "Bounds use conservative 2D projection margin, not measured hardware FPS."
+}

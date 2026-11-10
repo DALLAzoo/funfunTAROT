@@ -48,8 +48,9 @@
   }
   /* Match the JS shuffle geometry in the first, unshuffled deck. */
   #stage.idle-stack .tarot-card.shuffle-surface {
-    width:clamp(78px,min(16vw,34dvh),135px)!important;
-    height:calc(clamp(78px,min(16vw,34dvh),135px) * 1.7161290323)!important;
+    /* Match the compact travel budget; never begin with an oversized deck. */
+    width:clamp(78px,min(14vw,28dvh,100px),100px)!important;
+    height:calc(clamp(78px,min(14vw,28dvh,100px),100px) * 1.7161290323)!important;
   }
   /* The existing live status text is the right-side guidance. */
   #tarotApp .controls .status {

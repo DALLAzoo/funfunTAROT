@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize,isTabletLandscape,isCompactTouchLandscape} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isTabletLandscape,isCompactTouchLandscape,compactShuffleWidth} from '../../settings/config/config.js';
 import {demoCards} from '../../settings/data/card-data.js';
 export const mod=(n,m)=>((n%m)+m)%m;
 export function makeCatalog(config=C){
@@ -72,17 +72,22 @@ export function travelPose(index,t,width,height,count,c=C){
  const middle=(c.shuffle.nearDepth+c.shuffle.farDepth)/2*c.camera.perspective;
  const depth=(c.shuffle.nearDepth-c.shuffle.farDepth)/2*c.camera.perspective;
  if (isCompactTouchLandscape()) {
-   // Reduce perspective enlargement on short screens, then keep the orbit
-   // inside the stage rather than hiding/cropping its upper/lower arcs.
-   const z=(middle+side*Math.sin(a)*depth)*Math.min(.42,height/680);
-   const projection=c.camera.perspective/(c.camera.perspective-Math.max(0,z));
-   // Same width budget as stageSize('shuffle'), without a DOM read per frame.
-   const cardWidth=Math.max(78,Math.min(135,width*.32,window.innerHeight*.34));
-   const visualHalf=(cardWidth*c.aspect/2+cardWidth*.20)*projection;
-   const maxY=Math.max(3,height/2-visualHalf-9);
-   const maxX=Math.max(4,width/2-cardWidth*.67*projection-9);
-   return {x:Math.max(-maxX,Math.min(maxX,x)),
-     y:Math.max(-maxY,Math.min(maxY,y-12)),z,
+   // The previous per-frame x/y clamps flattened the orbit at its ends.
+   // Scale the full smooth curve once against fixed conservative budgets.
+   // No abrupt stops or corners, and no layout reads inside frame sampling.
+   const cardWidth=compactShuffleWidth(width,height,window.innerHeight,c);
+   const depthRatio=Math.min(.36,height/800);
+   const z=(middle+side*Math.sin(a)*depth)*depthRatio;
+   // Include 3-D depth, turn and edge clearance in the visible footprint.
+   const projectedX=cardWidth*1.02;
+   const projectedY=cardWidth*1.22;
+   const roomX=Math.max(0,width/2-projectedX-12);
+   const roomY=Math.max(0,height/2-projectedY-11);
+   const nominalX=width*c.shuffle.radiusX*radius;
+   const nominalY=height*(c.shuffle.radiusY*Math.abs(Math.cos(k*.37))+.065);
+   const xFit=Math.min(1,roomX/Math.max(1,nominalX));
+   const yFit=Math.min(1,Math.max(0,roomY-5)/Math.max(1,nominalY));
+   return {x:x*xFit,y:(y*yFit)-Math.min(5,roomY),z,
      rot:side*Math.sin(a*.8+k)*25,
      ry:side*Math.cos(a)*c.shuffle.rotationY,
      rx:side*Math.sin(a+k*.2)*c.shuffle.rotationX,scale:1};

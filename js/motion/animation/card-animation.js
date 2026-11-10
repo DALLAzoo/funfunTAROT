@@ -50,7 +50,7 @@ function shuffleLanePose(i,t,w,h,count){
 function gatherPose(i,t,w,h,count){
  const start=.78, finish=.985;
  const order=i; // Stable stacking order, no mid-flight repulsion.
- const begin=start+order*.004;
+ const begin=start+order*(isCompactTouchLandscape()?.0014:.004);
  const end=finish-(count-1-order)*.001;
  const origin=shuffleLanePose(i,1,w,h,count), target=stackPose(i,count);
  if(t<=begin)return origin;
@@ -68,8 +68,11 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
   const frames=[];
-  for(let n=0;n<=100;n++){
-   const t=n/100;
+  // A smaller, continuous keyframe set reduces setup spikes on short touch
+  // landscapes; the compositor interpolates between the authored poses.
+  const steps=isCompactTouchLandscape()?80:100;
+  for(let n=0;n<=steps;n++){
+   const t=n/steps;
    const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):gatherPose(i,t,w,h,count);
    frames.push({offset:t,transform:transform(p)});
   }
@@ -98,8 +101,12 @@ function orbitStairPose(i,count,width,height,size){
 }
 function orbitRingPose(i,count,rotation,width,height,size){
  const ang=-Math.PI*.5+i*Math.PI*2/count+rotation;
- const radiusX=Math.min(250,width*.28,Math.max(64,(width-size-22)/2));
  const shortStage=isCompactTouchLandscape();
+ // A tilted/foreshortened ring card needs space beyond its orbit center.
+ // Respect the left stage bounds while keeping the existing rotation timing.
+ const radiusX=shortStage
+  ? Math.max(20,Math.min(250,width*.28,(width-size-22)/2,width/2-size*.86-12))
+  : Math.min(250,width*.28,Math.max(64,(width-size-22)/2));
  const radiusY=Math.min(shortStage?26:84,height*(shortStage?.08:.15));
  const zDepth=Math.min(shortStage?52:156,width*.29+40);
  return {

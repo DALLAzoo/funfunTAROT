@@ -11,3 +11,12 @@
 
 
 
+
+/* AD2 2026-11-11: moving gold pixels remain within the actual card face.
+   The outer soft aura on the selected card is deliberately left untouched. */
+.card-back::before,.shuffle-surface .card-front::before {
+ inset:1px;
+ border-radius:calc(var(--card-radius,8px) - 1px)!important;
+ -webkit-mask-position:center;
+ mask-position:center;
+}
