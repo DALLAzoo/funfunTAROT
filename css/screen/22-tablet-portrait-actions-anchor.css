@@ -1,28 +1,45 @@
-/* v58 — Tablet controls remain at the original first-screen coordinates.
-   The landscape tablet keeps the v55 bottom-center anchor unchanged.
-   Portrait tablet uses the measured selection-control top on the result view.
-   No change to phone or desktop buttons. */
+/* AD2 tablet portrait layout trial — match button coordinates on selection and
+   result screens, and give result reading the available space below the card.
+   This replaces the older first-screen-action-top anchor for portrait tablets.
+   Phone portrait, tablet landscape, and desktop keep their existing rules. */
 @media (orientation:portrait) and (min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse) {
+  :root {
+    --tablet-portrait-button-bottom: clamp(22px, 4dvh, 56px);
+    --tablet-portrait-button-height: 44px;
+    --tablet-portrait-reading-gap: 18px;
+  }
+  /* Both screens use one viewport-based button anchor. */
+  #tarotApp .controls .actions {
+    position:fixed;
+    left:50%;
+    bottom:var(--tablet-portrait-button-bottom);
+    transform:translateX(-50%);
+    margin:0;
+    z-index:40;
+  }
   #resultView .result-actions {
     position:absolute;
-    top:var(--tablet-actions-top, 75dvh);
-    bottom:auto!important;
+    left:50%;
+    right:auto;
+    top:auto!important;
+    bottom:var(--tablet-portrait-button-bottom)!important;
+    transform:translateX(-50%);
+    margin:0!important;
+    z-index:40;
+  }
+  /* Vertical title–card–reading–buttons order even above 900px. */
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    position:absolute;
     left:50%;
     right:auto;
     transform:translateX(-50%);
-    margin:0!important;
-    z-index:30;
-  }
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    max-height:max(30px,calc(var(--tablet-actions-top, 75dvh) - var(--reveal-top,125px) - var(--result-height,326px) - 22px));
+    top:calc(var(--reveal-top,125px) + var(--result-height,326px) + 8px);
+    bottom:auto!important;
+    width:min(calc(100% - 28px), 520px);
+    height:auto!important;
+    max-height:max(64px, calc(100dvh - var(--reveal-top,125px) - var(--result-height,326px) - 8px - var(--tablet-portrait-button-bottom) - var(--tablet-portrait-button-height) - var(--tablet-portrait-reading-gap)));
+    min-height:0!important;
     overflow-y:auto;
     overscroll-behavior:contain;
-  }
-}
-/* Wide touch tablets place text beside the card, so their reading starts
-   at --reveal-top rather than below the card. */
-@media (orientation:portrait) and (min-width:900px) and (min-height:550px) and (hover:none) and (pointer:coarse) {
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    max-height:max(30px,calc(var(--tablet-actions-top, 75dvh) - var(--reveal-top,125px) - 22px));
   }
 }

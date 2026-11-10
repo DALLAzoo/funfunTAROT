@@ -58,6 +58,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       el.style.height = w * C.aspect + 'px';
       const host = $('#resultCardHost');
       host.style.width = w + 'px';host.style.height = w * C.aspect + 'px';
+      host.style.removeProperty('--result-width');
       $('#resultView').style.setProperty('--result-width',w+'px');
       $('#resultView').style.setProperty('--result-height',w*C.aspect+'px');
       // Recalculate the selection-screen button anchor after tablet resize/rotation.
