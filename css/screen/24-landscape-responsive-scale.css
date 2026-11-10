@@ -292,6 +292,7 @@
     min-height:0!important;
     font-size:18px;
     line-height:1.7;
+    /* Korean wrapping now follows the shared result-reading rule for all screens. */
     overflow-y:auto;
   }
 
