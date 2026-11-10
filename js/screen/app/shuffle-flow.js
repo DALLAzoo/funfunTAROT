@@ -5,27 +5,45 @@ import {prepareBack} from '../assets/back-loader.js';
 import {renderCards} from '../cards/card-view.js';
 import {cardSize,floatLayout,shuffleMotion,fanMotion,cancelAll} from '../../motion/animation/card-animation.js';
 import {Carousel} from '../../motion/selection/carousel.js';
-// A short swipe cue after the FIRST completed fan opening on this page.
-// Remove it on pointer input or after the animation; the cue never catches taps.
+// One non-interactive swipe cue, positioned from the actual visible fan bounds.
+// Positioning uses stage-local coordinates, so resizing device widths does not
+// require device-specific hint breakpoints.
 function showFanSwipeHint(ctx){
  if(ctx.fanHintShown || !ctx.carousel)return;
- ctx.fanHintShown=true;
  const stage=ctx.stage;
+ const visible=ctx.carousel.visible.filter(card=>!card.hidden);
+ if(!visible.length)return;
+ ctx.fanHintShown=true;
+ const stageBox=stage.getBoundingClientRect();
+ const boxes=visible.map(card=>card.getBoundingClientRect());
+ const left=Math.min(...boxes.map(box=>box.left))-stageBox.left;
+ const right=Math.max(...boxes.map(box=>box.right))-stageBox.left;
+ const top=Math.min(...boxes.map(box=>box.top))-stageBox.top;
+ const bottom=Math.max(...boxes.map(box=>box.bottom))-stageBox.top;
+ const center=boxes[Math.floor(boxes.length/2)];
+ const size=Math.max(26,Math.min(42,Math.round(center.width*.23)));
+ const stageWidth=stage.clientWidth,stageHeight=stage.clientHeight;
+ const inset=Math.max(22,Math.round(size*.33)+12);
+ const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+ // The fan may extend past the stage on narrow phones. Keep both arrows
+ // visible and close to the actual left/right edges without blocking taps.
+ const nearLeft=clamp(left-size*.38, inset,stageWidth-size-inset);
+ const nearRight=clamp(right-size*.62,inset,stageWidth-size-inset);
+ const y=clamp((top+bottom)*.5-size*.5,inset,stageHeight-size-inset);
  const hint=document.createElement('div');
  hint.className='fan-swipe-hint';
  hint.setAttribute('aria-hidden','true');
- hint.innerHTML='<span>←</span><span>→</span>';
- const visible=ctx.carousel.visible.filter(card=>!card.hidden);
- const stageBox=stage.getBoundingClientRect();
- const firstTop=Math.min(...visible.map(card=>card.getBoundingClientRect().top));
- const top=Number.isFinite(firstTop)?firstTop-stageBox.top-37:stage.clientHeight*.18;
- hint.style.top=Math.max(5,Math.min(stage.clientHeight-30,top))+'px';
+ hint.style.setProperty('--fan-hint-size',size+'px');
+ hint.style.setProperty('--fan-hint-y',Math.round(y)+'px');
+ hint.style.setProperty('--fan-hint-left',Math.round(nearLeft)+'px');
+ hint.style.setProperty('--fan-hint-right',Math.round(nearRight)+'px');
+ hint.innerHTML='<span class="fan-hint-left"><svg viewBox="0 0 32 32" focusable="false"><path d="M27 16H6m10-10L6 16l10 10"/></svg></span><span class="fan-hint-right"><svg viewBox="0 0 32 32" focusable="false"><path d="M5 16h21M16 6l10 10-10 10"/></svg></span>';
  stage.append(hint);
  let timeout;
  const cleanup=()=>{clearTimeout(timeout);stage.removeEventListener('pointerdown',cleanup);hint.remove();if(ctx.removeFanSwipeHint===cleanup)ctx.removeFanSwipeHint=null;};
  ctx.removeFanSwipeHint=cleanup;
  stage.addEventListener('pointerdown',cleanup,{once:true});
- timeout=setTimeout(cleanup,1850);
+ timeout=setTimeout(cleanup,2500);
 }
 export async function startShuffleFlow(ctx){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
