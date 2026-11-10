@@ -19,6 +19,15 @@ export const CONFIG = {
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'238,190,103'},
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
+// The compact landscape profile follows viewport geometry, not device names.
+// All existing portrait and desktop profiles remain independent.
+let compactLandscapeQuery=null;
+export function isCompactTouchLandscape(){
+ if (typeof window==='undefined') return false;
+ // Reuse the live MediaQueryList during animation sampling.
+ compactLandscapeQuery ||= window.matchMedia?.('(orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse)');
+ return !!compactLandscapeQuery?.matches;
+}
 // On a touch tablet in landscape, size cards to the LEFT stage width.
 // This does not run on desktop, tablet portrait, or rotated phones.
 export function isTabletLandscape(){
@@ -43,17 +52,21 @@ const portraitWidth=(value,min,max)=>
 export function stageSize(phase,width,config=CONFIG){
  // v60: one shared landscape scale follows available stage width AND screen height.
  // Topology remains the approved phone-left-controls-right or tablet-centered layout.
- const phoneLandscape = typeof window!=='undefined' &&
-   window.matchMedia?.('(orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches;
+ const phoneLandscape=isCompactTouchLandscape();
  const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
  if (phoneLandscape) {
    const h=window.innerHeight;
-   const fit=(min,max,widthRatio,heightReserve)=>
-     Math.max(min,Math.min(max,width*widthRatio,(h-heightReserve)/config.aspect));
-   if (phase==='result') return fit(82,170,.29,105);
-   if (phase==='selection') return fit(88,160,.39,115);
-   if (phase==='shuffle') return fit(72,115,.27,130);
-   if (phase==='transition') return fit(82,175,.32,105);
+   // Fit the COMPLETE card (including angled outer fan cards and their drop)
+   // inside the actual stage height. The CSS shares the same viewport anchor.
+   const stageHeight=document.getElementById('stage')?.clientHeight || Math.max(140,h*.76);
+   const angle=23*Math.PI/180;
+   const projectedFanHalf=config.aspect/2*Math.cos(angle)+.5*Math.sin(angle);
+   const fanLimit=Math.max(78,(stageHeight/2-41)/projectedFanHalf);
+   const idleLimit=Math.max(78,Math.min(135,width*.32,h*.34));
+   if (phase==='shuffle') return idleLimit;
+   if (phase==='selection') return Math.max(78,Math.min(134,width*.32,fanLimit));
+   if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
+   if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));
  }
  if (isTouchPortrait()) {
    const vw=window.innerWidth, vh=window.innerHeight;

@@ -1,0 +1,179 @@
+/* AD2 — 2026-11-11. Landscape-only geometry; no device-name selectors.
+   This is the sole NEW override layer above legacy 18/19/20/24.
+   Portrait CSS, mouse/trackpad desktop layout and illustration files unchanged. */
+
+/* 1) Short touch landscape: LEFT owns the English/Korean title and cards.
+   RIGHT owns the current status message and a horizontal action pair. */
+@media (orientation:landscape) and (max-width:1100px) and (max-height:559px) and (hover:none) and (pointer:coarse) {
+  :root {
+    --ad2-land-stage-top:clamp(70px,19dvh,90px);
+    --ad2-land-stage-bottom:clamp(7px,2dvh,13px);
+    --ad2-land-right-pad:clamp(10px,2vw,20px);
+    --ad2-land-button-bottom:clamp(10px,3dvh,18px);
+    --ad2-land-button-height:clamp(32px,9dvh,42px);
+    --ad2-land-button-gap:clamp(5px,.9vw,10px);
+    --ad2-land-right-width:calc(50% - 2 * var(--ad2-land-right-pad));
+  }
+  #tarotApp > #sharedIntro {
+    top:clamp(10px,2.5dvh,17px)!important;
+    left:clamp(8px,1.5vw,16px)!important;
+    right:auto!important;
+    width:calc(50% - clamp(16px,3vw,32px))!important;
+    text-align:center;
+  }
+  #tarotApp > #sharedIntro .eyebrow,
+  #resultView > #sharedIntro .eyebrow {
+    font-size:clamp(8px,1.1dvh,10px)!important;
+    line-height:1.25;
+    letter-spacing:.2em;
+  }
+  #tarotApp > #sharedIntro h1,
+  #resultView > #sharedIntro h1 {
+    font-size:clamp(16px,min(2.35vw,5dvh),24px)!important;
+    line-height:1.2;
+    margin:5px 0 0!important;
+    overflow-wrap:anywhere;
+    word-break:keep-all;
+  }
+  #tarotApp #stage {
+    position:absolute;
+    top:var(--ad2-land-stage-top)!important;
+    bottom:var(--ad2-land-stage-bottom)!important;
+    left:clamp(8px,1.5vw,16px)!important;
+    width:calc(50% - clamp(16px,3vw,32px))!important;
+    height:auto!important;
+    min-height:0!important;
+    margin:0!important;
+    contain:layout;
+  }
+  /* Match the JS shuffle geometry in the first, unshuffled deck. */
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    width:clamp(78px,min(16vw,34dvh),135px)!important;
+    height:calc(clamp(78px,min(16vw,34dvh),135px) * 1.7161290323)!important;
+  }
+  /* The existing live status text is the right-side guidance. */
+  #tarotApp .controls .status {
+    display:flex!important;
+    position:fixed;
+    top:clamp(74px,22dvh,105px);
+    right:var(--ad2-land-right-pad);
+    width:var(--ad2-land-right-width);
+    height:auto;
+    max-height:calc(100dvh - clamp(74px,22dvh,105px) - var(--ad2-land-button-height) - var(--ad2-land-button-bottom) - 24px);
+    min-height:clamp(40px,12dvh,65px);
+    overflow:hidden;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:clamp(6px,1.4dvh,12px);
+    border-radius:12px;
+    background:linear-gradient(180deg,rgba(7,16,15,.76),rgba(13,27,24,.55));
+    box-shadow:inset 0 1px 0 rgba(199,234,210,.06);
+    z-index:38;
+  }
+  #tarotApp .controls .status-dot,
+  #tarotApp .controls #backName {display:none!important;}
+  #tarotApp .controls #status {
+    font-size:clamp(10px,min(1.45vw,3.7dvh),13px);
+    line-height:1.5;
+    color:#e9f0eb;
+  }
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    display:flex;
+    flex-direction:row!important;
+    flex-wrap:nowrap!important;
+    justify-content:center;
+    align-items:center;
+    gap:var(--ad2-land-button-gap)!important;
+    bottom:var(--ad2-land-button-bottom)!important;
+    right:var(--ad2-land-right-pad)!important;
+    left:auto!important;
+    transform:none!important;
+    width:var(--ad2-land-right-width)!important;
+    max-width:none!important;
+  }
+  #tarotApp .controls .actions > #shuffleBtn,
+  #resultView .result-actions > #resultAgain {
+    flex:0 1 37%;
+    width:auto!important;
+    min-width:0!important;
+    height:var(--ad2-land-button-height)!important;
+    padding:0 4px!important;
+    font-size:clamp(10px,1.4vw,13px)!important;
+    white-space:nowrap;
+  }
+  #tarotApp .controls .reading-dropdown,
+  #resultView .result-actions > .reading-dropdown {
+    flex:1 1 63%;
+    min-width:0!important;
+    width:auto!important;
+    max-width:100%;
+  }
+  #tarotApp .reading-dropdown-trigger,
+  #resultView .reading-dropdown-trigger {
+    width:100%;
+    height:var(--ad2-land-button-height)!important;
+    min-width:0!important;
+    padding:0 3px!important;
+    font-size:clamp(10px,1.4vw,13px)!important;
+  }
+  /* Reveal keeps the established card-left / reading-right composition.
+     The bottom-right action pair has the SAME anchor as in selection. */
+  #resultView > #sharedIntro {
+    top:clamp(10px,2.5dvh,17px)!important;
+    left:clamp(8px,1.5vw,16px)!important;
+    width:calc(50% - clamp(16px,3vw,32px))!important;
+  }
+  #resultView .result-actions {position:fixed!important;z-index:70;}
+  /* Center the fully-visible front card within its existing LEFT column.
+     Neither column width nor the card-to-reading horizontal gap changes. */
+  #resultView .result-card-host,
+  #resultView.is-final .result-card-host,
+  #resultView.is-revealed .result-card-host,
+  #resultView.is-final.is-revealed .result-card-host {
+    align-self:center!important;
+    top:auto!important;
+    bottom:auto!important;
+    margin:0!important;
+  }
+  #resultView > .result-reading-group {
+    padding-bottom:calc(var(--ad2-land-button-height) + var(--ad2-land-button-bottom) + 9px);
+    max-height:calc(100dvh - clamp(75px,21dvh,112px) - 8px);
+  }
+  #resultView .result-reading,
+  #resultView.is-revealed .result-reading:not([hidden]) {max-height:100%!important;}
+}
+
+/* 2) Roomy touch landscape tablets: one responsive lower-center anchor.
+   Match portrait's viewport-based bottom inset instead of legacy per-screen
+   relative placement. Keep card position, reading column and title untouched. */
+@media (orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse) {
+  :root {
+    --ad2-tablet-action-bottom:clamp(14px,2.5dvh,32px);
+    --ad2-tablet-action-gap:clamp(8px,1vw,10px);
+  }
+  #tarotApp .controls .actions,
+  #resultView .result-actions {
+    position:fixed!important;
+    top:auto!important;
+    bottom:var(--ad2-tablet-action-bottom)!important;
+    left:50%!important;
+    right:auto!important;
+    transform:translateX(-50%)!important;
+    margin:0!important;
+    width:max-content;
+    max-width:calc(100vw - 24px);
+    display:flex;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    align-items:center;
+    justify-content:center;
+    gap:var(--ad2-tablet-action-gap)!important;
+    z-index:70;
+  }
+  #resultView > .result-reading-group {
+    padding-bottom:calc(var(--ad2-tablet-action-bottom) + 44px + 12px);
+    box-sizing:border-box;
+  }
+}

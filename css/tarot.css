@@ -40,3 +40,6 @@
 
 /* v60: unified landscape-responsive sizes; preserve each approved layout. */
 @import url("./screen/24-landscape-responsive-scale.css");
+
+/* AD2 2026-11-11: adaptive short-touch landscape and tablet button anchor. */
+@import url("./screen/25-landscape-adaptive-layout.css");

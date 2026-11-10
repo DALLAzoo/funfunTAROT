@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isCompactTouchLandscape} from '../../settings/config/config.js';
 import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
 import {startMagicOrbitVFX} from '../../effects/magic-orbit-vfx.js';
@@ -42,7 +42,7 @@ function shuffleLanePose(i,t,w,h,count){
  const p=travelPose(i,t,w,h,count);
  const lane=((i*7)%count-(count-1)/2)*7.5;
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
- return {...p,z:p.z+lane*envelope};
+ return {...p,z:p.z+lane*envelope*(isCompactTouchLandscape()?.36:1)};
 }
 // The airborne orbit stays untouched. Only the final gathering uses a
 // continuous, staggered landing: cards approach the deck from the viewer side
@@ -58,7 +58,7 @@ function gatherPose(i,t,w,h,count){
  const p=mix(origin,target,u);
  // Lift in depth while traveling inward; fades to zero at both ends.
  // A card near the stack approaches from the front rather than behind it.
- const lift=Math.sin(Math.PI*u)*Math.max(125,stageSize('shuffle',w)*1.2);
+ const lift=Math.sin(Math.PI*u)*(isCompactTouchLandscape()?Math.min(45,h*.12):Math.max(125,stageSize('shuffle',w)*1.2));
  return {...p,z:p.z+lift};
 }
 export async function shuffleMotion(els,stage,phase=()=>{}){
@@ -87,10 +87,11 @@ const orbitClamp=t=>Math.max(0,Math.min(1,t));
 const orbitEase=t=>{t=orbitClamp(t);return t*t*(3-2*t);};
 function orbitStairPose(i,count,width,height,size){
  const off=i-(count-1)/2, distance=Math.abs(off), side=Math.sign(off);
- const spread=Math.min(37,width*.078), lift=Math.min(1,height/470);
+ const shortStage=isCompactTouchLandscape();
+ const spread=Math.min(shortStage?22:37,width*.078), lift=Math.min(1,height/470);
  return {
-  x:off*spread,y:(-26-(3-distance)*18)*lift,
-  z:94-distance*49+i*.8,
+  x:off*spread,y:(-26-(3-distance)*18)*lift*(shortStage?.57:1),
+  z:(94-distance*49+i*.8)*(shortStage?.42:1),
   rot:off*4.4,ry:-side*(16+distance*3),rx:-9,
   scale:1
  };
@@ -98,8 +99,9 @@ function orbitStairPose(i,count,width,height,size){
 function orbitRingPose(i,count,rotation,width,height,size){
  const ang=-Math.PI*.5+i*Math.PI*2/count+rotation;
  const radiusX=Math.min(250,width*.28,Math.max(64,(width-size-22)/2));
- const radiusY=Math.min(84,height*.15);
- const zDepth=Math.min(156,width*.29+40);
+ const shortStage=isCompactTouchLandscape();
+ const radiusY=Math.min(shortStage?26:84,height*(shortStage?.08:.15));
+ const zDepth=Math.min(shortStage?52:156,width*.29+40);
  return {
   x:Math.cos(ang)*radiusX,
   y:Math.sin(ang)*radiusY-9,

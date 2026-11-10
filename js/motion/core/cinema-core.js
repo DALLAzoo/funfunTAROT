@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize,isTabletLandscape} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isTabletLandscape,isCompactTouchLandscape} from '../../settings/config/config.js';
 import {demoCards} from '../../settings/data/card-data.js';
 export const mod=(n,m)=>((n%m)+m)%m;
 export function makeCatalog(config=C){
@@ -39,19 +39,16 @@ export function slotPose(offset,width,c=C){
  // One formula on all devices; only available stage width changes the spacing.
  let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
- // A phone in landscape uses a half-width card stage; include the projected
- // width of the angled outer card so the fan avoids the right-side controls.
- if (typeof window!=='undefined' &&
-     window.matchMedia?.('(orientation:landscape) and (max-height:500px) and (max-width:1100px) and (hover:none) and (pointer:coarse)').matches) {
+ // A short touch landscape stage fits its fan inside the LEFT column.
+ // The angled outer card (including height projection) must fit as well.
+ if (isCompactTouchLandscape()) {
    const endAngle=23*Math.PI/180;
    const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
-   const freeHalf=Math.max(0,width/2-outerHalf-10);
-   fit=Math.min(fit,Math.max(.23,freeHalf/(steps[0]+steps[1]+steps[2])));
- }
-
- if (typeof window!=='undefined' &&
-     window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches && width >= 600 && !isTabletLandscape()) {
-   // Reserve the projected half-width of outer rotated cards.
+   const freeHalf=Math.max(0,width/2-outerHalf-12);
+   fit=Math.min(fit,Math.max(.2,freeHalf/(steps[0]+steps[1]+steps[2])));
+ } else if (typeof window!=='undefined' &&
+            window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches &&
+            width>=600 && !isTabletLandscape()) {
    const endAngle=23*Math.PI/180;
    const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
    const freeHalf=Math.max(0,(width-28)/2-outerHalf);
@@ -74,6 +71,22 @@ export function travelPose(index,t,width,height,count,c=C){
  const y=side*(Math.sin(a)*Math.cos(k*.37)*height*c.shuffle.radiusY+Math.cos(a)*height*.065);
  const middle=(c.shuffle.nearDepth+c.shuffle.farDepth)/2*c.camera.perspective;
  const depth=(c.shuffle.nearDepth-c.shuffle.farDepth)/2*c.camera.perspective;
+ if (isCompactTouchLandscape()) {
+   // Reduce perspective enlargement on short screens, then keep the orbit
+   // inside the stage rather than hiding/cropping its upper/lower arcs.
+   const z=(middle+side*Math.sin(a)*depth)*Math.min(.42,height/680);
+   const projection=c.camera.perspective/(c.camera.perspective-Math.max(0,z));
+   // Same width budget as stageSize('shuffle'), without a DOM read per frame.
+   const cardWidth=Math.max(78,Math.min(135,width*.32,window.innerHeight*.34));
+   const visualHalf=(cardWidth*c.aspect/2+cardWidth*.20)*projection;
+   const maxY=Math.max(3,height/2-visualHalf-9);
+   const maxX=Math.max(4,width/2-cardWidth*.67*projection-9);
+   return {x:Math.max(-maxX,Math.min(maxX,x)),
+     y:Math.max(-maxY,Math.min(maxY,y-12)),z,
+     rot:side*Math.sin(a*.8+k)*25,
+     ry:side*Math.cos(a)*c.shuffle.rotationY,
+     rx:side*Math.sin(a+k*.2)*c.shuffle.rotationX,scale:1};
+ }
  return {x,y:y-12,z:middle+side*Math.sin(a)*depth,rot:side*Math.sin(a*.8+k)*25,ry:side*Math.cos(a)*c.shuffle.rotationY,rx:side*Math.sin(a+k*.2)*c.shuffle.rotationX,scale:1};
 }
 export function coverScale(vw,vh,cw,ch,overscan=C.reveal.overscan){return Math.max(vw/cw,vh/ch)*overscan;}
