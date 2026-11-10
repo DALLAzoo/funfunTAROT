@@ -119,13 +119,11 @@
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
-    display:grid;
-    grid-template-areas:'heading' 'card' 'reading' 'actions';
-    grid-template-columns:minmax(0,1fr);
-    grid-template-rows:auto auto minmax(0,1fr) auto;
-    align-items:start;
-    justify-items:center;
-    row-gap:var(--portrait-reading-gap)!important;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    gap:var(--portrait-reading-gap)!important;
     box-sizing:border-box;
     position:relative;
     width:100%;
@@ -137,7 +135,7 @@
   }
   #resultView.result-view[hidden] {display:none!important;}
   #resultView > .intro {
-    grid-area:heading;
+    flex:0 0 auto;
     position:relative!important;
     top:auto!important;
     bottom:auto!important;
@@ -151,7 +149,7 @@
   #resultView .result-card-host,
   #resultView.is-final .result-card-host,
   #resultView.is-revealed .result-card-host {
-    grid-area:card;
+    flex:0 0 auto;
     position:relative;
     top:auto!important;
     bottom:auto!important;
@@ -164,9 +162,20 @@
     transition:none!important;
     margin:0!important;
   }
+  #resultView > .result-reading-group {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    flex:0 1 auto;
+    min-height:0;
+    width:min(100%,520px);
+    gap:var(--portrait-reading-gap);
+    margin:0;
+    padding:0;
+  }
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
-    grid-area:reading;
+    flex:0 1 auto;
     align-self:stretch;
     position:relative;
     top:auto!important;
@@ -188,13 +197,12 @@
   }
   #resultView .result-reading[hidden] {display:none!important;}
   #resultView .result-actions {
-    grid-area:actions;
-    align-self:end;
+    flex:0 0 auto;
+    align-self:center;
     margin:0!important;
   }
   #resultView #resultNotice:not([hidden]) {
-    grid-area:reading;
-    align-self:end;
+    flex:0 0 auto;
     z-index:10;
   }
 }
@@ -205,7 +213,8 @@
   #resultView > .intro {margin-top:3px;}
   #tarotApp > .intro h1,
   #resultView > .intro h1 {margin:5px 0;}
-  #resultView.result-view {row-gap:5px;}
+  #resultView.result-view,
+  #resultView > .result-reading-group {gap:5px!important;}
 }
 
 /* Container query: reading comfort follows the actual result panel width,

@@ -131,3 +131,134 @@
     font-size:clamp(16px,min(1.48vw,2.2dvh),19px);
   }
 }
+
+
+/* v61 — Result reading is a content-sized panel.  The original landscape
+   card-left / reading-right composition remains, but reading/actions now
+   share a shrinking column.  Short text never stretches its dark panel;
+   long text scrolls inside the available space, not behind the buttons. */
+@media (orientation:landscape) {
+  #resultView.result-view {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr);
+    align-items:start;
+    justify-items:stretch;
+    gap:clamp(8px,1.5dvh,18px) clamp(8px,2vw,30px)!important;
+    padding:clamp(10px,2dvh,28px) clamp(12px,2.5vw,35px)!important;
+    overflow:hidden;
+  }
+  #resultView > .intro {
+    position:relative!important;
+    grid-column:1 / -1;
+    grid-row:1;
+    top:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    right:auto!important;
+    width:100%!important;
+    margin:0!important;
+    padding:0;
+  }
+  #resultView .result-card-host,
+  #resultView.is-final .result-card-host,
+  #resultView.is-revealed .result-card-host {
+    grid-column:1;
+    grid-row:2;
+    position:relative!important;
+    top:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+    transition:none!important;
+    justify-self:center;
+    align-self:start;
+    flex:none;
+    margin:0!important;
+  }
+  #resultView > .result-reading-group {
+    grid-column:2;
+    grid-row:2;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    align-self:stretch;
+    gap:clamp(6px,1.2dvh,14px);
+    height:100%;
+    max-height:100%;
+    min-height:0;
+    min-width:0;
+    overflow:hidden;
+  }
+  #resultView .result-reading,
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    position:relative!important;
+    top:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+    flex:0 1 auto;
+    align-self:stretch;
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    margin:0!important;
+    overflow-x:hidden;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+  }
+  #resultView .result-actions {
+    position:relative!important;
+    top:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    right:auto!important;
+    transform:none!important;
+    flex:0 0 auto;
+    align-self:center;
+    justify-content:center;
+    margin:0!important;
+    max-width:100%;
+  }
+}
+
+/* A short landscape phone already has its heading above the left-hand card.
+   Preserve that heading anchor and use the right column's remaining height. */
+@media (orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse) {
+  #resultView.result-view {
+    grid-template-columns:minmax(0,50%) minmax(0,50%);
+    grid-template-rows:minmax(0,1fr);
+    gap:0!important;
+    padding:0 clamp(8px,1vw,16px)!important;
+  }
+  #resultView > .intro {
+    position:absolute!important;
+    grid-column:1;
+    grid-row:1;
+    top:clamp(12px,3dvh,22px)!important;
+    left:0!important;
+    right:auto!important;
+    width:50%!important;
+    margin:0!important;
+    z-index:5;
+  }
+  #resultView .result-card-host,
+  #resultView.is-final .result-card-host,
+  #resultView.is-revealed .result-card-host {
+    grid-column:1;
+    grid-row:1;
+    margin:clamp(79px,24dvh,116px) auto 0!important;
+  }
+  #resultView > .result-reading-group {
+    grid-column:2;
+    grid-row:1;
+    margin:clamp(75px,21dvh,112px) 0 10px;
+    height:auto;
+    max-height:calc(100dvh - clamp(75px,21dvh,112px) - 10px);
+    padding-left:clamp(4px,1vw,10px);
+    overflow:hidden;
+  }
+}
