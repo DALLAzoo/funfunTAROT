@@ -5,9 +5,9 @@ export function initReadingScrollCue() {
   if (!view || !reading) return;
 
   const cue = document.createElement('span');
-  cue.className = 'ad2-reading-scroll-cue';
+  cue.className = 'ad2-reading-scroll-cue ad2-guide-disc';
   cue.setAttribute('aria-hidden', 'true');
-  cue.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 9 7 7 7-7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  cue.innerHTML = '<svg class="ad2-guide-icon ad2-guide-icon--down" viewBox="0 0 24 24" focusable="false"><path d="m9 18 6-6-6-6"/></svg>';
   document.body.append(cue);
 
   let raf = 0;

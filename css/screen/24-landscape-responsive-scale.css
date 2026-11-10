@@ -320,22 +320,10 @@
    Fixed to the reading's bottom-right by JS because the desktop reading group
    uses display:contents; no wrapper, button or reading dimensions are changed. */
 .ad2-reading-scroll-cue {
-  position:fixed;
-  z-index:45;
-  width:23px;
-  height:23px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  border:1px solid rgba(228,190,107,.62);
-  background:rgba(20,45,38,.93);
-  color:#f2ce84;
-  box-shadow:0 0 9px rgba(222,178,93,.27);
-  pointer-events:none;
-  user-select:none;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .18s ease,visibility .18s ease;
+  position:fixed; z-index:45;
+  width:23px; height:23px;
+  opacity:0; visibility:hidden;
+  transition:opacity .18s ease, visibility .18s ease;
 }
 .ad2-reading-scroll-cue.is-visible { opacity:1; visibility:visible; }
 @media (prefers-reduced-motion:reduce) {

@@ -14,22 +14,20 @@ function showFanSwipeHint(ctx){
  const visible=ctx.carousel.visible.filter(card=>!card.hidden);
  if(!visible.length)return;
  ctx.fanHintShown=true;
- const stageBox=stage.getBoundingClientRect();
  const boxes=visible.map(card=>card.getBoundingClientRect());
- const left=Math.min(...boxes.map(box=>box.left))-stageBox.left;
- const right=Math.max(...boxes.map(box=>box.right))-stageBox.left;
- const top=Math.min(...boxes.map(box=>box.top))-stageBox.top;
- const bottom=Math.max(...boxes.map(box=>box.bottom))-stageBox.top;
+ const left=Math.min(...boxes.map(box=>box.left));
+ const right=Math.max(...boxes.map(box=>box.right));
+ const top=Math.min(...boxes.map(box=>box.top));
+ const bottom=Math.max(...boxes.map(box=>box.bottom));
  const center=boxes[Math.floor(boxes.length/2)];
  const size=Math.max(26,Math.min(42,Math.round(center.width*.23)));
- const stageWidth=stage.clientWidth,stageHeight=stage.clientHeight;
- const inset=Math.max(22,Math.round(size*.33)+12);
- const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
- // The fan may extend past the stage on narrow phones. Keep both arrows
- // visible and close to the actual left/right edges without blocking taps.
- const nearLeft=clamp(left-size*.38, inset,stageWidth-size-inset);
- const nearRight=clamp(right-size*.62,inset,stageWidth-size-inset);
- const y=clamp((top+bottom)*.5-size*.5,inset,stageHeight-size-inset);
+ const viewportWidth=document.documentElement.clientWidth;
+ const viewportHeight=window.innerHeight;
+ const inset=16,clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+ let nearLeft=clamp(left-size*.38,inset,viewportWidth-size-inset);
+ let nearRight=clamp(right-size*.62,inset,viewportWidth-size-inset);
+ if(nearRight-nearLeft<size*1.5){nearLeft=inset;nearRight=viewportWidth-size-inset;}
+ const y=clamp((top+bottom)*.5-size*.5,inset,viewportHeight-size-inset);
  const hint=document.createElement('div');
  hint.className='fan-swipe-hint';
  hint.setAttribute('aria-hidden','true');
@@ -37,8 +35,8 @@ function showFanSwipeHint(ctx){
  hint.style.setProperty('--fan-hint-y',Math.round(y)+'px');
  hint.style.setProperty('--fan-hint-left',Math.round(nearLeft)+'px');
  hint.style.setProperty('--fan-hint-right',Math.round(nearRight)+'px');
- hint.innerHTML='<span class="fan-hint-left"><svg viewBox="0 0 32 32" focusable="false"><path d="M27 16H6m10-10L6 16l10 10"/></svg></span><span class="fan-hint-right"><svg viewBox="0 0 32 32" focusable="false"><path d="M5 16h21M16 6l10 10-10 10"/></svg></span>';
- stage.append(hint);
+ hint.innerHTML='<span class="fan-hint-left ad2-guide-disc"><svg class="ad2-guide-icon ad2-guide-icon--left" viewBox="0 0 24 24" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span><span class="fan-hint-right ad2-guide-disc"><svg class="ad2-guide-icon" viewBox="0 0 24 24" focusable="false"><path d="m9 18 6-6-6-6"/></svg></span>';
+ document.body.append(hint);
  let timeout;
  const cleanup=()=>{clearTimeout(timeout);stage.removeEventListener('pointerdown',cleanup);hint.remove();if(ctx.removeFanSwipeHint===cleanup)ctx.removeFanSwipeHint=null;};
  ctx.removeFanSwipeHint=cleanup;
@@ -56,7 +54,7 @@ export async function startShuffleFlow(ctx){
  ctx.removeFanSwipeHint?.();ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
  const intro=$('#sharedIntro');
  if(intro.parentElement===resultView) main.insertBefore(intro,stage);
- $('#resultSelectionTitle').textContent='어떤 메시지가 기다릴까요?';
+ $('#resultSelectionTitle').textContent=ctx.readingSelection || '어떤 메시지가 기다릴까요?';
  $('#resultCardHost').replaceChildren();
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
  resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');

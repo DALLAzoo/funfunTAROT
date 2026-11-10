@@ -556,33 +556,6 @@ body{overflow-x:hidden}
   background:#60452F;
   color:#FFF0CE;
 }
-/* AD1 v32 — upward-opening menu uses an upward chevron by default.
-   Hide the literal "v" text and draw a proper gold up-chevron instead. */
-#readingDropdown > span[aria-hidden="true"] {
-  position:relative;
-  display:inline-block;
-  width:1em;
-  height:1em;
-  margin-left:2px;
-  font-size:0;
-  color:transparent;
-  flex:0 0 1em;
-}
-#readingDropdown > span[aria-hidden="true"]::before {
-  content:"⌃";
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-56%);
-  color:#D9B77B;
-  font-size:15px;
-  line-height:1;
-  text-shadow:0 0 8px rgba(217,183,123,.16);
-}
-#readingDropdown[aria-expanded="true"] > span[aria-hidden="true"]::before {
-  color:#F0D7A4;
-  text-shadow:0 0 10px rgba(217,183,123,.24);
-}
 @media (max-width:640px) {
   #tarotApp .reading-dropdown-menu,
   #resultView .reading-dropdown-menu {

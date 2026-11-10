@@ -17,31 +17,59 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   $('#resultAgain').addEventListener('click', startShuffle);
   const dropdown = $('#readingDropdown');
   const options = $('#readingOptions');
+  const menuHint = document.createElement('span');
+  menuHint.className = 'ad2-menu-hint ad2-guide-disc';
+  menuHint.setAttribute('aria-hidden', 'true');
+  menuHint.innerHTML = '<svg class="ad2-guide-icon ad2-guide-icon--down" viewBox="0 0 24 24" focusable="false"><path d="m9 18 6-6-6-6"/></svg>';
+  dropdown.parentElement.append(menuHint);
+  ctx.menuHintRequested = false;
+  ctx.updateMenuHint = () => {
+    // Avoid overlapping an open upward dropdown. If it closes unselected,
+    // resume the gentle hint until the actual option is chosen.
+    const visible = ctx.menuHintRequested && !ctx.readingSelection &&
+      ctx.getState() === 'selection' && !dropdown.disabled && options.hidden;
+    menuHint.classList.toggle('is-visible', visible);
+  };
+  ctx.showMenuHint = () => {
+    ctx.menuHintRequested = true;
+    ctx.updateMenuHint();
+  };
   dropdown.addEventListener('click', () => {
     if (dropdown.disabled) return;
     const open = options.hidden;
     options.hidden = !open;
     dropdown.setAttribute('aria-expanded', String(open));
+    ctx.updateMenuHint();
   });
-  options.querySelector('.reading-option').addEventListener('click', () => {
-    // Share the selected value, not the dropdown element, with the title.
-    ctx.readingSelection = '조언 - 당신을 위한';
-    const resultTitle = $('#resultSelectionTitle');
-    if (resultTitle) resultTitle.textContent = ctx.readingSelection;
-    dropdown.firstChild.textContent = '조언 - 당신을 위한 ';
-    options.hidden = true;
-    dropdown.setAttribute('aria-expanded', 'false');
-    // Focus restoration must not scroll the page after a menu selection.
-    try { dropdown.focus({preventScroll:true}); } catch (_) { dropdown.focus(); }
+  options.querySelectorAll('.reading-option').forEach(option => {
+    option.addEventListener('click', () => {
+      // The user's choice is explicit and persists through further shuffles.
+      ctx.readingSelection = option.textContent.trim();
+      $('#resultSelectionTitle').textContent = ctx.readingSelection;
+      dropdown.textContent = ctx.readingSelection;
+      options.querySelectorAll('.reading-option').forEach(other => {
+        other.setAttribute('aria-selected', String(other === option));
+      });
+      options.hidden = true;
+      dropdown.setAttribute('aria-expanded', 'false');
+      ctx.menuHintRequested = false;
+      ctx.updateMenuHint();
+      try { dropdown.focus({preventScroll:true}); } catch (_) { dropdown.focus(); }
+    });
   });
   document.addEventListener('click', e => {
     if (!dropdown.parentElement.contains(e.target)) {
       options.hidden = true;
       dropdown.setAttribute('aria-expanded', 'false');
+      ctx.updateMenuHint();
     }
   });
   dropdown.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { options.hidden = true; dropdown.setAttribute('aria-expanded', 'false'); }
+    if (e.key === 'Escape') {
+      options.hidden = true;
+      dropdown.setAttribute('aria-expanded', 'false');
+      ctx.updateMenuHint();
+    }
   });
 
   window.addEventListener('resize', () => {

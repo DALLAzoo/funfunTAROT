@@ -23,7 +23,7 @@ const resultView = $('#resultView');
 const ctx = {catalog: [], cards: [], pool: [], back: null, carousel: null, token: 0, errorNotice:createImageError()};
 const uiContext = {status, shuffleBtn, $, state: 'idle'};
 const getState = () => uiContext.state;
-const setState = (next, label) => setStateUI(uiContext, next, label);
+const setState = (next, label) => {setStateUI(uiContext, next, label);ctx.updateMenuHint?.();};
 const refreshCounter = index => refreshCounterUI($, ctx.pool, index);
 
 const magic = new MagicVFX(stage);
