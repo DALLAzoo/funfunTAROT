@@ -6,3 +6,63 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{top:2px;right:0;bottom:5px;width:6px;}
 
 
+
+/* AD2 shared gold chevrons. Three contexts, one shape and light treatment. */
+:root { --ad2-guide-gold:#ffdfa0; --ad2-guide-stroke:2.8; }
+.ad2-guide-disc {
+ display:grid; place-items:center;
+ border:1px solid rgba(228,190,107,.52);
+ border-radius:50%;
+ background:radial-gradient(circle,rgba(21,39,41,.94),rgba(7,12,22,.62) 67%,rgba(7,12,22,.34));
+ color:var(--ad2-guide-gold);
+ box-shadow:0 0 9px rgba(222,178,93,.3);
+ filter:drop-shadow(0 0 4px rgba(246,172,58,.4));
+ pointer-events:none; user-select:none;
+}
+.ad2-guide-icon {
+ width:72%; height:72%; fill:none;
+ stroke:currentColor; stroke-width:var(--ad2-guide-stroke);
+ stroke-linecap:round; stroke-linejoin:round;
+}
+.ad2-guide-icon--left {transform:rotate(180deg);}
+.ad2-guide-icon--down {transform:rotate(90deg);}
+
+/* Non-interactive edge hints in viewport coordinates; never cropped by stage. */
+.fan-swipe-hint {
+ position:fixed; inset:0; z-index:500;
+ pointer-events:none; user-select:none;
+ animation:fan-swipe-hint-fade 2.5s ease-in-out both;
+}
+.fan-swipe-hint span {
+ position:absolute; top:var(--fan-hint-y);
+ width:var(--fan-hint-size); height:var(--fan-hint-size);
+}
+.fan-swipe-hint .fan-hint-left {
+ left:var(--fan-hint-left); animation:fan-swipe-left 1s ease-in-out 2;
+}
+.fan-swipe-hint .fan-hint-right {
+ left:var(--fan-hint-right); animation:fan-swipe-right 1s ease-in-out 2;
+}
+@keyframes fan-swipe-hint-fade {0%{opacity:0} 13%,74%{opacity:1} 100%{opacity:0}}
+@keyframes fan-swipe-left {0%,100%{transform:translateX(0)} 48%{transform:translateX(-11px)}}
+@keyframes fan-swipe-right {0%,100%{transform:translateX(0)} 48%{transform:translateX(11px)}}
+
+/* Persistent attention cue, positioned relative to the actual menu button. */
+.reading-dropdown .ad2-menu-hint {
+ position:absolute; bottom:calc(100% + 8px); left:50%;
+ width:29px; height:29px; z-index:85;
+ transform:translateX(-50%);
+ visibility:hidden; opacity:0;
+ transition:opacity .18s ease,visibility .18s ease;
+}
+.reading-dropdown .ad2-menu-hint.is-visible {
+ visibility:visible; opacity:1;
+ animation:ad2-menu-hint-nudge 1.65s ease-in-out infinite;
+}
+@keyframes ad2-menu-hint-nudge {
+ 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,5px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .fan-swipe-hint,.fan-swipe-hint span,
+ .reading-dropdown .ad2-menu-hint.is-visible {animation:none;opacity:1;}
+}

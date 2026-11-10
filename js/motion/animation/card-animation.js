@@ -2,22 +2,22 @@ import {CONFIG as C,stageSize} from '../../settings/config/config.js';
 import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
 import {startMagicOrbitVFX} from '../../effects/magic-orbit-vfx.js';
-const running=new WeakMap(),samples=new WeakMap();
+const running=new WeakMap();
 export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
 export const transform=p=>pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
 const readPose=s=>{const v=[...s.matchAll(/(?:translate3d|rotateZ|rotateY|rotateX|scale)\(([^)]+)\)/g)].map(m=>m[1].split(',').map(parseFloat));return v.length===5?{x:v[0][0],y:v[0][1],z:v[0][2],rot:v[1][0],ry:v[2][0],rx:v[3][0],scale:v[4][0]}:stackPose(0,1)};
-export function sampleCard(el){const tr=samples.get(el);if(!tr)return readPose(el.style.transform);const n=Math.max(0,Math.min(1,tr.animation.effect.getComputedTiming().progress??0))*(tr.poses.length-1),i=Math.min(tr.poses.length-2,Math.floor(n));return mix(tr.poses[i],tr.poses[i+1],n-i);}
+export function sampleCard(el){return readPose(el.style.transform);}
 export function cardSize(stage,phase='shuffle'){const width=stageSize(phase,stage.clientWidth);stage.style.setProperty('--card-w',width+'px');stage.style.setProperty('--card-h',width*C.aspect+'px');return width;}
 export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',startTime=null,observe=null){
  running.get(el)?.cancel();const a=el.animate(frames,{duration,easing,fill:'both'});if(startTime!==null)a.startTime=startTime;
- running.set(el,a);if(frames.every(f=>f.transform))samples.set(el,{animation:a,poses:frames.map(f=>readPose(f.transform))});observe?.(a);
+ running.set(el,a);observe?.(a);
  try{await a.finished;}catch{return false;}
  if(running.get(el)!==a)return false;
  const last=frames.at(-1);for(const k of ['transform','width','height','borderRadius'])if(last[k]!==undefined)el.style[k]=last[k];
- running.delete(el);samples.delete(el);a.cancel();return true;
+ running.delete(el);a.cancel();return true;
 }
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
-export function cancelAll(els){for(const el of els){running.delete(el);samples.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
+export function cancelAll(els){for(const el of els){running.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
 /** First screen only: preserve the thick right-hand deck edge while keeping
  * rear cards below the leading card's top edge. The next shuffle restores
