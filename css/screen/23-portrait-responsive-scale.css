@@ -166,8 +166,9 @@
     display:flex;
     flex-direction:column;
     align-items:stretch;
-    flex:0 1 auto;
+    flex:1 1 auto;
     min-height:0;
+    overflow:hidden;
     width:min(100%,520px);
     gap:var(--portrait-reading-gap);
     margin:0;
@@ -200,6 +201,7 @@
     flex:0 0 auto;
     align-self:center;
     margin:0!important;
+    margin-top:auto!important;
   }
   #resultView #resultNotice:not([hidden]) {
     flex:0 0 auto;

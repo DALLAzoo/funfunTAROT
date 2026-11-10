@@ -74,7 +74,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
         replica.style.cssText='position:absolute;left:0;top:0;width:100%;visibility:hidden;pointer-events:none;z-index:-1;';
         const intro=$('#sharedIntro').cloneNode(true);
         const title=intro.querySelector('h1');
-        if (title) title.textContent='마음이 끌리는 카드를 선택하세요';
+        if (title) title.textContent='어떤 메시지가 기다릴까요?';
         replica.append(intro);
         const stage=document.createElement('section');stage.className=$('#stage').className;
         replica.append(stage);

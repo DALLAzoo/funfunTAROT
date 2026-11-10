@@ -5,6 +5,28 @@ import {prepareBack} from '../assets/back-loader.js';
 import {renderCards} from '../cards/card-view.js';
 import {cardSize,floatLayout,shuffleMotion,fanMotion,cancelAll} from '../../motion/animation/card-animation.js';
 import {Carousel} from '../../motion/selection/carousel.js';
+// A short swipe cue after the FIRST completed fan opening on this page.
+// Remove it on pointer input or after the animation; the cue never catches taps.
+function showFanSwipeHint(ctx){
+ if(ctx.fanHintShown || !ctx.carousel)return;
+ ctx.fanHintShown=true;
+ const stage=ctx.stage;
+ const hint=document.createElement('div');
+ hint.className='fan-swipe-hint';
+ hint.setAttribute('aria-hidden','true');
+ hint.innerHTML='<span>←</span><span>→</span>';
+ const visible=ctx.carousel.visible.filter(card=>!card.hidden);
+ const stageBox=stage.getBoundingClientRect();
+ const firstTop=Math.min(...visible.map(card=>card.getBoundingClientRect().top));
+ const top=Number.isFinite(firstTop)?firstTop-stageBox.top-37:stage.clientHeight*.18;
+ hint.style.top=Math.max(5,Math.min(stage.clientHeight-30,top))+'px';
+ stage.append(hint);
+ let timeout;
+ const cleanup=()=>{clearTimeout(timeout);stage.removeEventListener('pointerdown',cleanup);hint.remove();if(ctx.removeFanSwipeHint===cleanup)ctx.removeFanSwipeHint=null;};
+ ctx.removeFanSwipeHint=cleanup;
+ stage.addEventListener('pointerdown',cleanup,{once:true});
+ timeout=setTimeout(cleanup,1850);
+}
 export async function startShuffleFlow(ctx){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
  if(!['idle','selection','result'].includes(getState()))return;
@@ -13,10 +35,10 @@ export async function startShuffleFlow(ctx){
  // Subsequent reshuffles keep the existing random-back behavior.
  let next;try{next=(previous==='idle' && ctx.back) ? ctx.back : randomBack(ctx.back?.id);await prepareBack(next);}catch(e){setState(previous,'카드 이미지를 불러오지 못했어요. 다시 시도해 주세요.');ctx.errorNotice.show('카드 뒷면 이미지를 불러오지 못했어요.',()=>startShuffleFlow(ctx));instruction.textContent=previousText;return;}
  if(current!==ctx.token)return;
- ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
+ ctx.removeFanSwipeHint?.();ctx.carousel?.destroy();ctx.carousel=null;magic.stop();revealMagic.stop();cancelAll(ctx.cards);ctx.back=next;$('#backName').textContent='· '+ctx.back.name;
  const intro=$('#sharedIntro');
  if(intro.parentElement===resultView) main.insertBefore(intro,stage);
- $('#resultSelectionTitle').textContent='마음이 끌리는 카드를 선택하세요';
+ $('#resultSelectionTitle').textContent='어떤 메시지가 기다릴까요?';
  $('#resultCardHost').replaceChildren();
  $('#resultCardHost').style.removeProperty('width');$('#resultCardHost').style.removeProperty('height');
  resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;stage.classList.remove('selection-stage','idle-stack');cardSize(stage,'shuffle');
@@ -44,5 +66,6 @@ export async function startShuffleFlow(ctx){
   magic.release(clock);
  })||current!==ctx.token){magic.stop();return;}
  magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
+ showFanSwipeHint(ctx);
  instruction.textContent='';
 }

@@ -6,3 +6,26 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{top:2px;right:0;bottom:5px;width:6px;}
 
 
+
+/* First fan reveal: visual-only left/right swipe hint, no hitbox. */
+.selection-stage .fan-swipe-hint {
+  position:absolute;left:50%;
+  transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:space-between;
+  width:clamp(86px,18vw,166px);
+  height:28px;z-index:15;pointer-events:none;
+  color:rgba(233,197,134,.88);
+  font-size:clamp(19px,2.8vw,26px);font-weight:300;
+  line-height:1;text-shadow:0 0 9px rgba(232,179,98,.55);
+  user-select:none;
+  animation:fan-swipe-hint-fade 1.75s ease-in-out both;
+}
+.selection-stage .fan-swipe-hint span:first-child{animation:fan-swipe-left .8s ease-in-out 1;}
+.selection-stage .fan-swipe-hint span:last-child{animation:fan-swipe-right .8s ease-in-out 1;}
+@keyframes fan-swipe-hint-fade{0%,100%{opacity:0}15%,65%{opacity:.84}85%{opacity:.35}}
+@keyframes fan-swipe-left{40%{translate:-6px 0}}
+@keyframes fan-swipe-right{40%{translate:6px 0}}
+@media(prefers-reduced-motion:reduce){
+ .selection-stage .fan-swipe-hint,
+ .selection-stage .fan-swipe-hint span{animation:none;opacity:.7;}
+}
