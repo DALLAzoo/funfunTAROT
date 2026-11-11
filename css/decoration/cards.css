@@ -28,9 +28,9 @@
 .shuffle-surface .card-face{box-shadow:0 2px 6px rgba(0,0,0,.12),0 0 0 .6px rgba(240,227,197,.22)!important;}
 .selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat;}
 .card-back::before,.shuffle-surface .card-front::before{border-radius:inherit;background:radial-gradient(ellipse 42% 22% at 50% 50%,rgba(255,249,205,.97) 0%,rgba(255,213,106,.78) 26%,rgba(235,161,54,.26) 62%,transparent 100%);background-size:270% 270%;background-position:10% 15%;}
-.stage.idle-stack .shuffle-surface .card-edge{background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;border:1px solid rgba(135,89,51,.68)!important;border-radius:8px!important;box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;}
-.stage.idle-stack .shuffle-surface .card-inner{border-radius:8px;}
-.stage.idle-stack .shuffle-surface .card-face{border-radius:8px;}
+.stage.idle-stack .shuffle-surface .card-edge{background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;border:1px solid rgba(135,89,51,.68)!important;border-radius:var(--card-radius,8px)!important;box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;}
+.stage.idle-stack .shuffle-surface .card-inner{border-radius:var(--card-radius,8px);}
+.stage.idle-stack .shuffle-surface .card-face{border-radius:var(--card-radius,8px);}
 .selection-stage .tarot-card.is-picked::after{border:3px solid #e9bd61!important;border-radius:11px;box-shadow:0 0 12px rgba(247,199,100,.85),0 0 24px rgba(207,147,47,.45)!important;}
 .selection-stage .tarot-card.is-picked{filter:drop-shadow(0 8px 15px rgba(0,0,0,.45));}
 .result-card.is-picked .card-face{box-shadow:inset 0 0 0 3px #e9bd61,0 0 12px rgba(247,199,100,.8),0 0 23px rgba(207,147,47,.4)!important;}
@@ -38,8 +38,8 @@
 .stage.idle-stack .shuffle-surface:first-child .card-inner::before{background:repeating-linear-gradient(180deg,
   rgba(193,145,83,.72) 0px,rgba(193,145,83,.72) .65px,
   rgba(42,28,24,.98) 1.2px,rgba(91,60,43,.98) 2.5px);box-shadow:inset 0 0 4px rgba(10,6,5,.55);}
-.stage.idle-stack .shuffle-surface:first-child .card-inner::after{border-radius:0 0 7px 7px;}
-.stage.idle-stack .shuffle-surface:first-child .card-inner::before{border-radius:0 7px 5px 0;}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::after{border-radius:0 0 max(0px,calc(var(--card-radius,8px) - 1px)) max(0px,calc(var(--card-radius,8px) - 1px));}
+.stage.idle-stack .shuffle-surface:first-child .card-inner::before{border-radius:0 max(0px,calc(var(--card-radius,8px) - 1px)) max(0px,calc(var(--card-radius,8px) - 3px)) 0;}
 .result-card.is-revealed .card-front{border-radius:8px;}
 /* One radius for every actual card surface. A face-owned outline rotates with it. */
 .tarot-card,.card-inner,.card-edge,.card-face,.result-card.is-revealed .card-front{border-radius:var(--card-radius,8px)!important}

@@ -45,6 +45,9 @@
      The stage never moves between idle, shuffle, fan, drag and first pick.
      Cards can overrun the stage/viewport naturally during shuffle. */
   html.phone-landscape #tarotApp #stage {
+    /* The actual card width is written here by cardSize(); a  fixed 8px
+       radius cropped the gold artwork corners on small rotated phones. */
+    --card-radius:clamp(2px,calc(var(--card-w) * 0.0390625),8px);
     position:absolute;top:var(--ad2-land-stage-top)!important;
     bottom:var(--ad2-land-stage-bottom)!important;
     left:calc(25% + var(--ad2-land-stage-inset))!important;
