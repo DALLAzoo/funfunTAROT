@@ -52,7 +52,9 @@ function originalShufflePose(i,t,w,h,count,compact,room){
  const lane=((i*7)%count-(count-1)/2)*7.5;
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
  const z=p.z+lane*envelope;
- if(!compact)return {...p,z};
+ // Non-compact portrait phones also use their requested 1.25x horizontal
+ // first-shuffle orbit; other non-compact profiles keep x unchanged.
+ if(!compact)return {...p,x:p.x*(room?.xScale??1),z};
  return {...p,
   x:p.x*room.xScale,
   y:(p.y+12)*room.yScale-12,
@@ -91,6 +93,9 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  const room=compact ? compactShuffleRoom(stage,w,h) :
    openFoldShortLandscape ? {xScale:1,yScale:1,zScale:.58} :
    portraitPhone ? {xScale:1.25,yScale:1,zScale:1} : null;
+ // The stage can fill a tall phone screen, but the first shuffle orbit
+ // should use no more than 500px of that height. Fan/reveal keep actual h.
+ const firstShuffleHeight=portraitPhone?Math.min(h,500):h;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
  phase('charge');
  // First frame and orbit share the very same original pose family.
@@ -100,7 +105,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  const idleSize=compact?stageSize('idle',w):0;
  const shuffleSize=compact?stageSize('shuffle',w):0;
  const charge=els.map((el,i)=>{
-  const target=originalShufflePose(i,0,w,h,count,compact,room);
+  const target=originalShufflePose(i,0,w,firstShuffleHeight,count,compact,room);
   if(!compact)return animateTo(el,target,C.shuffle.separate);
   return play(el,[
    {transform:el.style.transform||pose(0,0,0),width:idleSize+'px',height:idleSize*C.aspect+'px'},
@@ -114,7 +119,7 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
   const steps=100; // restore original curve sampling on compact landscape
   for(let n=0;n<=steps;n++){
    const t=n/steps;
-   const p=t<.78?originalShufflePose(i,smooth(t/.78),w,h,count,compact,room):gatherPose(i,t,w,h,count,compact,portraitLift,room);
+   const p=t<.78?originalShufflePose(i,smooth(t/.78),w,firstShuffleHeight,count,compact,room):gatherPose(i,t,w,firstShuffleHeight,count,compact,portraitLift,room);
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
@@ -131,7 +136,9 @@ const orbitClamp=t=>Math.max(0,Math.min(1,t));
 const orbitEase=t=>{t=orbitClamp(t);return t*t*(3-2*t);};
 function orbitStairPose(i,count,width,height,size,shortStage){
  const off=i-(count-1)/2, distance=Math.abs(off), side=Math.sign(off);
- const spread=Math.min(shortStage?22:37,width*.078), lift=Math.min(1,height/470);
+ // Phone landscape only: let the intermediate staircase occupy 25% more
+ // horizontal room. Keep its timing, rotation and depth unchanged.
+ const spread=shortStage?Math.min(27.5,width*.0975):Math.min(37,width*.078), lift=Math.min(1,height/470);
  return {
   x:off*spread,y:(-26-(3-distance)*18)*lift*(shortStage?.57:1),
   z:(94-distance*49+i*.8)*(shortStage?.42:1),
@@ -142,11 +149,16 @@ function orbitStairPose(i,count,width,height,size,shortStage){
 function orbitRingPose(i,count,rotation,width,height,size,shortStage){
  const ang=-Math.PI*.5+i*Math.PI*2/count+rotation;
  // A tilted/foreshortened ring card needs space beyond its orbit center.
- // Respect the left stage bounds while keeping the existing rotation timing.
+ // Widen only the compact-landscape ring without changing its timing.
+ const compactRadius=Math.max(20,Math.min(250,width*.28,(width-size-22)/2,width/2-size*.86-12));
+ // The phone-landscape stage is only half the viewport wide; its cards are
+ // allowed to spread beyond the stage. Keep the expanded ring inside the
+ // actual viewport, including room for a tilted/near-side card.
+ const viewportRoom=shortStage?Math.max(20,(window.innerWidth-size*1.65-32)/2):0;
  const radiusX=shortStage
-  ? Math.max(20,Math.min(250,width*.28,(width-size-22)/2,width/2-size*.86-12))
+  ? Math.min(compactRadius*1.28,viewportRoom)
   : Math.min(250,width*.28,Math.max(64,(width-size-22)/2));
- const radiusY=Math.min(shortStage?26:84,height*(shortStage?.08:.15));
+ const radiusY=Math.min(shortStage?30:84,height*(shortStage?.092:.15));
  const zDepth=Math.min(shortStage?52:156,width*.29+40);
  return {
   x:Math.cos(ang)*radiusX,
