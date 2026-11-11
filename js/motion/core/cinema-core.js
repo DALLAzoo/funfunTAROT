@@ -62,7 +62,7 @@ export function slotPose(offset,width,c=C){
 }
 export function visibleIndices(index,count,visible){const r=(visible-1)/2;return Array.from({length:visible},(_,i)=>mod(index+i-r,count));}
 export function stackPose(i,count){return {x:0,y:-8,z:-Math.abs(i-(count-1)/2)*3,rot:0,ry:0,rx:0,scale:1};}
-export function travelPose(index,t,width,height,count,c=C){
+export function travelPose(index,t,width,height,count,c=C,compact=isCompactTouchLandscape()){
  const k=index%Math.ceil(count/2),side=index<Math.ceil(count/2)?1:-1;
  const phase=k*2.399963,dir=k%3===1?-1:1;
  const a=phase+dir*t*Math.PI*2*(c.shuffle.turns+(k%4)*.075);
@@ -71,7 +71,7 @@ export function travelPose(index,t,width,height,count,c=C){
  const y=side*(Math.sin(a)*Math.cos(k*.37)*height*c.shuffle.radiusY+Math.cos(a)*height*.065);
  const middle=(c.shuffle.nearDepth+c.shuffle.farDepth)/2*c.camera.perspective;
  const depth=(c.shuffle.nearDepth-c.shuffle.farDepth)/2*c.camera.perspective;
- if (isCompactTouchLandscape()) {
+ if (compact) {
    // The previous per-frame x/y clamps flattened the orbit at its ends.
    // Scale the full smooth curve once against fixed conservative budgets.
    // No abrupt stops or corners, and no layout reads inside frame sampling.

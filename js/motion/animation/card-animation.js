@@ -38,42 +38,45 @@ export function alignIdleDeck(els){
 // A fixed, smoothly blended depth lane per card avoids sudden frame-by-frame
 // repulsion (which caused the revision-4 stutter). It improves visual ordering,
 // but does not claim to implement full rigid-body collision detection.
-function shuffleLanePose(i,t,w,h,count){
- const p=travelPose(i,t,w,h,count);
+function shuffleLanePose(i,t,w,h,count,compact){
+ const p=travelPose(i,t,w,h,count,C,compact);
  const lane=((i*7)%count-(count-1)/2)*7.5;
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
- return {...p,z:p.z+lane*envelope*(isCompactTouchLandscape()?.36:1)};
+ // The legacy portrait path is explicitly preserved with full-depth lanes.
+ return {...p,z:p.z+lane*envelope*(compact?.36:1)};
 }
 // The airborne orbit stays untouched. Only the final gathering uses a
 // continuous, staggered landing: cards approach the deck from the viewer side
 // and settle in order rather than cutting through the finished stack.
-function gatherPose(i,t,w,h,count){
+function gatherPose(i,t,w,h,count,compact,portraitLift){
  const start=.78, finish=.985;
  const order=i; // Stable stacking order, no mid-flight repulsion.
- const begin=start+order*(isCompactTouchLandscape()?.0014:.004);
+ const begin=start+order*(compact?.0014:.004);
  const end=finish-(count-1-order)*.001;
- const origin=shuffleLanePose(i,1,w,h,count), target=stackPose(i,count);
+ const origin=shuffleLanePose(i,1,w,h,count,compact), target=stackPose(i,count);
  if(t<=begin)return origin;
  const u=smooth((t-begin)/(end-begin));
  const p=mix(origin,target,u);
- // Lift in depth while traveling inward; fades to zero at both ends.
- // A card near the stack approaches from the front rather than behind it.
- const lift=Math.sin(Math.PI*u)*(isCompactTouchLandscape()?Math.min(45,h*.12):Math.max(125,stageSize('shuffle',w)*1.2));
+ // The portrait return follows the prior unchanged choreography.
+ const lift=Math.sin(Math.PI*u)*(compact?Math.min(45,h*.12):portraitLift);
  return {...p,z:p.z+lift};
 }
 export async function shuffleMotion(els,stage,phase=()=>{}){
  stage.classList.add('glow-shuffle-lite');
- const w=stage.clientWidth,h=stage.clientHeight,count=els.length;phase('charge');
- if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
+ const w=stage.clientWidth,h=stage.clientHeight,count=els.length;
+ const compact=isCompactTouchLandscape();
+ const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
+ phase('charge');
+ if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count,C,compact),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
   const frames=[];
   // A smaller, continuous keyframe set reduces setup spikes on short touch
   // landscapes; the compositor interpolates between the authored poses.
-  const steps=isCompactTouchLandscape()?80:100;
+  const steps=compact?80:100;
   for(let n=0;n<=steps;n++){
    const t=n/steps;
-   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count):gatherPose(i,t,w,h,count);
+   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count,compact):gatherPose(i,t,w,h,count,compact,portraitLift);
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
@@ -88,9 +91,8 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  */
 const orbitClamp=t=>Math.max(0,Math.min(1,t));
 const orbitEase=t=>{t=orbitClamp(t);return t*t*(3-2*t);};
-function orbitStairPose(i,count,width,height,size){
+function orbitStairPose(i,count,width,height,size,shortStage){
  const off=i-(count-1)/2, distance=Math.abs(off), side=Math.sign(off);
- const shortStage=isCompactTouchLandscape();
  const spread=Math.min(shortStage?22:37,width*.078), lift=Math.min(1,height/470);
  return {
   x:off*spread,y:(-26-(3-distance)*18)*lift*(shortStage?.57:1),
@@ -99,9 +101,8 @@ function orbitStairPose(i,count,width,height,size){
   scale:1
  };
 }
-function orbitRingPose(i,count,rotation,width,height,size){
+function orbitRingPose(i,count,rotation,width,height,size,shortStage){
  const ang=-Math.PI*.5+i*Math.PI*2/count+rotation;
- const shortStage=isCompactTouchLandscape();
  // A tilted/foreshortened ring card needs space beyond its orbit center.
  // Respect the left stage bounds while keeping the existing rotation timing.
  const radiusX=shortStage
@@ -119,17 +120,17 @@ function orbitRingPose(i,count,rotation,width,height,size){
   scale:1
  };
 }
-function orbitOpeningPose(i,count,t,from,to,width,height,size){
+function orbitOpeningPose(i,count,t,from,to,width,height,size,compact){
  const off=i-(count-1)/2,side=Math.sign(off);
- const stair=orbitStairPose(i,count,width,height,size);
- const orbitStart=orbitRingPose(i,count,0,width,height,size);
- const orbitEnd=orbitRingPose(i,count,Math.PI*1.03,width,height,size);
+ const stair=orbitStairPose(i,count,width,height,size,compact);
+ const orbitStart=orbitRingPose(i,count,0,width,height,size,compact);
+ const orbitEnd=orbitRingPose(i,count,Math.PI*1.03,width,height,size,compact);
  // 0-0.29: a deliberately visible staircase rises out of the deck.
  if(t<.29)return mix(from,stair,orbitEase((t-.035)/.255));
  // 0.29-0.49: open the staircase into a genuine perspective ring.
  if(t<.49)return mix(stair,orbitStart,orbitEase((t-.29)/.20));
  // 0.49-0.71: the ring turns in 3D, with near and far cards at different depths.
- if(t<.71)return orbitRingPose(i,count,Math.PI*1.03*orbitEase((t-.49)/.22),width,height,size);
+ if(t<.71)return orbitRingPose(i,count,Math.PI*1.03*orbitEase((t-.49)/.22),width,height,size,compact);
  // 0.71-0.93: distinct cards land into the existing fan slots.
  const landStart=.71+Math.abs(off)*.014;
  const settleStart=.925+Math.abs(off)*.006;
@@ -140,6 +141,7 @@ function orbitOpeningPose(i,count,t,from,to,width,height,size){
 }
 export async function fanMotion(els,stage,onStart=()=>{}){
  const width=stage.clientWidth,height=stage.clientHeight;
+ const compact=isCompactTouchLandscape();
  const fromSize=stageSize('shuffle',width),toSize=stageSize('selection',width);
  cardSize(stage,'selection');
  // Explicitly use the same authored choreography for every OS motion setting.
@@ -160,7 +162,7 @@ export async function fanMotion(els,stage,onStart=()=>{}){
    const frames=[];
    for(let n=0;n<=160;n++){
     const t=n/160;
-    frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize))});
+    frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize,compact))});
    }
    return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;vfx=startMagicOrbitVFX(stage,clock);onStart(clock)}:null);
   }));
