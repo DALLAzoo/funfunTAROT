@@ -47,20 +47,24 @@
 @keyframes fan-swipe-left {0%,100%{transform:translateX(0)} 48%{transform:translateX(-11px)}}
 @keyframes fan-swipe-right {0%,100%{transform:translateX(0)} 48%{transform:translateX(11px)}}
 
-/* Persistent attention cue, positioned relative to the actual menu button. */
+/* Persistent menu-choice cue: match the 11px / 1s fan-arrow travel. */
 .reading-dropdown .ad2-menu-hint {
  position:absolute; bottom:calc(100% + 8px); left:50%;
- width:29px; height:29px; z-index:85;
+ width:36px; height:36px; z-index:85;
  transform:translateX(-50%);
  visibility:hidden; opacity:0;
  transition:opacity .18s ease,visibility .18s ease;
 }
 .reading-dropdown .ad2-menu-hint.is-visible {
  visibility:visible; opacity:1;
- animation:ad2-menu-hint-nudge 1.65s ease-in-out infinite;
+ animation:ad2-menu-hint-nudge 1s ease-in-out infinite;
 }
 @keyframes ad2-menu-hint-nudge {
- 0%,100%{transform:translate(-50%,0)} 50%{transform:translate(-50%,5px)}
+ 0%,100%{transform:translate(-50%,0)} 48%{transform:translate(-50%,11px)}
+}
+/* Open landscape menus rise above the button; keep the hint above the list. */
+:where(html.phone-landscape,html.roomy-touch-landscape) .reading-dropdown .ad2-menu-hint.is-menu-open {
+ bottom:calc(100% + 14px + var(--ad2-menu-open-height, 0px));
 }
 @media(prefers-reduced-motion:reduce){
  .fan-swipe-hint,.fan-swipe-hint span,

@@ -24,10 +24,16 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   dropdown.parentElement.append(menuHint);
   ctx.menuHintRequested = false;
   ctx.updateMenuHint = () => {
-    // Avoid overlapping an open upward dropdown. If it closes unselected,
-    // resume the gentle hint until the actual option is chosen.
+    // Once requested, keep the cue visible until an option is actually selected.
+    // On touch landscape, the menu opens above the button: lift the cue above
+    // the opened list so it remains visible without covering any option.
     const visible = ctx.menuHintRequested && !ctx.readingSelection &&
-      ctx.getState() === 'selection' && !dropdown.disabled && options.hidden;
+      ctx.getState() === 'selection' && !dropdown.disabled;
+    const menuOpen = visible && !options.hidden;
+    if (menuOpen) {
+      menuHint.style.setProperty('--ad2-menu-open-height', options.getBoundingClientRect().height + 'px');
+    }
+    menuHint.classList.toggle('is-menu-open', menuOpen);
     menuHint.classList.toggle('is-visible', visible);
   };
   ctx.showMenuHint = () => {
