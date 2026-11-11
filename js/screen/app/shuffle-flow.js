@@ -81,7 +81,7 @@ export async function startShuffleFlow(ctx){
  if(!await fanMotion(opening,stage,clock=>{
   magic.release(clock);
  })||current!==ctx.token){magic.stop();return;}
- magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
+ magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection',ctx.readingSelection ? '카드를 한 번 누르면 선택, 다시 누르면 공개됩니다' : '카드를 고를 수 있어요. 공개하려면 ‘무엇이 궁금하세요?’에서 메뉴를 먼저 선택해 주세요.');
  showFanSwipeHint(ctx);
  instruction.textContent='';
 }

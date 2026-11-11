@@ -54,6 +54,13 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
       dropdown.setAttribute('aria-expanded', 'false');
       ctx.menuHintRequested = false;
       ctx.updateMenuHint();
+      // The fan may already have a picked card. Reflect its real next action.
+      if (ctx.getState() === 'selection') {
+        const hasPicked = Boolean(ctx.carousel?.selectedCard);
+        ctx.setState('selection', hasPicked
+          ? '선택한 카드를 다시 누르면 공개됩니다.'
+          : '카드를 한 번 누르면 선택, 다시 누르면 공개됩니다');
+      }
       try { dropdown.focus({preventScroll:true}); } catch (_) { dropdown.focus(); }
     });
   });

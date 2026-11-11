@@ -7,7 +7,7 @@ export async function chooseFlow(ctx,chosen){
  const {stage,container,instruction,main,resultView,magic,revealMagic,$,setState,getState,refreshCounter}=ctx;
  if(getState()!=='selection'||ctx.carousel?.busy||chosen.hidden)return;
  // Keep the selected fan card. Only the second tap's reveal is gated.
- if (!ctx.readingSelection) { ctx.showMenuHint?.(); return; }
+ if (!ctx.readingSelection) { ctx.showMenuHint?.(); setState('selection','카드를 선택했어요. 공개하려면 ‘무엇이 궁금하세요?’에서 메뉴를 선택해 주세요.'); return; }
  // Lock the fan immediately on the second tap, before awaiting the front image.
  const selectingCarousel=ctx.carousel;
  selectingCarousel.busy=true;
