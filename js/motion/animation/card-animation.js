@@ -40,21 +40,11 @@ export function alignIdleDeck(els){
 // viewport.  No packets, new choreography, discrete position clamps, or
 // per-frame layout reads.  All non-compact profiles retain the old branch.
 function compactShuffleRoom(stage,w,h){
- // Phone landscape only. Keep the ORIGINAL orbit's phase, angles and order;
- // avoid squeezing its paths into a half-width column. The container/viewport
- // may clip cards naturally. The stage returns to its usual bounds after shuffle.
- const cw=stageSize('shuffle',w);
- const halfCardY=cw*C.aspect*.58+8;
- const maxY=Math.max(12,h/2-halfCardY-10);
- const orbitY=h*(C.shuffle.radiusY+.065);
- const viewport=window.innerWidth;
- const lateralBudget=Math.max(w*1.4,viewport*.77);
- const orbitX=w*C.shuffle.radiusX*.98;
- return {
-  xScale:Math.min(2.65,Math.max(1.55,lateralBudget/Math.max(1,orbitX))),
-  yScale:Math.min(1.05,Math.max(.72,maxY/Math.max(1,orbitY))),
-  zScale:Math.min(.93,Math.max(.72,h/320))
- };
+ // Centered card stage uses about half the viewport. Allow the original
+ // per-card orbital path to spill outside it. No edge clamps, new packets or
+ // changes to the authored angles and order.
+ const widthRatio=window.innerWidth/Math.max(1,w);
+ return {xScale:Math.min(2.8,Math.max(1.5,widthRatio)),yScale:1,zScale:.88};
 }
 function originalShufflePose(i,t,w,h,count,compact,room){
  // This is exactly the existing PC/portrait authored orbit.  Its angular

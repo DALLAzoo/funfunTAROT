@@ -1,8 +1,8 @@
 /* v54 — Tablet landscape: keep the tablet portrait structure for the whole
    selection journey (title above, deck centered, controls below).
    Only result/reveal switches to PC-like two-column presentation. */
-@media (orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse) {
-  #tarotApp.tarot-app {
+@media (orientation:landscape) and (min-width:760px) and (hover:none) and (pointer:coarse) {
+  :where(html.roomy-touch-landscape) #tarotApp.tarot-app {
     display:flex;
     flex-direction:column;
     align-items:stretch;
@@ -11,7 +11,7 @@
     padding:clamp(16px,2.5vh,30px) clamp(18px,3vw,36px);
     box-sizing:border-box;
   }
-  #tarotApp > .intro {
+  :where(html.roomy-touch-landscape) #tarotApp > .intro {
     position:relative;
     flex:0 0 auto;
     width:100%;
@@ -20,14 +20,14 @@
     text-align:center;
     z-index:2;
   }
-  #tarotApp > .intro h1 {
+  :where(html.roomy-touch-landscape) #tarotApp > .intro h1 {
     font-size:clamp(22px,2.5vw,35px);
     line-height:1.32;
     margin:9px 0 12px;
     word-break:keep-all;
   }
-  #tarotApp > .intro .eyebrow { font-size:10px; letter-spacing:.25em; }
-  #tarotApp #stage {
+  :where(html.roomy-touch-landscape) #tarotApp > .intro .eyebrow { font-size:10px; letter-spacing:.25em; }
+  :where(html.roomy-touch-landscape) #tarotApp #stage {
     position:relative;
     flex:1 1 auto;
     align-self:center;
@@ -39,7 +39,7 @@
     clip-path:inset(0 -100vw 0 -100vw);
     z-index:1;
   }
-  #tarotApp > .controls {
+  :where(html.roomy-touch-landscape) #tarotApp > .controls {
     position:relative;
     flex:0 0 auto;
     align-self:stretch;
@@ -47,14 +47,14 @@
     width:100%;
     padding:0 0 clamp(12px,2vh,22px);
   }
-  #tarotApp .controls .actions {
+  :where(html.roomy-touch-landscape) #tarotApp .controls .actions {
     width:max-content;
     max-width:100%;
     margin:0 auto;
     flex-wrap:nowrap;
     align-items:center;
   }
-  #stage.idle-stack .tarot-card.shuffle-surface {
+  :where(html.roomy-touch-landscape) #stage.idle-stack .tarot-card.shuffle-surface {
     --v54-tablet-idle-width:clamp(145px, min(27dvh,22vw), 245px);
     width:var(--v54-tablet-idle-width)!important;
     height:calc(var(--v54-tablet-idle-width) * 1.7161290323)!important;

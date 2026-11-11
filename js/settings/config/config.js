@@ -19,20 +19,14 @@ export const CONFIG = {
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'238,190,103'},
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
-// The compact landscape profile follows viewport geometry, not device names.
-// All existing portrait and desktop profiles remain independent.
-let compactLandscapeQuery=null;
+// CSS and JS share this one viewport + physical-screen classifier.
 export function isCompactTouchLandscape(){
- if (typeof window==='undefined') return false;
- // Reuse the live MediaQueryList during animation sampling.
- compactLandscapeQuery ||= window.matchMedia?.('(orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse)');
- return !!compactLandscapeQuery?.matches;
+ return typeof window!=='undefined' && !!window.tarotViewportProfile?.isPhoneLandscape();
 }
 // On a touch tablet in landscape, size cards to the LEFT stage width.
 // This does not run on desktop, tablet portrait, or rotated phones.
 export function isTabletLandscape(){
- return typeof window !== 'undefined' &&
-  !!window.matchMedia?.('(orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse)').matches;
+ return typeof window!=='undefined' && !!window.tarotViewportProfile?.isRoomyTouchLandscape();
 }
 export function isTabletPortrait(){
  return typeof window !== 'undefined' &&
@@ -68,8 +62,9 @@ export function stageSize(phase,width,config=CONFIG){
    const angle=23*Math.PI/180;
    const projectedFanHalf=config.aspect/2*Math.cos(angle)+.5*Math.sin(angle);
    const fanLimit=Math.max(78,(stageHeight/2-41)/projectedFanHalf);
-   const idleLimit=compactShuffleWidth(width,stageHeight,h,config);
-   if (phase==='shuffle') return idleLimit;
+   // One size for idle and shuffle. The CSS initial pile uses the same formula.
+   const idleWidth=Math.min(148,Math.max(98,Math.min(h*.34,window.innerWidth*.22)));
+   if (phase==='shuffle') return idleWidth;
    if (phase==='selection') return Math.max(78,Math.min(134,width*.32,fanLimit));
    if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
    if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));

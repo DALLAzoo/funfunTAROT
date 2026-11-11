@@ -2,9 +2,9 @@
    Keep selection buttons in their current bottom-center zone; result buttons
    must occupy exactly the same screen coordinates, not the reading column.
    Preserve button sizes, upward dropdown and 3-row internal menu scroll. */
-@media (orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse) {
-  #tarotApp .controls .actions,
-  #resultView .result-actions {
+@media (orientation:landscape) and (min-width:760px) and (hover:none) and (pointer:coarse) {
+  :where(html.roomy-touch-landscape) #tarotApp .controls .actions,
+  :where(html.roomy-touch-landscape) #resultView .result-actions {
     position:fixed;
     left:50%;
     right:auto;
@@ -22,8 +22,8 @@
     padding:0;
     z-index:30;
   }
-  #tarotApp .controls .actions > #shuffleBtn,
-  #resultView .result-actions > #resultAgain {
+  :where(html.roomy-touch-landscape) #tarotApp .controls .actions > #shuffleBtn,
+  :where(html.roomy-touch-landscape) #resultView .result-actions > #resultAgain {
     flex:0 0 auto;
     width:auto;
     min-width:112px;
@@ -31,19 +31,19 @@
     padding:0 20px;
     font-size:14px;
   }
-  #tarotApp .controls .reading-dropdown,
-  #resultView .result-actions > .reading-dropdown {
+  :where(html.roomy-touch-landscape) #tarotApp .controls .reading-dropdown,
+  :where(html.roomy-touch-landscape) #resultView .result-actions > .reading-dropdown {
     flex:0 0 auto;
     width:auto;
     min-width:190px;
   }
-  #tarotApp .controls .reading-dropdown-trigger,
-  #resultView .result-actions .reading-dropdown-trigger {
+  :where(html.roomy-touch-landscape) #tarotApp .controls .reading-dropdown-trigger,
+  :where(html.roomy-touch-landscape) #resultView .result-actions .reading-dropdown-trigger {
     height:44px;
     font-size:14px;
   }
-  #tarotApp .reading-dropdown-menu,
-  #resultView .reading-dropdown-menu {
+  :where(html.roomy-touch-landscape) #tarotApp .reading-dropdown-menu,
+  :where(html.roomy-touch-landscape) #resultView .reading-dropdown-menu {
     top:auto;
     bottom:calc(100% + 6px);
     max-height:calc(3 * 44px + 2px);

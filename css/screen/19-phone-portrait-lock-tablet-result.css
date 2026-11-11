@@ -1,212 +1,28 @@
-/* v56 — PHONE LANDSCAPE ONLY. No page rotation or portrait shell.
-   Deck/heading occupy the left half. Both controls use a common fixed anchor
-   at lower right through idle, shuffle, fan, transition and result.
-   Result: PC-like card-left / reading-right without changing heading font.
-   Portrait phone, landscape tablet, portrait tablet and desktop are untouched. */
-@media (orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse) {
-  html {width:auto;height:auto;overflow:hidden!important;}
-  body {
-    position:static!important;
-    width:100%!important;
-    height:100dvh!important;
-    min-height:0!important;
-    margin:0!important;
-    transform:none!important;
-    transform-origin:initial!important;
-    overflow:hidden!important;
-  }
-  #tarotApp.tarot-app {
-    display:block;
-    position:relative;
-    height:100dvh;
-    min-height:0;
-    max-width:none;
-    width:100%;
-    margin:0;
-    padding:0;
-    overflow:hidden;
-  }
-  #tarotApp > .intro {
-    position:absolute;
-    top:clamp(12px,3vh,22px);
-    left:1%;
-    width:50%;
-    margin:0;
-    padding:0;
-    text-align:center;
-    z-index:5;
-  }
-  #tarotApp > .intro .eyebrow,
-  #resultView > .intro .eyebrow {font-size:10px;letter-spacing:.24em;}
-  #tarotApp > .intro h1,
-  #resultView > .intro h1 {
-    font-family:Georgia,serif;
-    font-size:clamp(18px,2.5vw,25px);
-    font-weight:400;
-    line-height:1.25;
-    margin:8px 0 0;
-    word-break:keep-all;
-  }
-  #tarotApp #stage {
-    position:absolute;
-    top:clamp(85px,25vh,110px);
-    bottom:4px;
-    left:1%;
-    width:50%;
-    height:auto;
-    min-height:0;
-    max-height:none;
-    flex:none;
-    overflow:visible;
-    clip-path:inset(0 -100vw 0 -100vw);
-    contain:layout;
-    z-index:1;
-  }
-  #tarotApp > .controls {position:static;margin:0;padding:0;width:100%;}
-  /* v54 kept the 245px desktop idle deck in a narrow landscape stage.
-     Give the initial deck its own viewport-height cap without affecting
-     subsequent shuffle/fan animation timing or the portrait idle deck. */
-  #stage.idle-stack .tarot-card.shuffle-surface {
-    --phone-landscape-idle-w:clamp(112px,35dvh,165px);
-    width:var(--phone-landscape-idle-w)!important;
-    height:calc(var(--phone-landscape-idle-w) * 1.7161290323)!important;
-  }
-  /* This very same viewport anchor is used in both DOM screens. */
-  #tarotApp .controls .actions,
-  #resultView .result-actions {
-    position:fixed!important;
-    left:auto!important;
-    right:clamp(12px,2.4vw,22px)!important;
-    top:auto!important;
-    bottom:clamp(12px,4vh,22px)!important;
-    transform:none!important;
-    display:flex;
-    flex-direction:row;
-    flex-wrap:nowrap;
-    align-items:center;
-    justify-content:center;
-    width:max-content;
-    max-width:calc(49vw - 12px);
-    gap:8px;
-    margin:0!important;
-    padding:0;
-    z-index:60;
-  }
-  #tarotApp .controls .actions > #shuffleBtn,
-  #resultView .result-actions > #resultAgain {
-    flex:0 0 auto;
-    box-sizing:border-box;
-    width:auto;
-    min-width:100px;
-    height:44px;
-    padding:0 12px;
-    font-size:13px;
-  }
-  #tarotApp .controls .reading-dropdown,
-  #resultView .result-actions > .reading-dropdown {
-    position:relative;
-    flex:0 0 auto;
-    box-sizing:border-box;
-    width:auto;
-    min-width:175px;
-    margin:0;
-  }
-  #tarotApp .controls .reading-dropdown-trigger,
-  #resultView .reading-dropdown-trigger {
-    box-sizing:border-box;
-    width:100%;
-    height:44px;
-    padding:0 10px;
-    font-size:13px;
-  }
-  #tarotApp .reading-dropdown-menu,
-  #resultView .reading-dropdown-menu {
-    top:auto;
-    bottom:calc(100% + 6px);
-    max-height:calc(3 * 44px + 2px);
-    overflow-y:auto;
-    overscroll-behavior:contain;
-  }
-  #resultView.result-view {
-    position:relative;
-    width:100%;
-    height:100dvh;
-    min-height:0;
-    margin:0;
-    padding:0!important;
-    overflow:hidden;
-  }
-  /* Same heading anchor before and after the card changes screen. */
-  #resultView > .intro {
-    position:absolute;
-    top:clamp(12px,3vh,22px)!important;
-    left:1%;right:auto;
-    width:50%;
-    margin:0;
-    text-align:center;
-    pointer-events:none;
-    z-index:5;
-  }
-  #resultView .result-card-host,
-  #resultView.is-revealed .result-card-host {
-    left:calc(26% - var(--result-width,135px) / 2)!important;
-    transform:none!important;
-    margin:0!important;
-  }
-  #resultView.is-final .result-card-host,
-  #resultView.is-final.is-revealed .result-card-host {
-    top:var(--reveal-top,86px)!important;
-  }
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    left:53%!important;
-    right:clamp(12px,2.4vw,22px)!important;
-    transform:none!important;
-    width:auto!important;
-    top:clamp(76px,21vh,105px)!important;
-    bottom:clamp(92px,29vh,115px)!important;
-    margin:0!important;
-    padding:10px 13px;
-    font-size:clamp(12px,1.65vw,14px);
-    line-height:1.6;
-    overflow-y:auto;
-    overscroll-behavior:contain;
-  }
-  /* A compact phone can only show the right controls if their min-widths
-     adapt slightly; keep their height and two-button horizontal order. */
-}
-@media (orientation:landscape) and (max-height:500px) and (max-width:620px) and (hover:none) and (pointer:coarse) {
-    #tarotApp .controls .actions > #shuffleBtn,
-    #resultView .result-actions > #resultAgain {min-width:86px;padding:0 8px;font-size:12px;}
-    #tarotApp .controls .reading-dropdown,
-    #resultView .result-actions > .reading-dropdown {min-width:150px;}
-    #tarotApp .controls .reading-dropdown-trigger,
-    #resultView .reading-dropdown-trigger {font-size:12px;padding:0 7px;}
-  }
-
+/* Phone landscape declarations consolidated in 25-landscape-adaptive-layout.css. */
 /* v54 — TABLET landscape RESULT ONLY: PC-like card left, reading right.
    Keep button dimensions, protect the fixed button bar and its upward menu. */
-@media (orientation:landscape) and (min-width:760px) and (min-height:560px) and (hover:none) and (pointer:coarse) {
-  #resultView.result-view {
+@media (orientation:landscape) and (min-width:760px) and (hover:none) and (pointer:coarse) {
+  :where(html.roomy-touch-landscape) #resultView.result-view {
     width:100%;
     height:100dvh;
     min-height:0;
     padding:0!important;
     overflow:hidden;
   }
-  #resultView > .intro {
+  :where(html.roomy-touch-landscape) #resultView > .intro {
     top:clamp(30px,7vh,72px)!important;
     left:0;right:0;
     margin:0;
   }
-  #resultView > .intro h1 {font-size:clamp(22px,2.55vw,36px);}
-  #resultView.is-final .result-card-host {
+  :where(html.roomy-touch-landscape) #resultView > .intro h1 {font-size:clamp(22px,2.55vw,36px);}
+  :where(html.roomy-touch-landscape) #resultView.is-final .result-card-host {
     top:clamp(105px,19vh,175px);
   }
-  #resultView.is-revealed .result-card-host {
+  :where(html.roomy-touch-landscape) #resultView.is-revealed .result-card-host {
     left:calc(29% - var(--result-width,210px) / 2);
     top:clamp(105px,19vh,175px);
   }
-  #resultView.is-revealed .result-reading:not([hidden]) {
+  :where(html.roomy-touch-landscape) #resultView.is-revealed .result-reading:not([hidden]) {
     left:54%;
     right:4.5%;
     width:auto;
@@ -218,7 +34,7 @@
     line-height:1.7;
     overflow-y:auto;
   }
-  #resultView .result-actions {
+  :where(html.roomy-touch-landscape) #resultView .result-actions {
     left:auto;
     right:4.5%;
     bottom:clamp(16px,3vh,32px);
@@ -229,12 +45,12 @@
     gap:10px;
     flex-wrap:nowrap;
   }
-  #resultView .result-actions > #resultAgain,
-  #resultView .result-actions .reading-dropdown-trigger {
+  :where(html.roomy-touch-landscape) #resultView .result-actions > #resultAgain,
+  :where(html.roomy-touch-landscape) #resultView .result-actions .reading-dropdown-trigger {
     height:44px;
   }
-  #resultView .result-actions > .reading-dropdown {min-width:190px;}
-  #resultView .reading-dropdown-menu {
+  :where(html.roomy-touch-landscape) #resultView .result-actions > .reading-dropdown {min-width:190px;}
+  :where(html.roomy-touch-landscape) #resultView .reading-dropdown-menu {
     top:auto;
     bottom:calc(100% + 6px);
     max-height:calc(3 * 44px + 2px);

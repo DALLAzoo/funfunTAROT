@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-11",
+  "test_type": "Chromium layout simulation (HTML/CSS inline), JS syntax, file diffs",
+  "not_tested": "Full website animation playback and real devices (navigation blocked)",
+  "checks": [
+    {
+      "name": "iPhone 12 가로",
+      "stage_centered": true,
+      "status_hidden": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "작은폰 가로",
+      "stage_centered": true,
+      "status_hidden": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "iPhone 16 Pro Max 가로",
+      "stage_centered": true,
+      "status_hidden": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "iPhone SE 가로",
+      "stage_centered": true,
+      "status_hidden": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "S23 가로",
+      "stage_centered": true,
+      "status_hidden": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "태블릿 창 1000x550",
+      "smartphone_rule_disabled": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "태블릿 창 900x500",
+      "smartphone_rule_disabled": true,
+      "buttons_in_view": true
+    },
+    {
+      "name": "터치PC 창",
+      "smartphone_rule_disabled": true,
+      "buttons_in_view": true
+    }
+  ],
+  "normal_landscape_layout_equal_before_after": [
+    "iPad Mini 1024x768",
+    "iPad Pro 1366x1024",
+    "MacBook 1440x900",
+    "PC 1920x1080"
+  ],
+  "phone_result": "card remains left, reading remains right, button pair remains lower-right"
+}
