@@ -39,11 +39,11 @@ export function alignIdleDeck(els){
 // Distances/depth are adjusted once for the active profile. No packets, new
 // choreography, per-frame position clamps or per-frame layout reads.
 function compactShuffleRoom(stage,w,h){
- // Centered stage uses half the viewport. Allow the original orbit to
- // spill outside it. Reduce first-shuffle depth only; leave the subsequent
- // orbit-opening 3-D motion completely unchanged.
+ // Phone landscape: restore the earlier approved 18% narrower FIRST shuffle.
+ // Preserve its full smooth orbit, depth, timing and the wider subsequent
+ // 3-D stair/ring opening without changing other screen profiles.
  const widthRatio=window.innerWidth/Math.max(1,w);
- return {xScale:Math.min(2.8,Math.max(1.5,widthRatio)),yScale:1,zScale:.53};
+ return {xScale:Math.min(2.8,Math.max(1.5,widthRatio))*.82,yScale:1,zScale:.53};
 }
 function originalShufflePose(i,t,w,h,count,compact,room){
  // The authored orbit keeps its angles, card phases, rotations and order.
