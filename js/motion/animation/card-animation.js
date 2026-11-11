@@ -46,41 +46,47 @@ function compactShuffleRoom(stage,cardWidth){
  const status=stage.ownerDocument.querySelector('#tarotApp .controls .status');
  const statusRect=status?.getBoundingClientRect();
  const statusLeft=statusRect?.width?statusRect.left:vw*.52;
- // Include a conservatively projected, rotated card and its shadow.  The
- // right-hand extension is only used on the LOWER part of the orbit, below
- // the fixed status message.  The title, controls and landing area stay put.
+ // Reserve space for tilted card corners and their outer glow.
+ // This keeps BOTH moving packets clear of the right-hand status/buttons
+ // without moving those fixed elements or clipping the deck itself.
  const halfX=cardWidth*.82;
  const minX=Math.max(16,rect.left-6);
  const rightClear=Math.max(20,statusLeft-centerX-halfX-14);
- const rightOpen=Math.max(rightClear,Math.min(vw*.68,statusLeft+vw*.16)-centerX-halfX-14);
  const maxLeft=Math.max(24,centerX-minX-halfX);
  const cardHalfHeight=cardWidth*C.aspect*.64;
  const ySpan=Math.max(8,rect.height/2-cardHalfHeight-10);
  const nominalX=Math.max(1,rect.width*C.shuffle.radiusX*1.03);
- const nominalY=Math.max(1,rect.height*(C.shuffle.radiusY+.065));
- return {
-  maxLeft, rightClear, rightOpen,
-  xNorm:nominalX, yScale:Math.min(1,ySpan/nominalY), ySpan,
- };
+ return {maxLeft,rightClear,xNorm:nominalX,ySpan};
 }
-// For compact landscape the old pose used an excessively small symmetric
-// orbit and a strongly oscillating depth, so cards repeatedly exchanged which
-// one was in front.  This keeps the authored angular rhythm and 3-D turns but
-// supplies wider, smooth lanes and a stable back-to-front order.
+// In narrow touch landscape, 22 independently spinning cards tangled into
+// one cluster.  Keep the original rhythm/duration, but move two coherent
+// packets on complementary lanes.  Each packet retains a fixed front-to-back
+// order; cards stay nearly parallel so their faces do not visually pierce
+// one another as the packets pass.  No change to other viewport profiles.
 function compactShufflePose(i,t,w,h,count,room){
- const base=travelPose(i,t,w,h,count,C,false);
- const y=(base.y+12)*room.yScale-3;
- const lowerArc=Math.min(1,Math.max(0,(y+3)/Math.max(12,room.ySpan*.65)));
- const opening=smooth(lowerArc);
- const rightRoom=room.rightClear+(room.rightOpen-room.rightClear)*opening;
- const budget=base.x<0?room.maxLeft:rightRoom;
- const x=base.x*Math.min(1.85,budget/room.xNorm);
- // A fixed, permuted lane order avoids depth-order flips when two cards cross
- // in the projection.  Gentle wobble is intentionally smaller than the lane
- // spacing; this is a visual shuffle, not a rigid-body physics simulation.
- const lane=(i*7)%count;
- const z=(lane-(count-1)/2)*10 + Math.sin(t*Math.PI*2+i*.7)*2.7;
- return {...base,x,y,z};
+ const packetSize=Math.ceil(count/2);
+ const packet=i<packetSize?0:1;
+ const local=i-packet*packetSize;
+ const cardsInPacket=packet===0?packetSize:count-packetSize;
+ const offset=local-(cardsInPacket-1)/2;
+ // The center of either packet stays within the left stage.  The card
+ // artwork, small fan offsets and glow are included in this clearance.
+ const radiusX=Math.max(22,Math.min(room.maxLeft-13,room.rightClear-13,room.xNorm*.88));
+ const radiusY=Math.max(10,Math.min(32,room.ySpan*.73));
+ const theta=t*Math.PI*2*C.shuffle.turns+packet*Math.PI;
+ const packetX=Math.cos(theta)*radiusX;
+ const packetY=Math.sin(theta)*radiusY;
+ // A restrained spread gives the viewer two recognizable decks, not 22
+ // unrelated, steeply tilted objects in the same projected space.
+ const fanX=offset*1.7;
+ const fanY=-Math.abs(offset)*.43;
+ const rot=(packet===0?4:-4)+Math.sin(theta)*3.2+offset*.42;
+ const ry=(packet===0?-1:1)*(8+Math.cos(theta)*2);
+ const rx=Math.sin(theta)*2.5;
+ // Match the CSS painting order: the front packet remains in front for the
+ // entire crossing, preventing alternating front/back flashes.
+ const z=(packet===0?48:-48)+local*2.2;
+ return {x:packetX+fanX,y:packetY+fanY-3,z,rot,ry,rx,scale:1};
 }
 function shuffleLanePose(i,t,w,h,count,compact,room){
  if(compact)return compactShufflePose(i,t,w,h,count,room);
@@ -111,9 +117,15 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  const compact=isCompactTouchLandscape();
  const room=compact?compactShuffleRoom(stage,stageSize('shuffle',w)):null;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
- // Stable painting order only for a compact rotating orbit: no front/back
- // flashing as two projected cards cross.  Next-stage cards are new elements.
- if(compact)els.forEach((el,i)=>{el.style.zIndex=String(20+(i*7)%count);});
+ // Keep each packet internally stacked and one packet consistently above
+ // the other while they cross.  Non-compact profiles are untouched.
+ if(compact){
+  const packetSize=Math.ceil(count/2);
+  els.forEach((el,i)=>{
+   const front=i<packetSize;
+   el.style.zIndex=String((front?200:100)+(i%packetSize));
+  });
+ }
  phase('charge');
  if(!(await Promise.all(els.map((el,i)=>animateTo(el,shuffleLanePose(i,0,w,h,count,compact,room),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
  phase('vortex');
