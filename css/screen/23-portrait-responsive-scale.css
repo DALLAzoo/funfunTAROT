@@ -229,3 +229,19 @@
     line-height:1.65;
   }
 }
+
+/* AD4 2026-11-12: Portrait TOUCH tablets only. Keep the existing elastic
+   layout; raise the result card and reading-width ceilings as space grows.
+   No changes to portrait phones, landscape tablets or desktop. */
+@media (orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse) {
+  :root {
+    --portrait-reading-size:clamp(17px, calc(10.3px + .94vw), 20px);
+  }
+  #resultView > .result-reading-group {
+    width:min(100%, clamp(520px, 58vw, 600px));
+  }
+  #resultView .result-reading,
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    width:100%;
+  }
+}

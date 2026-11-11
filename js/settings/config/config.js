@@ -78,6 +78,13 @@ export function stageSize(phase,width,config=CONFIG){
    if (phase==='selection') return portraitWidth(vw,146,210);
    if (phase==='transition') return portraitWidth(vw,160,240);
    if (phase==='result') {
+     if (isTabletPortrait()) {
+       // Portrait tablets keep growing beyond 820px instead of hitting the
+       // old 830px height ceiling. Leave room for title, reading and buttons.
+       const preferred=Math.min(350,
+         portraitWidth(vw,190,325)+Math.max(0,vw-820)*(25/212));
+       return Math.max(120,Math.min(preferred,(vh-360)/config.aspect));
+     }
      const preferred=portraitWidth(vw,190,325);
      // Budget for the unchanged top title, a readable scroll pane and buttons.
      // Short portrait screens may go below the preferred minimum rather than clip.
