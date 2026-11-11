@@ -1,4 +1,5 @@
 import {setStateUI, refreshCounterUI} from './ui-state.js';
+import {isCompactTouchLandscape} from '../../settings/config/config.js';
 import {startShuffleFlow} from './shuffle-flow.js';
 import {chooseFlow} from './reveal-flow.js';
 import {MagicVFX} from '../../effects/magic-vfx.js';
@@ -23,7 +24,17 @@ const resultView = $('#resultView');
 const ctx = {catalog: [], cards: [], pool: [], back: null, carousel: null, token: 0, errorNotice:createImageError()};
 const uiContext = {status, shuffleBtn, $, state: 'idle'};
 const getState = () => uiContext.state;
-const setState = (next, label) => {setStateUI(uiContext, next, label);ctx.updateMenuHint?.();};
+const setState = (next, label) => {
+  // Only the short phone-landscape status panel uses compact, readable copy.
+  // All other screen sizes retain the existing wording and state transitions.
+  if (next === 'selection' && isCompactTouchLandscape()) {
+    label = !ctx.readingSelection ? '먼저 궁금한 내용을 선택해 주세요.'
+      : ctx.carousel?.selectedCard ? '선택한 카드를 다시 눌러 공개하세요.'
+      : '마음이 끌리는 카드를 선택해 주세요.';
+  }
+  setStateUI(uiContext, next, label);
+  ctx.updateMenuHint?.();
+};
 const refreshCounter = index => refreshCounterUI($, ctx.pool, index);
 
 const magic = new MagicVFX(stage);

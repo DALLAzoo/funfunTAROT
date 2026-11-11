@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isCompactTouchLandscape} from '../../settings/config/config.js';
 import {randomOrder,selectionPool,visibleIndices} from '../../motion/core/cinema-core.js';
 import {randomBack} from '../../settings/data/back-config.js';
 import {prepareBack} from '../assets/back-loader.js';
@@ -81,7 +81,11 @@ export async function startShuffleFlow(ctx){
  if(!await fanMotion(opening,stage,clock=>{
   magic.release(clock);
  })||current!==ctx.token){magic.stop();return;}
- magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection',ctx.readingSelection ? '카드를 한 번 누르면 선택, 다시 누르면 공개됩니다' : '카드를 고를 수 있어요. 공개하려면 ‘무엇이 궁금하세요?’에서 메뉴를 먼저 선택해 주세요.');
+ magic.finish();ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();
+ ctx.carousel.onPick = () => {
+  if(isCompactTouchLandscape()) setState('selection','선택한 카드를 다시 누르면 공개됩니다.');
+ };
+ setState('selection',ctx.readingSelection ? '카드를 한 번 누르면 선택, 다시 누르면 공개됩니다' : '카드를 고를 수 있어요. 공개하려면 ‘무엇이 궁금하세요?’에서 메뉴를 먼저 선택해 주세요.');
  showFanSwipeHint(ctx);
  instruction.textContent='';
 }

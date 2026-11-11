@@ -40,17 +40,20 @@ export function alignIdleDeck(els){
 // viewport.  No packets, new choreography, discrete position clamps, or
 // per-frame layout reads.  All non-compact profiles retain the old branch.
 function compactShuffleRoom(stage,w,h){
+ // Phone landscape only. Keep the ORIGINAL orbit's phase, angles and order;
+ // avoid squeezing its paths into a half-width column. The container/viewport
+ // may clip cards naturally. The stage returns to its usual bounds after shuffle.
  const cw=stageSize('shuffle',w);
- const halfCardX=cw*.86+8;               // rotated card and gold glow
  const halfCardY=cw*C.aspect*.58+8;
- const maxX=Math.max(12,w/2-halfCardX-12);
- const maxY=Math.max(12,h/2-halfCardY-12);
- const orbitX=w*C.shuffle.radiusX*.96;
+ const maxY=Math.max(12,h/2-halfCardY-10);
  const orbitY=h*(C.shuffle.radiusY+.065);
+ const viewport=window.innerWidth;
+ const lateralBudget=Math.max(w*1.4,viewport*.77);
+ const orbitX=w*C.shuffle.radiusX*.98;
  return {
-  xScale:Math.min(1,maxX/Math.max(1,orbitX)),
-  yScale:Math.min(1,maxY/Math.max(1,orbitY)),
-  zScale:Math.max(.52,Math.min(.70,h/500))
+  xScale:Math.min(2.65,Math.max(1.55,lateralBudget/Math.max(1,orbitX))),
+  yScale:Math.min(1.05,Math.max(.72,maxY/Math.max(1,orbitY))),
+  zScale:Math.min(.93,Math.max(.72,h/320))
  };
 }
 function originalShufflePose(i,t,w,h,count,compact,room){

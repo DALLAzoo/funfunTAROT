@@ -50,6 +50,7 @@ export class Carousel {
    {transform:transform({...raised,scale:1,z:0,ry:0,rx:0})}
   ],{duration:C.carousel.selectedLiftDuration,easing:'cubic-bezier(.2,.75,.25,1)'});
   if(old&&old!==card)old.getAnimations().forEach(animation=>animation.cancel());
+  this.onPick?.(card);
  }
  confirm(){if(this.selectedCard&&!this.selectedCard.hidden&&!this.busy)this.onChoose(this.selectedCard);}
  distance(i){const n=this.cards.length;let d=mod(i-this.index,n);if(d>n/2)d-=n;return d;}
