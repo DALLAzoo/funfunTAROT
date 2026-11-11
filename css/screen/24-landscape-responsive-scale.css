@@ -41,7 +41,9 @@
   :where(html.roomy-touch-landscape) #tarotApp > .intro h1,
   :where(html.roomy-touch-landscape) #resultView > .intro h1 {font-size:var(--land-title);}
   :where(html.roomy-touch-landscape) #stage.idle-stack .tarot-card.shuffle-surface {
-    --v54-tablet-idle-width:clamp(145px,min(26dvh,21vw),245px);
+    /* Same responsive pile size and CSS geometry as the JS stage. */
+    width:var(--card-w)!important;
+    height:var(--card-h)!important;
   }
   :where(html.roomy-touch-landscape) #tarotApp .controls .actions,
   :where(html.roomy-touch-landscape) #resultView .result-actions {

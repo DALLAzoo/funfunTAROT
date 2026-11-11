@@ -1,4 +1,4 @@
-import {CONFIG as C,isCompactTouchLandscape} from '../../settings/config/config.js';
+import {CONFIG as C,isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
 import {applySettings} from '../../settings/config/apply-settings.js';
 import {makeCatalog,validateConfig,randomOrder} from '../../motion/core/cinema-core.js';
 import {backs,randomBack} from '../../settings/data/back-config.js';
@@ -14,7 +14,7 @@ export async function initializeApp({ctx, $, stage, container, status, setState}
    // Decode the back artwork before creating visible cards to avoid a texture-only first paint.
    try{await prepareBack(ctx.back);}
    catch(e){setState('idle','카드 뒷면을 불러오지 못했어요.');ctx.errorNotice.show('카드 뒷면 이미지를 불러오지 못했어요.',()=>initializeApp({ctx,$,stage,container,status,setState}));return;}
-   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,isCompactTouchLandscape()?'idle':'selection');stage.classList.add('idle-stack');alignIdleDeck(ctx.cards);requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
+   try{performance.mark('deck-build-start');cardSize(stage);ctx.cards=renderCards(container,randomOrder(ctx.catalog).slice(0,C.counts.shuffle),ctx.back);ctx.cards.forEach(c=>{c.disabled=true;c.classList.add('shuffle-surface');});floatLayout(ctx.cards,stage);cardSize(stage,(isCompactTouchLandscape()||isAdaptiveTablet())?'idle':'selection');stage.classList.add('idle-stack');alignIdleDeck(ctx.cards);requestAnimationFrame(()=>requestAnimationFrame(()=>{performance.mark('deck-first-paint');document.documentElement.dataset.deckPaintMs=performance.now().toFixed(1);}));ctx.magic.idle(ctx.cards);$('#backName').textContent='· '+ctx.back.name;setState('idle','새로운 덱이 준비됐어요');}
    catch(e){setState('idle','카드를 표시하지 못했어요.');ctx.errorNotice.show('카드를 표시하지 못했어요.',()=>initializeApp({ctx,$,stage,container,status,setState}));}
   }catch(e){setState('error',e.message);status.setAttribute('role','alert');}
 }

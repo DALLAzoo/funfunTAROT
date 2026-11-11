@@ -38,6 +38,41 @@ export function compactShuffleWidth(stageWidth,stageHeight,viewportHeight,config
  const allowance=Math.max(78,(stageHeight/2-34)/1.22);
  return Math.max(78,Math.min(110,stageWidth*.30,viewportHeight*.31,allowance));
 }
+// Portrait and spacious-landscape tablets share one proportional card scale.
+// Use the viewport's short side so rotation does not shrink the whole journey.
+// Height/column limits are applied only where a visible card needs clearance.
+export const isAdaptiveTablet=()=>isTabletPortrait()||isTabletLandscape();
+function adaptiveTabletSize(phase,width,config){
+ const vw=window.innerWidth, vh=window.innerHeight;
+ const shortSide=Math.min(vw,vh);
+ const ratio=Math.min(1.27,Math.max(.80,shortSide/820));
+ const preferred={
+  idle:Math.min(330,290*ratio),
+  shuffle:Math.min(235,200*ratio),
+  selection:Math.min(285,260*ratio),
+  transition:Math.min(330,290*ratio),
+  result:Math.min(392,355*ratio)
+ }[phase];
+ if(preferred===undefined)return null;
+ // A taller tablet must not make the orbit occupy every unused pixel.
+ if(phase==='shuffle')return Math.min(preferred,Math.max(128,width*.35));
+ if(phase==='idle'){
+  const stageHeight=document.getElementById('stage')?.clientHeight||vh*.64;
+  return Math.min(preferred,Math.max(145,(stageHeight-35)/config.aspect));
+ }
+ if(phase==='selection')return Math.min(preferred,Math.max(140,width*.43));
+ if(phase==='transition')return Math.min(preferred,Math.max(150,(vh-150)/config.aspect));
+ // Reserve a real text area below the result card in portrait, and the title
+ // and fixed action bar above/below the two-column result in landscape.
+ if(isTabletPortrait()){
+  const reserved=Math.max(310,Math.min(470,vh*.35));
+  return Math.min(preferred,Math.max(165,(vh-reserved)/config.aspect));
+ }
+ const titleZone=Math.min(175,Math.max(105,vh*.19));
+ const heightFit=Math.max(165,(vh-titleZone-108)/config.aspect);
+ const columnFit=Math.max(165,(vw*.5-52));
+ return Math.min(preferred,heightFit,columnFit);
+}
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
 // Screen width determines the preferred size, available height can only reduce it.
@@ -71,6 +106,12 @@ export function stageSize(phase,width,config=CONFIG){
      return Math.max(78,Math.min(150,width*.37,fanLimit));
    if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
    if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));
+ }
+ // Tablet phase sizes are calculated together, before phone portrait and
+ // older tablet fallbacks. Phone landscape continues to use its own branch.
+ if(isAdaptiveTablet()) {
+   const adaptive=adaptiveTabletSize(phase,width,config);
+   if(adaptive!==null)return adaptive;
  }
  if (isTouchPortrait()) {
    const vw=window.innerWidth, vh=window.innerHeight;

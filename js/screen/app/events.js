@@ -1,4 +1,4 @@
-import {CONFIG as C, stageSize, isCompactTouchLandscape} from '../../settings/config/config.js';
+import {CONFIG as C, stageSize, isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
 
 import {cardSize,floatLayout,alignIdleDeck} from '../../motion/animation/card-animation.js';
 
@@ -87,7 +87,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
 
   window.addEventListener('resize', () => {
     if (getState() === 'idle' && ctx.cards.length) {
-      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,isCompactTouchLandscape()?'idle':'selection');alignIdleDeck(ctx.cards);
+      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,(isCompactTouchLandscape()||isAdaptiveTablet())?'idle':'selection');alignIdleDeck(ctx.cards);
     }
     if (getState() === 'selection' && !ctx.carousel?.busy) {
       ctx.carousel.layout();

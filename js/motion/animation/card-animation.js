@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize,isCompactTouchLandscape} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
 import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
 import {startMagicOrbitVFX} from '../../effects/magic-orbit-vfx.js';
@@ -95,7 +95,8 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
    portraitPhone ? {xScale:1.25,yScale:1,zScale:1} : null;
  // The stage can fill a tall phone screen, but the first shuffle orbit
  // should use no more than 500px of that height. Fan/reveal keep actual h.
- const firstShuffleHeight=portraitPhone?Math.min(h,500):h;
+ const firstShuffleHeight=portraitPhone?Math.min(h,500) :
+   isAdaptiveTablet()?Math.min(h,Math.max(435,stageSize('shuffle',w)*2.75)):h;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
  phase('charge');
  // First frame and orbit share the very same original pose family.

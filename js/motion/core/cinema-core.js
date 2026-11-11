@@ -1,4 +1,4 @@
-import {CONFIG as C,stageSize,isTabletLandscape,isCompactTouchLandscape,compactShuffleWidth} from '../../settings/config/config.js';
+import {CONFIG as C,stageSize,isTabletLandscape,isTabletPortrait,isCompactTouchLandscape,compactShuffleWidth} from '../../settings/config/config.js';
 import {demoCards} from '../../settings/data/card-data.js';
 export const mod=(n,m)=>((n%m)+m)%m;
 export function makeCatalog(config=C){
@@ -39,6 +39,14 @@ export function slotPose(offset,width,c=C){
  // One formula on all devices; only available stage width changes the spacing.
  let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
+ // Larger tablet cards require a responsive fan overlap. Fit the projected
+ // outer angled card within the real stage, while keeping all 7 slots visible.
+ if(isTabletPortrait()||isTabletLandscape()){
+   const endAngle=23*Math.PI/180;
+   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
+   const room=Math.max(0,width/2-outerHalf-14);
+   fit=Math.max(.30,Math.min(1,room/(steps[0]+steps[1]+steps[2])));
+ }
  // In compact phone landscape the fan is CENTERED in the full viewport.
  // Its stage is intentionally narrow to position the original deck and orbit,
  // but using that stage width for fan spacing incorrectly crowds all 7 cards.

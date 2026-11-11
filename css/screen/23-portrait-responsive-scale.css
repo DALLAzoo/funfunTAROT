@@ -244,4 +244,10 @@
   #resultView.is-revealed .result-reading:not([hidden]) {
     width:100%;
   }
+  /* On tablets the initial deck uses the same adaptive JS size as its stage.
+     No separate 245px hard stop on wide portrait screens. */
+  #stage.idle-stack .tarot-card.shuffle-surface {
+    width:var(--card-w)!important;
+    height:var(--card-h)!important;
+  }
 }
