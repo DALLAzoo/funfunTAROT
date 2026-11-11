@@ -61,11 +61,15 @@ export function stageSize(phase,width,config=CONFIG){
    const stageHeight=document.getElementById('stage')?.clientHeight || Math.max(140,h*.76);
    const angle=23*Math.PI/180;
    const projectedFanHalf=config.aspect/2*Math.cos(angle)+.5*Math.sin(angle);
-   const fanLimit=Math.max(78,(stageHeight/2-41)/projectedFanHalf);
-   // One size for idle and shuffle. The CSS initial pile uses the same formula.
-   const idleWidth=Math.min(148,Math.max(98,Math.min(h*.34,window.innerWidth*.22)));
-   if (phase==='shuffle') return idleWidth;
-   if (phase==='selection') return Math.max(78,Math.min(134,width*.32,fanLimit));
+   // Preserve the original fan geometry. Use a smaller safety inset only for
+   // the shorter phone landscape stage so fan cards are readable at center.
+   const fanLimit=Math.max(78,(stageHeight/2-30)/projectedFanHalf);
+   // Three independent sizes for this single responsive mode.  Idle is more
+   // compact; the existing card-by-card shuffle grows during its charge;
+   // the fan stays enlarged without changing any authored motion path.
+   if (phase==='idle') return Math.min(134,Math.max(90,Math.min(h*.305,window.innerWidth*.20)));
+   if (phase==='shuffle') return Math.min(165,Math.max(110,Math.min(h*.38,window.innerWidth*.23)));
+   if (phase==='selection') return Math.max(78,Math.min(150,width*.37,fanLimit));
    if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
    if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));
  }

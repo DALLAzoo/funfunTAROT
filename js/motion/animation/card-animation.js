@@ -81,7 +81,20 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
  phase('charge');
  // First frame and orbit share the very same original pose family.
- if(!(await Promise.all(els.map((el,i)=>animateTo(el,originalShufflePose(i,0,w,h,count,compact,room),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
+ // Only compact landscape eases the visible idle card size into the larger
+ // shuffle size during the EXISTING charge period. All rotations, paths,
+ // shuffle timing, card order and other device modes stay identical.
+ const idleSize=compact?stageSize('idle',w):0;
+ const shuffleSize=compact?stageSize('shuffle',w):0;
+ const charge=els.map((el,i)=>{
+  const target=originalShufflePose(i,0,w,h,count,compact,room);
+  if(!compact)return animateTo(el,target,C.shuffle.separate);
+  return play(el,[
+   {transform:el.style.transform||pose(0,0,0),width:idleSize+'px',height:idleSize*C.aspect+'px'},
+   {transform:transform(target),width:shuffleSize+'px',height:shuffleSize*C.aspect+'px'}
+  ],C.shuffle.separate);
+ });
+ if(!(await Promise.all(charge)).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
   const frames=[];

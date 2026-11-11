@@ -54,9 +54,10 @@
     clip-path:none!important;contain:layout;z-index:1;
   }
   html.phone-landscape #stage.idle-stack .tarot-card.shuffle-surface {
-    /* Same size as JS stageSize('shuffle'); keep the original pile layering. */
-    width:clamp(98px,min(34dvh,22vw),148px)!important;
-    height:calc(clamp(98px,min(34dvh,22vw),148px) * 1.7161290323)!important;
+    /* The idle pile reads --card-w/h written by stageSize('idle');
+       no second, potentially conflicting size formula in CSS. */
+    width:var(--card-w)!important;
+    height:var(--card-h)!important;
   }
   html.phone-landscape #tarotApp > .controls {
     position:static;width:100%;margin:0;padding:0;
