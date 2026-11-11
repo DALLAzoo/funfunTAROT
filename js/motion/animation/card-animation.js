@@ -35,29 +35,73 @@ export function alignIdleDeck(els){
  });
 }
 
-// A fixed, smoothly blended depth lane per card avoids sudden frame-by-frame
-// repulsion (which caused the revision-4 stutter). It improves visual ordering,
-// but does not claim to implement full rigid-body collision detection.
-function shuffleLanePose(i,t,w,h,count,compact){
- const p=travelPose(i,t,w,h,count,C,compact);
+// On short touch landscape screens only, the cards may borrow the open space
+// around the LEFT deck while they are airborne.  The established stage, right
+// status and right-hand buttons never move.  Measure once per shuffle instead
+// of repeatedly reading layout from each card/keyframe.
+function compactShuffleRoom(stage,cardWidth){
+ const rect=stage.getBoundingClientRect();
+ const centerX=rect.left+rect.width/2;
+ const vw=stage.ownerDocument.documentElement.clientWidth;
+ const status=stage.ownerDocument.querySelector('#tarotApp .controls .status');
+ const statusRect=status?.getBoundingClientRect();
+ const statusLeft=statusRect?.width?statusRect.left:vw*.52;
+ // Include a conservatively projected, rotated card and its shadow.  The
+ // right-hand extension is only used on the LOWER part of the orbit, below
+ // the fixed status message.  The title, controls and landing area stay put.
+ const halfX=cardWidth*.82;
+ const minX=Math.max(16,rect.left-6);
+ const rightClear=Math.max(20,statusLeft-centerX-halfX-14);
+ const rightOpen=Math.max(rightClear,Math.min(vw*.68,statusLeft+vw*.16)-centerX-halfX-14);
+ const maxLeft=Math.max(24,centerX-minX-halfX);
+ const cardHalfHeight=cardWidth*C.aspect*.64;
+ const ySpan=Math.max(8,rect.height/2-cardHalfHeight-10);
+ const nominalX=Math.max(1,rect.width*C.shuffle.radiusX*1.03);
+ const nominalY=Math.max(1,rect.height*(C.shuffle.radiusY+.065));
+ return {
+  maxLeft, rightClear, rightOpen,
+  xNorm:nominalX, yScale:Math.min(1,ySpan/nominalY), ySpan,
+ };
+}
+// For compact landscape the old pose used an excessively small symmetric
+// orbit and a strongly oscillating depth, so cards repeatedly exchanged which
+// one was in front.  This keeps the authored angular rhythm and 3-D turns but
+// supplies wider, smooth lanes and a stable back-to-front order.
+function compactShufflePose(i,t,w,h,count,room){
+ const base=travelPose(i,t,w,h,count,C,false);
+ const y=(base.y+12)*room.yScale-3;
+ const lowerArc=Math.min(1,Math.max(0,(y+3)/Math.max(12,room.ySpan*.65)));
+ const opening=smooth(lowerArc);
+ const rightRoom=room.rightClear+(room.rightOpen-room.rightClear)*opening;
+ const budget=base.x<0?room.maxLeft:rightRoom;
+ const x=base.x*Math.min(1.85,budget/room.xNorm);
+ // A fixed, permuted lane order avoids depth-order flips when two cards cross
+ // in the projection.  Gentle wobble is intentionally smaller than the lane
+ // spacing; this is a visual shuffle, not a rigid-body physics simulation.
+ const lane=(i*7)%count;
+ const z=(lane-(count-1)/2)*10 + Math.sin(t*Math.PI*2+i*.7)*2.7;
+ return {...base,x,y,z};
+}
+function shuffleLanePose(i,t,w,h,count,compact,room){
+ if(compact)return compactShufflePose(i,t,w,h,count,room);
+ const p=travelPose(i,t,w,h,count,C,false);
  const lane=((i*7)%count-(count-1)/2)*7.5;
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
- // The legacy portrait path is explicitly preserved with full-depth lanes.
- return {...p,z:p.z+lane*envelope*(compact?.36:1)};
+ // Portrait / tablets / desktop preserve their original full-depth motion.
+ return {...p,z:p.z+lane*envelope};
 }
-// The airborne orbit stays untouched. Only the final gathering uses a
-// continuous, staggered landing: cards approach the deck from the viewer side
-// and settle in order rather than cutting through the finished stack.
-function gatherPose(i,t,w,h,count,compact,portraitLift){
+// The final gathering uses the original fixed left-stage landing pose.  Only
+// the airborne COMPACT path was widened, so all later fan/reveal geometry is
+// identical to the previous version.
+function gatherPose(i,t,w,h,count,compact,portraitLift,room){
  const start=.78, finish=.985;
- const order=i; // Stable stacking order, no mid-flight repulsion.
+ const order=i;
  const begin=start+order*(compact?.0014:.004);
  const end=finish-(count-1-order)*.001;
- const origin=shuffleLanePose(i,1,w,h,count,compact), target=stackPose(i,count);
+ const origin=shuffleLanePose(i,1,w,h,count,compact,room), target=stackPose(i,count);
  if(t<=begin)return origin;
  const u=smooth((t-begin)/(end-begin));
  const p=mix(origin,target,u);
- // The portrait return follows the prior unchanged choreography.
  const lift=Math.sin(Math.PI*u)*(compact?Math.min(45,h*.12):portraitLift);
  return {...p,z:p.z+lift};
 }
@@ -65,18 +109,20 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  stage.classList.add('glow-shuffle-lite');
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;
  const compact=isCompactTouchLandscape();
+ const room=compact?compactShuffleRoom(stage,stageSize('shuffle',w)):null;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
+ // Stable painting order only for a compact rotating orbit: no front/back
+ // flashing as two projected cards cross.  Next-stage cards are new elements.
+ if(compact)els.forEach((el,i)=>{el.style.zIndex=String(20+(i*7)%count);});
  phase('charge');
- if(!(await Promise.all(els.map((el,i)=>animateTo(el,travelPose(i,0,w,h,count,C,compact),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
+ if(!(await Promise.all(els.map((el,i)=>animateTo(el,shuffleLanePose(i,0,w,h,count,compact,room),C.shuffle.separate)))).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
   const frames=[];
-  // A smaller, continuous keyframe set reduces setup spikes on short touch
-  // landscapes; the compositor interpolates between the authored poses.
   const steps=compact?80:100;
   for(let n=0;n<=steps;n++){
    const t=n/steps;
-   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count,compact):gatherPose(i,t,w,h,count,compact,portraitLift);
+   const p=t<.78?shuffleLanePose(i,smooth(t/.78),w,h,count,compact,room):gatherPose(i,t,w,h,count,compact,portraitLift,room);
    frames.push({offset:t,transform:transform(p)});
   }
   return play(el,frames,C.shuffle.duration,'linear');
