@@ -160,8 +160,9 @@ export async function fanMotion(els,stage,onStart=()=>{}){
    el.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    el.style.opacity='1';
    const frames=[];
-   for(let n=0;n<=160;n++){
-    const t=n/160;
+   const frameSteps=compact?112:160;
+   for(let n=0;n<=frameSteps;n++){
+    const t=n/frameSteps;
     frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize,compact))});
    }
    return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;vfx=startMagicOrbitVFX(stage,clock);onStart(clock)}:null);

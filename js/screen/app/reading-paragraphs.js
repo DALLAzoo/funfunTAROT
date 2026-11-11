@@ -24,6 +24,15 @@ const PARAGRAPH_BREAKS = Object.freeze({
   'major-19': [3, 6],
   'major-20': [2, 4, 7],
   'major-21': [4, 6],
+  // The four Pages and four Knights were missing from the first pass.
+  'cups-page': [2, 4],
+  'wands-page': [2, 5],
+  'swords-page': [2, 4],
+  'pentacles-page': [2, 4],
+  'cups-knight': [3, 6],
+  'wands-knight': [3, 6],
+  'swords-knight': [2, 5],
+  'pentacles-knight': [2, 5],
 });
 
 // Source data mixes single-line advice with short editorial line breaks. Those

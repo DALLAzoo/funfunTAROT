@@ -46,3 +46,6 @@
 
 /* AD2 2026-11-11: semantic paragraph spacing; same wrapping/layout. */
 @import url("./screen/26-reading-paragraphs.css");
+
+/* AD2: text legibility and chosen-card emphasis, after older overrides. */
+@import url("./screen/27-reading-type-and-selected-glow.css");
