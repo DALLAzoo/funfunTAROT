@@ -36,7 +36,6 @@
     min-height:0;
     max-height:none;
     overflow:visible;
-    clip-path:inset(0 -100vw 0 -100vw);
     z-index:1;
   }
   :where(html.roomy-touch-landscape) #tarotApp > .controls {

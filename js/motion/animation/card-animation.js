@@ -36,19 +36,18 @@ export function alignIdleDeck(els){
 }
 
 // Compact landscape uses the ORIGINAL PC/portrait shuffle pose and rotation.
-// Only its translation/depth distances are scaled ONCE to fit the shorter
-// viewport.  No packets, new choreography, discrete position clamps, or
-// per-frame layout reads.  All non-compact profiles retain the old branch.
+// Distances/depth are adjusted once for the active profile. No packets, new
+// choreography, per-frame position clamps or per-frame layout reads.
 function compactShuffleRoom(stage,w,h){
- // Centered card stage uses about half the viewport. Allow the original
- // per-card orbital path to spill outside it. No edge clamps, new packets or
- // changes to the authored angles and order.
+ // Centered stage uses half the viewport. Allow the original orbit to
+ // spill outside it. Reduce first-shuffle depth only; leave the subsequent
+ // orbit-opening 3-D motion completely unchanged.
  const widthRatio=window.innerWidth/Math.max(1,w);
- return {xScale:Math.min(2.8,Math.max(1.5,widthRatio)),yScale:1,zScale:.88};
+ return {xScale:Math.min(2.8,Math.max(1.5,widthRatio)),yScale:1,zScale:.53};
 }
 function originalShufflePose(i,t,w,h,count,compact,room){
- // This is exactly the existing PC/portrait authored orbit.  Its angular
- // path, per-card phase, 3D rotations and order are preserved.
+ // The authored orbit keeps its angles, card phases, rotations and order.
+ // Profile adjustments affect only its x-extent or first-shuffle z-depth.
  const p=travelPose(i,t,w,h,count,C,false);
  const lane=((i*7)%count-(count-1)/2)*7.5;
  const envelope=Math.sin(Math.PI*Math.max(0,Math.min(1,t)))**2;
@@ -77,7 +76,21 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  stage.classList.add('glow-shuffle-lite');
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;
  const compact=isCompactTouchLandscape();
- const room=compact?compactShuffleRoom(stage,w,h):null;
+ // Folded phones use the compact-landscape branch. Opened foldables with
+ // a genuinely short physical screen enter the roomy-touch layout, but should
+ // not acquire its disproportionately strong first-shuffle perspective.
+ // Keep full-size tablets and resized tablet windows on their old trajectory.
+ const physicalShortSide=Math.min(window.screen.width||innerWidth,window.screen.height||innerHeight);
+ const openFoldShortLandscape=!compact &&
+   window.matchMedia('(orientation:landscape) and (hover:none) and (pointer:coarse)').matches &&
+   window.innerWidth>=760 && physicalShortSide<=720 && window.innerHeight<=740;
+ // The portrait change extends only the first orbit horizontally: cards may
+ // travel past the sides instead of turning within the narrow stage width.
+ const portraitPhone=!compact && window.matchMedia('(orientation:portrait) and (hover:none) and (pointer:coarse)').matches &&
+   physicalShortSide<=600;
+ const room=compact ? compactShuffleRoom(stage,w,h) :
+   openFoldShortLandscape ? {xScale:1,yScale:1,zScale:.58} :
+   portraitPhone ? {xScale:1.25,yScale:1,zScale:1} : null;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
  phase('charge');
  // First frame and orbit share the very same original pose family.

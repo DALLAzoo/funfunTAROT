@@ -7,6 +7,7 @@ import {RevealVFX} from '../../effects/reveal-vfx.js';
 import {bindEvents} from './events.js';
 import {initializeApp} from './bootstrap.js';
 import {initReadingScrollCue} from './reading-scroll-cue.js';
+import {setupStageBoundary} from './stage-boundary.js';
 import {createImageError} from './image-error.js';
 import '../../effects/shooting-stars.js'; // AD1 v16: distant meteors, background only
 import '../../effects/button-impact.js'; // AD1 v28: gold press and lingering feedback
@@ -48,5 +49,6 @@ const startShuffle = () => startShuffleFlow(ctx);
 ctx.choose = chosen => chooseFlow(ctx, chosen);
 
 bindEvents({ctx, $, shuffleBtn, startShuffle, getState});
+setupStageBoundary(stage, main.querySelector('.controls .actions'), main);
 initReadingScrollCue();
 await initializeApp({ctx, $, stage, container, status, setState});

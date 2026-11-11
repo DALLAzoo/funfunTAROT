@@ -1,3 +1,9 @@
-/* Keep vertical shuffle cutout and allow the left/right shuffle motion.
-   The old v52 phone-landscape scrolling shell is intentionally replaced by v54. */
-#stage { overflow:visible; clip-path:inset(0 -100vw 0 -100vw); contain:layout; }
+/* One shared shuffle cut line: 10px above the actual action buttons.
+   Its measured bottom inset is maintained by stage-boundary.js, regardless
+   of portrait/landscape and the buttons' relative/fixed positioning.
+   Phone landscape remains explicitly unclipped in 25-landscape-adaptive-layout.css. */
+#stage {
+  overflow:visible;
+  clip-path:inset(0 -100vw var(--stage-bottom-clip-inset,0px) -100vw);
+  contain:layout;
+}
