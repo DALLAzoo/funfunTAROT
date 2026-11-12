@@ -1,0 +1,331 @@
+{
+  "date": "2026-11-12",
+  "status": "static_calculation_pass_browser_unverified",
+  "comparisons": [
+    {
+      "viewport": "390x844",
+      "touch": true,
+      "before": {
+        "idle": 170,
+        "shuffle": 104,
+        "selection": 146,
+        "transition": 160,
+        "result": 190,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      },
+      "after": {
+        "idle": 170,
+        "shuffle": 104,
+        "selection": 146,
+        "transition": 160,
+        "result": 190,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      }
+    },
+    {
+      "viewport": "360x640",
+      "touch": true,
+      "before": {
+        "idle": 170,
+        "shuffle": 104,
+        "selection": 146,
+        "transition": 160,
+        "result": 169.33458646616543,
+        "scale": 0.84,
+        "buttonScale": 0.88,
+        "arrowScale": 0.85
+      },
+      "after": {
+        "idle": 170,
+        "shuffle": 104,
+        "selection": 146,
+        "transition": 160,
+        "result": 169.33458646616543,
+        "scale": 0.958096051884425,
+        "buttonScale": 0.958096051884425,
+        "arrowScale": 0.958096051884425
+      }
+    },
+    {
+      "viewport": "699x1024",
+      "touch": true,
+      "before": {
+        "idle": 223.8856,
+        "shuffle": 147.11627906976744,
+        "selection": 191.9906976744186,
+        "transition": 217.48837209302326,
+        "result": 287.01162790697674,
+        "scale": 1.2132701421800949,
+        "buttonScale": 1.16,
+        "arrowScale": 1.2
+      },
+      "after": {
+        "idle": 223.8856,
+        "shuffle": 147.11627906976744,
+        "selection": 191.9906976744186,
+        "transition": 217.48837209302326,
+        "result": 256.36267766189667,
+        "scale": 1.0977018836356063,
+        "buttonScale": 1.0977018836356063,
+        "arrowScale": 1.0977018836356063
+      }
+    },
+    {
+      "viewport": "700x1024",
+      "touch": true,
+      "before": {
+        "idle": 247.5609756097561,
+        "shuffle": 170.73170731707316,
+        "selection": 221.9512195121951,
+        "transition": 247.5609756097561,
+        "result": 256.57744360902257,
+        "scale": 0.8536585365853658,
+        "buttonScale": 0.88,
+        "arrowScale": 0.8536585365853658
+      },
+      "after": {
+        "idle": 247.5609756097561,
+        "shuffle": 170.73170731707316,
+        "selection": 221.9512195121951,
+        "transition": 247.5609756097561,
+        "result": 256.57744360902257,
+        "scale": 1.0978902117954903,
+        "buttonScale": 1.0978902117954903,
+        "arrowScale": 1.0978902117954903
+      }
+    },
+    {
+      "viewport": "744x1133",
+      "touch": true,
+      "before": {
+        "idle": 263.1219512195122,
+        "shuffle": 181.46341463414635,
+        "selection": 235.90243902439025,
+        "transition": 263.1219512195122,
+        "result": 283.8889097744361,
+        "scale": 0.9073170731707317,
+        "buttonScale": 0.9073170731707317,
+        "arrowScale": 0.9073170731707317
+      },
+      "after": {
+        "idle": 263.1219512195122,
+        "shuffle": 181.46341463414635,
+        "selection": 235.90243902439025,
+        "transition": 263.1219512195122,
+        "result": 283.8889097744361,
+        "scale": 1.1194572027812029,
+        "buttonScale": 1.1194572027812029,
+        "arrowScale": 1.1194572027812029
+      }
+    },
+    {
+      "viewport": "768x1024",
+      "touch": true,
+      "before": {
+        "idle": 271.609756097561,
+        "shuffle": 187.31707317073173,
+        "selection": 243.51219512195124,
+        "transition": 271.609756097561,
+        "result": 279.1889196675901,
+        "scale": 0.8677966101694915,
+        "buttonScale": 0.88,
+        "arrowScale": 0.8677966101694915
+      },
+      "after": {
+        "idle": 271.609756097561,
+        "shuffle": 187.31707317073173,
+        "selection": 243.51219512195124,
+        "transition": 271.609756097561,
+        "result": 279.1889196675901,
+        "scale": 1.1101725754338017,
+        "buttonScale": 1.1101725754338017,
+        "arrowScale": 1.1101725754338017
+      }
+    },
+    {
+      "viewport": "820x1180",
+      "touch": true,
+      "before": {
+        "idle": 290,
+        "shuffle": 200,
+        "selection": 260,
+        "transition": 290,
+        "result": 355,
+        "scale": 0.9999999999999999,
+        "buttonScale": 0.9999999999999999,
+        "arrowScale": 0.9999999999999999
+      },
+      "after": {
+        "idle": 290,
+        "shuffle": 200,
+        "selection": 260,
+        "transition": 290,
+        "result": 355,
+        "scale": 1.138137300215906,
+        "buttonScale": 1.138137300215906,
+        "arrowScale": 1.138137300215906
+      }
+    },
+    {
+      "viewport": "1024x1366",
+      "touch": true,
+      "before": {
+        "idle": 330,
+        "shuffle": 235,
+        "selection": 285,
+        "transition": 330,
+        "result": 392,
+        "scale": 1.1576271186440676,
+        "buttonScale": 1.1576271186440676,
+        "arrowScale": 1.1576271186440676
+      },
+      "after": {
+        "idle": 330,
+        "shuffle": 235,
+        "selection": 285,
+        "transition": 330,
+        "result": 392,
+        "scale": 1.1896007581055037,
+        "buttonScale": 1.16,
+        "arrowScale": 1.1896007581055037
+      }
+    },
+    {
+      "viewport": "844x390",
+      "touch": true,
+      "before": {
+        "idle": 98.45535565466429,
+        "shuffle": 98.45535565466429,
+        "selection": 98.45535565466429,
+        "transition": 159.66165413533835,
+        "result": 159.66165413533835,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      },
+      "after": {
+        "idle": 98.45535565466429,
+        "shuffle": 98.45535565466429,
+        "selection": 98.45535565466429,
+        "transition": 159.66165413533835,
+        "result": 159.66165413533835,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      }
+    },
+    {
+      "viewport": "1180x820",
+      "touch": true,
+      "before": {
+        "idle": 290,
+        "shuffle": 200,
+        "selection": 213.33347063399322,
+        "transition": 290,
+        "result": 324.10150375939855,
+        "scale": 0.9999999999999999,
+        "buttonScale": 0.9999999999999999,
+        "arrowScale": 0.9999999999999999
+      },
+      "after": {
+        "idle": 290,
+        "shuffle": 200,
+        "selection": 213.33347063399322,
+        "transition": 290,
+        "result": 324.10150375939855,
+        "scale": 1.138137300215906,
+        "buttonScale": 1.138137300215906,
+        "arrowScale": 1.138137300215906
+      }
+    },
+    {
+      "viewport": "1366x768",
+      "touch": false,
+      "before": {
+        "idle": 245,
+        "shuffle": 164,
+        "selection": 197.45881328926174,
+        "transition": 240,
+        "result": 260,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      },
+      "after": {
+        "idle": 245,
+        "shuffle": 164,
+        "selection": 197.45881328926174,
+        "transition": 240,
+        "result": 260,
+        "scale": 1,
+        "buttonScale": 1,
+        "arrowScale": 1
+      }
+    },
+    {
+      "viewport": "1440x900",
+      "touch": false,
+      "before": {
+        "idle": 245,
+        "shuffle": 164,
+        "selection": 210,
+        "transition": 240,
+        "result": 260,
+        "scale": 1.0541727672035137,
+        "buttonScale": 1.0541727672035137,
+        "arrowScale": 1.0541727672035137
+      },
+      "after": {
+        "idle": 245,
+        "shuffle": 164,
+        "selection": 210,
+        "transition": 240,
+        "result": 260,
+        "scale": 1.054172767203514,
+        "buttonScale": 1.054172767203514,
+        "arrowScale": 1.054172767203514
+      }
+    }
+  ],
+  "portraitScan": {
+    "widths": "320..1199",
+    "heights": [
+      568,
+      640,
+      768,
+      844,
+      900,
+      1024,
+      1133,
+      1180,
+      1240,
+      1366,
+      1499
+    ],
+    "heightScanWidths": [
+      320,
+      360,
+      390,
+      600,
+      699,
+      700,
+      744,
+      768,
+      820,
+      1024
+    ],
+    "heightRange": "max(width+1,500)..1499",
+    "inversions": [],
+    "inversionCount": 0
+  },
+  "checks": {
+    "pcCases": true,
+    "phoneRefSame": true,
+    "tabletResultPreserved": true
+  },
+  "browser": "not_tested: browser local file blocked by administrator"
+}

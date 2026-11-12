@@ -1,0 +1,114 @@
+--- source/js/settings/config/config.js
++++ trial/js/settings/config/config.js
+@@ -64,26 +64,47 @@
+  if(phase==='transition')return Math.min(preferred,Math.max(150,(vh-150)/config.aspect));
+  // Reserve a real text area below the result card in portrait, and the title
+  // and fixed action bar above/below the two-column result in landscape.
+- if(isTabletPortrait()){
+-  const reserved=Math.max(310,Math.min(470,vh*.35));
+-  const heightFit=Math.max(165,(vh-reserved)/config.aspect);
+-  // Small portrait tablets have substantially less vertical room than the
+-  // width-based tablet preference suggests. Preserve the existing title,
+-  // reading pane and action bar; distribute space to the card LAST.
+-  // This pressure smoothly disappears on the established larger tablet sizes.
+-  // Phones, landscape devices and large portrait tablets are unaffected.
+-  const narrowPressure=Math.max(0,Math.min(1,(820-vw)/76));
+-  const shortPressure=Math.max(0,Math.min(1,(1240-vh)/90));
+-  const compactPressure=narrowPressure*shortPressure;
+-  const balancedHeightLimit=compactPressure>0
+-   ? vh*(.55-.12*compactPressure)/config.aspect
+-   : Infinity;
+-  return Math.min(preferred,heightFit,balancedHeightLimit);
+- }
++ if(isTabletPortrait())return tabletPortraitResultSize(vw,vh,config);
+  const titleZone=Math.min(175,Math.max(105,vh*.19));
+  const heightFit=Math.max(165,(vh-titleZone-108)/config.aspect);
+  const columnFit=Math.max(165,(vw*.5-52));
+  return Math.min(preferred,heightFit,columnFit);
++}
++// Portrait result cards use ONE continuous width path across the 700px
++// layout handoff. Keep the approved phone reference (390px) and the existing
++// tablet calculation (700px+) as anchors; interpolate only the bridge.
++// This removes the smaller-screen / larger-card reversal without introducing
++// an iPad-specific override or changing the result card on established tablets.
++function portraitResultSize(vw,vh,config){
++ const phonePreferred=portraitWidth(390,190,325);
++ const phoneAnchor=Math.max(120,Math.min(phonePreferred,
++  (Math.min(vh*.79,830)-215)/config.aspect));
++ if(vw<390){
++  const preferred=portraitWidth(vw,190,325);
++  return Math.max(120,Math.min(preferred,
++   (Math.min(vh*.79,830)-215)/config.aspect));
++ }
++ if(vw>=700)return Math.max(phoneAnchor,adaptiveTabletSize('result',vw,config));
++ // The tablet endpoint is computed using its ORIGINAL 700px result
++ // formula, independent of the active viewport classification.
++ const tabletAnchor=Math.max(phoneAnchor,tabletPortraitResultSize(700,vh,config));
++ const progress=(vw-390)/310;
++ return phoneAnchor+(tabletAnchor-phoneAnchor)*progress;
++}
++
++// Layout classification stays at 700px, but the result sizing endpoint is
++// geometric and can be evaluated on either side of that classification.
++function tabletPortraitResultSize(vw,vh,config){
++ const ratio=Math.min(1.27,Math.max(.80,vw/820));
++ const preferred=Math.min(392,355*ratio);
++ const reserved=Math.max(310,Math.min(470,vh*.35));
++ const heightFit=Math.max(165,(vh-reserved)/config.aspect);
++ const narrowPressure=Math.max(0,Math.min(1,(820-vw)/76));
++ const shortPressure=Math.max(0,Math.min(1,(1240-vh)/90));
++ const compactPressure=narrowPressure*shortPressure;
++ const balancedHeightLimit=compactPressure>0
++  ? vh*(.55-.12*compactPressure)/config.aspect : Infinity;
++ return Math.min(preferred,heightFit,balancedHeightLimit);
+ }
+ export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
+ // Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
+@@ -101,6 +122,10 @@
+  // Topology remains the approved phone-left-controls-right or tablet-centered layout.
+  const phoneLandscape=isCompactTouchLandscape();
+  const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
++ // Result geometry is continuous through the phone/tablet portrait split.
++ // The existing portrait flex layout and result positioning are unchanged.
++ if(isTouchPortrait() && phase==='result')
++  return portraitResultSize(window.innerWidth,window.innerHeight,config);
+  if (phoneLandscape) {
+    const h=window.innerHeight;
+    // Fit the COMPLETE card (including angled outer fan cards and their drop)
+@@ -131,14 +156,6 @@
+    if (phase==='shuffle') return portraitWidth(vw,104,164);
+    if (phase==='selection') return portraitWidth(vw,146,210);
+    if (phase==='transition') return portraitWidth(vw,160,240);
+-   if (phase==='result') {
+-     const preferred=portraitWidth(vw,190,325);
+-     // Budget for the unchanged top title, a readable scroll pane and buttons.
+-     // Short portrait screens may go below the preferred minimum rather than clip.
+-     const anchor=Math.min(vh*.79,830);
+-     const reserve=(vw>=700?165:145)+(vw>=700?120:70);
+-     return Math.max(120,Math.min(preferred,(anchor-reserve)/config.aspect));
+-   }
+  }
+  return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
+ }
+@@ -182,13 +199,16 @@
+ export function responsiveDesignMetrics(){
+  if(typeof window==='undefined')return {scale:1,buttonScale:1,arrowScale:1};
+  const vw=window.innerWidth,vh=window.innerHeight;
+- const portrait=vh>=vw;
+  const touch=!!window.matchMedia?.('(hover:none) and (pointer:coarse)').matches;
+- const compact=isCompactTouchLandscape();
+- const tablet=isAdaptiveTablet();
+  // Baselines stay independent of reported device pixel density.
+- const base=touch?(compact?[844,390]:tablet?(portrait?[820,1180]:[1180,820]):portrait?[390,844]:[844,390]):[1366,768];
+- const scale=Math.min(vw*.92/base[0]/.92,vh*.92/base[1]/.92);
++ // One continuous geometry scale for all TOUCH screens, regardless of
++ // the layout category chosen by CSS. The gentle area exponent preserves
++ // the phone reference at 390x844, avoids a jump at 700px/600px, and is
++ // non-decreasing when either viewport dimension grows.
++ // Desktop retains its existing reference so PC design is not re-scaled.
++ const scale=touch
++  ? Math.pow((vw*vh)/(390*844),.12)
++  : Math.min(vw/1366,vh/768);
+  return {scale:Math.max(.84,Math.min(1.22,scale)),
+   buttonScale:Math.max(.88,Math.min(1.16,scale)),
+   arrowScale:Math.max(.85,Math.min(1.2,scale))};
