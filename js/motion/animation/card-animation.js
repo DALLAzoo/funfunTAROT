@@ -78,25 +78,19 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
  stage.classList.add('glow-shuffle-lite');
  const w=stage.clientWidth,h=stage.clientHeight,count=els.length;
  const compact=isCompactTouchLandscape();
- // Folded phones use the compact-landscape branch. Opened foldables with
- // a genuinely short physical screen enter the roomy-touch layout, but should
- // not acquire its disproportionately strong first-shuffle perspective.
- // Keep full-size tablets and resized tablet windows on their old trajectory.
- const physicalShortSide=Math.min(window.screen.width||innerWidth,window.screen.height||innerHeight);
- const openFoldShortLandscape=!compact &&
-   window.matchMedia('(orientation:landscape) and (hover:none) and (pointer:coarse)').matches &&
-   window.innerWidth>=760 && physicalShortSide<=720 && window.innerHeight<=740;
- // The portrait change extends only the first orbit horizontally: cards may
- // travel past the sides instead of turning within the narrow stage width.
- const portraitPhone=!compact && window.matchMedia('(orientation:portrait) and (hover:none) and (pointer:coarse)').matches &&
-   physicalShortSide<=600;
- const room=compact ? compactShuffleRoom(stage,w,h) :
-   openFoldShortLandscape ? {xScale:1,yScale:1,zScale:.58} :
-   portraitPhone ? {xScale:1.25,yScale:1,zScale:1} : null;
- // The stage can fill a tall phone screen, but the first shuffle orbit
- // should use no more than 500px of that height. Fan/reveal keep actual h.
- const firstShuffleHeight=portraitPhone?Math.min(h,500) :
-   isAdaptiveTablet()?Math.min(h,Math.max(435,stageSize('shuffle',w)*2.75)):h;
+ // Smoothly adapt the original first-shuffle travel to the actual viewport.
+ // A 699 -> 700px portrait resize must not switch from a tall orbit to a
+ // separate tablet path. Preserve the full, deliberately overflow-capable
+ // curve; only its continuous travel budget follows available space.
+ const portraitTouch=!compact && window.matchMedia(
+  '(orientation:portrait) and (hover:none) and (pointer:coarse)').matches;
+ const aspect=window.innerWidth/Math.max(1,window.innerHeight);
+ const narrowness=Math.max(0,Math.min(1,(.85-aspect)/(.85-.46)));
+ const room=compact?compactShuffleRoom(stage,w,h):
+  portraitTouch?{xScale:1+.25*narrowness,yScale:1,zScale:1}:null;
+ const firstShuffleHeight=portraitTouch?
+  Math.min(h,Math.max(500,stageSize('shuffle',w)*2.75)):
+  isAdaptiveTablet()?Math.min(h,Math.max(435,stageSize('shuffle',w)*2.75)):h;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
  phase('charge');
  // First frame and orbit share the very same original pose family.

@@ -1,0 +1,19 @@
+{
+  "base": "AD4_full_20261113.zip",
+  "replaced": [
+    "js/settings/config/config.js",
+    "js/settings/config/viewport-profile.js",
+    "js/screen/app/events.js",
+    "js/motion/animation/card-animation.js",
+    "css/screen/23-portrait-responsive-scale.css",
+    "css/screen/25-landscape-adaptive-layout.css",
+    "CHANGELOG.md"
+  ],
+  "added": [
+    "docs/AD4_자동공간비율통합_20261113.md",
+    "validation/AD4_자동공간비율통합_20261113.json"
+  ],
+  "deleted": [],
+  "source": "trial_and_offline_verified",
+  "note": "Previous PATCH_MANIFEST.json is retained as historical revision 43 metadata."
+}

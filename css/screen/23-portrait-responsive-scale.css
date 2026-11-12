@@ -4,13 +4,13 @@
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:clamp(20px, calc(clamp(23px, calc(16.02px + 2.56vw), 37px) * var(--ad4-ui-scale, 1)), 43px);
-    --portrait-reading-size:clamp(13px, calc(clamp(14px, calc(10.37px + .93vw), 18px) * var(--ad4-ui-scale, 1)), 21px);
-    --portrait-small-button:clamp(90px, calc(clamp(100px, calc(89.12px + 2.79vw), 112px) * var(--ad4-button-scale, 1)), 130px);
-    --portrait-menu-button:clamp(155px, calc(clamp(175px, calc(161.39px + 3.49vw), 190px) * var(--ad4-button-scale, 1)), 215px);
-    --portrait-button-gap:clamp(8px, calc(6.19px + .465vw), 10px);
+    --portrait-title-size:clamp(20px, calc(23px * var(--ad4-ui-scale, 1)), 46px);
+    --portrait-reading-size:clamp(13px, calc(15px * var(--ad4-ui-scale, 1)), 23px);
+    --portrait-small-button:calc(100px * var(--ad4-button-scale, 1));
+    --portrait-menu-button:calc(175px * var(--ad4-button-scale, 1));
+    --portrait-button-gap:max(6px, calc(8px * var(--ad4-button-scale, 1)));
     --portrait-bottom-pad:4dvh;
-    --portrait-reading-gap:clamp(8px, 1.1dvh, 16px);
+    --portrait-reading-gap:max(6px, 1.1dvh);
   }
   #stage.idle-stack .tarot-card.shuffle-surface {
     width:var(--card-w, var(--portrait-idle-width))!important;
@@ -23,7 +23,7 @@
     grid-template-rows:auto minmax(0,1fr) auto;
     height:100dvh;
     min-height:0;
-    max-width:1100px;
+    max-width:none;
     padding:4dvh 4vw var(--portrait-bottom-pad);
     overflow:hidden;
   }
@@ -84,9 +84,9 @@
     box-sizing:border-box;
     width:var(--portrait-small-button);
     min-width:0;
-    height:clamp(40px,calc(44px * var(--ad4-button-scale, 1)),52px);
+    height:clamp(34px,calc(44px * var(--ad4-button-scale, 1)),82px);
     padding:0 9px;
-    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),17px);
+    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),20px);
   }
   #tarotApp .controls .reading-dropdown,
   #resultView .result-actions > .reading-dropdown {
@@ -100,10 +100,10 @@
   #resultView .reading-dropdown-trigger {
     width:100%;
     min-width:0;
-    height:clamp(40px,calc(44px * var(--ad4-button-scale, 1)),52px);
+    height:clamp(34px,calc(44px * var(--ad4-button-scale, 1)),82px);
     box-sizing:border-box;
     padding:0 8px;
-    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),17px);
+    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),20px);
   }
   #tarotApp > .intro h1,
   #resultView > .intro h1 {
@@ -119,9 +119,8 @@
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
-    /* Default portrait (non-touch) keeps its 520px reading width ceiling.
-       Touch portrait replaces only this variable using the phone reference. */
-    --portrait-reading-width:520px;
+    /* The whole portrait reading group owns the available inner width. */
+    --portrait-reading-width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -172,14 +171,15 @@
     flex:1 1 auto;
     min-height:0;
     overflow:hidden;
-    width:min(100%,var(--portrait-reading-width));
+    width:100%;
+    min-width:0;
     gap:var(--portrait-reading-gap);
     margin:0;
     padding:0;
   }
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
-    flex:0 1 auto;
+    flex:1 1 auto;
     align-self:stretch;
     position:relative;
     top:auto!important;
@@ -192,11 +192,7 @@
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    /* AD4: One proportional inline inset on every portrait width.
-       The symmetric gutter balances the right-side scroll track. */
-    padding-block:clamp(12px,1.4vw,18px);
-    padding-inline:clamp(14px,var(--portrait-reading-size),20px);
-    scrollbar-gutter:stable both-edges;
+    padding:clamp(12px,1.4vw,18px);
     overflow-x:hidden;
     overflow-y:auto;
     overscroll-behavior:contain;
@@ -215,55 +211,10 @@
     z-index:10;
   }
 }
-/* Short-height portrait screens must scroll the reading itself. The button
-   bar is always the last grid row and never covers reading text. */
-@media (orientation:portrait) and (max-height:570px) {
-  #tarotApp > .intro {margin-top:3px;}
-  #resultView > .intro {margin-top:3px;}
-  #tarotApp > .intro h1,
-  #resultView > .intro h1 {margin:5px 0;}
-  #resultView.result-view,
-  #resultView > .result-reading-group {gap:5px!important;}
-}
-
-/* Container query: reading comfort follows the actual result panel width,
-   not a named phone/tablet model. The card/reading order never changes. */
-@container tarot-result (max-width:460px) {
-  #resultView .result-reading,
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    /* Compact portrait keeps its vertical inset, but uses the shared
-       left/right inset and scroll gutter defined above. */
-    padding-block:11px;
-    font-size:clamp(13px,calc(14px * var(--ad4-ui-scale,1)),17px);
-    line-height:1.65;
-  }
-}
-
-/* AD4 2026-11-13: One PHONE-PORTRAIT card/reading proportion for every
-   touch portrait width. Do not change the stack order, card image aspect,
-   type, actions, or animation. A continuous 699px -> 700px handoff replaces
-   the conflicting 520px phone cap / card-based 700px tablet cap. */
-@media (orientation:portrait) and (hover:none) and (pointer:coarse) {
-  #resultView.result-view {
-    /* 390x844 phone reference: 190px result card / 358px reading panel.
-       --result-width is set on this element by the existing JS result flow.
-       The same variable is read by the existing reading-group rule above. */
-    --portrait-reading-width:calc(var(--result-width, 190px) * 1.8842105263);
-  }
-}
-
-/* Tablet portrait retains its existing flexible reading height and idle
-   card connection. The width above is already shared with phone portrait. */
-@media (orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse) {
-  :root {
-    --portrait-reading-size:clamp(16px, calc(clamp(17px, calc(10.3px + .94vw), 20px) * var(--ad4-ui-scale, 1)), 23px);
-  }
-  #resultView .result-reading,
-  #resultView.is-revealed .result-reading:not([hidden]) {
-    flex:1 1 auto;
-  }
-  /* On tablets the initial deck uses the same adaptive JS size as its stage.
-     No separate 245px hard stop on wide portrait screens. */
+/* AD4: one continuous viewport-owned portrait column. No special card-to-
+   reading-width rule at 700px; both reference the usable screen independently.
+   The first idle card uses the JS stage geometry at every portrait size. */
+@media (orientation:portrait) {
   #stage.idle-stack .tarot-card.shuffle-surface {
     width:var(--card-w)!important;
     height:var(--card-h)!important;

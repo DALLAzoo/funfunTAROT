@@ -2,7 +2,7 @@
    Both CSS and JS use the viewport-profile classifier. Other screens untouched.
    Before reveal the initial deck, shuffle, carousel and selection share the
    viewport CENTER. The final revealed artwork is still LEFT of the reading. */
-@media (orientation:landscape) and (max-height:559px) and (max-width:1100px) and (hover:none) and (pointer:coarse) {
+@media (orientation:landscape) and (hover:none) and (pointer:coarse) {
   html.phone-landscape {
     --ad2-land-stage-top:clamp(71px,19dvh,91px);
     --ad2-land-stage-bottom:clamp(7px,2dvh,13px);
@@ -112,7 +112,7 @@
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     grid-template-rows:auto minmax(0,1fr);
     column-gap:0!important;row-gap:clamp(6px,1.8dvh,12px)!important;
-    padding:clamp(9px,2.5dvh,15px) clamp(8px,1.5vw,16px)!important;
+    padding:4dvh 4vw!important;
     overflow:hidden;
   }
   html.phone-landscape #resultView > #sharedIntro {

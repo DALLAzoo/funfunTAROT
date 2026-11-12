@@ -1,4 +1,4 @@
-import {CONFIG as C, stageSize, isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
+import {CONFIG as C, stageSize, updateResponsiveDesignMetrics, isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
 
 import {cardSize,floatLayout,alignIdleDeck} from '../../motion/animation/card-animation.js';
 
@@ -86,6 +86,8 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
   });
 
   window.addEventListener('resize', () => {
+    updateResponsiveDesignMetrics();
+    window.tarotViewportProfile?.refresh?.();
     if (getState() === 'idle' && ctx.cards.length) {
       floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,'idle');alignIdleDeck(ctx.cards);
     }

@@ -19,228 +19,127 @@ export const CONFIG = {
   vfx:{desktopDpr:1.5,mobileDpr:1,desktopParticles:150,mobileParticles:55,rgb:'238,190,103'},
   support:{maxCatalog:78,maxShuffle:78,visible:[3,5,7],result:[1]},
 };
-// CSS and JS share this one viewport + physical-screen classifier.
+// AD4 — single viewport-space size gateway.
+// Three composition families are chosen by available geometry; NO device model
+// dimensions are needed. Reference measurements describe the approved designs,
+// not device-specific overrides. X/Y use independent fractions of real viewport.
 export function isCompactTouchLandscape(){
  return typeof window!=='undefined' && !!window.tarotViewportProfile?.isPhoneLandscape();
 }
-// On a touch tablet in landscape, size cards to the LEFT stage width.
-// This does not run on desktop, tablet portrait, or rotated phones.
 export function isTabletLandscape(){
  return typeof window!=='undefined' && !!window.tarotViewportProfile?.isRoomyTouchLandscape();
 }
-export function isTabletPortrait(){
- return typeof window !== 'undefined' &&
-  !!window.matchMedia?.('(orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse)').matches;
+export function isTouchPortrait(){
+ return typeof window!=='undefined' && !!window.matchMedia?.('(orientation:portrait) and (hover:none) and (pointer:coarse)').matches;
 }
-// A compact stage must reserve genuine travel room for the ENTIRE rotated
-// card, even at the front of the 3-D orbit. This is geometric, not device-named.
+export function isTabletPortrait(){
+ // Kept for unchanged motion callers. It describes an available-space range,
+ // not a separate source of size numbers.
+ return isTouchPortrait() && window.innerWidth >= 700;
+}
+export const isAdaptiveTablet=()=>isTabletPortrait()||isTabletLandscape();
+export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 export function compactShuffleWidth(stageWidth,stageHeight,viewportHeight,config=CONFIG){
  const allowance=Math.max(78,(stageHeight/2-34)/1.22);
  return Math.max(78,Math.min(110,stageWidth*.30,viewportHeight*.31,allowance));
 }
-// Portrait and spacious-landscape tablets share one proportional card scale.
-// Use the viewport's short side so rotation does not shrink the whole journey.
-// Height/column limits are applied only where a visible card needs clearance.
-export const isAdaptiveTablet=()=>isTabletPortrait()||isTabletLandscape();
-function adaptiveTabletSize(phase,width,config){
- const vw=window.innerWidth, vh=window.innerHeight;
- const shortSide=Math.min(vw,vh);
- const ratio=Math.min(1.27,Math.max(.80,shortSide/820));
- const preferred={
-  idle:Math.min(330,290*ratio),
-  shuffle:Math.min(235,200*ratio),
-  selection:Math.min(285,260*ratio),
-  transition:Math.min(330,290*ratio),
-  result:Math.min(392,355*ratio)
- }[phase];
- if(preferred===undefined)return null;
- // A taller tablet must not make the orbit occupy every unused pixel.
- if(phase==='shuffle')return Math.min(preferred,Math.max(128,width*.35));
- if(phase==='idle'){
-  const stageHeight=document.getElementById('stage')?.clientHeight||vh*.64;
-  return Math.min(preferred,Math.max(145,(stageHeight-35)/config.aspect));
- }
- if(phase==='selection')return Math.min(preferred,Math.max(140,width*.43));
- if(phase==='transition')return Math.min(preferred,Math.max(150,(vh-150)/config.aspect));
- // Portrait uses the phone portrait composition, with a card/reading
- // scale limited by BOTH available axes. Landscape uses the PC landscape
- // card-to-LEFT-COLUMN proportion rather than its absolute card pixels.
- if(isTabletPortrait())return tabletPortraitResultSize(vw,vh,config);
- const titleZone=Math.min(175,Math.max(105,vh*.19));
- const heightFit=Math.max(95,(vh-titleZone-108)/config.aspect);
- const desktopColumn=(1366*.92-Math.min(30,Math.max(8,1366*.02)))/2;
- const availableColumn=(vw*.92-Math.min(30,Math.max(8,vw*.02)))/2;
- const pcColumnRatio=config.sizes.desktop.result/desktopColumn;
- const columnFit=Math.max(95,availableColumn*pcColumnRatio);
- return Math.min(preferred,heightFit,columnFit);
+const REF={
+ portrait:{width:390,height:844,sizes:{idle:170,shuffle:104,selection:146,transition:160,result:190}},
+ compact:{width:844,height:390,sizes:{idle:105,shuffle:105,selection:105,transition:155,result:155}},
+ roomy:{width:1366,height:768,sizes:CONFIG.sizes.desktop}
+};
+const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
+function viewportFamily(){
+ if(typeof window==='undefined')return 'roomy';
+ if(window.matchMedia?.('(orientation:portrait)').matches)return 'portrait';
+ if(isCompactTouchLandscape())return 'compact';
+ return 'roomy';
 }
-// Portrait result card sizes follow one continuous path across the 700px
-// layout handoff. The reading width follows THIS same result width on both
-// sides of the breakpoint, so the card-to-reading ratio cannot jump there.
-// This removes the smaller-screen / larger-card reversal without introducing
-// an iPad-specific override or changing the result card on established tablets.
-function portraitResultSize(vw,vh,config){
- const phonePreferred=portraitWidth(390,190,325);
- const phoneAnchor=Math.max(120,Math.min(phonePreferred,
-  (Math.min(vh*.79,830)-215)/config.aspect));
- if(vw<390){
-  const preferred=portraitWidth(vw,190,325);
-  return Math.max(120,Math.min(preferred,
-   (Math.min(vh*.79,830)-215)/config.aspect));
- }
- if(vw>=700)return Math.max(phoneAnchor,adaptiveTabletSize('result',vw,config));
- // The tablet endpoint is computed using its ORIGINAL 700px result
- // formula, independent of the active viewport classification.
- const tabletAnchor=Math.max(phoneAnchor,tabletPortraitResultSize(700,vh,config));
- const progress=(vw-390)/310;
- return phoneAnchor+(tabletAnchor-phoneAnchor)*progress;
+export function viewportSpace(){
+ if(typeof window==='undefined')return {family:'roomy',width:1366,height:768,scale:1,inline:1256.72,block:706.56};
+ const width=window.innerWidth,height=window.innerHeight,family=viewportFamily(),ref=REF[family];
+ const inline=width*.92,block=height*.92;
+ // Two independent axes: aspect-ratio differences become extra free background
+ // space rather than making cards or sibling panels grow together incorrectly.
+ const scale=Math.min(inline/(ref.width*.92),block/(ref.height*.92));
+ return {family,width,height,inline,block,scale};
 }
-
-// Layout classification stays at 700px, but the result sizing endpoint is
-// geometric and can be evaluated on either side of that classification.
-function tabletPortraitResultSize(vw,vh,config){
- // Tablet PORTRAIT follows the phone PORTRAIT composition, not the PC
- // landscape card/reading width ratio. The 390x844 phone result (190px)
- // scales with the limiting usable axis; spare height alone cannot inflate
- // the card. Reading width uses the same factor in the portrait CSS owner.
- const phoneWidth=390,phoneHeight=844,phoneCard=190;
- const availableWidth=vw*.92,availableHeight=vh*.92;
- const phoneUsableWidth=phoneWidth*.92,phoneUsableHeight=phoneHeight*.92;
- const scale=Math.min(availableWidth/phoneUsableWidth,
-  availableHeight/phoneUsableHeight);
- const preferred=phoneCard*scale;
- // Preserve title, reading, actions and their gaps before fitting the card.
- // The reading owns the remaining vertical space and scrolls internally.
- const reserved=Math.max(310,Math.min(470,vh*.35));
- const heightFit=Math.max(165,(vh-reserved)/config.aspect);
- return Math.min(preferred,heightFit);
+function portraitCardSize(phase,space,config){
+ const {width,height,scale}=space;
+ const preferred=REF.portrait.sizes[phase]*scale;
+ // Protect real space for the intro, reading text, actions and gaps.
+ // The fractions are common for ALL portrait viewports, not breakpoints.
+ const occupied=space.block*(phase==='result'?.39:.18);
+ const heightFit=Math.max(65,(space.block-occupied)/config.aspect);
+ const widthFit=space.inline*(phase==='result'?.70:.48);
+ return Math.min(preferred,heightFit,widthFit);
 }
-export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
-// Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
-// Screen width determines the preferred size, available height can only reduce it.
-export function isTouchPortrait(){
- return typeof window !== 'undefined' &&
-  !!window.matchMedia?.('(orientation:portrait) and (hover:none) and (pointer:coarse)').matches;
+function compactCardSize(phase,space,config){
+ const stage=document.getElementById('stage');
+ const stageW=stage?.clientWidth || space.width*.47;
+ const stageH=stage?.clientHeight || space.height*.68;
+ const preferred=REF.compact.sizes[phase]*space.scale;
+ const result=phase==='result'||phase==='transition';
+ const columnWidth=space.inline*.5;
+ if(result)return Math.min(preferred,columnWidth*.80,Math.max(64,(space.block-95*space.scale)/config.aspect));
+ if(phase==='selection'){
+  const theta=23*Math.PI/180;
+  const projection=(Math.sin(theta)+config.aspect*Math.cos(theta))/2;
+  const available=Math.max(78,(stageH/2-24)/projection);
+  return Math.min(preferred,stageW*.4,available);
+ }
+ return Math.min(preferred,stageW*.4,Math.max(78,(stageH-16)/config.aspect));
 }
-const portraitWidth=(value,min,max)=>
- Math.min(max,Math.max(min,min+(Math.min(820,Math.max(390,value))-390)*(max-min)/430));
-// A rotated phone keeps portrait sizing for all phases, including the final card.
-// Stage width is already narrow because the portrait shell stays narrow.
-function calculatePreferredStageSize(phase,width,config=CONFIG){
- // v60: one shared landscape scale follows available stage width AND screen height.
- // Topology remains the approved phone-left-controls-right or tablet-centered layout.
- const phoneLandscape=isCompactTouchLandscape();
- const effectiveWidth=phoneLandscape?Math.min(width,window.innerHeight):width;
- // Result geometry is continuous through the phone/tablet portrait split.
- // The existing portrait flex layout and result positioning are unchanged.
- if(isTouchPortrait() && phase==='result')
-  return portraitResultSize(window.innerWidth,window.innerHeight,config);
- if (phoneLandscape) {
-   const h=window.innerHeight;
-   // Fit the COMPLETE card (including angled outer fan cards and their drop)
-   // inside the actual stage height. The CSS shares the same viewport anchor.
-   const stageHeight=document.getElementById('stage')?.clientHeight || Math.max(140,h*.76);
-   const angle=23*Math.PI/180;
-   const projectedFanHalf=config.aspect/2*Math.cos(angle)+.5*Math.sin(angle);
-   // Preserve the original fan geometry. Use a smaller safety inset only for
-   // the shorter phone landscape stage so fan cards are readable at center.
-   const fanLimit=Math.max(78,(stageHeight/2-30)/projectedFanHalf);
-   // Keep the opening deck and first shuffle at the user-approved fan card
-   // size on phone landscape.  No changes to the shuffle/orbit choreography,
-   // animation keyframes, or the later 3-D perspective motion.
-   if (phase==='idle' || phase==='shuffle' || phase==='selection')
-     return Math.max(78,Math.min(150,width*.37,fanLimit));
-   if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
-   if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));
+function roomyCardSize(phase,space,config){
+ const desktop=!(window.matchMedia?.('(hover:none) and (pointer:coarse)').matches);
+ if(desktop){
+  // Preserve the desktop's original phase sizing and geometry.
+  return config.sizes.desktop[phase];
  }
- // Keep the existing phone/tablet PORTRAIT layout handoff at 700px,
- // but do not let the opening deck, shuffle or selection CARD SIZE jump there.
- // Blend their original sizing calculations over the geometric 640..760px
- // interval. Both endpoints retain the existing formulas unchanged.
- // Result cards already have their own continuous portrait calculation.
- if(isTouchPortrait() && (phase==='idle' || phase==='shuffle' ||
-     phase==='selection' || phase==='transition')) {
-   const vw=window.innerWidth;
-   const phonePreferred={
-     idle:Math.min(245,Math.max(170,101.98+vw*.1744)),
-     shuffle:portraitWidth(vw,104,164),
-     selection:portraitWidth(vw,146,210),
-     transition:portraitWidth(vw,160,240)
-   }[phase];
-   if(vw<=640)return phonePreferred;
-   const tabletPreferred=adaptiveTabletSize(phase,width,config);
-   if(vw>=760)return tabletPreferred;
-   const blend=(vw-640)/120;
-   return phonePreferred*(1-blend)+tabletPreferred*blend;
+ const preferred=REF.roomy.sizes[phase]*space.scale;
+ const columnWidth=(space.inline-clamp(space.width*.02,8,30))/2;
+ if(phase==='result'||phase==='transition'){
+  const pcColumn=(REF.roomy.width*.92-clamp(REF.roomy.width*.02,8,30))/2;
+  const relativeCard=columnWidth*(REF.roomy.sizes[phase]/pcColumn);
+  const heightFit=Math.max(68,(space.block-space.block*.25)/config.aspect);
+  return Math.min(preferred,relativeCard,heightFit);
  }
- // Tablet phase sizes are calculated together, before phone portrait and
- // older tablet fallbacks. Phone landscape continues to use its own branch.
- if(isAdaptiveTablet()) {
-   const adaptive=adaptiveTabletSize(phase,width,config);
-   if(adaptive!==null)return adaptive;
- }
- if (isTouchPortrait()) {
-   const vw=window.innerWidth, vh=window.innerHeight;
-   if (phase==='idle') return Math.min(245,Math.max(170,101.98+vw*.1744));
-   if (phase==='shuffle') return portraitWidth(vw,104,164);
-   if (phase==='selection') return portraitWidth(vw,146,210);
-   if (phase==='transition') return portraitWidth(vw,160,240);
- }
- return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
+ return Math.min(preferred,Math.max(75,(space.block-space.block*.22)/config.aspect));
 }
-
-/** One final size gateway after the existing layout-specific preference.
- * Only constrain cards that must remain usable at rest or in the result.
- * First-shuffle travel deliberately stays free to leave the viewport.
- * Safe margins follow the approved 4% design token rather than a device list.
- * Preserve all existing layout anchors and preferred sizes when they fit.
- */
 export function stageSize(phase,width,config=CONFIG){
- const preferred=calculatePreferredStageSize(phase,width,config);
- if(typeof window==='undefined')return preferred;
- const h=window.innerHeight;
- if(phase==='selection' && !isCompactTouchLandscape()){
-  const stage=document.getElementById('stage');
-  if(stage?.clientHeight){
-   const stageHeight=stage.clientHeight;
-   const lowerInset=Math.max(0,parseFloat(stage.style.getPropertyValue('--stage-bottom-clip-inset'))||0);
-   // Rotated outer card projection at the original 23-degree fan endpoint.
-   // Drop=35px; inset keeps the rest fan above the existing action buttons.
-   const projectedHalfFactor=(Math.sin(23*Math.PI/180)+config.aspect*Math.cos(23*Math.PI/180))/2;
-   const room=stageHeight/2-lowerInset-35-stageHeight*.04;
-   if(room>0)return Math.min(preferred,Math.max(78,room/projectedHalfFactor));
+ const space=viewportSpace();
+ if(space.family==='portrait'){
+  const preferred=portraitCardSize(phase,space,config);
+  // The settled fan may have a wider outer-card projection than a single card.
+  // Do not clamp the FIRST SHUFFLE travel; it intentionally leaves the viewport.
+  if(phase==='selection'){
+   const stage=document.getElementById('stage');
+   if(stage?.clientHeight){
+    const theta=23*Math.PI/180;
+    const projection=(Math.sin(theta)+config.aspect*Math.cos(theta))/2;
+    const lowerInset=Math.max(0,parseFloat(stage.style.getPropertyValue('--stage-bottom-clip-inset'))||0);
+    const room=stage.clientHeight/2-lowerInset-35-stage.clientHeight*.04;
+    if(room>0)return Math.min(preferred,Math.max(65,room/projection));
+   }
   }
+  return preferred;
  }
- if(phase==='result' && window.matchMedia?.('(orientation:landscape) and (hover:hover) and (pointer:fine)').matches){
-  // Before the result DOM is unhidden, a short desktop viewport still needs
-  // a height cap. Other orientations and touch layouts keep their preferences.
-  const titleAndGap=width>=1100?130:115;
-  const safeHeight=h-titleAndGap-h*.04;
-  return Math.min(preferred,Math.max(95,safeHeight/config.aspect));
+ if(space.family==='compact')return compactCardSize(phase,space,config);
+ const size=roomyCardSize(phase,space,config);
+ if(phase==='result'){
+  // Existing desktop short-height overflow guard, shared with roomy tablets.
+  const heightFit=Math.max(95,(space.block-130)/config.aspect);
+  return Math.min(size,heightFit);
  }
- return preferred;
+ return size;
 }
-
-/** Proportional sizing tokens for existing layout owners. No CSS override layer.
- * Base dimensions represent established reference layouts, not new device classes.
- * Usable area removes the agreed 4% on each edge; readable type has a floor.
- */
 export function responsiveDesignMetrics(){
- if(typeof window==='undefined')return {scale:1,buttonScale:1,arrowScale:1};
- const vw=window.innerWidth,vh=window.innerHeight;
- const touch=!!window.matchMedia?.('(hover:none) and (pointer:coarse)').matches;
- // Baselines stay independent of reported device pixel density.
- // One continuous geometry scale for all TOUCH screens, regardless of
- // the layout category chosen by CSS. The gentle area exponent preserves
- // the phone reference at 390x844, avoids a jump at 700px/600px, and is
- // non-decreasing when either viewport dimension grows.
- // Desktop retains its existing reference so PC design is not re-scaled.
- const scale=touch
-  ? Math.pow((vw*vh)/(390*844),.12)
-  : Math.min(vw/1366,vh/768);
- return {scale:Math.max(.84,Math.min(1.22,scale)),
-  buttonScale:Math.max(.88,Math.min(1.16,scale)),
-  arrowScale:Math.max(.85,Math.min(1.2,scale))};
+ const {family,scale}=viewportSpace();
+ if(family==='roomy' && !window.matchMedia?.('(hover:none) and (pointer:coarse)').matches){
+  // Keep the established PC typography as reference.
+  return {scale:1,buttonScale:1,arrowScale:1};
+ }
+ return {scale:clamp(scale,.78,2),buttonScale:clamp(scale,.78,1.85),arrowScale:clamp(scale,.78,1.8)};
 }
 export function updateResponsiveDesignMetrics(){
  if(typeof document==='undefined')return;

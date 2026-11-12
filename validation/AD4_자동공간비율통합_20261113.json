@@ -1,0 +1,276 @@
+{
+  "status": "trial_not_deployed",
+  "source_zip": "AD4_full_20261113.zip",
+  "screen_cases": 17,
+  "layout_check_issues": [],
+  "portrait_margins": "4% per side for all 10 portrait screens",
+  "699_to_700_reading_width_change_px": 0.9,
+  "699_to_700_card_width_change_px": 0.0,
+  "full_flow_offline": {
+    "390x844 phone portrait": {
+      "reveal": true,
+      "JS_errors": 0,
+      "after_last_motion_edit": true
+    },
+    "768x1024 tablet portrait": {
+      "reveal": true,
+      "JS_errors": 0,
+      "after_last_motion_edit": false
+    },
+    "841x673 opened foldable landscape": {
+      "reveal": true,
+      "JS_errors": 0,
+      "after_last_motion_edit": false
+    },
+    "1024x768 tablet landscape": {
+      "reveal": true,
+      "JS_errors": 0,
+      "after_last_motion_edit": false
+    },
+    "1366x768 desktop landscape": {
+      "reveal": true,
+      "JS_errors": 0,
+      "after_last_motion_edit": false,
+      "note": "Browser teardown timed out after result was displayed"
+    }
+  },
+  "full_flow_method": "Actual site ESM modules executed in Chromium via offline Blob URL bundling; original card images replaced ONLY DURING TEST with temporary SVG due blocked localhost/file navigation. Site ZIP retains all original images.",
+  "limitations": [
+    "On-device Safari / GPU and full original image loading not tested",
+    "Offscreen first shuffle and selected-card visual quality require user device check",
+    "No live website / GitHub changed"
+  ],
+  "files_changed": [
+    "js/settings/config/config.js",
+    "js/settings/config/viewport-profile.js",
+    "js/screen/app/events.js",
+    "js/motion/animation/card-animation.js",
+    "css/screen/23-portrait-responsive-scale.css",
+    "css/screen/25-landscape-adaptive-layout.css",
+    "CHANGELOG.md"
+  ],
+  "files_deleted": [],
+  "screen_measurements": {
+    "phone390": {
+      "view": [
+        390,
+        844
+      ],
+      "family": "portrait",
+      "cardWidth": 190,
+      "readingWidth": 358.8,
+      "outerLeft": 15.6,
+      "outerRight": 15.6,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "phone360": {
+      "view": [
+        360,
+        800
+      ],
+      "family": "portrait",
+      "cardWidth": 175.3846153846154,
+      "readingWidth": 331.2,
+      "outerLeft": 14.4,
+      "outerRight": 14.4,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "phone320": {
+      "view": [
+        320,
+        568
+      ],
+      "family": "portrait",
+      "cardWidth": 127.86729857819907,
+      "readingWidth": 294.4,
+      "outerLeft": 12.8,
+      "outerRight": 12.8,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "foldClosed": {
+      "view": [
+        344,
+        882
+      ],
+      "family": "portrait",
+      "cardWidth": 167.5897435897436,
+      "readingWidth": 316.5,
+      "outerLeft": 13.8,
+      "outerRight": 13.7,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "foldOpenPortrait": {
+      "view": [
+        673,
+        841
+      ],
+      "family": "portrait",
+      "cardWidth": 189.32464454976304,
+      "readingWidth": 619.2,
+      "outerLeft": 26.9,
+      "outerRight": 26.9,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "edge699": {
+      "view": [
+        699,
+        1024
+      ],
+      "family": "portrait",
+      "cardWidth": 230.52132701421803,
+      "readingWidth": 643.1,
+      "outerLeft": 28,
+      "outerRight": 28,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "edge700": {
+      "view": [
+        700,
+        1024
+      ],
+      "family": "portrait",
+      "cardWidth": 230.52132701421803,
+      "readingWidth": 644,
+      "outerLeft": 28,
+      "outerRight": 28,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "ipadMiniP": {
+      "view": [
+        768,
+        1024
+      ],
+      "family": "portrait",
+      "cardWidth": 230.52132701421803,
+      "readingWidth": 706.6,
+      "outerLeft": 30.7,
+      "outerRight": 30.7,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "surfaceP": {
+      "view": [
+        960,
+        1440
+      ],
+      "family": "portrait",
+      "cardWidth": 324.1706161137441,
+      "readingWidth": 883.2,
+      "outerLeft": 38.4,
+      "outerRight": 38.4,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "ipadProP": {
+      "view": [
+        1032,
+        1376
+      ],
+      "family": "portrait",
+      "cardWidth": 309.7630331753554,
+      "readingWidth": 949.5,
+      "outerLeft": 41.3,
+      "outerRight": 41.3,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "phoneL": {
+      "view": [
+        844,
+        390
+      ],
+      "family": "compact",
+      "cardWidth": 153.71804511278197,
+      "readingWidth": 388.3,
+      "outerLeft": 422,
+      "outerRight": 33.7,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "phoneSmallL": {
+      "view": [
+        800,
+        360
+      ],
+      "family": "compact",
+      "cardWidth": 141.89358010410643,
+      "readingWidth": 368,
+      "outerLeft": 400,
+      "outerRight": 32,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "foldOpenL": {
+      "view": [
+        841,
+        673
+      ],
+      "family": "compact",
+      "cardWidth": 154.4490521327014,
+      "readingWidth": 386.9,
+      "outerLeft": 420.5,
+      "outerRight": 33.6,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "ipadMiniL": {
+      "view": [
+        1024,
+        768
+      ],
+      "family": "roomy",
+      "cardWidth": 194.90483162518302,
+      "readingWidth": 460.8,
+      "outerLeft": 522.2,
+      "outerRight": 41,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "ipadProL": {
+      "view": [
+        1376,
+        1032
+      ],
+      "family": "roomy",
+      "cardWidth": 261.9033674963397,
+      "readingWidth": 619.2,
+      "outerLeft": 701.8,
+      "outerRight": 55,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "desktop": {
+      "view": [
+        1366,
+        768
+      ],
+      "family": "roomy",
+      "cardWidth": 260,
+      "readingWidth": 614.7,
+      "outerLeft": 696.7,
+      "outerRight": 54.6,
+      "cardInside": true,
+      "actionsInside": true
+    },
+    "pcWide": {
+      "view": [
+        1440,
+        900
+      ],
+      "family": "roomy",
+      "cardWidth": 260,
+      "readingWidth": 648,
+      "outerLeft": 734.4,
+      "outerRight": 57.6,
+      "cardInside": true,
+      "actionsInside": true
+    }
+  }
+}
