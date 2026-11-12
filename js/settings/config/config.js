@@ -144,6 +144,26 @@ function calculatePreferredStageSize(phase,width,config=CONFIG){
    if (phase==='result') return Math.max(90,Math.min(166,width*.47,(h-116)/config.aspect));
    if (phase==='transition') return Math.max(85,Math.min(166,width*.45,(h-116)/config.aspect));
  }
+ // Keep the existing phone/tablet PORTRAIT layout handoff at 700px,
+ // but do not let the opening deck, shuffle or selection CARD SIZE jump there.
+ // Blend their original sizing calculations over the geometric 640..760px
+ // interval. Both endpoints retain the existing formulas unchanged.
+ // Result cards already have their own continuous portrait calculation.
+ if(isTouchPortrait() && (phase==='idle' || phase==='shuffle' ||
+     phase==='selection' || phase==='transition')) {
+   const vw=window.innerWidth;
+   const phonePreferred={
+     idle:Math.min(245,Math.max(170,101.98+vw*.1744)),
+     shuffle:portraitWidth(vw,104,164),
+     selection:portraitWidth(vw,146,210),
+     transition:portraitWidth(vw,160,240)
+   }[phase];
+   if(vw<=640)return phonePreferred;
+   const tabletPreferred=adaptiveTabletSize(phase,width,config);
+   if(vw>=760)return tabletPreferred;
+   const blend=(vw-640)/120;
+   return phonePreferred*(1-blend)+tabletPreferred*blend;
+ }
  // Tablet phase sizes are calculated together, before phone portrait and
  // older tablet fallbacks. Phone landscape continues to use its own branch.
  if(isAdaptiveTablet()) {

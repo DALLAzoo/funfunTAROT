@@ -1,0 +1,248 @@
+{
+  "date": "2026-11-12",
+  "status": "calculation_verified_browser_unverified",
+  "height_samples": [
+    640,
+    768,
+    844,
+    940,
+    1024,
+    1180,
+    1366,
+    1499
+  ],
+  "viewport_width_range": [
+    320,
+    1199
+  ],
+  "portrait_only": true,
+  "inversion_count": 0,
+  "unchanged_outside_bridge": true,
+  "samples_height_1024": {
+    "390": {
+      "idle": {
+        "old": 170,
+        "new": 170
+      },
+      "shuffle": {
+        "old": 104,
+        "new": 104
+      },
+      "selection": {
+        "old": 146,
+        "new": 146
+      },
+      "transition": {
+        "old": 160,
+        "new": 160
+      },
+      "result": {
+        "old": 190,
+        "new": 190
+      }
+    },
+    "639": {
+      "idle": {
+        "old": 213.42,
+        "new": 213.42
+      },
+      "shuffle": {
+        "old": 138.74,
+        "new": 138.74
+      },
+      "selection": {
+        "old": 183.06,
+        "new": 183.06
+      },
+      "transition": {
+        "old": 206.33,
+        "new": 206.33
+      },
+      "result": {
+        "old": 243.48,
+        "new": 243.48
+      }
+    },
+    "640": {
+      "idle": {
+        "old": 213.6,
+        "new": 213.6
+      },
+      "shuffle": {
+        "old": 138.88,
+        "new": 138.88
+      },
+      "selection": {
+        "old": 183.21,
+        "new": 183.21
+      },
+      "transition": {
+        "old": 206.51,
+        "new": 206.51
+      },
+      "result": {
+        "old": 243.69,
+        "new": 243.69
+      }
+    },
+    "699": {
+      "idle": {
+        "old": 223.89,
+        "new": 235.35
+      },
+      "shuffle": {
+        "old": 147.12,
+        "new": 158.61
+      },
+      "selection": {
+        "old": 191.99,
+        "new": 206.57
+      },
+      "transition": {
+        "old": 217.49,
+        "new": 232.1
+      },
+      "result": {
+        "old": 256.36,
+        "new": 256.36
+      }
+    },
+    "700": {
+      "idle": {
+        "old": 247.56,
+        "new": 235.81
+      },
+      "shuffle": {
+        "old": 170.73,
+        "new": 158.99
+      },
+      "selection": {
+        "old": 221.95,
+        "new": 207.05
+      },
+      "transition": {
+        "old": 247.56,
+        "new": 232.62
+      },
+      "result": {
+        "old": 256.58,
+        "new": 256.58
+      }
+    },
+    "701": {
+      "idle": {
+        "old": 247.91,
+        "new": 236.27
+      },
+      "shuffle": {
+        "old": 170.98,
+        "new": 159.38
+      },
+      "selection": {
+        "old": 222.27,
+        "new": 207.53
+      },
+      "transition": {
+        "old": 247.91,
+        "new": 233.14
+      },
+      "result": {
+        "old": 256.58,
+        "new": 256.58
+      }
+    },
+    "759": {
+      "idle": {
+        "old": 268.43,
+        "new": 268.14
+      },
+      "shuffle": {
+        "old": 185.12,
+        "new": 184.88
+      },
+      "selection": {
+        "old": 240.66,
+        "new": 240.33
+      },
+      "transition": {
+        "old": 268.43,
+        "new": 268.1
+      },
+      "result": {
+        "old": 270.71,
+        "new": 270.71
+      }
+    },
+    "760": {
+      "idle": {
+        "old": 268.78,
+        "new": 268.78
+      },
+      "shuffle": {
+        "old": 185.37,
+        "new": 185.37
+      },
+      "selection": {
+        "old": 240.98,
+        "new": 240.98
+      },
+      "transition": {
+        "old": 268.78,
+        "new": 268.78
+      },
+      "result": {
+        "old": 271.65,
+        "new": 271.65
+      }
+    },
+    "768": {
+      "idle": {
+        "old": 271.61,
+        "new": 271.61
+      },
+      "shuffle": {
+        "old": 187.32,
+        "new": 187.32
+      },
+      "selection": {
+        "old": 243.51,
+        "new": 243.51
+      },
+      "transition": {
+        "old": 271.61,
+        "new": 271.61
+      },
+      "result": {
+        "old": 279.19,
+        "new": 279.19
+      }
+    },
+    "820": {
+      "idle": {
+        "old": 290,
+        "new": 290
+      },
+      "shuffle": {
+        "old": 200,
+        "new": 200
+      },
+      "selection": {
+        "old": 260,
+        "new": 260
+      },
+      "transition": {
+        "old": 290,
+        "new": 290
+      },
+      "result": {
+        "old": 355,
+        "new": 355
+      }
+    }
+  },
+  "modified_code": [
+    "js/settings/config/config.js"
+  ],
+  "css_modified": false,
+  "browser_test": "not run: installed Playwright lacks Chromium executable"
+}
