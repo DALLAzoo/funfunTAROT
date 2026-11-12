@@ -119,6 +119,9 @@
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
+    /* Default portrait (non-touch) keeps its 520px reading width ceiling.
+       Touch portrait replaces only this variable using the phone reference. */
+    --portrait-reading-width:520px;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -169,7 +172,7 @@
     flex:1 1 auto;
     min-height:0;
     overflow:hidden;
-    width:min(100%,520px);
+    width:min(100%,var(--portrait-reading-width));
     gap:var(--portrait-reading-gap);
     margin:0;
     padding:0;
@@ -184,7 +187,7 @@
     left:auto!important;
     right:auto!important;
     transform:none!important;
-    width:min(100%,520px);
+    width:100%;
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
@@ -230,21 +233,27 @@
   }
 }
 
-/* AD4 2026-11-12: Portrait TOUCH tablets only. Keep the existing elastic
-   layout; raise the result card and reading-width ceilings as space grows.
-   No changes to portrait phones, landscape tablets or desktop. */
+/* AD4 2026-11-13: One PHONE-PORTRAIT card/reading proportion for every
+   touch portrait width. Do not change the stack order, card image aspect,
+   type, actions, or animation. A continuous 699px -> 700px handoff replaces
+   the conflicting 520px phone cap / card-based 700px tablet cap. */
+@media (orientation:portrait) and (hover:none) and (pointer:coarse) {
+  #resultView.result-view {
+    /* 390x844 phone reference: 190px result card / 358px reading panel.
+       --result-width is set on this element by the existing JS result flow.
+       The same variable is read by the existing reading-group rule above. */
+    --portrait-reading-width:calc(var(--result-width, 190px) * 1.8842105263);
+  }
+}
+
+/* Tablet portrait retains its existing flexible reading height and idle
+   card connection. The width above is already shared with phone portrait. */
 @media (orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse) {
   :root {
     --portrait-reading-size:clamp(16px, calc(clamp(17px, calc(10.3px + .94vw), 20px) * var(--ad4-ui-scale, 1)), 23px);
   }
-  #resultView > .result-reading-group {
-    width:min(100%, clamp(520px, 58vw, 600px));
-  }
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
-    width:100%;
-    /* The tablet result group's flexible row owns the remaining reading space.
-       Keep scrolling inside this panel; do not resize the card or actions. */
     flex:1 1 auto;
   }
   /* On tablets the initial deck uses the same adaptive JS size as its stage.

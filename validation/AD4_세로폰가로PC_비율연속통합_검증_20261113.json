@@ -1,0 +1,811 @@
+{
+  "base_zip": "InBetweenShift_AD4_방향별비율통합_전체시험본_20261113.zip",
+  "status": "calculation_and_synthetic_layout_passed__full_browser_flow_unverified",
+  "functional_files_modified": [
+    "js/settings/config/config.js",
+    "css/screen/23-portrait-responsive-scale.css"
+  ],
+  "additions": [
+    "docs/AD4_세로폰가로PC_비율연속통합_20261113.md",
+    "validation/AD4_세로폰가로PC_비율연속통합_검증_20261113.json"
+  ],
+  "checks": {
+    "js_syntax": "passed",
+    "js_sizes_comparison": {
+      "viewports": 14,
+      "phases_each": 5,
+      "unexpected_size_changes": [],
+      "landscape_tablet_result_changes": [
+        {
+          "label": "ipad mini landscape",
+          "phase": "result",
+          "before": 299.55789473684206,
+          "after": 194.90483162518302
+        },
+        {
+          "label": "tablet landscape",
+          "phase": "result",
+          "before": 324.10150375939855,
+          "after": 224.597364568082
+        },
+        {
+          "label": "ipad pro landscape",
+          "phase": "result",
+          "before": 392,
+          "after": 260
+        },
+        {
+          "label": "surface landscape",
+          "phase": "result",
+          "before": 392,
+          "after": 274.0849194729136
+        }
+      ]
+    },
+    "css_browser_synthetic": {
+      "method": "Chromium set_content with imported CSS concatenated in original order, not full website",
+      "samples": [
+        {
+          "window": [
+            390,
+            844
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 100,
+            "y": 138.41,
+            "w": 190,
+            "h": 326.06,
+            "bottom": 464.47
+          },
+          "readingGroup": {
+            "x": 16,
+            "y": 473.75,
+            "w": 358,
+            "h": 336.5,
+            "bottom": 810.25
+          },
+          "reading": {
+            "x": 16,
+            "y": 481.75,
+            "w": 358,
+            "h": 114.38,
+            "bottom": 596.13
+          },
+          "actions": {
+            "x": 53.5,
+            "y": 766.25,
+            "w": 283,
+            "h": 44,
+            "bottom": 810.25
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "358px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 17.279999999999973,
+          "readingBottomToActionsTop": 170.12,
+          "label": "phone 390",
+          "version": "new"
+        },
+        {
+          "window": [
+            699,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 234.31,
+            "y": 161.06,
+            "w": 230.38,
+            "h": 395.38,
+            "bottom": 556.44
+          },
+          "readingGroup": {
+            "x": 89.5,
+            "y": 567.69,
+            "w": 520,
+            "h": 415.36,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 89.5,
+            "y": 575.69,
+            "w": 520,
+            "h": 138.75,
+            "bottom": 714.44
+          },
+          "actions": {
+            "x": 197.58,
+            "y": 939.05,
+            "w": 303.83,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "520px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 224.6099999999999,
+          "label": "bridge 699",
+          "version": "old"
+        },
+        {
+          "window": [
+            699,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 234.31,
+            "y": 161.06,
+            "w": 230.38,
+            "h": 395.38,
+            "bottom": 556.44
+          },
+          "readingGroup": {
+            "x": 132.45,
+            "y": 567.69,
+            "w": 434.09,
+            "h": 415.36,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 132.45,
+            "y": 575.69,
+            "w": 434.09,
+            "h": 138.75,
+            "bottom": 714.44
+          },
+          "actions": {
+            "x": 197.58,
+            "y": 939.05,
+            "w": 303.83,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "434.094px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 224.6099999999999,
+          "label": "bridge 699",
+          "version": "new"
+        },
+        {
+          "window": [
+            700,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 234.73,
+            "y": 161.09,
+            "w": 230.52,
+            "h": 395.59,
+            "bottom": 556.69
+          },
+          "readingGroup": {
+            "x": 132.83,
+            "y": 567.94,
+            "w": 434.34,
+            "h": 415.11,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 132.83,
+            "y": 575.94,
+            "w": 434.34,
+            "h": 359.86,
+            "bottom": 935.8
+          },
+          "actions": {
+            "x": 198.05,
+            "y": 939.05,
+            "w": 303.89,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "434.344px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 3.25,
+          "label": "bridge 700",
+          "version": "old"
+        },
+        {
+          "window": [
+            700,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 234.73,
+            "y": 161.09,
+            "w": 230.52,
+            "h": 395.59,
+            "bottom": 556.69
+          },
+          "readingGroup": {
+            "x": 132.83,
+            "y": 567.94,
+            "w": 434.34,
+            "h": 415.11,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 132.83,
+            "y": 575.94,
+            "w": 434.34,
+            "h": 359.86,
+            "bottom": 935.8
+          },
+          "actions": {
+            "x": 198.05,
+            "y": 939.05,
+            "w": 303.89,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "434.344px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 3.25,
+          "label": "bridge 700",
+          "version": "new"
+        },
+        {
+          "window": [
+            768,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 268.73,
+            "y": 163.28,
+            "w": 230.52,
+            "h": 395.59,
+            "bottom": 558.88
+          },
+          "readingGroup": {
+            "x": 166.83,
+            "y": 570.13,
+            "w": 434.34,
+            "h": 412.92,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 166.83,
+            "y": 578.13,
+            "w": 434.34,
+            "h": 357.67,
+            "bottom": 935.8
+          },
+          "actions": {
+            "x": 229.75,
+            "y": 939.05,
+            "w": 308.48,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "434.344px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 3.25,
+          "label": "mini 768",
+          "version": "old"
+        },
+        {
+          "window": [
+            768,
+            1024
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 268.73,
+            "y": 163.28,
+            "w": 230.52,
+            "h": 395.59,
+            "bottom": 558.88
+          },
+          "readingGroup": {
+            "x": 166.83,
+            "y": 570.13,
+            "w": 434.34,
+            "h": 412.92,
+            "bottom": 983.05
+          },
+          "reading": {
+            "x": 166.83,
+            "y": 578.13,
+            "w": 434.34,
+            "h": 357.67,
+            "bottom": 935.8
+          },
+          "actions": {
+            "x": 229.75,
+            "y": 939.05,
+            "w": 308.48,
+            "h": 44,
+            "bottom": 983.05
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "434.344px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 19.25,
+          "readingBottomToActionsTop": 3.25,
+          "label": "mini 768",
+          "version": "new"
+        },
+        {
+          "window": [
+            820,
+            1180
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 277.19,
+            "y": 176,
+            "w": 265.63,
+            "h": 455.86,
+            "bottom": 631.86
+          },
+          "readingGroup": {
+            "x": 159.73,
+            "y": 644.83,
+            "w": 500.52,
+            "h": 487.98,
+            "bottom": 1132.81
+          },
+          "reading": {
+            "x": 159.73,
+            "y": 652.83,
+            "w": 500.52,
+            "h": 431.02,
+            "bottom": 1083.84
+          },
+          "actions": {
+            "x": 254,
+            "y": 1088.81,
+            "w": 311.98,
+            "h": 44,
+            "bottom": 1132.81
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "500.516px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 20.970000000000027,
+          "readingBottomToActionsTop": 4.970000000000027,
+          "label": "tablet 820",
+          "version": "new"
+        },
+        {
+          "window": [
+            960,
+            1440
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 317.92,
+            "y": 190.67,
+            "w": 324.16,
+            "h": 556.31,
+            "bottom": 746.98
+          },
+          "readingGroup": {
+            "x": 174.59,
+            "y": 762.81,
+            "w": 610.8,
+            "h": 619.59,
+            "bottom": 1382.41
+          },
+          "reading": {
+            "x": 174.59,
+            "y": 770.81,
+            "w": 610.8,
+            "h": 559.77,
+            "bottom": 1330.58
+          },
+          "actions": {
+            "x": 323.98,
+            "y": 1338.41,
+            "w": 312,
+            "h": 44,
+            "bottom": 1382.41
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "610.797px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 23.829999999999927,
+          "readingBottomToActionsTop": 7.830000000000155,
+          "label": "Surface 960",
+          "version": "old"
+        },
+        {
+          "window": [
+            960,
+            1440
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 317.92,
+            "y": 190.67,
+            "w": 324.16,
+            "h": 556.31,
+            "bottom": 746.98
+          },
+          "readingGroup": {
+            "x": 174.59,
+            "y": 762.81,
+            "w": 610.8,
+            "h": 619.59,
+            "bottom": 1382.41
+          },
+          "reading": {
+            "x": 174.59,
+            "y": 770.81,
+            "w": 610.8,
+            "h": 559.77,
+            "bottom": 1330.58
+          },
+          "actions": {
+            "x": 323.98,
+            "y": 1338.41,
+            "w": 312,
+            "h": 44,
+            "bottom": 1382.41
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "610.797px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 23.829999999999927,
+          "readingBottomToActionsTop": 7.830000000000155,
+          "label": "Surface 960",
+          "version": "new"
+        },
+        {
+          "window": [
+            1024,
+            1366
+          ],
+          "touch": true,
+          "portrait": true,
+          "card": {
+            "x": 358.25,
+            "y": 186.89,
+            "w": 307.5,
+            "h": 527.72,
+            "bottom": 714.61
+          },
+          "readingGroup": {
+            "x": 222.3,
+            "y": 729.63,
+            "w": 579.41,
+            "h": 581.75,
+            "bottom": 1311.38
+          },
+          "reading": {
+            "x": 222.3,
+            "y": 737.63,
+            "w": 579.41,
+            "h": 522.73,
+            "bottom": 1260.36
+          },
+          "actions": {
+            "x": 356,
+            "y": 1267.38,
+            "w": 312,
+            "h": 44,
+            "bottom": 1311.38
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "579.406px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": 23.019999999999982,
+          "readingBottomToActionsTop": 7.020000000000209,
+          "label": "Pro 1024",
+          "version": "new"
+        },
+        {
+          "window": [
+            1024,
+            768
+          ],
+          "touch": true,
+          "portrait": false,
+          "card": {
+            "x": 173.91,
+            "y": 124.22,
+            "w": 194.89,
+            "h": 334.47,
+            "bottom": 458.69
+          },
+          "readingGroup": {
+            "x": 522.23,
+            "y": 124.22,
+            "w": 460.81,
+            "h": 613.06,
+            "bottom": 737.28
+          },
+          "reading": {
+            "x": 522.23,
+            "y": 132.22,
+            "w": 460.81,
+            "h": 148.25,
+            "bottom": 280.47
+          },
+          "actions": {
+            "x": 365.96,
+            "y": 690.19,
+            "w": 292.08,
+            "h": 47.09,
+            "bottom": 737.28
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "460.812px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -326.47,
+          "readingBottomToActionsTop": 409.72,
+          "label": "mini landscape",
+          "version": "old"
+        },
+        {
+          "window": [
+            1024,
+            768
+          ],
+          "touch": true,
+          "portrait": false,
+          "card": {
+            "x": 173.91,
+            "y": 124.22,
+            "w": 194.89,
+            "h": 334.47,
+            "bottom": 458.69
+          },
+          "readingGroup": {
+            "x": 522.23,
+            "y": 124.22,
+            "w": 460.81,
+            "h": 613.06,
+            "bottom": 737.28
+          },
+          "reading": {
+            "x": 522.23,
+            "y": 132.22,
+            "w": 460.81,
+            "h": 148.25,
+            "bottom": 280.47
+          },
+          "actions": {
+            "x": 365.96,
+            "y": 690.19,
+            "w": 292.08,
+            "h": 47.09,
+            "bottom": 737.28
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "460.812px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -326.47,
+          "readingBottomToActionsTop": 409.72,
+          "label": "mini landscape",
+          "version": "new"
+        },
+        {
+          "window": [
+            1180,
+            820
+          ],
+          "touch": true,
+          "portrait": false,
+          "card": {
+            "x": 200.39,
+            "y": 131.97,
+            "w": 224.59,
+            "h": 385.44,
+            "bottom": 517.41
+          },
+          "readingGroup": {
+            "x": 601.8,
+            "y": 131.97,
+            "w": 531.02,
+            "h": 655.23,
+            "bottom": 787.2
+          },
+          "reading": {
+            "x": 601.8,
+            "y": 139.97,
+            "w": 531.02,
+            "h": 162,
+            "bottom": 301.97
+          },
+          "actions": {
+            "x": 425.7,
+            "y": 739.2,
+            "w": 328.59,
+            "h": 48,
+            "bottom": 787.2
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "531.016px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -377.43999999999994,
+          "readingBottomToActionsTop": 437.23,
+          "label": "tablet 1180",
+          "version": "old"
+        },
+        {
+          "window": [
+            1180,
+            820
+          ],
+          "touch": true,
+          "portrait": false,
+          "card": {
+            "x": 200.39,
+            "y": 131.97,
+            "w": 224.59,
+            "h": 385.44,
+            "bottom": 517.41
+          },
+          "readingGroup": {
+            "x": 601.8,
+            "y": 131.97,
+            "w": 531.02,
+            "h": 655.23,
+            "bottom": 787.2
+          },
+          "reading": {
+            "x": 601.8,
+            "y": 139.97,
+            "w": 531.02,
+            "h": 162,
+            "bottom": 301.97
+          },
+          "actions": {
+            "x": 425.7,
+            "y": 739.2,
+            "w": 328.59,
+            "h": 48,
+            "bottom": 787.2
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "531.016px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -377.43999999999994,
+          "readingBottomToActionsTop": 437.23,
+          "label": "tablet 1180",
+          "version": "new"
+        },
+        {
+          "window": [
+            1440,
+            960
+          ],
+          "touch": true,
+          "portrait": false,
+          "card": {
+            "x": 244.55,
+            "y": 147.78,
+            "w": 274.08,
+            "h": 470.34,
+            "bottom": 618.13
+          },
+          "readingGroup": {
+            "x": 734.39,
+            "y": 147.78,
+            "w": 648.02,
+            "h": 773.83,
+            "bottom": 921.61
+          },
+          "reading": {
+            "x": 734.39,
+            "y": 155.78,
+            "w": 648.02,
+            "h": 129,
+            "bottom": 284.78
+          },
+          "actions": {
+            "x": 550,
+            "y": 873.61,
+            "w": 340,
+            "h": 48,
+            "bottom": 921.61
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "648.016px",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -462.35,
+          "readingBottomToActionsTop": 588.83,
+          "label": "surface landscape",
+          "version": "new"
+        },
+        {
+          "window": [
+            1366,
+            768
+          ],
+          "touch": false,
+          "portrait": false,
+          "card": {
+            "x": 231.98,
+            "y": 141.23,
+            "w": 260,
+            "h": 446.19,
+            "bottom": 587.42
+          },
+          "readingGroup": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "bottom": 0
+          },
+          "reading": {
+            "x": 696.66,
+            "y": 149.23,
+            "w": 614.72,
+            "h": 121.78,
+            "bottom": 271.02
+          },
+          "actions": {
+            "x": 527,
+            "y": 693.28,
+            "w": 312,
+            "h": 44,
+            "bottom": 737.28
+          },
+          "readingOverflow": false,
+          "readingGroupCSS": "auto",
+          "clippedRight": false,
+          "clippedBottom": false,
+          "cardBottomToReadingTop": -438.18999999999994,
+          "readingBottomToActionsTop": 422.26,
+          "label": "PC",
+          "version": "new"
+        }
+      ]
+    },
+    "portrait_699_to_700": {
+      "before_699_width": 520,
+      "after_699_width": 434.09,
+      "after_700_width": 434.34,
+      "change_1px": 0.25
+    },
+    "tablet_landscape_pc_column_ratio": 0.422971,
+    "not_tested": [
+      "Full app load in browser (ERR_BLOCKED_BY_ADMINISTRATOR on local URL)",
+      "Shuffle to reveal complete interaction",
+      "Physical device performance and visual review"
+    ]
+  }
+}

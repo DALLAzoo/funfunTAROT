@@ -62,17 +62,21 @@ function adaptiveTabletSize(phase,width,config){
  }
  if(phase==='selection')return Math.min(preferred,Math.max(140,width*.43));
  if(phase==='transition')return Math.min(preferred,Math.max(150,(vh-150)/config.aspect));
- // Reserve a real text area below the result card in portrait, and the title
- // and fixed action bar above/below the two-column result in landscape.
+ // Portrait uses the phone portrait composition, with a card/reading
+ // scale limited by BOTH available axes. Landscape uses the PC landscape
+ // card-to-LEFT-COLUMN proportion rather than its absolute card pixels.
  if(isTabletPortrait())return tabletPortraitResultSize(vw,vh,config);
  const titleZone=Math.min(175,Math.max(105,vh*.19));
- const heightFit=Math.max(165,(vh-titleZone-108)/config.aspect);
- const columnFit=Math.max(165,(vw*.5-52));
+ const heightFit=Math.max(95,(vh-titleZone-108)/config.aspect);
+ const desktopColumn=(1366*.92-Math.min(30,Math.max(8,1366*.02)))/2;
+ const availableColumn=(vw*.92-Math.min(30,Math.max(8,vw*.02)))/2;
+ const pcColumnRatio=config.sizes.desktop.result/desktopColumn;
+ const columnFit=Math.max(95,availableColumn*pcColumnRatio);
  return Math.min(preferred,heightFit,columnFit);
 }
-// Portrait result cards use ONE continuous width path across the 700px
-// layout handoff. Keep the approved phone reference (390px) and the existing
-// tablet calculation (700px+) as anchors; interpolate only the bridge.
+// Portrait result card sizes follow one continuous path across the 700px
+// layout handoff. The reading width follows THIS same result width on both
+// sides of the breakpoint, so the card-to-reading ratio cannot jump there.
 // This removes the smaller-screen / larger-card reversal without introducing
 // an iPad-specific override or changing the result card on established tablets.
 function portraitResultSize(vw,vh,config){
@@ -95,16 +99,21 @@ function portraitResultSize(vw,vh,config){
 // Layout classification stays at 700px, but the result sizing endpoint is
 // geometric and can be evaluated on either side of that classification.
 function tabletPortraitResultSize(vw,vh,config){
- const ratio=Math.min(1.27,Math.max(.80,vw/820));
- const preferred=Math.min(392,355*ratio);
+ // Tablet PORTRAIT follows the phone PORTRAIT composition, not the PC
+ // landscape card/reading width ratio. The 390x844 phone result (190px)
+ // scales with the limiting usable axis; spare height alone cannot inflate
+ // the card. Reading width uses the same factor in the portrait CSS owner.
+ const phoneWidth=390,phoneHeight=844,phoneCard=190;
+ const availableWidth=vw*.92,availableHeight=vh*.92;
+ const phoneUsableWidth=phoneWidth*.92,phoneUsableHeight=phoneHeight*.92;
+ const scale=Math.min(availableWidth/phoneUsableWidth,
+  availableHeight/phoneUsableHeight);
+ const preferred=phoneCard*scale;
+ // Preserve title, reading, actions and their gaps before fitting the card.
+ // The reading owns the remaining vertical space and scrolls internally.
  const reserved=Math.max(310,Math.min(470,vh*.35));
  const heightFit=Math.max(165,(vh-reserved)/config.aspect);
- const narrowPressure=Math.max(0,Math.min(1,(820-vw)/76));
- const shortPressure=Math.max(0,Math.min(1,(1240-vh)/90));
- const compactPressure=narrowPressure*shortPressure;
- const balancedHeightLimit=compactPressure>0
-  ? vh*(.55-.12*compactPressure)/config.aspect : Infinity;
- return Math.min(preferred,heightFit,balancedHeightLimit);
+ return Math.min(preferred,heightFit);
 }
 export const deviceProfile=width=>width<CONFIG.breakpoint?'mobile':'desktop';
 // Shared portrait scale: 390x844 -> phone reference; 820x1180 -> large portrait reference.
