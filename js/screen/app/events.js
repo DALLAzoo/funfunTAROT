@@ -27,7 +27,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
     // Once requested, keep the cue visible until an option is actually selected.
     // On touch landscape, the menu opens above the button: lift the cue above
     // the opened list so it remains visible without covering any option.
-    const visible = ctx.menuHintRequested && !ctx.readingSelection &&
+    const visible = !ctx.readingSelection &&
       ctx.getState() === 'selection' && !dropdown.disabled;
     const menuOpen = visible && !options.hidden;
     if (menuOpen) {

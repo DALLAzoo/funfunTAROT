@@ -4,12 +4,12 @@
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:clamp(23px, calc(16.02px + 2.56vw), 37px);
-    --portrait-reading-size:clamp(14px, calc(10.37px + .93vw), 18px);
-    --portrait-small-button:clamp(100px, calc(89.12px + 2.79vw), 112px);
-    --portrait-menu-button:clamp(175px, calc(161.39px + 3.49vw), 190px);
+    --portrait-title-size:clamp(20px, calc(clamp(23px, calc(16.02px + 2.56vw), 37px) * var(--ad4-ui-scale, 1)), 43px);
+    --portrait-reading-size:clamp(13px, calc(clamp(14px, calc(10.37px + .93vw), 18px) * var(--ad4-ui-scale, 1)), 21px);
+    --portrait-small-button:clamp(90px, calc(clamp(100px, calc(89.12px + 2.79vw), 112px) * var(--ad4-button-scale, 1)), 130px);
+    --portrait-menu-button:clamp(155px, calc(clamp(175px, calc(161.39px + 3.49vw), 190px) * var(--ad4-button-scale, 1)), 215px);
     --portrait-button-gap:clamp(8px, calc(6.19px + .465vw), 10px);
-    --portrait-bottom-pad:clamp(14px, 2.5dvh, 32px);
+    --portrait-bottom-pad:4dvh;
     --portrait-reading-gap:clamp(8px, 1.1dvh, 16px);
   }
   #stage.idle-stack .tarot-card.shuffle-surface {
@@ -24,7 +24,7 @@
     height:100dvh;
     min-height:0;
     max-width:1100px;
-    padding:clamp(12px,2vw,26px) clamp(12px,2.5vw,30px) var(--portrait-bottom-pad);
+    padding:4dvh 4vw var(--portrait-bottom-pad);
     overflow:hidden;
   }
   #tarotApp > .intro {
@@ -84,9 +84,9 @@
     box-sizing:border-box;
     width:var(--portrait-small-button);
     min-width:0;
-    height:44px;
+    height:clamp(40px,calc(44px * var(--ad4-button-scale, 1)),52px);
     padding:0 9px;
-    font-size:clamp(12px,calc(12.09px + .233vw),14px);
+    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),17px);
   }
   #tarotApp .controls .reading-dropdown,
   #resultView .result-actions > .reading-dropdown {
@@ -100,10 +100,10 @@
   #resultView .reading-dropdown-trigger {
     width:100%;
     min-width:0;
-    height:44px;
+    height:clamp(40px,calc(44px * var(--ad4-button-scale, 1)),52px);
     box-sizing:border-box;
     padding:0 8px;
-    font-size:clamp(12px,calc(12.09px + .233vw),14px);
+    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),17px);
   }
   #tarotApp > .intro h1,
   #resultView > .intro h1 {
@@ -114,7 +114,7 @@
     margin:9px 0 12px;
   }
   #tarotApp > .intro .eyebrow,
-  #resultView > .intro .eyebrow {font-size:10px;}
+  #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:clamp(9px,calc(10px * var(--ad4-ui-scale, 1)),12px);}
 
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
@@ -129,7 +129,7 @@
     width:100%;
     height:100dvh;
     min-height:0;
-    padding:clamp(12px,2vw,26px) clamp(12px,2.5vw,30px) var(--portrait-bottom-pad)!important;
+    padding:4dvh 4vw var(--portrait-bottom-pad)!important;
     overflow:hidden;
     container:tarot-result / inline-size;
   }
@@ -225,7 +225,7 @@
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
     padding:11px 13px;
-    font-size:14px;
+    font-size:clamp(13px,calc(14px * var(--ad4-ui-scale,1)),17px);
     line-height:1.65;
   }
 }
@@ -235,7 +235,7 @@
    No changes to portrait phones, landscape tablets or desktop. */
 @media (orientation:portrait) and (min-width:700px) and (hover:none) and (pointer:coarse) {
   :root {
-    --portrait-reading-size:clamp(17px, calc(10.3px + .94vw), 20px);
+    --portrait-reading-size:clamp(16px, calc(clamp(17px, calc(10.3px + .94vw), 20px) * var(--ad4-ui-scale, 1)), 23px);
   }
   #resultView > .result-reading-group {
     width:min(100%, clamp(520px, 58vw, 600px));

@@ -1,0 +1,20 @@
+{
+  "base": "InBetweenShift_AD4_기존규칙통합_1차수정시험본_20261112.zip",
+  "modified": [
+    "css/motion/04-fan-layout.css",
+    "css/screen/23-portrait-responsive-scale.css",
+    "css/screen/24-landscape-responsive-scale.css",
+    "css/screen/25-landscape-adaptive-layout.css",
+    "css/screen/27-reading-type-and-selected-glow.css",
+    "js/motion/core/cinema-core.js",
+    "js/motion/selection/carousel.js",
+    "js/screen/app/events.js",
+    "js/screen/app/main.js",
+    "js/screen/app/reading-scroll-cue.js",
+    "js/screen/app/shuffle-flow.js",
+    "js/settings/config/config.js",
+    "CHANGELOG.md",
+    "docs/AD4_2차_게임식비례설계_수정이력_20261112.md",
+    "validation/AD4_2차_검증상태_20261112.json"
+  ]
+}

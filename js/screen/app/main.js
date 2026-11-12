@@ -1,5 +1,5 @@
 import {setStateUI, refreshCounterUI} from './ui-state.js';
-import {isCompactTouchLandscape} from '../../settings/config/config.js';
+import {isCompactTouchLandscape,updateResponsiveDesignMetrics} from '../../settings/config/config.js';
 import {startShuffleFlow} from './shuffle-flow.js';
 import {chooseFlow} from './reveal-flow.js';
 import {MagicVFX} from '../../effects/magic-vfx.js';
@@ -48,6 +48,15 @@ Object.assign(ctx, {
 const startShuffle = () => startShuffleFlow(ctx);
 ctx.choose = chosen => chooseFlow(ctx, chosen);
 
+updateResponsiveDesignMetrics();
+let responsiveMetricsFrame=0;
+window.addEventListener('resize',()=>{
+ if(responsiveMetricsFrame)cancelAnimationFrame(responsiveMetricsFrame);
+ responsiveMetricsFrame=requestAnimationFrame(()=>{
+  responsiveMetricsFrame=0;
+  updateResponsiveDesignMetrics();
+ });
+},{passive:true});
 bindEvents({ctx, $, shuffleBtn, startShuffle, getState});
 setupStageBoundary(stage, main.querySelector('.controls .actions'), main);
 initReadingScrollCue();

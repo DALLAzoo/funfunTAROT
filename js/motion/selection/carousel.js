@@ -43,7 +43,7 @@ export class Carousel {
   prepareFront(card.cardData,card).catch(()=>{});
   const index=this.cards.indexOf(card),off=this.distance(index)+this.offset;
   const resting=slotPose(off,this.stage.clientWidth);
-  const raised={...resting,y:resting.y-C.carousel.selectedLift};
+  const raised={...resting,y:resting.y-this.liftDistance()};
   card.getAnimations().forEach(animation=>animation.cancel());
   card.animate([
    {transform:transform({...resting,scale:1,z:0,ry:0,rx:0})},
@@ -85,13 +85,17 @@ export class Carousel {
     if(card.style.width!==sw)card.style.width=sw;
     if(card.style.height!==sh)card.style.height=sh;
     const cardPose=slotPose(off,w);
-    if(card===this.selectedCard)cardPose.y-=C.carousel.selectedLift;
+    if(card===this.selectedCard)cardPose.y-=this.liftDistance();
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
     card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,edge-a)));
     card.style.zIndex=String(100-Math.round(a*20));
    }
   });
   if(this.lastReportedIndex!==this.index){this.lastReportedIndex=this.index;this.onIndex(this.index);}
+ }
+ liftDistance(){
+  const touch=window.matchMedia?.('(hover:none) and (pointer:coarse)').matches;
+  return C.carousel.selectedLift*(touch ? this.slotWidth/C.sizes.desktop.selection : 1);
  }
  updateGlow(){}
  down(e){

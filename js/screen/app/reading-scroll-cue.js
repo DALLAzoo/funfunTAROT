@@ -21,8 +21,10 @@ export function initReadingScrollCue() {
       reading.scrollTop + reading.clientHeight < reading.scrollHeight - 4;
     if (hasMore) {
       // Keep the indicator inside the reading's bottom-right border, even on narrow phones.
-      cue.style.left = `${Math.min(window.innerWidth - 26, Math.max(2, r.right - 25))}px`;
-      cue.style.top = `${Math.min(window.innerHeight - 26, Math.max(2, r.bottom - 25))}px`;
+      const iconSize=cue.getBoundingClientRect().width||23;
+      const gap=Math.max(3,iconSize*.1);
+      cue.style.left = `${Math.min(window.innerWidth - iconSize-gap, Math.max(2, r.right - iconSize-gap))}px`;
+      cue.style.top = `${Math.min(window.innerHeight - iconSize-gap, Math.max(2, r.bottom - iconSize-gap))}px`;
     }
     cue.classList.toggle('is-visible', Boolean(hasMore));
   };

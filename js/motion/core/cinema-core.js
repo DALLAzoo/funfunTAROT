@@ -36,45 +36,21 @@ export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]
 export function slotPose(offset,width,c=C){
  const size=stageSize('selection',width,c);
  const a=Math.abs(offset),sgn=Math.sign(offset);
- // One formula on all devices; only available stage width changes the spacing.
- let fit=Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
+ // The established desktop fan is the geometry reference. Its original
+ // formula/fit remains byte-for-byte equivalent on non-touch desktop.
+ // All touch screens reuse that shape at their own card size, including
+ // deliberately off-screen outer cards on narrow portrait viewports.
+ const touch=typeof window!=='undefined' && window.matchMedia?.('(hover:none) and (pointer:coarse)').matches;
+ const reference=210; // desktop CONFIG.sizes.desktop.selection
+ const geometryRatio=touch?size/reference:1;
+ const fit=touch?1:Math.min(1,Math.max(.57,(width-24)/(size*3.18)));
  const steps=[size*.72,size*.52,size*.36];
- // Larger tablet cards require a responsive fan overlap. Fit the projected
- // outer angled card within the real stage, while keeping all 7 slots visible.
- if(isTabletPortrait()||isTabletLandscape()){
-   const endAngle=23*Math.PI/180;
-   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
-   const room=Math.max(0,width/2-outerHalf-14);
-   fit=Math.max(.30,Math.min(1,room/(steps[0]+steps[1]+steps[2])));
- }
- // In compact phone landscape the fan is CENTERED in the full viewport.
- // Its stage is intentionally narrow to position the original deck and orbit,
- // but using that stage width for fan spacing incorrectly crowds all 7 cards.
- // Keep card size, rotation, drop, and order exactly as authored. Only the
- // horizontal slot spacing uses available VIEWPORT width at selection time.
- if (isCompactTouchLandscape()) {
-   const screenWidth=window.innerWidth;
-   const endAngle=23*Math.PI/180;
-   // Include the projection of the tilted outermost card in the width budget.
-   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
-   const targetHalf=screenWidth*.435-Math.max(8,screenWidth*.013);
-   const stepsHalf=steps[0]+steps[1]+steps[2];
-   const desired=Math.max(0,(targetHalf-outerHalf)/Math.max(1,stepsHalf));
-   fit=Math.max(.6,Math.min(1.45,desired));
- } else if (typeof window!=='undefined' &&
-            window.matchMedia?.('(orientation:landscape) and (max-height:560px) and (hover:none) and (pointer:coarse)').matches &&
-            width>=600 && !isTabletLandscape()) {
-   const endAngle=23*Math.PI/180;
-   const outerHalf=(size*Math.cos(endAngle)+size*c.aspect*Math.sin(endAngle))/2;
-   const freeHalf=Math.max(0,(width-28)/2-outerHalf);
-   fit=Math.min(fit,Math.max(.28,freeHalf/(steps[0]+steps[1]+steps[2])));
- }
  const displacement=(Math.min(a,1)*steps[0]+Math.max(0,Math.min(a-1,1))*steps[1]+Math.max(0,Math.min(a-2,1))*steps[2]+Math.max(0,a-3)*steps[2]*.9)*fit;
  const rotation=sgn*(Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*9+Math.max(0,a-2)*6);
- const drop=Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*13+Math.max(0,a-2)*14;
- // The wider phone fan is raised as a whole to stay clear of the existing
- // bottom-right controls. The arc, card angles and per-slot drop are intact.
- const fanLift=isCompactTouchLandscape()?44:0;
+ const drop=(Math.min(a,1)*8+Math.max(0,Math.min(a-1,1))*13+Math.max(0,a-2)*14)*geometryRatio;
+ // Preserve the approved phone-landscape stage anchor; scale only the
+ // existing 44px whole-fan lift with card size (reference 140px).
+ const fanLift=isCompactTouchLandscape()?44*(size/140):0;
  // No per-slot perspective depth: all visible cards retain identical visual size.
  return {x:sgn*displacement,y:drop-fanLift,z:0,rot:rotation,ry:0,rx:0,scale:1};
 }

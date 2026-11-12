@@ -20,10 +20,10 @@ function showFanSwipeHint(ctx){
  const top=Math.min(...boxes.map(box=>box.top));
  const bottom=Math.max(...boxes.map(box=>box.bottom));
  const center=boxes[Math.floor(boxes.length/2)];
- const size=Math.max(26,Math.min(42,Math.round(center.width*.23)));
+ const size=Math.max(26,Math.min(48,Math.round(center.width*.23)));
  const viewportWidth=document.documentElement.clientWidth;
  const viewportHeight=window.innerHeight;
- const inset=16,clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+ const inset=Math.max(12,Math.min(viewportWidth,viewportHeight)*.04),clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
  let nearLeft=clamp(left-size*.38,inset,viewportWidth-size-inset);
  let nearRight=clamp(right-size*.62,inset,viewportWidth-size-inset);
  if(nearRight-nearLeft<size*1.5){nearLeft=inset;nearRight=viewportWidth-size-inset;}

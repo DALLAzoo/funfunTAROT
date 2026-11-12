@@ -162,3 +162,30 @@ export function stageSize(phase,width,config=CONFIG){
  }
  return preferred;
 }
+
+/** Proportional sizing tokens for existing layout owners. No CSS override layer.
+ * Base dimensions represent established reference layouts, not new device classes.
+ * Usable area removes the agreed 4% on each edge; readable type has a floor.
+ */
+export function responsiveDesignMetrics(){
+ if(typeof window==='undefined')return {scale:1,buttonScale:1,arrowScale:1};
+ const vw=window.innerWidth,vh=window.innerHeight;
+ const portrait=vh>=vw;
+ const touch=!!window.matchMedia?.('(hover:none) and (pointer:coarse)').matches;
+ const compact=isCompactTouchLandscape();
+ const tablet=isAdaptiveTablet();
+ // Baselines stay independent of reported device pixel density.
+ const base=touch?(compact?[844,390]:tablet?(portrait?[820,1180]:[1180,820]):portrait?[390,844]:[844,390]):[1366,768];
+ const scale=Math.min(vw*.92/base[0]/.92,vh*.92/base[1]/.92);
+ return {scale:Math.max(.84,Math.min(1.22,scale)),
+  buttonScale:Math.max(.88,Math.min(1.16,scale)),
+  arrowScale:Math.max(.85,Math.min(1.2,scale))};
+}
+export function updateResponsiveDesignMetrics(){
+ if(typeof document==='undefined')return;
+ const metrics=responsiveDesignMetrics();
+ const root=document.documentElement.style;
+ root.setProperty('--ad4-ui-scale',metrics.scale.toFixed(4));
+ root.setProperty('--ad4-button-scale',metrics.buttonScale.toFixed(4));
+ root.setProperty('--ad4-arrow-scale',metrics.arrowScale.toFixed(4));
+}

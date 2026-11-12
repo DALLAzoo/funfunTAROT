@@ -7,9 +7,9 @@
     --ad2-land-stage-top:clamp(71px,19dvh,91px);
     --ad2-land-stage-bottom:clamp(7px,2dvh,13px);
     --ad2-land-stage-inset:clamp(8px,1.5vw,16px);
-    --ad2-land-right-pad:clamp(10px,2vw,20px);
-    --ad2-land-button-bottom:clamp(10px,3dvh,18px);
-    --ad2-land-button-height:clamp(32px,9dvh,42px);
+    --ad2-land-right-pad:4vw;
+    --ad2-land-button-bottom:4dvh;
+    --ad2-land-button-height:clamp(32px,calc(clamp(32px,9dvh,42px) * var(--ad4-button-scale,1)),48px);
     --ad2-land-button-gap:clamp(5px,.9vw,10px);
     --ad2-land-right-width:calc(50% - 2 * var(--ad2-land-right-pad));
     --ad2-land-small-width:clamp(100px,12.5vw,112px);
@@ -28,7 +28,7 @@
   /* One stationary title at the TOP CENTER before and after reveal. */
   html.phone-landscape #tarotApp > #sharedIntro,
   html.phone-landscape #resultView > #sharedIntro {
-    position:absolute!important;top:clamp(10px,2.5dvh,17px)!important;
+    position:absolute!important;top:4dvh!important;
     left:0!important;right:0!important;width:100%!important;
     margin:0!important;padding:0 max(8px,env(safe-area-inset-right))!important;
     text-align:center;z-index:5;pointer-events:none;
@@ -38,7 +38,7 @@
     line-height:1.25;letter-spacing:.2em;margin:0!important;
   }
   html.phone-landscape #sharedIntro h1 {
-    font-size:clamp(19px,min(2.95vw,5.7dvh),22px)!important;
+    font-size:clamp(18px,calc(clamp(19px,min(2.95vw,5.7dvh),22px) * var(--ad4-ui-scale,1)),27px)!important;
     line-height:1.2;margin:5px 0 0!important;word-break:keep-all;
   }
   /* The stage is a half-viewport-wide stage with its CENTER at x = 50vw.
@@ -87,7 +87,7 @@
     width:var(--ad2-land-small-width)!important;min-width:0!important;
     height:var(--ad2-land-button-height)!important;
     padding:0 clamp(5px,.9vw,10px)!important;
-    font-size:clamp(11px,1.4vw,13px)!important;white-space:nowrap;
+    font-size:clamp(11px,calc(12px * var(--ad4-ui-scale,1)),15px)!important;white-space:nowrap;
   }
   html.phone-landscape #tarotApp .controls .reading-dropdown,
   html.phone-landscape #resultView .result-actions > .reading-dropdown {
@@ -98,7 +98,7 @@
   html.phone-landscape #resultView .reading-dropdown-trigger {
     width:100%;min-width:0!important;height:var(--ad2-land-button-height)!important;
     padding:0 clamp(4px,.8vw,8px)!important;
-    font-size:clamp(11px,1.4vw,13px)!important;white-space:nowrap;
+    font-size:clamp(11px,calc(12px * var(--ad4-ui-scale,1)),15px)!important;white-space:nowrap;
   }
   html.phone-landscape #tarotApp .reading-dropdown-menu,
   html.phone-landscape #resultView .reading-dropdown-menu {
@@ -150,7 +150,7 @@
    relative placement. Keep card position, reading column and title untouched. */
 @media (orientation:landscape) and (min-width:760px) and (hover:none) and (pointer:coarse) {
   :root:where(.roomy-touch-landscape) {
-    --ad2-tablet-action-bottom:clamp(14px,2.5dvh,32px);
+    --ad2-tablet-action-bottom:4dvh;
     --ad2-tablet-action-gap:clamp(8px,1vw,10px);
   }
   :where(html.roomy-touch-landscape) #tarotApp .controls .actions,
