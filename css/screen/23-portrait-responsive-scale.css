@@ -179,7 +179,7 @@
   }
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
-    flex:1 1 auto;
+    flex:0 1 auto;
     align-self:stretch;
     position:relative;
     top:auto!important;
