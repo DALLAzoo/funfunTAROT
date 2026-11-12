@@ -243,6 +243,9 @@
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
     width:100%;
+    /* The tablet result group's flexible row owns the remaining reading space.
+       Keep scrolling inside this panel; do not resize the card or actions. */
+    flex:1 1 auto;
   }
   /* On tablets the initial deck uses the same adaptive JS size as its stage.
      No separate 245px hard stop on wide portrait screens. */
