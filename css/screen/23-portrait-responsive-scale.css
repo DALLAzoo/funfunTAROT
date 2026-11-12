@@ -1,16 +1,18 @@
-/* Portrait layout owner: one grid for selection and reveal.  The existing
-   desktop/landscape layout remains under 01/19/20/24.  No device-name
-   breakpoints: layout follows orientation and available height. */
+/* Portrait layout owner. Phone reference: 390 x 844. Width fractions own
+   horizontal space (reading 92%, controls ~72.6%); height fractions own
+   vertical space (card, controls and margins). Type uses available room in
+   both directions. No tablet-model overrides; landscape remains separate. */
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:max(20px, calc(23px * var(--ad4-ui-scale, 1)));
-    --portrait-reading-size:max(13px, calc(15px * var(--ad4-ui-scale, 1)));
-    --portrait-small-button:calc(100px * var(--ad4-button-scale, 1));
-    --portrait-menu-button:calc(175px * var(--ad4-button-scale, 1));
-    --portrait-button-gap:max(6px, calc(8px * var(--ad4-button-scale, 1)));
+    --portrait-title-size:max(20px,calc(23px * var(--ad4-ui-scale, 1)));
+    --portrait-reading-size:max(13px,calc(15px * var(--ad4-ui-scale, 1)));
+    --portrait-small-button:25.64102564vw;
+    --portrait-menu-button:44.87179487vw;
+    --portrait-button-gap:2.05128205vw;
+    --portrait-button-height:max(34px,5.21327014dvh);
     --portrait-bottom-pad:4dvh;
-    --portrait-reading-gap:max(6px, 1.1dvh);
+    --portrait-reading-gap:1.1dvh;
   }
   #stage.idle-stack .tarot-card.shuffle-surface {
     width:var(--card-w, var(--portrait-idle-width))!important;
@@ -32,7 +34,7 @@
     grid-row:1;
     min-height:0;
     width:100%;
-    margin:max(12px,2dvh) 0 0;
+    margin:2dvh 0 0;
     text-align:center;
     z-index:3;
   }
@@ -84,7 +86,7 @@
     box-sizing:border-box;
     width:var(--portrait-small-button);
     min-width:0;
-    height:max(34px,calc(44px * var(--ad4-button-scale, 1)));
+    height:var(--portrait-button-height);
     padding:0 9px;
     font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
   }
@@ -100,7 +102,7 @@
   #resultView .reading-dropdown-trigger {
     width:100%;
     min-width:0;
-    height:max(34px,calc(44px * var(--ad4-button-scale, 1)));
+    height:var(--portrait-button-height);
     box-sizing:border-box;
     padding:0 8px;
     font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
@@ -111,7 +113,7 @@
     font-weight:400;
     font-size:var(--portrait-title-size);
     line-height:1.25;
-    margin:calc(9px * var(--ad4-ui-scale, 1)) 0 calc(12px * var(--ad4-ui-scale, 1));
+    margin:1.06635071dvh 0 1.42180095dvh;
   }
   #tarotApp > .intro .eyebrow,
   #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:max(9px,calc(10px * var(--ad4-ui-scale, 1)));}
@@ -119,10 +121,8 @@
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
-    /* The phone portrait layout is the reference canvas: 390 x 844,
-       reading 358.8 px. Preserve sibling proportions on wider portraits;
-       surplus aspect-ratio space remains balanced background at both sides. */
-    --portrait-reading-width:min(100%, calc(358.8px * var(--ad4-ui-scale, 1)));
+    /* As on the reference phone: 4vw background margin on BOTH sides. */
+    --portrait-reading-width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -146,7 +146,7 @@
     left:auto!important;
     right:auto!important;
     width:100%;
-    margin:max(12px,2dvh) 0 0;
+    margin:2dvh 0 0;
     padding:0;
     pointer-events:none;
   }
@@ -173,7 +173,7 @@
     flex:1 1 auto;
     min-height:0;
     overflow:hidden;
-    width:var(--portrait-reading-width);
+    width:100%;
     min-width:0;
     gap:var(--portrait-reading-gap);
     margin:0;
@@ -194,7 +194,7 @@
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    padding:calc(12px * var(--ad4-ui-scale, 1));
+    padding:max(12px,1.42180095dvh) max(12px,calc(12px * var(--ad4-ui-scale, 1)));
     overflow-x:hidden;
     overflow-y:auto;
     overscroll-behavior:contain;

@@ -134,16 +134,16 @@ export function stageSize(phase,width,config=CONFIG){
  return size;
 }
 export function responsiveDesignMetrics(){
- const {family,scale}=viewportSpace();
+ const {family,scale,height}=viewportSpace();
  if(family==='roomy' && !window.matchMedia?.('(hover:none) and (pointer:coarse)').matches){
   // Keep the established PC typography as reference.
   return {scale:1,buttonScale:1,arrowScale:1};
  }
  if(family==='portrait'){
-  // The same reference multiplier sizes portrait card, text and controls.
-  // Do not stop enlarging type/buttons while card geometry keeps growing.
-  const portraitScale=Math.max(.78,scale);
-  return {scale:portraitScale,buttonScale:portraitScale,arrowScale:clamp(scale,.78,1.8)};
+  // Preserve the reference phone's vertical typographic proportions while
+  // respecting the narrower axis on unusual aspect ratios. No tablet cap.
+  const typeScale=Math.max(.78,scale);
+  return {scale:typeScale,buttonScale:height/REF.portrait.height,arrowScale:typeScale};
  }
  return {scale:clamp(scale,.78,2),buttonScale:clamp(scale,.78,1.85),arrowScale:clamp(scale,.78,1.8)};
 }
