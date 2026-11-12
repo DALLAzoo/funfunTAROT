@@ -1,0 +1,25 @@
+{
+  "status": "trial_not_deployed",
+  "base_zip": "AD4_autospace_full_20261113.zip",
+  "goal": "Balance unused outside background gap below the result reading in tablet/PC landscape by shifting card and reading together; no element size changes.",
+  "code_changed": [
+    "css/screen/24-landscape-responsive-scale.css",
+    "js/screen/app/reading-scroll-cue.js"
+  ],
+  "previous_files_removed": [],
+  "long_short_content_chromium_cases": 14,
+  "real_modules_end_to_end": [
+    "1024x768 touch landscape: shuffle, fan, choose twice, reveal; JS errors 0",
+    "1366x768 desktop landscape: shuffle, fan, choose twice, reveal; JS errors 0"
+  ],
+  "non_target_cases": [
+    "800x360 phone landscape unchanged",
+    "360x800 phone portrait unchanged",
+    "960x1440 tablet portrait unchanged"
+  ],
+  "limitations": [
+    "Content positioning is balanced, not eliminated; tall cards/short text leave some background under reading.",
+    "Full original image and sound playback, real tablet browsers not verified; offline ESM/temporary card SVG was used in real flow tests."
+  ],
+  "visual_only": true
+}

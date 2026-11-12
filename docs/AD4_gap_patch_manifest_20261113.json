@@ -1,0 +1,36 @@
+{
+  "base": "AD4_autospace_full_20261113.zip",
+  "files": [
+    {
+      "path": "css/screen/24-landscape-responsive-scale.css",
+      "action": "replace",
+      "before_sha256": "4617f0866db44e49b4d61af09265cf7409f73e258ff0f88a3cf51d76114b2c75",
+      "after_sha256": "0c5fd3f71140c3d11c50c31e206789cbb5bda26ae2c8c967df53782d35b9b00d"
+    },
+    {
+      "path": "js/screen/app/reading-scroll-cue.js",
+      "action": "replace",
+      "before_sha256": "7acd67ebc31bf1427fd5ac19da8e6a90391f0074fbe958d6bde2d8d792cbf8ec",
+      "after_sha256": "fcadfb05b0458549ec757f1483399a35f54a3032a3d067433fe15c9f91565498"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "action": "replace",
+      "before_sha256": "cc3e1fa2033d8ebb728b8400da86bc6d0d7828e8db47b16d9fbe75f42111e756",
+      "after_sha256": "ddae04146ec63272e24e25772bb83634306b97f4769dc9754abda9768ffd037a"
+    },
+    {
+      "path": "validation/AD4_result_background_gap_20261113.json",
+      "action": "add",
+      "before_sha256": null,
+      "after_sha256": "845578fbae409bf86fbb4f17b9232ac7b1e843b242cdfc802b86d1aa1b035ea0"
+    },
+    {
+      "path": "docs/AD4_result_background_gap_20261113.md",
+      "action": "add",
+      "before_sha256": null,
+      "after_sha256": "68aa933938b34587a3e66439807d160114a67a7c5256ca90d0ad32bd7afe45af"
+    }
+  ],
+  "note": "This supplemental manifest describes only this gap-balancing trial. Existing PATCH_MANIFEST.json inside full ZIP is historical and unchanged."
+}

@@ -243,3 +243,21 @@
 @media (prefers-reduced-motion:reduce) {
   .ad2-reading-scroll-cue {transition:none;}
 }
+
+/* AD4 — balanced lower background gap on roomy landscape result.
+   The reading and card keep their size and shared top alignment. A single
+   measured offset distributes unused background space above and below them.
+   Buttons retain their approved lower anchor; portrait and compact phone
+   landscape layouts are untouched. */
+@media (orientation:landscape) {
+  :where(html.roomy-touch-landscape) #resultView.is-revealed .result-card-host,
+  :where(html.roomy-touch-landscape) #resultView.is-revealed > .result-reading-group {
+    margin-top:var(--ad4-result-row-shift,0px)!important;
+  }
+}
+@media (orientation:landscape) and (min-width:1100px) and (hover:hover) and (pointer:fine) {
+  #resultView.is-revealed .result-card-host,
+  #resultView.is-revealed .result-reading:not([hidden]) {
+    margin-top:var(--ad4-result-row-shift,0px)!important;
+  }
+}
