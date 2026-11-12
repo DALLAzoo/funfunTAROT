@@ -4,6 +4,11 @@
    Phone landscape remains explicitly unclipped in 25-landscape-adaptive-layout.css. */
 #stage {
   overflow:visible;
-  clip-path:inset(0 -100vw var(--stage-bottom-clip-inset,0px) -100vw);
+  clip-path:none;
   contain:layout;
+}
+
+/* The moving shuffle can leave the frame. Do not crop the settled, selectable fan. */
+html[data-tarot-phase='shuffling'] #stage {
+  clip-path:inset(0 -100vw var(--stage-bottom-clip-inset,0px) -100vw);
 }

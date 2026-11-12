@@ -13,8 +13,8 @@
     --portrait-reading-gap:clamp(8px, 1.1dvh, 16px);
   }
   #stage.idle-stack .tarot-card.shuffle-surface {
-    width:var(--portrait-idle-width)!important;
-    height:calc(var(--portrait-idle-width) * 1.7161290323)!important;
+    width:var(--card-w, var(--portrait-idle-width))!important;
+    height:calc(var(--card-w, var(--portrait-idle-width)) * 1.7161290323)!important;
   }
   /* The stage owns the elastic region; the controls never overlap it. */
   #tarotApp.tarot-app {

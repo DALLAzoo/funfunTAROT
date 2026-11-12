@@ -6,8 +6,8 @@ export const CONFIG = {
   pool:{mode:'trial-uniform-subset',ids:[]}, // Alternative: 'explicit-ids'. Final policy pending.
   catalog:{additionalCards:[{id:"cups-page",name:"PAGE of CUPS",symbol:"♧"},{id:"wands-page",name:"PAGE of WANDS",symbol:"♧"},{id:"swords-page",name:"PAGE of SWORDS",symbol:"♧"},{id:"pentacles-page",name:"PAGE of PENTACLES",symbol:"♧"},{id:"swords-knight",name:"KNIGHT of SWORDS",symbol:"♧"}, {id:"wands-knight",name:"KNIGHT of WANDS",symbol:"♧"}, {id:"cups-knight",name:"KNIGHT of CUPS",symbol:"♧"},{id:"pentacles-knight",name:"KNIGHT of PENTACLES",symbol:"♧"}],frontImages:{"major-00":"./assets/card-fronts/major-00.png","major-01":"./assets/card-fronts/major-01.png","major-02":"./assets/card-fronts/major-02.png","major-03":"./assets/card-fronts/major-03.png","major-04":"./assets/card-fronts/major-04.png","major-05":"./assets/card-fronts/major-05.png","major-06":"./assets/card-fronts/major-06.png","major-07":"./assets/card-fronts/major-07.png","major-08":"./assets/card-fronts/major-08.png","major-09":"./assets/card-fronts/major-09.png","major-10":"./assets/card-fronts/major-10.png","major-11":"./assets/card-fronts/major-11.png","major-12":"./assets/card-fronts/major-12.png","major-13":"./assets/card-fronts/major-13.png","major-14":"./assets/card-fronts/major-14.png","major-15":"./assets/card-fronts/major-15.png","major-16":"./assets/card-fronts/major-16.png","major-17":"./assets/card-fronts/major-17.png","major-18":"./assets/card-fronts/major-18.png","major-19":"./assets/card-fronts/major-19.png","major-20":"./assets/card-fronts/major-20.png","major-21":"./assets/card-fronts/major-21.png","cups-page":"./assets/card-fronts/cups-page.png","wands-page":"./assets/card-fronts/wands-page.png","swords-page":"./assets/card-fronts/swords-page.png","pentacles-page":"./assets/card-fronts/pentacles-page.png","swords-knight":"./assets/card-fronts/swords-knight.png","wands-knight":"./assets/card-fronts/wands-knight.png","cups-knight":"./assets/card-fronts/cups-knight.png","pentacles-knight":"./assets/card-fronts/pentacles-knight.png"},requireActualFrontImages:false},
   sizes:{
-    desktop:{shuffle:164,selection:210,transition:240,result:260},
-    mobile:{shuffle:104,selection:146,transition:160,result:190}
+    desktop:{idle:245,shuffle:164,selection:210,transition:240,result:260},
+    mobile:{idle:170,shuffle:104,selection:146,transition:160,result:190}
   },
   camera:{perspective:1000},
   shuffle:{duration:3450,separate:560,radiusX:.41,radiusY:.25,nearDepth:.30,farDepth:-.27,turns:1.1,rotationY:50,rotationX:22},
@@ -84,7 +84,7 @@ const portraitWidth=(value,min,max)=>
  Math.min(max,Math.max(min,min+(Math.min(820,Math.max(390,value))-390)*(max-min)/430));
 // A rotated phone keeps portrait sizing for all phases, including the final card.
 // Stage width is already narrow because the portrait shell stays narrow.
-export function stageSize(phase,width,config=CONFIG){
+function calculatePreferredStageSize(phase,width,config=CONFIG){
  // v60: one shared landscape scale follows available stage width AND screen height.
  // Topology remains the approved phone-left-controls-right or tablet-centered layout.
  const phoneLandscape=isCompactTouchLandscape();
@@ -115,17 +115,11 @@ export function stageSize(phase,width,config=CONFIG){
  }
  if (isTouchPortrait()) {
    const vw=window.innerWidth, vh=window.innerHeight;
+   if (phase==='idle') return Math.min(245,Math.max(170,101.98+vw*.1744));
    if (phase==='shuffle') return portraitWidth(vw,104,164);
    if (phase==='selection') return portraitWidth(vw,146,210);
    if (phase==='transition') return portraitWidth(vw,160,240);
    if (phase==='result') {
-     if (isTabletPortrait()) {
-       // Portrait tablets keep growing beyond 820px instead of hitting the
-       // old 830px height ceiling. Leave room for title, reading and buttons.
-       const preferred=Math.min(350,
-         portraitWidth(vw,190,325)+Math.max(0,vw-820)*(25/212));
-       return Math.max(120,Math.min(preferred,(vh-360)/config.aspect));
-     }
      const preferred=portraitWidth(vw,190,325);
      // Budget for the unchanged top title, a readable scroll pane and buttons.
      // Short portrait screens may go below the preferred minimum rather than clip.
@@ -134,23 +128,37 @@ export function stageSize(phase,width,config=CONFIG){
      return Math.max(120,Math.min(preferred,(anchor-reserve)/config.aspect));
    }
  }
- if (isTabletLandscape()) {
-   if (phase==='result') {
-     // Larger tablet card, bounded by the real usable height above fixed controls.
-     const titleZone=Math.min(175,Math.max(105,window.innerHeight*.19));
-     return Math.min(345,Math.max(145,
-       Math.min(width*.32,(window.innerHeight-titleZone-112)/config.aspect)));
-   }
-   if (phase==='selection') return Math.max(150,
-     Math.min(255,width*.27,window.innerHeight*.31));
-   if (phase==='shuffle') return Math.max(110,
-     Math.min(185,width*.21,window.innerHeight*.24));
- }
- if (phase==='result' && isTabletPortrait()) {
-   // Keep the existing tablet portrait layout, enlarge only its card.
-   const tabletWidth=width<900?Math.min(325,width*.42):Math.min(350,width*.35);
-   const heightCap=(window.innerHeight-365)/config.aspect;
-   return Math.min(tabletWidth,Math.max(170,heightCap));
- }
  return config.sizes[effectiveWidth<config.breakpoint?'mobile':'desktop'][phase];
+}
+
+/** One final size gateway after the existing layout-specific preference.
+ * Only constrain cards that must remain usable at rest or in the result.
+ * First-shuffle travel deliberately stays free to leave the viewport.
+ * Safe margins follow the approved 4% design token rather than a device list.
+ * Preserve all existing layout anchors and preferred sizes when they fit.
+ */
+export function stageSize(phase,width,config=CONFIG){
+ const preferred=calculatePreferredStageSize(phase,width,config);
+ if(typeof window==='undefined')return preferred;
+ const h=window.innerHeight;
+ if(phase==='selection' && !isCompactTouchLandscape()){
+  const stage=document.getElementById('stage');
+  if(stage?.clientHeight){
+   const stageHeight=stage.clientHeight;
+   const lowerInset=Math.max(0,parseFloat(stage.style.getPropertyValue('--stage-bottom-clip-inset'))||0);
+   // Rotated outer card projection at the original 23-degree fan endpoint.
+   // Drop=35px; inset keeps the rest fan above the existing action buttons.
+   const projectedHalfFactor=(Math.sin(23*Math.PI/180)+config.aspect*Math.cos(23*Math.PI/180))/2;
+   const room=stageHeight/2-lowerInset-35-stageHeight*.04;
+   if(room>0)return Math.min(preferred,Math.max(78,room/projectedHalfFactor));
+  }
+ }
+ if(phase==='result' && window.matchMedia?.('(orientation:landscape) and (hover:hover) and (pointer:fine)').matches){
+  // Before the result DOM is unhidden, a short desktop viewport still needs
+  // a height cap. Other orientations and touch layouts keep their preferences.
+  const titleAndGap=width>=1100?130:115;
+  const safeHeight=h-titleAndGap-h*.04;
+  return Math.min(preferred,Math.max(95,safeHeight/config.aspect));
+ }
+ return preferred;
 }

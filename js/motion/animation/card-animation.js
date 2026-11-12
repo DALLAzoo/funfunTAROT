@@ -54,7 +54,7 @@ function originalShufflePose(i,t,w,h,count,compact,room){
  const z=p.z+lane*envelope;
  // Non-compact portrait phones also use their requested 1.25x horizontal
  // first-shuffle orbit; other non-compact profiles keep x unchanged.
- if(!compact)return {...p,x:p.x*(room?.xScale??1),z};
+ if(!compact)return {...p,x:p.x*(room?.xScale??1),y:(p.y+12)*(room?.yScale??1)-12,z:z*(room?.zScale??1)};
  return {...p,
   x:p.x*room.xScale,
   y:(p.y+12)*room.yScale-12,

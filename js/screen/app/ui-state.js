@@ -1,6 +1,8 @@
 export function setStateUI(ctx,next,label){
  const {status,shuffleBtn,$}=ctx;
  ctx.state=next;status.textContent=label;
+ // The shuffle's intentional off-frame mask is not the resting fan's mask.
+ document.documentElement.dataset.tarotPhase=next;
  const dropdown=$('#readingDropdown').closest('.reading-dropdown');
  const destination=next==='result'?$('.result-actions'):$('.controls .actions');
  if(dropdown.parentElement!==destination) destination.appendChild(dropdown);

@@ -87,7 +87,7 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
 
   window.addEventListener('resize', () => {
     if (getState() === 'idle' && ctx.cards.length) {
-      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,(isCompactTouchLandscape()||isAdaptiveTablet())?'idle':'selection');alignIdleDeck(ctx.cards);
+      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,'idle');alignIdleDeck(ctx.cards);
     }
     if (getState() === 'selection' && !ctx.carousel?.busy) {
       ctx.carousel.layout();

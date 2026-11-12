@@ -57,7 +57,19 @@ export class Carousel {
  get visible(){return this.cards.filter((_,i)=>Math.abs(this.distance(i))<=(C.counts.visible-1)/2);}
  layout(fraction=this.offset){
   const w=this.stage.clientWidth;
-  if(w!==this.cachedWidth){cardSize(this.stage,'selection');this.cachedWidth=w;this.slotWidth=stageSize('selection',w);this.slotHeight=this.slotWidth*C.aspect;}
+  // A height-only resize, orientation change, or layout-profile change must
+  // invalidate BOTH the DOM card dimensions and their slot geometry.
+  // Keep expensive measurements outside the per-card pointer-move loop.
+  const h=this.stage.clientHeight;
+  const profile=document.documentElement.className;
+  const geometryKey=[w,h,window.innerWidth,window.innerHeight,profile].join('|');
+  if(geometryKey!==this.cachedGeometryKey){
+   this.slotWidth=stageSize('selection',w);
+   this.slotHeight=this.slotWidth*C.aspect;
+   cardSize(this.stage,'selection');
+   this.cachedWidth=w;
+   this.cachedGeometryKey=geometryKey;
+  }
   const radius=(C.counts.visible-1)/2,edge=radius+1;
   this.cards.forEach((card,i)=>{
    const off=this.distance(i)+fraction,a=Math.abs(off);

@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-12",
+  "source": "InBetweenShift_AD4_태블릿전체단계_카드비율자동조정_전체시험본_20261112.zip",
+  "status": "partial_trial",
+  "original_browser_test": "Work 29 scenarios prior to changes",
+  "modified_browser_test": "blocked by administrator",
+  "syntax_checks": [
+    {
+      "file": "js/motion/animation/card-animation.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/motion/selection/carousel.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/screen/app/reveal-flow.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/screen/app/events.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/screen/app/ui-state.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/screen/app/bootstrap.js",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "file": "js/settings/config/config.js",
+      "pass": true,
+      "error": ""
+    }
+  ],
+  "changed_files": [
+    "CHANGELOG.md",
+    "css/screen/17-landscape-and-shuffle-visibility.css",
+    "css/screen/23-portrait-responsive-scale.css",
+    "docs/AD4_trial_manifest_20261112.json",
+    "docs/AD4_요구이력_기존규칙통합_수정검증_20261112.md",
+    "js/motion/animation/card-animation.js",
+    "js/motion/selection/carousel.js",
+    "js/screen/app/bootstrap.js",
+    "js/screen/app/events.js",
+    "js/screen/app/reveal-flow.js",
+    "js/screen/app/ui-state.js",
+    "js/settings/config/config.js"
+  ],
+  "static_invariants_passed": true
+}
