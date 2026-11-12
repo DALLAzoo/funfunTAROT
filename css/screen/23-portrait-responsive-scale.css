@@ -4,8 +4,8 @@
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:clamp(20px, calc(23px * var(--ad4-ui-scale, 1)), 46px);
-    --portrait-reading-size:clamp(13px, calc(15px * var(--ad4-ui-scale, 1)), 23px);
+    --portrait-title-size:max(20px, calc(23px * var(--ad4-ui-scale, 1)));
+    --portrait-reading-size:max(13px, calc(15px * var(--ad4-ui-scale, 1)));
     --portrait-small-button:calc(100px * var(--ad4-button-scale, 1));
     --portrait-menu-button:calc(175px * var(--ad4-button-scale, 1));
     --portrait-button-gap:max(6px, calc(8px * var(--ad4-button-scale, 1)));
@@ -32,7 +32,7 @@
     grid-row:1;
     min-height:0;
     width:100%;
-    margin:clamp(12px,2dvh,25px) 0 0;
+    margin:max(12px,2dvh) 0 0;
     text-align:center;
     z-index:3;
   }
@@ -84,9 +84,9 @@
     box-sizing:border-box;
     width:var(--portrait-small-button);
     min-width:0;
-    height:clamp(34px,calc(44px * var(--ad4-button-scale, 1)),82px);
+    height:max(34px,calc(44px * var(--ad4-button-scale, 1)));
     padding:0 9px;
-    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),20px);
+    font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
   }
   #tarotApp .controls .reading-dropdown,
   #resultView .result-actions > .reading-dropdown {
@@ -100,10 +100,10 @@
   #resultView .reading-dropdown-trigger {
     width:100%;
     min-width:0;
-    height:clamp(34px,calc(44px * var(--ad4-button-scale, 1)),82px);
+    height:max(34px,calc(44px * var(--ad4-button-scale, 1)));
     box-sizing:border-box;
     padding:0 8px;
-    font-size:clamp(12px,calc(13px * var(--ad4-ui-scale, 1)),20px);
+    font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
   }
   #tarotApp > .intro h1,
   #resultView > .intro h1 {
@@ -111,16 +111,18 @@
     font-weight:400;
     font-size:var(--portrait-title-size);
     line-height:1.25;
-    margin:9px 0 12px;
+    margin:calc(9px * var(--ad4-ui-scale, 1)) 0 calc(12px * var(--ad4-ui-scale, 1));
   }
   #tarotApp > .intro .eyebrow,
-  #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:clamp(9px,calc(10px * var(--ad4-ui-scale, 1)),12px);}
+  #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:max(9px,calc(10px * var(--ad4-ui-scale, 1)));}
 
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
-    /* The whole portrait reading group owns the available inner width. */
-    --portrait-reading-width:100%;
+    /* The phone portrait layout is the reference canvas: 390 x 844,
+       reading 358.8 px. Preserve sibling proportions on wider portraits;
+       surplus aspect-ratio space remains balanced background at both sides. */
+    --portrait-reading-width:min(100%, calc(358.8px * var(--ad4-ui-scale, 1)));
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -144,7 +146,7 @@
     left:auto!important;
     right:auto!important;
     width:100%;
-    margin:clamp(12px,2dvh,25px) 0 0;
+    margin:max(12px,2dvh) 0 0;
     padding:0;
     pointer-events:none;
   }
@@ -171,7 +173,7 @@
     flex:1 1 auto;
     min-height:0;
     overflow:hidden;
-    width:100%;
+    width:var(--portrait-reading-width);
     min-width:0;
     gap:var(--portrait-reading-gap);
     margin:0;
@@ -192,7 +194,7 @@
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    padding:clamp(12px,1.4vw,18px);
+    padding:calc(12px * var(--ad4-ui-scale, 1));
     overflow-x:hidden;
     overflow-y:auto;
     overscroll-behavior:contain;

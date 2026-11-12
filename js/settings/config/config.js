@@ -139,6 +139,12 @@ export function responsiveDesignMetrics(){
   // Keep the established PC typography as reference.
   return {scale:1,buttonScale:1,arrowScale:1};
  }
+ if(family==='portrait'){
+  // The same reference multiplier sizes portrait card, text and controls.
+  // Do not stop enlarging type/buttons while card geometry keeps growing.
+  const portraitScale=Math.max(.78,scale);
+  return {scale:portraitScale,buttonScale:portraitScale,arrowScale:clamp(scale,.78,1.8)};
+ }
  return {scale:clamp(scale,.78,2),buttonScale:clamp(scale,.78,1.85),arrowScale:clamp(scale,.78,1.8)};
 }
 export function updateResponsiveDesignMetrics(){
