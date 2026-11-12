@@ -192,7 +192,11 @@
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    padding:clamp(12px,1.4vw,18px);
+    /* AD4: One proportional inline inset on every portrait width.
+       The symmetric gutter balances the right-side scroll track. */
+    padding-block:clamp(12px,1.4vw,18px);
+    padding-inline:clamp(14px,var(--portrait-reading-size),20px);
+    scrollbar-gutter:stable both-edges;
     overflow-x:hidden;
     overflow-y:auto;
     overscroll-behavior:contain;
@@ -227,7 +231,9 @@
 @container tarot-result (max-width:460px) {
   #resultView .result-reading,
   #resultView.is-revealed .result-reading:not([hidden]) {
-    padding:11px 13px;
+    /* Compact portrait keeps its vertical inset, but uses the shared
+       left/right inset and scroll gutter defined above. */
+    padding-block:11px;
     font-size:clamp(13px,calc(14px * var(--ad4-ui-scale,1)),17px);
     line-height:1.65;
   }
