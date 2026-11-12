@@ -1,16 +1,16 @@
-/* Portrait layout owner. Phone reference: 390 x 844. Width fractions own
-   horizontal space (reading 92%, controls ~72.6%); height fractions own
-   vertical space (card, controls and margins). Type uses available room in
-   both directions. No tablet-model overrides; landscape remains separate. */
+/* Portrait layout owner: 390 x 844 reference viewport. Horizontal lengths,
+   positions, and outer background margins follow W/390; vertical lengths,
+   positions and typography follow H/844. Card art and glyph shapes keep their
+   native aspect. Do not introduce tablet-specific values or CSS override files. */
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
-    --portrait-title-size:max(20px,calc(23px * var(--ad4-ui-scale, 1)));
-    --portrait-reading-size:max(13px,calc(15px * var(--ad4-ui-scale, 1)));
-    --portrait-small-button:25.64102564vw;
-    --portrait-menu-button:44.87179487vw;
-    --portrait-button-gap:2.05128205vw;
-    --portrait-button-height:max(34px,5.21327014dvh);
+    --portrait-title-size:max(20px, calc(23px * var(--ad4-portrait-y, 1)));
+    --portrait-reading-size:max(13px, calc(15px * var(--ad4-portrait-y, 1)));
+    --portrait-small-button:calc(100px * var(--ad4-portrait-x, 1));
+    --portrait-menu-button:calc(175px * var(--ad4-portrait-x, 1));
+    --portrait-button-gap:calc(8px * var(--ad4-portrait-x, 1));
+    --portrait-button-height:max(34px, calc(44px * var(--ad4-portrait-y, 1)));
     --portrait-bottom-pad:4dvh;
     --portrait-reading-gap:1.1dvh;
   }
@@ -56,7 +56,7 @@
     align-items:center;
     justify-content:center;
     width:100%;
-    min-height:44px;
+    min-height:var(--portrait-button-height);
     margin:0;
     padding:0;
     z-index:15;
@@ -87,8 +87,8 @@
     width:var(--portrait-small-button);
     min-width:0;
     height:var(--portrait-button-height);
-    padding:0 9px;
-    font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
+    padding:0 calc(9px * var(--ad4-portrait-x, 1));
+    font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
   }
   #tarotApp .controls .reading-dropdown,
   #resultView .result-actions > .reading-dropdown {
@@ -104,8 +104,8 @@
     min-width:0;
     height:var(--portrait-button-height);
     box-sizing:border-box;
-    padding:0 8px;
-    font-size:max(12px,calc(13px * var(--ad4-ui-scale, 1)));
+    padding:0 calc(8px * var(--ad4-portrait-x, 1));
+    font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
   }
   #tarotApp > .intro h1,
   #resultView > .intro h1 {
@@ -113,15 +113,15 @@
     font-weight:400;
     font-size:var(--portrait-title-size);
     line-height:1.25;
-    margin:1.06635071dvh 0 1.42180095dvh;
+    margin:calc(9px * var(--ad4-portrait-y, 1)) 0 calc(12px * var(--ad4-portrait-y, 1));
   }
   #tarotApp > .intro .eyebrow,
-  #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:max(9px,calc(10px * var(--ad4-ui-scale, 1)));}
+  #resultView > .intro .eyebrow, #tarotApp > .intro .eyebrow {font-size:max(9px, calc(10px * var(--ad4-portrait-y, 1)));}
 
   /* The result view mirrors the selection view: title/card/reading/actions.
      Grid tracks, not viewport coordinates, decide all gaps and scrolling. */
   #resultView.result-view {
-    /* As on the reference phone: 4vw background margin on BOTH sides. */
+    /* The whole portrait reading group owns the available inner width. */
     --portrait-reading-width:100%;
     display:flex;
     flex-direction:column;
@@ -194,7 +194,8 @@
     min-height:0!important;
     max-height:none!important;
     margin:0!important;
-    padding:max(12px,1.42180095dvh) max(12px,calc(12px * var(--ad4-ui-scale, 1)));
+    padding:calc(12px * var(--ad4-portrait-y, 1)) calc(12px * var(--ad4-portrait-x, 1));
+    border-radius:calc(15px * var(--ad4-portrait-y, 1));
     overflow-x:hidden;
     overflow-y:auto;
     overscroll-behavior:contain;
@@ -207,6 +208,10 @@
     align-self:center;
     margin:0!important;
     margin-top:auto!important;
+  }
+  /* Paragraph spacing also follows the portrait's vertical reference. */
+  #resultView .result-reading > .ad2-reading-paragraph + .ad2-reading-paragraph {
+    margin-block-start:calc(7px * var(--ad4-portrait-y, 1));
   }
   #resultView #resultNotice:not([hidden]) {
     flex:0 0 auto;

@@ -134,16 +134,18 @@ export function stageSize(phase,width,config=CONFIG){
  return size;
 }
 export function responsiveDesignMetrics(){
- const {family,scale,height}=viewportSpace();
+ const {family,scale,width,height}=viewportSpace();
+ if(family==='portrait'){
+  // One smartphone design, two actual viewport axes. X controls horizontal
+  // widths/margins; Y controls heights/spacing and undistorted text sizes.
+  // No tablet cutoffs or independent button/font caps.
+  const x=width/REF.portrait.width;
+  const y=height/REF.portrait.height;
+  return {scale:y,buttonScale:y,arrowScale:y,portraitX:x,portraitY:y};
+ }
  if(family==='roomy' && !window.matchMedia?.('(hover:none) and (pointer:coarse)').matches){
   // Keep the established PC typography as reference.
   return {scale:1,buttonScale:1,arrowScale:1};
- }
- if(family==='portrait'){
-  // Preserve the reference phone's vertical typographic proportions while
-  // respecting the narrower axis on unusual aspect ratios. No tablet cap.
-  const typeScale=Math.max(.78,scale);
-  return {scale:typeScale,buttonScale:height/REF.portrait.height,arrowScale:typeScale};
  }
  return {scale:clamp(scale,.78,2),buttonScale:clamp(scale,.78,1.85),arrowScale:clamp(scale,.78,1.8)};
 }
@@ -151,7 +153,14 @@ export function updateResponsiveDesignMetrics(){
  if(typeof document==='undefined')return;
  const metrics=responsiveDesignMetrics();
  const root=document.documentElement.style;
- root.setProperty('--ad4-ui-scale',metrics.scale.toFixed(4));
- root.setProperty('--ad4-button-scale',metrics.buttonScale.toFixed(4));
- root.setProperty('--ad4-arrow-scale',metrics.arrowScale.toFixed(4));
+ root.setProperty('--ad4-ui-scale',metrics.scale.toFixed(6));
+ root.setProperty('--ad4-button-scale',metrics.buttonScale.toFixed(6));
+ root.setProperty('--ad4-arrow-scale',metrics.arrowScale.toFixed(6));
+ if(metrics.portraitX!==undefined){
+  root.setProperty('--ad4-portrait-x',metrics.portraitX.toFixed(6));
+  root.setProperty('--ad4-portrait-y',metrics.portraitY.toFixed(6));
+ }else{
+  root.removeProperty('--ad4-portrait-x');
+  root.removeProperty('--ad4-portrait-y');
+ }
 }
