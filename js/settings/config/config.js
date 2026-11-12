@@ -66,7 +66,19 @@ function adaptiveTabletSize(phase,width,config){
  // and fixed action bar above/below the two-column result in landscape.
  if(isTabletPortrait()){
   const reserved=Math.max(310,Math.min(470,vh*.35));
-  return Math.min(preferred,Math.max(165,(vh-reserved)/config.aspect));
+  const heightFit=Math.max(165,(vh-reserved)/config.aspect);
+  // Small portrait tablets have substantially less vertical room than the
+  // width-based tablet preference suggests. Preserve the existing title,
+  // reading pane and action bar; distribute space to the card LAST.
+  // This pressure smoothly disappears on the established larger tablet sizes.
+  // Phones, landscape devices and large portrait tablets are unaffected.
+  const narrowPressure=Math.max(0,Math.min(1,(820-vw)/76));
+  const shortPressure=Math.max(0,Math.min(1,(1240-vh)/90));
+  const compactPressure=narrowPressure*shortPressure;
+  const balancedHeightLimit=compactPressure>0
+   ? vh*(.55-.12*compactPressure)/config.aspect
+   : Infinity;
+  return Math.min(preferred,heightFit,balancedHeightLimit);
  }
  const titleZone=Math.min(175,Math.max(105,vh*.19));
  const heightFit=Math.max(165,(vh-titleZone-108)/config.aspect);
