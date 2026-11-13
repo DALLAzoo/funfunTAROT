@@ -97,6 +97,14 @@
     box-sizing:border-box;
     width:var(--portrait-menu-button);
     min-width:0;
+    /* 390x844 portrait reference. X scales widths; Y scales text/height. */
+    --ad5-menu-font:max(11px, calc(11.5px * var(--ad4-portrait-y, 1)));
+    --ad5-menu-option-pad-y:calc(7px * var(--ad4-portrait-y, 1));
+    --ad5-menu-option-pad-x:calc(7px * var(--ad4-portrait-x, 1));
+    --ad5-menu-panel-pad-y:calc(3px * var(--ad4-portrait-y, 1));
+    --ad5-menu-panel-pad-x:calc(4px * var(--ad4-portrait-x, 1));
+    --ad5-menu-gap:calc(2px * var(--ad4-portrait-y, 1));
+    --ad5-menu-offset:calc(6px * var(--ad4-portrait-y, 1));
   }
   #tarotApp .reading-dropdown-trigger,
   #resultView .reading-dropdown-trigger {
@@ -106,22 +114,6 @@
     box-sizing:border-box;
     padding:0 calc(8px * var(--ad4-portrait-x, 1));
     font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
-  }
-  /* AD5: keep the opened reading menu at the approved 390x844
-     smartphone proportions, using the same X/Y axes as its trigger. */
-  #tarotApp .reading-dropdown-menu,
-  #resultView .reading-dropdown-menu {
-    bottom:calc(100% + 8px * var(--ad4-portrait-y, 1));
-    padding:calc(6px * var(--ad4-portrait-y, 1)) calc(6px * var(--ad4-portrait-x, 1));
-  }
-  #tarotApp .reading-dropdown-menu .reading-option,
-  #resultView .reading-dropdown-menu .reading-option {
-    padding:calc(12px * var(--ad4-portrait-y, 1)) calc(9px * var(--ad4-portrait-x, 1));
-    font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
-  }
-  #tarotApp .reading-dropdown-menu .reading-option + .reading-option,
-  #resultView .reading-dropdown-menu .reading-option + .reading-option {
-    margin-top:calc(3px * var(--ad4-portrait-y, 1));
   }
   #tarotApp > .intro h1,
   #resultView > .intro h1 {

@@ -28,11 +28,16 @@
     font-size:var(--land-reading-type);
     line-height:1.65;
   }
-  #tarotApp .reading-dropdown-menu,
-  #resultView .reading-dropdown-menu {
-    max-height:calc(3 * 44px + 2px);
-    overflow-y:auto;
-    overscroll-behavior:contain;
+  /* Touch landscape menu follows the SAME AD4 screen scale as its trigger. */
+  #tarotApp .reading-dropdown,
+  #resultView .reading-dropdown {
+    --ad5-menu-font:clamp(10px, calc(11.5px * var(--ad4-ui-scale, 1)), 17px);
+    --ad5-menu-option-pad-y:clamp(5px, calc(var(--land-button-h) * .15), 9px);
+    --ad5-menu-option-pad-x:clamp(6px, calc(7px * var(--ad4-ui-scale, 1)), 11px);
+    --ad5-menu-panel-pad-y:clamp(2px, calc(var(--land-button-h) * .075), 5px);
+    --ad5-menu-panel-pad-x:clamp(3px, calc(4px * var(--ad4-ui-scale, 1)), 7px);
+    --ad5-menu-gap:clamp(1px, calc(2px * var(--ad4-ui-scale, 1)), 3px);
+    --ad5-menu-offset:clamp(4px, calc(var(--land-button-h) * .14), 8px);
   }
 }
 

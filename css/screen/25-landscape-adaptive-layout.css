@@ -93,17 +93,16 @@
   html.phone-landscape #resultView .result-actions > .reading-dropdown {
     box-sizing:border-box;flex:0 1 var(--ad2-land-menu-width)!important;
     min-width:0!important;width:var(--ad2-land-menu-width)!important;max-width:100%;
+    /* Compact-phone button height overrides the shared touch-landscape value. */
+    --ad5-menu-option-pad-y:clamp(5px, calc(var(--ad2-land-button-height) * .15), 8px);
+    --ad5-menu-panel-pad-y:clamp(2px, calc(var(--ad2-land-button-height) * .075), 5px);
+    --ad5-menu-offset:clamp(4px, calc(var(--ad2-land-button-height) * .14), 8px);
   }
   html.phone-landscape #tarotApp .reading-dropdown-trigger,
   html.phone-landscape #resultView .reading-dropdown-trigger {
     width:100%;min-width:0!important;height:var(--ad2-land-button-height)!important;
     padding:0 clamp(4px,.8vw,8px)!important;
     font-size:clamp(11px,calc(12px * var(--ad4-ui-scale,1)),15px)!important;white-space:nowrap;
-  }
-  html.phone-landscape #tarotApp .reading-dropdown-menu,
-  html.phone-landscape #resultView .reading-dropdown-menu {
-    top:auto;bottom:calc(100% + 6px);
-    max-height:calc(3 * 44px + 2px);overflow-y:auto;overscroll-behavior:contain;
   }
   /* Final reveal alone moves the selected card to the existing LEFT column. */
   html.phone-landscape #resultView.result-view {

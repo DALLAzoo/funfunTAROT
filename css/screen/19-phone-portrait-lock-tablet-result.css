@@ -50,11 +50,6 @@
     height:44px;
   }
   :where(html.roomy-touch-landscape) #resultView .result-actions > .reading-dropdown {min-width:190px;}
-  :where(html.roomy-touch-landscape) #resultView .reading-dropdown-menu {
-    top:auto;
-    bottom:calc(100% + 6px);
-    max-height:calc(3 * 44px + 2px);
-    overflow-y:auto;
-    overscroll-behavior:contain;
-  }
+  /* Menu dimensions are owned by 01-foundation-and-cards.css and its
+     AD4 responsive tokens; keep only the fixed action-bar geometry here. */
 }

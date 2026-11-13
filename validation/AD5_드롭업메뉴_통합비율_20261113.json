@@ -1,0 +1,431 @@
+{
+  "date": "2026-11-13",
+  "base_zip": "InBetweenShift_AD5_card_corner_integrated_fix_20261113.zip",
+  "parent_zip": "InBetweenShift_AD5_dropdown_integrated_ratio_fix_20261113.zip",
+  "changed_css_vs_parent": [
+    "css/screen/01-foundation-and-cards.css",
+    "css/screen/19-phone-portrait-lock-tablet-result.css"
+  ],
+  "change_scope": "All device families including desktop: dropdown menu only, no new override CSS file",
+  "chromium_inline_css_viewports": 17,
+  "computed_style_tests_passed": 17,
+  "tests": [
+    "panel width=88% of trigger",
+    "menu/option border 0px",
+    "options smaller than main button",
+    "5-option overflow scroll inside menu",
+    "max-height honored"
+  ],
+  "full_site_integration_tested": false,
+  "real_device_gpu_tested": false,
+  "details": [
+    {
+      "name": "Phone portrait",
+      "viewport": [
+        390,
+        844
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 98.575,
+        "menuVisible": 99,
+        "menuScroll": 162,
+        "font": "11.5px",
+        "mainFont": "13px",
+        "mainHeight": 44,
+        "optionHeight": 29.52,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Small phone portrait",
+      "viewport": [
+        360,
+        740
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 90.1424,
+        "menuVisible": 90,
+        "menuScroll": 148,
+        "font": "11px",
+        "mainFont": "12px",
+        "mainHeight": 38.58,
+        "optionHeight": 27.09,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Fold portrait",
+      "viewport": [
+        600,
+        900
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 105.116,
+        "menuVisible": 105,
+        "menuScroll": 172,
+        "font": "12.263px",
+        "mainFont": "13.8626px",
+        "mainHeight": 46.91,
+        "optionHeight": 31.45,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Mini portrait",
+      "viewport": [
+        768,
+        1024
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 119.598,
+        "menuVisible": 120,
+        "menuScroll": 196,
+        "font": "13.9526px",
+        "mainFont": "15.7725px",
+        "mainHeight": 53.38,
+        "optionHeight": 35.8,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "iPad Pro portrait",
+      "viewport": [
+        1032,
+        1376
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 160.71,
+        "menuVisible": 161,
+        "menuScroll": 263,
+        "font": "18.7488px",
+        "mainFont": "21.1943px",
+        "mainHeight": 71.73,
+        "optionHeight": 48.13,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Phone short landscape",
+      "viewport": [
+        667,
+        375
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 78.4611,
+        "menuVisible": 78,
+        "menuScroll": 129,
+        "font": "10px",
+        "mainFont": "11px",
+        "mainHeight": 32,
+        "optionHeight": 23.5,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Phone landscape",
+      "viewport": [
+        800,
+        360
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 81.4846,
+        "menuVisible": 81,
+        "menuScroll": 134,
+        "font": "10.6154px",
+        "mainFont": "11.0769px",
+        "mainHeight": 32,
+        "optionHeight": 24.31,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Phone wide landscape",
+      "viewport": [
+        932,
+        430
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 100.565,
+        "menuVisible": 101,
+        "menuScroll": 165,
+        "font": "12.6795px",
+        "mainFont": "13.2308px",
+        "mainHeight": 42.66,
+        "optionHeight": 29.88,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Fold landscape",
+      "viewport": [
+        960,
+        600
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 107.687,
+        "menuVisible": 108,
+        "menuScroll": 176,
+        "font": "13.0806px",
+        "mainFont": "13.6493px",
+        "mainHeight": 47.77,
+        "optionHeight": 31.95,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "iPad landscape",
+      "viewport": [
+        1024,
+        768
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 82.1982,
+        "menuVisible": 82,
+        "menuScroll": 134,
+        "font": "10px",
+        "mainFont": "12px",
+        "mainHeight": 36.73,
+        "optionHeight": 24.5,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Tablet landscape",
+      "viewport": [
+        1180,
+        820
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 87.4927,
+        "menuVisible": 87,
+        "menuScroll": 143,
+        "font": "10px",
+        "mainFont": "12.0937px",
+        "mainHeight": 41.45,
+        "optionHeight": 25.94,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Large tablet landscape",
+      "viewport": [
+        1366,
+        1024
+      ],
+      "touch": true,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 100.975,
+        "menuVisible": 101,
+        "menuScroll": 165,
+        "font": "11.5px",
+        "mainFont": "14px",
+        "mainHeight": 48,
+        "optionHeight": 29.89,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "Laptop",
+      "viewport": [
+        1280,
+        800
+      ],
+      "touch": false,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 95.776,
+        "menuVisible": 96,
+        "menuScroll": 157,
+        "font": "11.52px",
+        "mainFont": "14px",
+        "mainHeight": 44,
+        "optionHeight": 29.13,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "PC",
+      "viewport": [
+        1440,
+        900
+      ],
+      "touch": false,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 107.748,
+        "menuVisible": 108,
+        "menuScroll": 177,
+        "font": "12.96px",
+        "mainFont": "14px",
+        "mainHeight": 44,
+        "optionHeight": 32.77,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "PC FHD",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "touch": false,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 111.882,
+        "menuVisible": 112,
+        "menuScroll": 183,
+        "font": "13px",
+        "mainFont": "14px",
+        "mainHeight": 44,
+        "optionHeight": 33.55,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "PC QHD",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "touch": false,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 114.41,
+        "menuVisible": 114,
+        "menuScroll": 187,
+        "font": "13px",
+        "mainFont": "14px",
+        "mainHeight": 44,
+        "optionHeight": 33.55,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    },
+    {
+      "name": "PC portrait",
+      "viewport": [
+        1080,
+        1920
+      ],
+      "touch": false,
+      "metrics": {
+        "ratio": 0.88,
+        "border": "0px",
+        "menuMax": 224.246,
+        "menuVisible": 224,
+        "menuScroll": 368,
+        "font": "26.1611px",
+        "mainFont": "29.5735px",
+        "mainHeight": 100.09,
+        "optionHeight": 67.14,
+        "selectedBorder": "0px",
+        "selectedBox": "none",
+        "selectedBg": "rgb(55, 41, 31)",
+        "menuOverflows": true
+      },
+      "errors": []
+    }
+  ]
+}

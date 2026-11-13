@@ -472,28 +472,55 @@ body{overflow-x:hidden}
   }
 }
 
-/* AD1 v31 — Upward reading-selection panel.
-   Width is locked to its own trigger, NEVER over the adjacent Shuffle button.
-   The list scrolls inside itself if more reading types are added. */
+/* AD5 — Compact upward menu integrated with the existing screen axes.
+   The main dropdown trigger keeps its approved dimensions and position.
+   Only the OPEN menu derives font/spacing from shared variables; the
+   portrait and touch-landscape layout owners set those variables below. */
 #tarotApp .reading-dropdown,
 #resultView .reading-dropdown {
   position:relative;
   isolation:isolate;
+  --ad5-menu-font:11.5px;
+  --ad5-menu-option-pad-y:7px;
+  --ad5-menu-option-pad-x:7px;
+  --ad5-menu-panel-pad-y:3px;
+  --ad5-menu-panel-pad-x:4px;
+  --ad5-menu-gap:2px;
+  --ad5-menu-offset:6px;
+}
+/* AD5 all-device menu geometry: on desktop, match viewport space while
+   remaining visibly smaller than the unchanged 44px main dropdown trigger.
+   Portrait and touch-landscape keep the existing AD4 axis-based formulas. */
+@media (orientation:landscape) and (hover:hover) and (pointer:fine) {
+  #tarotApp .reading-dropdown,
+  #resultView .reading-dropdown {
+    --ad5-menu-font:clamp(11px, min(.9vw, 1.6dvh), 13px);
+    --ad5-menu-option-pad-y:clamp(5px, min(.55vw, .85dvh), 8px);
+    --ad5-menu-option-pad-x:clamp(6px, .48vw, 9px);
+    --ad5-menu-panel-pad-y:clamp(2px, .32dvh, 4px);
+    --ad5-menu-panel-pad-x:clamp(3px, .32vw, 6px);
+    --ad5-menu-gap:clamp(1px, .20dvh, 3px);
+    --ad5-menu-offset:clamp(4px, .65dvh, 8px);
+  }
 }
 #tarotApp .reading-dropdown-menu,
 #resultView .reading-dropdown-menu {
   position:absolute;
   top:auto;
-  bottom:calc(100% + 8px);
-  left:0;
+  bottom:calc(100% + var(--ad5-menu-offset));
+  left:auto;
   right:0;
-  width:100%;
-  max-width:100%;
+  width:88%;
+  max-width:88%;
   min-width:0;
   box-sizing:border-box;
   z-index:70;
-  max-height:min(320px, calc(100dvh - 130px));
-  padding:6px;
+  /* Up to three items remain visible; additional items scroll internally. */
+  max-height:min(
+    calc(3 * (1.35em + 2 * var(--ad5-menu-option-pad-y)) + 2 * var(--ad5-menu-gap) + 2 * var(--ad5-menu-panel-pad-y)),
+    calc(100dvh - 8dvh)
+  );
+  padding:var(--ad5-menu-panel-pad-y) var(--ad5-menu-panel-pad-x);
   overflow-x:hidden;
   overflow-y:auto;
   overscroll-behavior:contain;
@@ -502,9 +529,10 @@ body{overflow-x:hidden}
   scrollbar-color:#886842 #241913;
   background:linear-gradient(180deg,#2B201A 0%,#211811 100%);
   color:#D9B77B;
-  border:1px solid #8A6B44;
-  border-radius:10px;
-  box-shadow:0 8px 26px rgba(0,0,0,.58),0 0 12px rgba(185,140,75,.13);
+  font-size:var(--ad5-menu-font);
+  border:0;
+  border-radius:8px;
+  box-shadow:0 7px 20px rgba(0,0,0,.46);
 }
 #tarotApp .reading-dropdown-menu:not([hidden]),
 #resultView .reading-dropdown-menu:not([hidden]) {
@@ -520,27 +548,27 @@ body{overflow-x:hidden}
   width:100%;
   min-width:0;
   margin:0;
-  padding:12px 9px;
+  padding:var(--ad5-menu-option-pad-y) var(--ad5-menu-option-pad-x);
   border:0;
-  border-radius:7px;
+  border-radius:6px;
   box-sizing:border-box;
   background:transparent;
   color:#D9B77B;
-  font-size:13px;
-  line-height:1.4;
+  font-size:inherit;
+  line-height:1.35;
   overflow-wrap:break-word;
   text-align:center;
   -webkit-tap-highlight-color:transparent;
 }
 #tarotApp .reading-dropdown-menu .reading-option + .reading-option,
 #resultView .reading-dropdown-menu .reading-option + .reading-option {
-  margin-top:3px;
+  margin-top:var(--ad5-menu-gap);
 }
 #tarotApp .reading-dropdown-menu .reading-option[aria-selected="true"],
 #resultView .reading-dropdown-menu .reading-option[aria-selected="true"] {
   background:#37291F;
   color:#EED2A0;
-  box-shadow:inset 0 0 0 1px rgba(182,140,79,.38);
+  box-shadow:none;
 }
 #tarotApp .reading-dropdown-menu .reading-option:hover,
 #resultView .reading-dropdown-menu .reading-option:hover,
@@ -548,19 +576,12 @@ body{overflow-x:hidden}
 #resultView .reading-dropdown-menu .reading-option:focus-visible {
   background:#463327;
   color:#FFE4B0;
-  outline:1px solid rgba(220,176,104,.66);
-  outline-offset:-1px;
+  outline:0;
 }
 #tarotApp .reading-dropdown-menu .reading-option:active,
 #resultView .reading-dropdown-menu .reading-option:active {
   background:#60452F;
   color:#FFF0CE;
-}
-@media (max-width:640px) {
-  #tarotApp .reading-dropdown-menu,
-  #resultView .reading-dropdown-menu {
-    max-height:min(285px, calc(100dvh - 112px));
-  }
 }
 
 /* AD1 v33 — Gold reflections must not create horizontal/vertical page overflow.
