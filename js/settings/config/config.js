@@ -81,16 +81,6 @@ function compactCardSize(phase,space,config){
  const preferred=REF.compact.sizes[phase]*space.scale;
  const result=phase==='result'||phase==='transition';
  const columnWidth=space.inline*.5;
- // AD5 phone-landscape result only: make the revealed card use the available
- // 4%-inset height, ending on the unchanged fixed action bar's bottom line.
- // Tablets, foldable inner displays, portrait, PC and earlier phases retain
- // the original card sizing gateway.
- if(phase==='result' && space.width<=1000 && space.height<=500 &&
-    space.width/space.height>=1.5){
-  const gap=clamp(space.width*.017,8,18);
-  const leftColumn=(space.inline-gap)*.425;
-  return Math.max(64,Math.min(space.block/config.aspect,leftColumn*.88));
- }
  if(result)return Math.min(preferred,columnWidth*.80,Math.max(64,(space.block-95*space.scale)/config.aspect));
  if(phase==='selection'){
   const theta=23*Math.PI/180;
