@@ -93,8 +93,18 @@ function compactCardSize(phase,space,config){
 function roomyCardSize(phase,space,config){
  const desktop=!(window.matchMedia?.('(hover:none) and (pointer:coarse)').matches);
  if(desktop){
-  // Preserve the desktop's original phase sizing and geometry.
-  return config.sizes.desktop[phase];
+  // Keep the established PC sizes whenever its real flex stage has room.
+  const preferred=phase==='idle' && window.matchMedia('(max-width:640px)').matches
+    ? config.sizes.mobile.idle : config.sizes.desktop[phase];
+  const stageHeight=document.getElementById('stage')?.clientHeight;
+  if(stageHeight && phase==='idle')return Math.min(preferred,Math.max(40,(stageHeight-30)/config.aspect));
+  if(stageHeight && phase==='selection'){
+   const theta=23*Math.PI/180;
+   const projection=(Math.sin(theta)+config.aspect*Math.cos(theta))/2;
+   // The original PC fan has 35px outer drop and 22px picked-card lift.
+   return Math.min(preferred,Math.max(40,(stageHeight/2-35-8)/projection));
+  }
+  return preferred;
  }
  const preferred=REF.roomy.sizes[phase]*space.scale;
  const columnWidth=(space.inline-clamp(space.width*.02,8,30))/2;
@@ -137,11 +147,13 @@ export function responsiveDesignMetrics(){
  const {family,scale,width,height}=viewportSpace();
  if(family==='portrait'){
   // One smartphone design, two actual viewport axes. X controls horizontal
-  // widths/margins; Y controls heights/spacing and undistorted text sizes.
+  // outer margins; controls share the card fit. Y controls heights/spacing and text.
   // No tablet cutoffs or independent button/font caps.
   const x=width/REF.portrait.width;
   const y=height/REF.portrait.height;
-  return {scale:y,buttonScale:y,arrowScale:y,portraitX:x,portraitY:y};
+  // Width-only growth must not outpace the card's two-axis fit. Keep the
+  // approved vertical typography and outer reading margins independent.
+  return {scale:y,buttonScale:y,arrowScale:y,portraitX:x,portraitY:y,portraitControlX:scale};
  }
  if(family==='roomy' && !window.matchMedia?.('(hover:none) and (pointer:coarse)').matches){
   // Keep the established PC typography as reference.
@@ -159,8 +171,10 @@ export function updateResponsiveDesignMetrics(){
  if(metrics.portraitX!==undefined){
   root.setProperty('--ad4-portrait-x',metrics.portraitX.toFixed(6));
   root.setProperty('--ad4-portrait-y',metrics.portraitY.toFixed(6));
+  root.setProperty('--ad4-portrait-control-x',metrics.portraitControlX.toFixed(6));
  }else{
   root.removeProperty('--ad4-portrait-x');
   root.removeProperty('--ad4-portrait-y');
+  root.removeProperty('--ad4-portrait-control-x');
  }
 }

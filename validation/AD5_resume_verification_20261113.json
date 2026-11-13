@@ -1,0 +1,689 @@
+{
+  "continued_from_sha256": "8f310dbcbb22aa386bdb548f7a755e07b88058ecbe884b56d3bdc95ae16dba24",
+  "verified_at": "2026.11.13 23:37 KST",
+  "implementation_restarted": false,
+  "new_code_changes": false,
+  "browser_zoom": "native Chromium 200%, restored to 100%",
+  "finalRestored": {
+    "width": 1363,
+    "height": 936,
+    "phase": "result",
+    "cardWidth": 260
+  },
+  "checks": [
+    {
+      "label": "100%-idle",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 525.5,
+        "y": 835.4375
+      },
+      "bodyWidth": 1363,
+      "card": null,
+      "height": 936,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "idle",
+      "reading": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "stage": {
+        "clientHeight": 650,
+        "clientWidth": 1040,
+        "h": 650,
+        "scrollHeight": 650,
+        "scrollWidth": 1040,
+        "w": 1040,
+        "x": 161.5,
+        "y": 177.4375
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 647.5,
+        "y": 835.4375
+      },
+      "width": 1363
+    },
+    {
+      "label": "one-zoom-step",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 525.5,
+        "y": 835.4375
+      },
+      "bodyWidth": 1363,
+      "card": null,
+      "height": 936,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "idle",
+      "reading": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "stage": {
+        "clientHeight": 650,
+        "clientWidth": 1040,
+        "h": 650,
+        "scrollHeight": 650,
+        "scrollWidth": 1040,
+        "w": 1040,
+        "x": 161.5,
+        "y": 177.4375
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 647.5,
+        "y": 835.4375
+      },
+      "width": 1363
+    },
+    {
+      "label": "native-zoom-step",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 43.99147415161133,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 311.9886169433594,
+        "x": 463.5511169433594,
+        "y": 754.928955078125
+      },
+      "bodyWidth": 1239,
+      "card": null,
+      "height": 851,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "idle",
+      "reading": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "stage": {
+        "clientHeight": 572,
+        "clientWidth": 1040,
+        "h": 572.4715576171875,
+        "scrollHeight": 572,
+        "scrollWidth": 1040,
+        "w": 1040,
+        "x": 99.54544830322266,
+        "y": 174.46022033691406
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 43.99147415161133,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 585.5397338867188,
+        "y": 754.928955078125
+      },
+      "width": 1239
+    },
+    {
+      "label": "200%-idle",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 184.75,
+        "y": 381.5625
+      },
+      "bodyWidth": 682,
+      "card": null,
+      "height": 468,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "idle",
+      "reading": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "stage": {
+        "clientHeight": 240,
+        "clientWidth": 641,
+        "h": 239.90625,
+        "scrollHeight": 240,
+        "scrollWidth": 641,
+        "w": 640.625,
+        "x": 20.4375,
+        "y": 133.65625
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 306.75,
+        "y": 381.5625
+      },
+      "width": 681
+    },
+    {
+      "label": "200%-menu",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 184.75,
+        "y": 381.5625
+      },
+      "bodyWidth": 682,
+      "card": null,
+      "height": 468,
+      "menu": {
+        "clientHeight": 29,
+        "clientWidth": 190,
+        "h": 28.84375,
+        "scrollHeight": 29,
+        "scrollWidth": 190,
+        "w": 190,
+        "x": 306.75,
+        "y": 353.71875
+      },
+      "option": {
+        "clientHeight": 25,
+        "clientWidth": 190,
+        "h": 24.84375,
+        "scrollHeight": 25,
+        "scrollWidth": 190,
+        "w": 190,
+        "x": 306.75,
+        "y": 355.71875
+      },
+      "phase": "selection",
+      "reading": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "stage": {
+        "clientHeight": 240,
+        "clientWidth": 641,
+        "h": 239.90625,
+        "scrollHeight": 240,
+        "scrollWidth": 641,
+        "w": 640.625,
+        "x": 20.4375,
+        "y": 133.65625
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 306.75,
+        "y": 381.5625
+      },
+      "width": 681
+    },
+    {
+      "label": "200%-result",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 307,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 309,
+        "w": 306.6796875,
+        "x": 347.5625,
+        "y": 405.28125
+      },
+      "bodyWidth": 682,
+      "card": {
+        "clientHeight": 301,
+        "clientWidth": 175,
+        "h": 300.5546875,
+        "scrollHeight": 301,
+        "scrollWidth": 175,
+        "w": 175.1328125,
+        "x": 93.03125,
+        "y": 121.21875
+      },
+      "height": 468,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "result",
+      "reading": {
+        "clientHeight": 278,
+        "clientWidth": 302,
+        "h": 278.0625,
+        "scrollHeight": 599,
+        "scrollWidth": 302,
+        "w": 306.6796875,
+        "x": 347.5625,
+        "y": 129.21875
+      },
+      "stage": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 466.90625,
+        "y": 405.28125
+      },
+      "width": 681
+    },
+    {
+      "label": "100%-restored-result",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 525.5,
+        "y": 854.5625
+      },
+      "bodyWidth": 1363,
+      "card": {
+        "clientHeight": 446,
+        "clientWidth": 260,
+        "h": 446.1875,
+        "scrollHeight": 446,
+        "scrollWidth": 260,
+        "w": 260,
+        "x": 231.1875,
+        "y": 161.46875
+      },
+      "height": 936,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "result",
+      "reading": {
+        "clientHeight": 350,
+        "clientWidth": 613,
+        "h": 349.9374694824219,
+        "scrollHeight": 350,
+        "scrollWidth": 613,
+        "w": 613.359375,
+        "x": 695.125,
+        "y": 164.19973754882812
+      },
+      "stage": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 647.5,
+        "y": 854.5625
+      },
+      "width": 1363
+    },
+    {
+      "label": "200%-stable-result",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 307,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 309,
+        "w": 306.6796875,
+        "x": 347.5625,
+        "y": 405.28125
+      },
+      "bodyWidth": 682,
+      "card": {
+        "clientHeight": 301,
+        "clientWidth": 175,
+        "h": 300.5546875,
+        "scrollHeight": 301,
+        "scrollWidth": 175,
+        "w": 175.1328125,
+        "x": 93.03125,
+        "y": 121.21875
+      },
+      "height": 468,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "result",
+      "reading": {
+        "clientHeight": 278,
+        "clientWidth": 302,
+        "h": 278.0625,
+        "scrollHeight": 599,
+        "scrollWidth": 302,
+        "w": 306.6796875,
+        "x": 347.5625,
+        "y": 121.21875
+      },
+      "stage": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 466.90625,
+        "y": 405.28125
+      },
+      "width": 681
+    },
+    {
+      "label": "200%-reading-scroll",
+      "before": {
+        "height": 278,
+        "top": 0,
+        "total": 599
+      },
+      "after": {
+        "height": 278,
+        "top": 0,
+        "total": 599
+      }
+    },
+    {
+      "label": "100%-final-restored",
+      "actions": {
+        "clientHeight": 44,
+        "clientWidth": 312,
+        "h": 44,
+        "scrollHeight": 44,
+        "scrollWidth": 312,
+        "w": 312,
+        "x": 525.5,
+        "y": 854.5625
+      },
+      "bodyWidth": 1363,
+      "card": {
+        "clientHeight": 446,
+        "clientWidth": 260,
+        "h": 446.1875,
+        "scrollHeight": 446,
+        "scrollWidth": 260,
+        "w": 260,
+        "x": 231.1875,
+        "y": 161.46875
+      },
+      "height": 936,
+      "menu": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "option": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "phase": "result",
+      "reading": {
+        "clientHeight": 350,
+        "clientWidth": 613,
+        "h": 349.9375,
+        "scrollHeight": 350,
+        "scrollWidth": 613,
+        "w": 613.359375,
+        "x": 695.125,
+        "y": 161.46875
+      },
+      "stage": {
+        "clientHeight": 0,
+        "clientWidth": 0,
+        "h": 0,
+        "scrollHeight": 0,
+        "scrollWidth": 0,
+        "w": 0,
+        "x": 0,
+        "y": 0
+      },
+      "trigger": {
+        "clientHeight": 42,
+        "clientWidth": 188,
+        "h": 44,
+        "scrollHeight": 42,
+        "scrollWidth": 188,
+        "w": 190,
+        "x": 647.5,
+        "y": 854.5625
+      },
+      "width": 1363
+    },
+    {
+      "label": "200%-native-wheel-scroll",
+      "height": 278,
+      "top": 320.5,
+      "total": 599
+    }
+  ],
+  "pending": [
+    "physical devices/GPU/FPS",
+    "other browser engines",
+    "mobile pinch/system font size",
+    "all card/text combinations",
+    "three natural audio track endings"
+  ]
+}

@@ -3,21 +3,30 @@ import {travelPose,slotPose,stackPose,mix,smooth} from '../core/cinema-core.js';
 import {FINALE_DURATION} from './finale-motion.js';
 import {startMagicOrbitVFX} from '../../effects/magic-orbit-vfx.js';
 const running=new WeakMap();
+const frameBuilders=new WeakMap();
+export function refreshMotion(els){
+ for(const el of els){const animation=running.get(el),build=frameBuilders.get(el);
+  if(animation && build)animation.effect.setKeyframes(build());
+ }
+}
 export const pose=(x,y,z,rot=0,ry=0,scale=1,rx=0)=>`translate(-50%,-50%) translate3d(${x}px,${y}px,${z}px) rotateZ(${rot}deg) rotateY(${ry}deg) rotateX(${rx}deg) scale(${scale})`;
 export const transform=p=>pose(p.x,p.y,p.z,p.rot,p.ry,p.scale,p.rx);
 const readPose=s=>{const v=[...s.matchAll(/(?:translate3d|rotateZ|rotateY|rotateX|scale)\(([^)]+)\)/g)].map(m=>m[1].split(',').map(parseFloat));return v.length===5?{x:v[0][0],y:v[0][1],z:v[0][2],rot:v[1][0],ry:v[2][0],rx:v[3][0],scale:v[4][0]}:stackPose(0,1)};
 export function sampleCard(el){return readPose(el.style.transform);}
 export function cardSize(stage,phase='shuffle'){const width=stageSize(phase,stage.clientWidth);stage.style.setProperty('--card-w',width+'px');stage.style.setProperty('--card-h',width*C.aspect+'px');return width;}
 export async function play(el,frames,duration,easing='cubic-bezier(.2,.7,.2,1)',startTime=null,observe=null){
- running.get(el)?.cancel();const a=el.animate(frames,{duration,easing,fill:'both'});if(startTime!==null)a.startTime=startTime;
+ running.get(el)?.cancel();
+ const build=typeof frames==='function'?frames:null;
+ if(build)frameBuilders.set(el,build);else frameBuilders.delete(el);
+ const a=el.animate(build?build():frames,{duration,easing,fill:'both'});if(startTime!==null)a.startTime=startTime;
  running.set(el,a);observe?.(a);
  try{await a.finished;}catch{return false;}
  if(running.get(el)!==a)return false;
- const last=frames.at(-1);for(const k of ['transform','width','height','borderRadius'])if(last[k]!==undefined)el.style[k]=last[k];
- running.delete(el);a.cancel();return true;
+ const last=a.effect.getKeyframes().at(-1);for(const k of ['transform','width','height','borderRadius'])if(last[k]!==undefined)el.style[k]=last[k];
+ running.delete(el);frameBuilders.delete(el);a.cancel();return true;
 }
 export const animateTo=(el,to,duration=600)=>play(el,[{transform:el.style.transform||pose(0,0,0)},{transform:typeof to==='string'?to:transform(to)}],duration);
-export function cancelAll(els){for(const el of els){running.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
+export function cancelAll(els){for(const el of els){running.delete(el);frameBuilders.delete(el);el.getAnimations({subtree:true}).forEach(a=>a.cancel());}}
 export function floatLayout(els,stage){cardSize(stage);els.forEach((el,i)=>{el.hidden=false;el.style.zIndex='auto';el.style.transform=pose((i-(els.length-1)/2)*2,-8,-70-i*3,(i-(els.length-1)/2)*.7);});}
 /** First screen only: preserve the thick right-hand deck edge while keeping
  * rear cards below the leading card's top edge. The next shuffle restores
@@ -74,9 +83,8 @@ function gatherPose(i,t,w,h,count,compact,portraitLift,room){
  const lift=Math.sin(Math.PI*u)*(compact?Math.min(45,h*.12):portraitLift);
  return {...p,z:p.z+lift};
 }
-export async function shuffleMotion(els,stage,phase=()=>{}){
- stage.classList.add('glow-shuffle-lite');
- const w=stage.clientWidth,h=stage.clientHeight,count=els.length;
+function shuffleGeometry(stage){
+ const w=stage.clientWidth,h=stage.clientHeight;
  const compact=isCompactTouchLandscape();
  // Smoothly adapt the original first-shuffle travel to the actual viewport.
  // A 699 -> 700px portrait resize must not switch from a tall orbit to a
@@ -92,24 +100,36 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
   Math.min(h,Math.max(500,stageSize('shuffle',w)*2.75)):
   isAdaptiveTablet()?Math.min(h,Math.max(435,stageSize('shuffle',w)*2.75)):h;
  const portraitLift=compact?0:Math.max(125,stageSize('shuffle',w)*1.2);
+ return {w,firstShuffleHeight,compact,room,portraitLift};
+}
+export async function shuffleMotion(els,stage,phase=()=>{}){
+ stage.classList.add('glow-shuffle-lite');
+ const count=els.length;
  phase('charge');
  // First frame and orbit share the very same original pose family.
  // Only compact landscape eases the visible idle card size into the larger
  // shuffle size during the EXISTING charge period. All rotations, paths,
  // shuffle timing, card order and other device modes stay identical.
- const idleSize=compact?stageSize('idle',w):0;
- const shuffleSize=compact?stageSize('shuffle',w):0;
  const charge=els.map((el,i)=>{
-  const target=originalShufflePose(i,0,w,firstShuffleHeight,count,compact,room);
-  if(!compact)return animateTo(el,target,C.shuffle.separate);
-  return play(el,[
-   {transform:el.style.transform||pose(0,0,0),width:idleSize+'px',height:idleSize*C.aspect+'px'},
-   {transform:transform(target),width:shuffleSize+'px',height:shuffleSize*C.aspect+'px'}
-  ],C.shuffle.separate);
+  const origin=el.style.transform||pose(0,0,0);
+  return play(el,()=>{
+   const {w,firstShuffleHeight,compact,room}=shuffleGeometry(stage);
+   const target=originalShufflePose(i,0,w,firstShuffleHeight,count,compact,room);
+   const frames=[{transform:origin},{transform:transform(target)}];
+   if(compact){
+    const idleSize=stageSize('idle',w),shuffleSize=stageSize('shuffle',w);
+    Object.assign(frames[0],{width:idleSize+'px',height:idleSize*C.aspect+'px'});
+    Object.assign(frames[1],{width:shuffleSize+'px',height:shuffleSize*C.aspect+'px'});
+   }
+   return frames;
+  },C.shuffle.separate);
  });
  if(!(await Promise.all(charge)).every(Boolean)){stage.classList.remove('glow-shuffle-lite');return false;}
  phase('vortex');
  const result=await Promise.all(els.map((el,i)=>{
+  return play(el,()=>{
+  const {w,firstShuffleHeight,compact,room,portraitLift}=shuffleGeometry(stage);
+  const sw=stageSize('shuffle',w);el.style.width=sw+'px';el.style.height=sw*C.aspect+'px';
   const frames=[];
   const steps=100; // restore original curve sampling on compact landscape
   for(let n=0;n<=steps;n++){
@@ -117,7 +137,8 @@ export async function shuffleMotion(els,stage,phase=()=>{}){
    const p=t<.78?originalShufflePose(i,smooth(t/.78),w,firstShuffleHeight,count,compact,room):gatherPose(i,t,w,firstShuffleHeight,count,compact,portraitLift,room);
    frames.push({offset:t,transform:transform(p)});
   }
-  return play(el,frames,C.shuffle.duration,'linear');
+  return frames;
+  },C.shuffle.duration,'linear');
  }));stage.classList.remove('glow-shuffle-lite');return result.every(Boolean);
 }
 /*
@@ -197,11 +218,15 @@ export async function fanMotion(els,stage,onStart=()=>{}){
  stage.classList.add('orbit-opening');
  try{
   const result=await Promise.all(els.map((el,i)=>{
+   const build=()=>{
+   const width=stage.clientWidth,height=stage.clientHeight,compact=isCompactTouchLandscape();
+   const fromSize=stageSize('shuffle',width),toSize=stageSize('selection',width);
+   clock.width=width;
    const off=i-(els.length-1)/2;
    const from={...stackPose(i,els.length),scale:fromSize/toSize};
-   const to=slotPose(off,width);
+   const to=slotPose(off,width,C,toSize);
    el.style.width=toSize+'px';el.style.height=toSize*C.aspect+'px';
-   el.style.transform=transform(from);
+
    el.style.zIndex=String(100-Math.round(Math.abs(off)*20));
    el.style.opacity='1';
    const frames=[];
@@ -210,7 +235,9 @@ export async function fanMotion(els,stage,onStart=()=>{}){
     const t=n/frameSteps;
     frames.push({offset:t,transform:transform(orbitOpeningPose(i,els.length,t,from,to,width,height,toSize,compact))});
    }
-   return play(el,frames,duration,'linear',start,i===0?a=>{leader=a;vfx=startMagicOrbitVFX(stage,clock);onStart(clock)}:null);
+   return frames;
+   };
+   return play(el,build,duration,'linear',start,i===0?a=>{leader=a;vfx=startMagicOrbitVFX(stage,clock);onStart(clock)}:null);
   }));
   done=true;
   return result.every(Boolean);

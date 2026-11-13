@@ -42,7 +42,7 @@ export class Carousel {
   // Prepare only this selected front; a second tap awaits the same request.
   prepareFront(card.cardData,card).catch(()=>{});
   const index=this.cards.indexOf(card),off=this.distance(index)+this.offset;
-  const resting=slotPose(off,this.stage.clientWidth);
+  const resting=slotPose(off,this.stage.clientWidth,C,this.slotWidth);
   const raised={...resting,y:resting.y-this.liftDistance()};
   card.getAnimations().forEach(animation=>animation.cancel());
   card.animate([
@@ -84,7 +84,7 @@ export class Carousel {
     const sw=this.slotWidth+'px',sh=this.slotHeight+'px';
     if(card.style.width!==sw)card.style.width=sw;
     if(card.style.height!==sh)card.style.height=sh;
-    const cardPose=slotPose(off,w);
+    const cardPose=slotPose(off,w,C,this.slotWidth);
     if(card===this.selectedCard)cardPose.y-=this.liftDistance();
     card.style.transform=transform({...cardPose,scale:1,z:0,ry:0,rx:0});
     card.style.opacity=String(a<=radius?1:Math.max(0,Math.min(1,edge-a)));
@@ -113,7 +113,7 @@ export class Carousel {
   if(!p.dragged&&Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>12){this.cancel();return;}
   if(Math.abs(dx)>5){
    if(!p.dragged){p.dragged=true;this.pendingTap=null;this.stage.classList.add('is-dragging');}
-   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth).x));
+   const gap=Math.max(45,Math.abs(slotPose(1,this.stage.clientWidth,C,this.slotWidth).x));
    this.offset=Math.max(-C.carousel.dragLimit,Math.min(C.carousel.dragLimit,dx/gap));
    if(!this.raf)this.raf=requestAnimationFrame(()=>{this.raf=0;if(!this.destroyed)this.layout();});
    e.preventDefault();

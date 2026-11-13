@@ -1,15 +1,15 @@
-/* Portrait layout owner: 390 x 844 reference viewport. Horizontal lengths,
-   positions, and outer background margins follow W/390; vertical lengths,
-   positions and typography follow H/844. Card art and glyph shapes keep their
-   native aspect. Do not introduce tablet-specific values or CSS override files. */
+/* Portrait layout owner. Outer margins/reading width keep the original X/Y
+   axes. Control widths use the card gateway's min(W/390,H/844) fit, so a wider
+   but equally short viewport cannot stretch the buttons away from the fan.
+   Heights, typography, art aspect and layout anchors remain unchanged. */
 @media (orientation:portrait) {
   :root {
     --portrait-idle-width:clamp(170px, calc(101.98px + 17.44vw), 245px);
     --portrait-title-size:max(20px, calc(23px * var(--ad4-portrait-y, 1)));
     --portrait-reading-size:max(13px, calc(15px * var(--ad4-portrait-y, 1)));
-    --portrait-small-button:calc(100px * var(--ad4-portrait-x, 1));
-    --portrait-menu-button:calc(175px * var(--ad4-portrait-x, 1));
-    --portrait-button-gap:calc(8px * var(--ad4-portrait-x, 1));
+    --portrait-small-button:calc(100px * var(--ad4-portrait-control-x, 1));
+    --portrait-menu-button:calc(175px * var(--ad4-portrait-control-x, 1));
+    --portrait-button-gap:calc(8px * var(--ad4-portrait-control-x, 1));
     --portrait-button-height:max(34px, calc(44px * var(--ad4-portrait-y, 1)));
     --portrait-bottom-pad:4dvh;
     --portrait-reading-gap:1.1dvh;
@@ -87,7 +87,7 @@
     width:var(--portrait-small-button);
     min-width:0;
     height:var(--portrait-button-height);
-    padding:0 calc(9px * var(--ad4-portrait-x, 1));
+    padding:0 calc(9px * var(--ad4-portrait-control-x, 1));
     font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
   }
   #tarotApp .controls .reading-dropdown,
@@ -100,9 +100,9 @@
     /* 390x844 portrait reference. X scales widths; Y scales text/height. */
     --ad5-menu-font:max(11px, calc(11.5px * var(--ad4-portrait-y, 1)));
     --ad5-menu-option-pad-y:calc(7px * var(--ad4-portrait-y, 1));
-    --ad5-menu-option-pad-x:calc(7px * var(--ad4-portrait-x, 1));
+    --ad5-menu-option-pad-x:calc(7px * var(--ad4-portrait-control-x, 1));
     --ad5-menu-panel-pad-y:calc(3px * var(--ad4-portrait-y, 1));
-    --ad5-menu-panel-pad-x:calc(4px * var(--ad4-portrait-x, 1));
+    --ad5-menu-panel-pad-x:calc(4px * var(--ad4-portrait-control-x, 1));
     --ad5-menu-gap:calc(2px * var(--ad4-portrait-y, 1));
     --ad5-menu-offset:calc(6px * var(--ad4-portrait-y, 1));
   }
@@ -112,7 +112,7 @@
     min-width:0;
     height:var(--portrait-button-height);
     box-sizing:border-box;
-    padding:0 calc(8px * var(--ad4-portrait-x, 1));
+    padding:0 calc(8px * var(--ad4-portrait-control-x, 1));
     font-size:max(12px, calc(13px * var(--ad4-portrait-y, 1)));
   }
   #tarotApp > .intro h1,

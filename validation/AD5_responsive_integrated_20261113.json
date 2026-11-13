@@ -1,0 +1,4990 @@
+{
+  "environment": "Cloud Chromium browser; iframe viewport, input CSS/matchMedia fixture; pointer/keyboard interactions. Physical devices not used.",
+  "matrix": [
+    {
+      "id": "P320",
+      "name": "스마트폰 세로 소형",
+      "width": 320,
+      "height": 568,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 98,
+      "fan_span": 470.73948669433594,
+      "actions_width": 190.4375,
+      "actions_bottom": 545.28125,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 127.859375,
+      "result_bottom": 323.796875,
+      "reading_height": 175.015625,
+      "completed": true
+    },
+    {
+      "id": "P360",
+      "name": "스마트폰 세로 기준",
+      "width": 360,
+      "height": 800,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 135,
+      "fan_span": 645.6827392578125,
+      "actions_width": 261.203125,
+      "actions_bottom": 768.0,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 175.375,
+      "result_bottom": 428.296875,
+      "reading_height": 280.40625,
+      "completed": true
+    },
+    {
+      "id": "P430",
+      "name": "스마트폰 세로 대형",
+      "width": 430,
+      "height": 932,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 161,
+      "fan_span": 771.2298889160156,
+      "actions_width": 312,
+      "actions_bottom": 894.734375,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 209.484375,
+      "result_bottom": 507.6875,
+      "reading_height": 317.96875,
+      "completed": true
+    },
+    {
+      "id": "FC344",
+      "name": "접힌 폴더블 세로",
+      "width": 344,
+      "height": 882,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 129,
+      "fan_span": 616.9753265380859,
+      "actions_width": 249.59375,
+      "actions_bottom": 846.734375,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 167.578125,
+      "result_bottom": 427.609375,
+      "reading_height": 353.78125,
+      "completed": true
+    },
+    {
+      "id": "F673",
+      "name": "펼친 폴더블 세로",
+      "width": 673,
+      "height": 841,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 145,
+      "fan_span": 696.9925231933594,
+      "actions_width": 281.984375,
+      "actions_bottom": 807.375,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 189.3125,
+      "result_bottom": 459.078125,
+      "reading_height": 190.28125,
+      "completed": true
+    },
+    {
+      "id": "L667",
+      "name": "스마트폰 가로 소형",
+      "width": 667,
+      "height": 375,
+      "input": "touch",
+      "profile": "phone-landscape",
+      "fan_card_width": 83,
+      "fan_span": 397.54515075683594,
+      "actions_width": 280.125,
+      "actions_bottom": 360,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 122.484375,
+      "result_bottom": 271.875,
+      "reading_height": 241.328125,
+      "completed": true
+    },
+    {
+      "id": "L800",
+      "name": "스마트폰 가로",
+      "width": 800,
+      "height": 360,
+      "input": "touch",
+      "profile": "phone-landscape",
+      "fan_card_width": 97,
+      "fan_span": 464.3604736328125,
+      "actions_width": 282.1875,
+      "actions_bottom": 345.609375,
+      "menu_left_error": 0,
+      "menu_right_error": 0,
+      "result_width": 141.890625,
+      "result_bottom": 305.5625,
+      "reading_height": 227.15625,
+      "completed": true
+    },
+    {
+      "id": "FC882",
+      "name": "접힌 폴더블 가로",
+      "width": 882,
+      "height": 344,
+      "input": "touch",
+      "profile": "phone-landscape",
+      "fan_card_width": 93,
+      "fan_span": 443.7184753417969,
+      "actions_width": 298.984375,
+      "actions_bottom": 330.25,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 135.578125,
+      "result_bottom": 292.09375,
+      "reading_height": 215.078125,
+      "completed": true
+    },
+    {
+      "id": "FO841",
+      "name": "펼친 폴더블 가로",
+      "width": 841,
+      "height": 673,
+      "input": "touch",
+      "profile": "phone-landscape",
+      "fan_card_width": 105,
+      "fan_span": 501.26806640625,
+      "actions_width": 287.6875,
+      "actions_bottom": 646.09375,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 154.4375,
+      "result_bottom": 349.0,
+      "reading_height": 303,
+      "completed": true
+    },
+    {
+      "id": "T768P",
+      "name": "태블릿 세로",
+      "width": 768,
+      "height": 1024,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 177,
+      "fan_span": 848.6603851318359,
+      "actions_width": 343.328125,
+      "actions_bottom": 983.046875,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 230.515625,
+      "result_bottom": 558.9375,
+      "reading_height": 332.984375,
+      "completed": true
+    },
+    {
+      "id": "T1024P",
+      "name": "태블릿 세로 대형",
+      "width": 1024,
+      "height": 1366,
+      "input": "touch",
+      "profile": "portrait",
+      "fan_card_width": 236,
+      "fan_span": 1132.115463256836,
+      "actions_width": 458.015625,
+      "actions_bottom": 1311.375,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 307.5,
+      "result_bottom": 744.9375,
+      "reading_height": 444.1875,
+      "completed": true
+    },
+    {
+      "id": "T1024L",
+      "name": "태블릿 가로",
+      "width": 1024,
+      "height": 768,
+      "input": "touch",
+      "profile": "roomy-touch-landscape",
+      "fan_card_width": 157,
+      "fan_span": 754.2200927734375,
+      "actions_width": 292.078125,
+      "actions_bottom": 737.28125,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 194.890625,
+      "result_bottom": 451.65625,
+      "reading_height": 281.515625,
+      "completed": true
+    },
+    {
+      "id": "T1180L",
+      "name": "태블릿 가로 중형",
+      "width": 1180,
+      "height": 820,
+      "input": "touch",
+      "profile": "roomy-touch-landscape",
+      "fan_card_width": 181,
+      "fan_span": 869.1083068847656,
+      "actions_width": 328.59375,
+      "actions_bottom": 787.203125,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 224.59375,
+      "result_bottom": 512.375,
+      "reading_height": 300.5,
+      "completed": true
+    },
+    {
+      "id": "T1366L",
+      "name": "태블릿 가로 대형",
+      "width": 1366,
+      "height": 1024,
+      "input": "touch",
+      "profile": "roomy-touch-landscape",
+      "fan_card_width": 210,
+      "fan_span": 1006.1157379150391,
+      "actions_width": 340,
+      "actions_bottom": 983.046875,
+      "menu_left_error": 0,
+      "menu_right_error": 0,
+      "result_width": 260,
+      "result_bottom": 595.1875,
+      "reading_height": 341,
+      "completed": true
+    },
+    {
+      "id": "D680",
+      "name": "PC 짧고 좁은 창",
+      "width": 680,
+      "height": 500,
+      "input": "fine",
+      "profile": "PC landscape",
+      "fan_card_width": 94,
+      "fan_span": 449.8039321899414,
+      "actions_width": 312,
+      "actions_bottom": 457.609375,
+      "menu_left_error": 0,
+      "menu_right_error": 0,
+      "result_width": 192.28125,
+      "result_bottom": 452,
+      "reading_height": 308,
+      "completed": true
+    },
+    {
+      "id": "D1000",
+      "name": "PC 중간 창",
+      "width": 1000,
+      "height": 700,
+      "input": "fine",
+      "profile": "PC landscape",
+      "fan_card_width": 174,
+      "fan_span": 831.5580978393555,
+      "actions_width": 312,
+      "actions_bottom": 648,
+      "menu_left_error": 0,
+      "menu_right_error": 0,
+      "result_width": 260,
+      "result_bottom": 594.6875,
+      "reading_height": 293.75,
+      "completed": true
+    },
+    {
+      "id": "D1440",
+      "name": "PC 넓은 창",
+      "width": 1440,
+      "height": 900,
+      "input": "fine",
+      "profile": "PC landscape",
+      "fan_card_width": 210,
+      "fan_span": 1006.1157379150391,
+      "actions_width": 312,
+      "actions_bottom": 848,
+      "menu_left_error": 0,
+      "menu_right_error": 0,
+      "result_width": 260,
+      "result_bottom": 605.6875,
+      "reading_height": 258.15625,
+      "completed": true
+    },
+    {
+      "id": "DP900",
+      "name": "PC 세로 창",
+      "width": 900,
+      "height": 1440,
+      "input": "fine",
+      "profile": "portrait",
+      "fan_card_width": 249,
+      "fan_span": 1193.441909790039,
+      "actions_width": 482.828125,
+      "actions_bottom": 1382.40625,
+      "menu_left_error": 0.0,
+      "menu_right_error": 0.0,
+      "result_width": 324.15625,
+      "result_bottom": 785.125,
+      "reading_height": 490.5625,
+      "completed": true
+    }
+  ],
+  "motion_equivalence": {
+    "method": "Node formula/WAAPI-recording fixture; not browser performance",
+    "results": [
+      {
+        "id": "P360",
+        "equal": true,
+        "animations": 51,
+        "frames": 3393
+      },
+      {
+        "id": "F673",
+        "equal": true,
+        "animations": 51,
+        "frames": 3393
+      },
+      {
+        "id": "T1024P",
+        "equal": true,
+        "animations": 51,
+        "frames": 3393
+      },
+      {
+        "id": "T1024L",
+        "equal": true,
+        "animations": 51,
+        "frames": 3393
+      },
+      {
+        "id": "L800",
+        "equal": true,
+        "animations": 51,
+        "frames": 3057
+      },
+      {
+        "id": "D1440",
+        "equal": true,
+        "animations": 51,
+        "frames": 3393
+      }
+    ]
+  },
+  "dynamic": [
+    {
+      "label": "P360-pointer-drag",
+      "version": "trial",
+      "input": "touch",
+      "vw": 360,
+      "vh": 800,
+      "profile": "",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 156.9230769230769,
+        "shuffle": 96,
+        "selection": 134.76923076923077,
+        "result": 175.3846153846154
+      },
+      "resizeTrace": [],
+      "animations": [],
+      "counter": "20 / 20",
+      "stage": {
+        "x": 14.390625,
+        "y": 118.53125,
+        "w": 331.21875,
+        "h": 607.765625,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 608,
+        "client": 608
+      },
+      "title": {
+        "x": 14.390625,
+        "y": 79.9375,
+        "w": 331.21875,
+        "h": 27.234375,
+        "font": "21.8009px",
+        "line": "27.2512px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 29,
+        "client": 27
+      },
+      "actions": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 261.203125,
+        "h": 41.703125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 42,
+        "client": 42
+      },
+      "shuffle": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 92.296875,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 8.30769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 40,
+        "client": 40
+      },
+      "trigger": {
+        "x": 149.0625,
+        "y": 726.296875,
+        "w": 161.53125,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 7.38462px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 40,
+        "client": 40
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "normal",
+        "pad": "2.8436px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "14.85px",
+        "pad": "6.63507px 10.1538px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 212.7734375,
+        "y": 693.248779296875,
+        "w": 34.109375,
+        "h": 34.109375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 32,
+        "client": 32
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "14.218px",
+        "line": "24.1706px",
+        "pad": "11.3744px 11.0769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 194.21273803710938,
+          "y": 303.647216796875,
+          "w": 165.6422119140625,
+          "h": 247.78619384765625,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 248.86529541015625,
+          "y": 305.59466552734375,
+          "w": 196.49710083007812,
+          "h": 260.5770263671875,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 288.420166015625,
+          "y": 312.09149169921875,
+          "w": 214.42120361328125,
+          "h": 265.5526123046875,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": -142.84136962890625,
+          "y": 312.09149169921875,
+          "w": 214.42120361328125,
+          "h": 265.5526123046875,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": -85.36239624023438,
+          "y": 305.59466552734375,
+          "w": 196.49710083007812,
+          "h": 260.5770263671875,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0.14504432678222656,
+          "y": 303.647216796875,
+          "w": 165.6422119140625,
+          "h": 247.78619384765625,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 112.6171875,
+          "y": 306.765625,
+          "w": 134.765625,
+          "h": 231.28125,
+          "rawW": 135,
+          "rawH": 231,
+          "picked": false,
+          "center": true
+        }
+      ]
+    },
+    {
+      "label": "height-only-P360-600",
+      "version": "trial",
+      "input": "touch",
+      "vw": 360,
+      "vh": 600,
+      "profile": "",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 120.85308056872039,
+        "shuffle": 73.93364928909952,
+        "selection": 103.7914691943128,
+        "result": 135.07109004739337
+      },
+      "resizeTrace": [],
+      "animations": [],
+      "counter": "20 / 20",
+      "stage": {
+        "x": 14.390625,
+        "y": 100.515625,
+        "w": 331.21875,
+        "h": 441.484375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 441,
+        "client": 441
+      },
+      "title": {
+        "x": 14.390625,
+        "y": 67,
+        "w": 331.21875,
+        "h": 25,
+        "font": "20px",
+        "line": "25px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 27,
+        "client": 25
+      },
+      "actions": {
+        "x": 79.421875,
+        "y": 542,
+        "w": 201.15625,
+        "h": 34,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 34,
+        "client": 34
+      },
+      "shuffle": {
+        "x": 79.421875,
+        "y": 542,
+        "w": 71.078125,
+        "h": 34,
+        "font": "12px",
+        "line": "normal",
+        "pad": "0px 6.3981px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 32,
+        "client": 32
+      },
+      "trigger": {
+        "x": 156.171875,
+        "y": 542,
+        "w": 124.40625,
+        "h": 34,
+        "font": "12px",
+        "line": "normal",
+        "pad": "0px 5.6872px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 32,
+        "client": 32
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "normal",
+        "pad": "2.1327px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "14.85px",
+        "pad": "4.9763px 7.8199px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 203.375,
+        "y": 511.5318908691406,
+        "w": 30,
+        "h": 29.999969482421875,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 28,
+        "client": 28
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "13px",
+        "line": "22.1px",
+        "pad": "8.5308px 11.0769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 190.95021057128906,
+          "y": 229.79417419433594,
+          "w": 127.55928039550781,
+          "h": 190.81956481933594,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 233.0410919189453,
+          "y": 231.29437255859375,
+          "w": 151.3206329345703,
+          "h": 200.6695556640625,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 263.50433349609375,
+          "y": 236.2980194091797,
+          "w": 165.1240234375,
+          "h": 204.50111389160156,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": -68.62835693359375,
+          "y": 236.2980194091797,
+          "w": 165.1240234375,
+          "h": 204.50111389160156,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": -24.361740112304688,
+          "y": 231.29437255859375,
+          "w": 151.32064819335938,
+          "h": 200.6695556640625,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 41.49049377441406,
+          "y": 229.79417419433594,
+          "w": 127.55929565429688,
+          "h": 190.81956481933594,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 128.109375,
+          "y": 232.1953125,
+          "w": 103.78125,
+          "h": 178.109375,
+          "rawW": 104,
+          "rawH": 178,
+          "picked": false,
+          "center": true
+        }
+      ]
+    },
+    {
+      "label": "baseline-vortex-rotate",
+      "version": "baseline",
+      "input": "touch",
+      "vw": 800,
+      "vh": 360,
+      "profile": "phone-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 96.92307692307692,
+        "shuffle": 96.92307692307692,
+        "selection": 96.92307692307692,
+        "result": 141.89358010410643
+      },
+      "resizeTrace": [
+        {
+          "width": 800,
+          "height": 360,
+          "phase": "shuffling",
+          "opening": false,
+          "cardWidth": 96,
+          "expected": {
+            "idle": 96.92307692307692,
+            "shuffle": 96.92307692307692,
+            "selection": 96.92307692307692,
+            "result": 141.89358010410643
+          },
+          "animation": {
+            "time": 0,
+            "frames": 101,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(-100.958px, -95.3439px, -186.669px) rotateZ(6.68476deg) rotateY(-45.0865deg) rotateX(-9.51064deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, -8px, -31.5px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 212,
+        "y": 71,
+        "w": 376,
+        "h": 281.8125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 282,
+        "client": 282
+      },
+      "title": {
+        "x": 8,
+        "y": 32.875,
+        "w": 784,
+        "h": 22.71875,
+        "font": "18.9415px",
+        "line": "22.7298px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 24,
+        "client": 23
+      },
+      "actions": {
+        "x": 485.8125,
+        "y": 313.609375,
+        "w": 282.1875,
+        "h": 32,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 32,
+        "client": 32
+      },
+      "shuffle": {
+        "x": 485.8125,
+        "y": 313.609375,
+        "w": 100,
+        "h": 32,
+        "font": "11.0769px",
+        "line": "normal",
+        "pad": "0px 7.2px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 30,
+        "client": 30
+      },
+      "trigger": {
+        "x": 593,
+        "y": 313.609375,
+        "w": 175,
+        "h": 32,
+        "font": "11.0769px",
+        "line": "normal",
+        "pad": "0px 6.4px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 30,
+        "client": 30
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10.6154px",
+        "line": "normal",
+        "pad": "2.4px 3.69231px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10.6154px",
+        "line": "14.3308px",
+        "pad": "5px 6.46154px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 663.890625,
+        "y": 273.015625,
+        "w": 33.21875,
+        "h": 33.21875,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 31,
+        "client": 31
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 351.5390625,
+          "y": 98.28064727783203,
+          "w": 96.921875,
+          "h": 166.328125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": true
+        },
+        {
+          "x": 410.2210998535156,
+          "y": 96.037841796875,
+          "w": 119.12704467773438,
+          "h": 178.1983642578125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 449.5263671875,
+          "y": 97.43822479248047,
+          "w": 141.3165283203125,
+          "h": 187.3975830078125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 477.9736022949219,
+          "y": 102.11043548583984,
+          "w": 154.20663452148438,
+          "h": 190.97622680664062,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 167.81976318359375,
+          "y": 102.11043548583984,
+          "w": 154.20663452148438,
+          "h": 190.97622680664062,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 209.15713500976562,
+          "y": 97.43822479248047,
+          "w": 141.31649780273438,
+          "h": 187.3975830078125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 270.65185546875,
+          "y": 96.037841796875,
+          "w": 119.12704467773438,
+          "h": 178.1983642578125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "baseline-reveal-travel-rotate",
+      "version": "baseline",
+      "input": "touch",
+      "vw": 360,
+      "vh": 800,
+      "profile": "",
+      "phase": "result",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 156.9230769230769,
+        "shuffle": 96,
+        "selection": 134.76923076923077,
+        "result": 175.3846153846154
+      },
+      "resizeTrace": [
+        {
+          "width": 800,
+          "height": 360,
+          "phase": "shuffling",
+          "opening": false,
+          "cardWidth": 96,
+          "expected": {
+            "idle": 96.92307692307692,
+            "shuffle": 96.92307692307692,
+            "selection": 96.92307692307692,
+            "result": 141.89358010410643
+          },
+          "animation": {
+            "time": 0,
+            "frames": 101,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(-100.958px, -95.3439px, -186.669px) rotateZ(6.68476deg) rotateY(-45.0865deg) rotateX(-9.51064deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, -8px, -31.5px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        },
+        {
+          "width": 360,
+          "height": 800,
+          "phase": "revealing",
+          "opening": false,
+          "cardWidth": 142,
+          "expected": {
+            "idle": 156.9230769230769,
+            "shuffle": 96,
+            "selection": 134.76923076923077,
+            "result": 175.3846153846154
+          },
+          "animation": {
+            "time": 0,
+            "frames": 2,
+            "sample": {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(184.008px, -12.5216px) rotateZ(0deg) scale(0.683611)",
+              "computedOffset": 0
+            },
+            "last": {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(0px, 0px) rotateZ(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "title": {
+        "x": 14.390625,
+        "y": 79.9375,
+        "w": 331.21875,
+        "h": 27.234375,
+        "font": "21.8009px",
+        "line": "27.2512px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 29,
+        "client": 27
+      },
+      "actions": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 261.203125,
+        "h": 41.703125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 42,
+        "client": 42
+      },
+      "shuffle": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 92.296875,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 8.30769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 40,
+        "client": 40
+      },
+      "trigger": {
+        "x": 149.0625,
+        "y": 726.296875,
+        "w": 161.53125,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 7.38462px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 40,
+        "client": 40
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "normal",
+        "pad": "2.8436px 3.69231px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "14.85px",
+        "pad": "6.63507px 6.46154px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 212.7734375,
+        "y": 684.609375,
+        "w": 34.109375,
+        "h": 34.109375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 32,
+        "client": 32
+      },
+      "reading": {
+        "x": 14.390625,
+        "y": 445.09375,
+        "w": 331.21875,
+        "h": 277.6875,
+        "font": "14.218px",
+        "line": "24.1706px",
+        "pad": "11.3744px 11.0769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 278,
+        "client": 278
+      },
+      "host": {
+        "x": 92.3125,
+        "y": 127.328125,
+        "w": 175.375,
+        "h": 300.96875,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 301,
+        "client": 301
+      },
+      "cards": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 92.3125,
+          "y": 127.328125,
+          "w": 175.375,
+          "h": 300.96875,
+          "rawW": 175,
+          "rawH": 301,
+          "picked": true,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "trial-vortex-rotate",
+      "version": "trial",
+      "input": "touch",
+      "vw": 800,
+      "vh": 360,
+      "profile": "phone-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 96.92307692307692,
+        "shuffle": 96.92307692307692,
+        "selection": 96.92307692307692,
+        "result": 141.89358010410643
+      },
+      "resizeTrace": [
+        {
+          "width": 800,
+          "height": 360,
+          "phase": "shuffling",
+          "opening": false,
+          "cardWidth": 97,
+          "expected": {
+            "idle": 96.92307692307692,
+            "shuffle": 96.92307692307692,
+            "selection": 96.92307692307692,
+            "result": 141.89358010410643
+          },
+          "animation": {
+            "time": 0,
+            "frames": 101,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(-160.069px, -59.006px, -98.9346px) rotateZ(6.68476deg) rotateY(-45.0865deg) rotateX(-9.51064deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, -8px, -31.5px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 212,
+        "y": 71,
+        "w": 376,
+        "h": 281.8125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 282,
+        "client": 282
+      },
+      "title": {
+        "x": 8,
+        "y": 32.875,
+        "w": 784,
+        "h": 22.71875,
+        "font": "18.9415px",
+        "line": "22.7298px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 24,
+        "client": 23
+      },
+      "actions": {
+        "x": 485.8125,
+        "y": 313.609375,
+        "w": 282.1875,
+        "h": 32,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 32,
+        "client": 32
+      },
+      "shuffle": {
+        "x": 485.8125,
+        "y": 313.609375,
+        "w": 100,
+        "h": 32,
+        "font": "11.0769px",
+        "line": "normal",
+        "pad": "0px 7.2px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 30,
+        "client": 30
+      },
+      "trigger": {
+        "x": 593,
+        "y": 313.609375,
+        "w": 175,
+        "h": 32,
+        "font": "11.0769px",
+        "line": "normal",
+        "pad": "0px 6.4px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 30,
+        "client": 30
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10.6154px",
+        "line": "normal",
+        "pad": "2.4px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10.6154px",
+        "line": "14.3308px",
+        "pad": "5px 10.1538px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 663.890625,
+        "y": 273.015625,
+        "w": 33.21875,
+        "h": 33.21875,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 31,
+        "client": 31
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 351.5390625,
+          "y": 98.28064727783203,
+          "w": 96.921875,
+          "h": 166.328125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": true
+        },
+        {
+          "x": 410.2210998535156,
+          "y": 96.037841796875,
+          "w": 119.12704467773438,
+          "h": 178.1983642578125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 449.5263671875,
+          "y": 97.43822479248047,
+          "w": 141.3165283203125,
+          "h": 187.3975830078125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 477.9736022949219,
+          "y": 102.11043548583984,
+          "w": 154.20663452148438,
+          "h": 190.97622680664062,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 167.81976318359375,
+          "y": 102.11043548583984,
+          "w": 154.20663452148438,
+          "h": 190.97622680664062,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 209.15713500976562,
+          "y": 97.43822479248047,
+          "w": 141.31649780273438,
+          "h": 187.3975830078125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 270.65185546875,
+          "y": 96.037841796875,
+          "w": 119.12704467773438,
+          "h": 178.1983642578125,
+          "rawW": 97,
+          "rawH": 166,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "trial-reveal-travel-rotate",
+      "version": "trial",
+      "input": "touch",
+      "vw": 360,
+      "vh": 800,
+      "profile": "",
+      "phase": "result",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 156.9230769230769,
+        "shuffle": 96,
+        "selection": 134.76923076923077,
+        "result": 175.3846153846154
+      },
+      "resizeTrace": [
+        {
+          "width": 800,
+          "height": 360,
+          "phase": "shuffling",
+          "opening": false,
+          "cardWidth": 97,
+          "expected": {
+            "idle": 96.92307692307692,
+            "shuffle": 96.92307692307692,
+            "selection": 96.92307692307692,
+            "result": 141.89358010410643
+          },
+          "animation": {
+            "time": 0,
+            "frames": 101,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(-160.069px, -59.006px, -98.9346px) rotateZ(6.68476deg) rotateY(-45.0865deg) rotateX(-9.51064deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, -8px, -31.5px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        },
+        {
+          "width": 360,
+          "height": 800,
+          "phase": "revealing",
+          "opening": false,
+          "cardWidth": 175,
+          "expected": {
+            "idle": 156.9230769230769,
+            "shuffle": 96,
+            "selection": 134.76923076923077,
+            "result": 175.3846153846154
+          },
+          "animation": {
+            "time": 0,
+            "frames": 2,
+            "sample": {
+              "offset": 0,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(184px, -41.256px) rotateZ(0deg) scale(0.553072)",
+              "computedOffset": 0
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(0px, 0px) rotateZ(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "title": {
+        "x": 14.390625,
+        "y": 79.9375,
+        "w": 331.21875,
+        "h": 27.234375,
+        "font": "21.8009px",
+        "line": "27.2512px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 29,
+        "client": 27
+      },
+      "actions": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 261.203125,
+        "h": 41.703125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 42,
+        "client": 42
+      },
+      "shuffle": {
+        "x": 49.390625,
+        "y": 726.296875,
+        "w": 92.296875,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 8.30769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 40,
+        "client": 40
+      },
+      "trigger": {
+        "x": 149.0625,
+        "y": 726.296875,
+        "w": 161.53125,
+        "h": 41.703125,
+        "font": "12.3223px",
+        "line": "normal",
+        "pad": "0px 7.38462px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 40,
+        "client": 40
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "normal",
+        "pad": "2.8436px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "11px",
+        "line": "14.85px",
+        "pad": "6.63507px 10.1538px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 212.7734375,
+        "y": 684.609375,
+        "w": 34.109375,
+        "h": 34.109375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 32,
+        "client": 32
+      },
+      "reading": {
+        "x": 14.390625,
+        "y": 445.09375,
+        "w": 331.21875,
+        "h": 277.6875,
+        "font": "14.218px",
+        "line": "24.1706px",
+        "pad": "11.3744px 11.0769px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 278,
+        "client": 278
+      },
+      "host": {
+        "x": 92.3125,
+        "y": 127.328125,
+        "w": 175.375,
+        "h": 300.96875,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 301,
+        "client": 301
+      },
+      "cards": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 92.3125,
+          "y": 127.328125,
+          "w": 175.375,
+          "h": 300.96875,
+          "rawW": 175,
+          "rawH": 301,
+          "picked": true,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "baseline-opening-rotate",
+      "version": "baseline",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 820,
+      "profile": "roomy-touch-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 211.63982430453882,
+        "shuffle": 141.66910688140558,
+        "selection": 181.4055636896047,
+        "result": 224.597364568082
+      },
+      "resizeTrace": [
+        {
+          "width": 1180,
+          "height": 820,
+          "phase": "shuffling",
+          "opening": true,
+          "cardWidth": 204,
+          "expected": {
+            "idle": 211.63982430453882,
+            "shuffle": 141.66910688140558,
+            "selection": 181.4055636896047,
+            "result": 224.597364568082
+          },
+          "animation": {
+            "time": 1199.7,
+            "frames": 161,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(52.648px, 4.30513px, 130.655px) rotateZ(5.69615deg) rotateY(-7.23187deg) rotateX(4.45806deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 90,
+        "y": 127.03125,
+        "w": 1000,
+        "h": 656.078125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 656,
+        "client": 656
+      },
+      "title": {
+        "x": 35.390625,
+        "y": 83.1875,
+        "w": 1109.21875,
+        "h": 31.84375,
+        "font": "25.4832px",
+        "line": "31.854px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 32
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 328.59375,
+        "h": 41.453125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 41,
+        "client": 41
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 118,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 39,
+        "client": 39
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 745.75,
+        "w": 200.59375,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 39,
+        "client": 39
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "3.10981px 3.45534px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "6.21962px 6.04685px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 638.453125,
+        "y": 707.75,
+        "w": 31.09375,
+        "h": 31.09375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 29,
+        "client": 29
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 499.3046875,
+          "y": 299.40625,
+          "w": 181.390625,
+          "h": 311.3125,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": true
+        },
+        {
+          "x": 609.1361694335938,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 682.7010498046875,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 735.9436645507812,
+          "y": 306.57696533203125,
+          "w": 288.61053466796875,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 155.44589233398438,
+          "y": 306.57696533203125,
+          "w": 288.61041259765625,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 232.8152618408203,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 347.91217041015625,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "trial-opening-rotate",
+      "version": "trial",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 820,
+      "profile": "roomy-touch-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 211.63982430453882,
+        "shuffle": 141.66910688140558,
+        "selection": 181.4055636896047,
+        "result": 224.597364568082
+      },
+      "resizeTrace": [
+        {
+          "width": 1180,
+          "height": 820,
+          "phase": "shuffling",
+          "opening": true,
+          "cardWidth": 181,
+          "expected": {
+            "idle": 211.63982430453882,
+            "shuffle": 141.66910688140558,
+            "selection": 181.4055636896047,
+            "result": 224.597364568082
+          },
+          "animation": {
+            "time": 1199.8000000000006,
+            "frames": 161,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(62.3437px, 4.30513px, 130.655px) rotateZ(5.69615deg) rotateY(-7.23187deg) rotateX(4.45806deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 90,
+        "y": 127.03125,
+        "w": 1000,
+        "h": 656.078125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 656,
+        "client": 656
+      },
+      "title": {
+        "x": 35.390625,
+        "y": 83.1875,
+        "w": 1109.21875,
+        "h": 31.84375,
+        "font": "25.4832px",
+        "line": "31.854px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 32
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 328.59375,
+        "h": 41.453125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 41,
+        "client": 41
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 118,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 39,
+        "client": 39
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 745.75,
+        "w": 200.59375,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 39,
+        "client": 39
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "3.10981px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "6.21962px 9.5022px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 638.453125,
+        "y": 707.75,
+        "w": 31.09375,
+        "h": 31.09375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 29,
+        "client": 29
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 499.3046875,
+          "y": 299.40625,
+          "w": 181.390625,
+          "h": 311.3125,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": true
+        },
+        {
+          "x": 609.1361694335938,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 682.7010498046875,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 735.9436645507812,
+          "y": 306.57696533203125,
+          "w": 288.61053466796875,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 155.44589233398438,
+          "y": 306.57696533203125,
+          "w": 288.61041259765625,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 232.8152618408203,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 347.91217041015625,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "tablet-height-only-picked-620",
+      "version": "trial",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 620,
+      "profile": "roomy-touch-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 197.7864583333333,
+        "shuffle": 132.39583333333331,
+        "selection": 169.53124999999997,
+        "result": 209.8958333333333
+      },
+      "resizeTrace": [
+        {
+          "width": 1180,
+          "height": 820,
+          "phase": "shuffling",
+          "opening": true,
+          "cardWidth": 181,
+          "expected": {
+            "idle": 211.63982430453882,
+            "shuffle": 141.66910688140558,
+            "selection": 181.4055636896047,
+            "result": 224.597364568082
+          },
+          "animation": {
+            "time": 1199.8000000000006,
+            "frames": 161,
+            "sample": {
+              "offset": 0.4,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(62.3437px, 4.30513px, 130.655px) rotateZ(5.69615deg) rotateY(-7.23187deg) rotateX(4.45806deg) scale(1)",
+              "computedOffset": 0.4
+            },
+            "last": {
+              "offset": 1,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        },
+        {
+          "width": 1180,
+          "height": 700,
+          "phase": "selection",
+          "opening": false,
+          "cardWidth": 181,
+          "expected": {
+            "idle": 211.63982430453882,
+            "shuffle": 141.66910688140558,
+            "selection": 181.4055636896047,
+            "result": 224.597364568082
+          },
+          "animation": {
+            "time": 0,
+            "frames": 2,
+            "sample": {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, 0px, 0px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 0
+            },
+            "last": {
+              "offset": null,
+              "easing": "linear",
+              "composite": "auto",
+              "transform": "translate(-50%, -50%) translate3d(0px, -19.0044px, 0px) rotateZ(0deg) rotateY(0deg) rotateX(0deg) scale(1)",
+              "computedOffset": 1
+            }
+          }
+        }
+      ],
+      "animations": [],
+      "counter": "1 / 20",
+      "stage": {
+        "x": 90,
+        "y": 113.453125,
+        "w": 1000,
+        "h": 478.15625,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 478,
+        "client": 478
+      },
+      "title": {
+        "x": 35.390625,
+        "y": 71.6875,
+        "w": 1109.21875,
+        "h": 29.765625,
+        "font": "23.8151px",
+        "line": "29.7689px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 31,
+        "client": 30
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 560.171875,
+        "w": 328.59375,
+        "h": 35.03125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 35,
+        "client": 35
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 560.171875,
+        "w": 118,
+        "h": 35.03125,
+        "font": "12px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 33
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 560.171875,
+        "w": 200.59375,
+        "h": 35.03125,
+        "font": "12px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 33,
+        "client": 33
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "2.62774px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "5.25547px 9.22917px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 639,
+        "y": 523.7325439453125,
+        "w": 30,
+        "h": 30,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 28,
+        "client": 28
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 505.234375,
+          "y": 189.3020782470703,
+          "w": 169.53125,
+          "h": 290.9375,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": true,
+          "center": true
+        },
+        {
+          "x": 607.87646484375,
+          "y": 203.13943481445312,
+          "w": 208.3720703125,
+          "h": 311.7002868652344,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 676.6260375976562,
+          "y": 205.58883666992188,
+          "w": 247.1854248046875,
+          "h": 327.7910461425781,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 726.3836669921875,
+          "y": 213.76119995117188,
+          "w": 269.732666015625,
+          "h": 334.0505065917969,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 183.8836669921875,
+          "y": 213.76119995117188,
+          "w": 269.732666015625,
+          "h": 334.0505065917969,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 256.18853759765625,
+          "y": 205.58883666992188,
+          "w": 247.1854248046875,
+          "h": 327.7910461425781,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 363.75146484375,
+          "y": 203.13943481445312,
+          "w": 208.3720703125,
+          "h": 311.7002868652344,
+          "rawW": 170,
+          "rawH": 291,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "idle-rotate",
+      "version": "trial",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 820,
+      "profile": "roomy-touch-landscape",
+      "phase": "idle",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 211.63982430453882,
+        "shuffle": 141.66910688140558,
+        "selection": 181.4055636896047,
+        "result": 224.597364568082
+      },
+      "resizeTrace": [],
+      "animations": [],
+      "counter": "\n",
+      "stage": {
+        "x": 90,
+        "y": 127.03125,
+        "w": 1000,
+        "h": 656.078125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 656,
+        "client": 656
+      },
+      "title": {
+        "x": 35.390625,
+        "y": 83.1875,
+        "w": 1109.21875,
+        "h": 31.84375,
+        "font": "25.4832px",
+        "line": "31.854px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 32
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 328.59375,
+        "h": 41.453125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 41,
+        "client": 41
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 118,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 39,
+        "client": 39
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 745.75,
+        "w": 200.59375,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 39,
+        "client": 39
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "3.10981px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "6.21962px 9.5022px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 638.453125,
+        "y": 707.75,
+        "w": 31.09375,
+        "h": 31.09375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 29,
+        "client": 29
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 450.5846862792969,
+          "y": 266.6160583496094,
+          "w": 239.57827758789062,
+          "h": 361.9406433105469,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 454.895751953125,
+          "y": 268.44415283203125,
+          "w": 236.8441162109375,
+          "h": 359.91058349609375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 459.1879577636719,
+          "y": 270.26995849609375,
+          "w": 234.11477661132812,
+          "h": 357.87615966796875,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 463.46142578125,
+          "y": 272.09344482421875,
+          "w": 231.390380859375,
+          "h": 355.83734130859375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 467.7162780761719,
+          "y": 273.9146423339844,
+          "w": 228.67092895507812,
+          "h": 353.7940979003906,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 471.9526062011719,
+          "y": 275.7335205078125,
+          "w": 225.95651245117188,
+          "h": 351.7467041015625,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 476.1705322265625,
+          "y": 277.5500793457031,
+          "w": 223.24713134765625,
+          "h": 349.6952209472656,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 480.37017822265625,
+          "y": 279.36431884765625,
+          "w": 220.5428466796875,
+          "h": 347.6396484375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 484.5516052246094,
+          "y": 281.1762390136719,
+          "w": 217.84378051757812,
+          "h": 345.5801086425781,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 488.7149658203125,
+          "y": 282.9858093261719,
+          "w": 215.14984130859375,
+          "h": 343.5166320800781,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 492.86029052734375,
+          "y": 284.7930603027344,
+          "w": 212.46124267578125,
+          "h": 341.4493713378906,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 496.9877624511719,
+          "y": 286.59796142578125,
+          "w": 209.77786254882812,
+          "h": 339.37835693359375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 501.0974426269531,
+          "y": 288.4005126953125,
+          "w": 207.09988403320312,
+          "h": 337.3037109375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 505.1894226074219,
+          "y": 290.20074462890625,
+          "w": 204.42727661132812,
+          "h": 335.22552490234375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 509.2637939453125,
+          "y": 291.99859619140625,
+          "w": 201.76019287109375,
+          "h": 333.143798828125,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 513.3206787109375,
+          "y": 293.7940673828125,
+          "w": 199.0985107421875,
+          "h": 331.05865478515625,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 517.3601684570312,
+          "y": 295.587158203125,
+          "w": 196.44244384765625,
+          "h": 328.97021484375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 521.38232421875,
+          "y": 297.37786865234375,
+          "w": 193.7919921875,
+          "h": 326.87847900390625,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 525.3873291015625,
+          "y": 299.16619873046875,
+          "w": 191.1470947265625,
+          "h": 324.78363037109375,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 529.3751220703125,
+          "y": 300.9521484375,
+          "w": 188.50799560546875,
+          "h": 322.6856689453125,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 531.9434814453125,
+          "y": 301.91851806640625,
+          "w": 188.67938232421875,
+          "h": 322.21893310546875,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 533.775146484375,
+          "y": 302.4630432128906,
+          "w": 190.296142578125,
+          "h": 322.5882263183594,
+          "rawW": 212,
+          "rawH": 363,
+          "picked": false,
+          "center": false
+        }
+      ]
+    },
+    {
+      "label": "tablet-pointer-drag",
+      "version": "trial",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 820,
+      "profile": "roomy-touch-landscape",
+      "phase": "selection",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 211.63982430453882,
+        "shuffle": 141.66910688140558,
+        "selection": 181.4055636896047,
+        "result": 224.597364568082
+      },
+      "resizeTrace": [],
+      "animations": [],
+      "counter": "20 / 20",
+      "stage": {
+        "x": 90,
+        "y": 127.03125,
+        "w": 1000,
+        "h": 656.078125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 656,
+        "client": 656
+      },
+      "title": {
+        "x": 35.390625,
+        "y": 83.1875,
+        "w": 1109.21875,
+        "h": 31.84375,
+        "font": "25.4832px",
+        "line": "31.854px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 32
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 328.59375,
+        "h": 41.453125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 41,
+        "client": 41
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 118,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 39,
+        "client": 39
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 745.75,
+        "w": 200.59375,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 39,
+        "client": 39
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "3.10981px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "6.21962px 9.5022px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 638.453125,
+        "y": 715.2418212890625,
+        "w": 31.09375,
+        "h": 31.09375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 29,
+        "client": 29
+      },
+      "reading": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "15px",
+        "line": "27.75px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "host": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 0,
+        "client": 0
+      },
+      "cards": [
+        {
+          "x": 609.1361694335938,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 682.7010498046875,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 735.9436645507812,
+          "y": 306.57696533203125,
+          "w": 288.61053466796875,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 155.44589233398438,
+          "y": 306.57696533203125,
+          "w": 288.61041259765625,
+          "h": 357.43963623046875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 232.8152618408203,
+          "y": 297.83148193359375,
+          "w": 264.48370361328125,
+          "h": 350.74310302734375,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 347.91217041015625,
+          "y": 295.20941162109375,
+          "w": 222.95166015625,
+          "h": 333.52752685546875,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 499.3046875,
+          "y": 299.40625,
+          "w": 181.390625,
+          "h": 311.3125,
+          "rawW": 181,
+          "rawH": 311,
+          "picked": false,
+          "center": true
+        }
+      ]
+    },
+    {
+      "label": "tablet-drag-result",
+      "version": "trial",
+      "input": "touch",
+      "vw": 1180,
+      "vh": 820,
+      "profile": "roomy-touch-landscape",
+      "phase": "result",
+      "qaInput": {
+        "name": "",
+        "touch": true
+      },
+      "expected": {
+        "idle": 211.63982430453882,
+        "shuffle": 141.66910688140558,
+        "selection": 181.4055636896047,
+        "result": 224.597364568082
+      },
+      "resizeTrace": [],
+      "animations": [],
+      "counter": "20 / 20",
+      "stage": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "title": {
+        "x": 47.1875,
+        "y": 70.796875,
+        "w": 1085.625,
+        "h": 31.84375,
+        "font": "25.4832px",
+        "line": "31.854px",
+        "pad": "0px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 33,
+        "client": 32
+      },
+      "actions": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 328.59375,
+        "h": 41.453125,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 41,
+        "client": 41
+      },
+      "shuffle": {
+        "x": 425.703125,
+        "y": 745.75,
+        "w": 118,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 10px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 39,
+        "client": 39
+      },
+      "trigger": {
+        "x": 553.703125,
+        "y": 745.75,
+        "w": 200.59375,
+        "h": 41.453125,
+        "font": "12.0937px",
+        "line": "normal",
+        "pad": "0px 14px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 39,
+        "client": 39
+      },
+      "menu": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "normal",
+        "pad": "3.10981px 0px",
+        "hidden": true,
+        "display": "none",
+        "scroll": 0,
+        "client": 0
+      },
+      "option": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "font": "10px",
+        "line": "13.5px",
+        "pad": "6.21962px 9.5022px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 0,
+        "client": 0
+      },
+      "hint": {
+        "x": 638.453125,
+        "y": 707.75,
+        "w": 31.09375,
+        "h": 31.09375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "grid",
+        "scroll": 29,
+        "client": 29
+      },
+      "reading": {
+        "x": 601.796875,
+        "y": 134.9375,
+        "w": 531.015625,
+        "h": 329,
+        "font": "17.2767px",
+        "line": "28.5066px",
+        "pad": "15px 18px",
+        "hidden": false,
+        "display": "block",
+        "scroll": 329,
+        "client": 329
+      },
+      "host": {
+        "x": 200.390625,
+        "y": 126.9375,
+        "w": 224.59375,
+        "h": 385.4375,
+        "font": "16px",
+        "line": "normal",
+        "pad": "0px",
+        "hidden": false,
+        "display": "flex",
+        "scroll": 385,
+        "client": 385
+      },
+      "cards": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "rawW": 0,
+          "rawH": 0,
+          "picked": false,
+          "center": false
+        },
+        {
+          "x": 200.390625,
+          "y": 126.9375,
+          "w": 224.59375,
+          "h": 385.4375,
+          "rawW": 225,
+          "rawH": 385,
+          "picked": true,
+          "center": false
+        }
+      ]
+    }
+  ],
+  "native": {
+    "cardHeight": 446.1875,
+    "cardWidth": 260,
+    "frontComplete": true,
+    "frontNaturalWidth": 957,
+    "height": 936,
+    "music": "재생 상태 paused=false·readyState=4·시간 진행, 다시 섞기 후에도 계속 재생",
+    "phase": "result",
+    "width": 1363,
+    "dragCounter": "1 / 20 → 20 / 20",
+    "musicState": {
+      "paused": false,
+      "ready": 4,
+      "source": "./assets/audio/bgm-track-4.mp3",
+      "time": 85.288087
+    },
+    "musicStopped": true
+  },
+  "arrowPeakValidation": {
+    "method": "After natural observation, temporarily pause the QA CSS nudge at 480ms (48% maximum downward keyframe), read actual bounds, then resume. QA code is not shipped. Natural rAF sampling was 2-3 samples per 1.2s, not an FPS benchmark.",
+    "checks": [
+      {
+        "label": "P360",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.14971923828125,
+          "samples": 3,
+          "peakGap": 6.010986328125,
+          "width": 360,
+          "height": 800
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "touch",
+          "vw": 360,
+          "vh": 800,
+          "profile": "",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": true
+          },
+          "expected": {
+            "idle": 156.9230769230769,
+            "shuffle": 96,
+            "selection": 134.76923076923077,
+            "result": 175.3846153846154
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 14.390625,
+            "y": 118.53125,
+            "w": 331.21875,
+            "h": 607.765625,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 608,
+            "client": 608
+          },
+          "title": {
+            "x": 14.390625,
+            "y": 79.9375,
+            "w": 331.21875,
+            "h": 27.234375,
+            "font": "21.8009px",
+            "line": "27.2512px",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 29,
+            "client": 27
+          },
+          "actions": {
+            "x": 49.390625,
+            "y": 726.296875,
+            "w": 261.203125,
+            "h": 41.703125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 42,
+            "client": 42
+          },
+          "shuffle": {
+            "x": 49.390625,
+            "y": 726.296875,
+            "w": 92.296875,
+            "h": 41.703125,
+            "font": "12.3223px",
+            "line": "normal",
+            "pad": "0px 8.30769px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 40,
+            "client": 40
+          },
+          "trigger": {
+            "x": 149.0625,
+            "y": 726.296875,
+            "w": 161.53125,
+            "h": 41.703125,
+            "font": "12.3223px",
+            "line": "normal",
+            "pad": "0px 7.38462px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 40,
+            "client": 40
+          },
+          "menu": {
+            "x": 149.0625,
+            "y": 686.875,
+            "w": 161.53125,
+            "h": 33.75,
+            "font": "11px",
+            "line": "normal",
+            "pad": "2.8436px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 34,
+            "client": 34
+          },
+          "option": {
+            "x": 149.0625,
+            "y": 689.703125,
+            "w": 161.53125,
+            "h": 28.09375,
+            "font": "11px",
+            "line": "14.85px",
+            "pad": "6.63507px 10.1538px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 28,
+            "client": 28
+          },
+          "hint": {
+            "x": 212.7734375,
+            "y": 646.754638671875,
+            "w": 34.109375,
+            "h": 34.109375,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 32,
+            "client": 32
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14.218px",
+            "line": "24.1706px",
+            "pad": "11.3744px 11.0769px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 112.6171875,
+              "y": 306.765625,
+              "w": 134.765625,
+              "h": 231.28125,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 194.21273803710938,
+              "y": 303.647216796875,
+              "w": 165.6422119140625,
+              "h": 247.78619384765625,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 248.86529541015625,
+              "y": 305.59466552734375,
+              "w": 196.49710083007812,
+              "h": 260.5770263671875,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 288.420166015625,
+              "y": 312.09149169921875,
+              "w": 214.42120361328125,
+              "h": 265.5526123046875,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": -142.84136962890625,
+              "y": 312.09149169921875,
+              "w": 214.42120361328125,
+              "h": 265.5526123046875,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": -85.36239624023438,
+              "y": 305.59466552734375,
+              "w": 196.49710083007812,
+              "h": 260.5770263671875,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 0.14504432678222656,
+              "y": 303.647216796875,
+              "w": 165.6422119140625,
+              "h": 247.78619384765625,
+              "rawW": 135,
+              "rawH": 231,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      },
+      {
+        "label": "T1024P",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.93798828125,
+          "samples": 3,
+          "peakGap": 5.9935302734375,
+          "width": 1024,
+          "height": 1366
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "touch",
+          "vw": 1024,
+          "vh": 1366,
+          "profile": "",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": true
+          },
+          "expected": {
+            "idle": 275.14218009478674,
+            "shuffle": 168.3222748815166,
+            "selection": 236.29857819905214,
+            "result": 307.5118483412322
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 40.953125,
+            "y": 202.203125,
+            "w": 942.09375,
+            "h": 1037.96875,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 1038,
+            "client": 1038
+          },
+          "title": {
+            "x": 40.953125,
+            "y": 136.28125,
+            "w": 942.09375,
+            "h": 46.515625,
+            "font": "37.2251px",
+            "line": "46.5314px",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 50,
+            "client": 47
+          },
+          "actions": {
+            "x": 282.984375,
+            "y": 1240.171875,
+            "w": 458.015625,
+            "h": 71.203125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 71,
+            "client": 71
+          },
+          "shuffle": {
+            "x": 282.984375,
+            "y": 1240.171875,
+            "w": 161.84375,
+            "h": 71.203125,
+            "font": "21.0403px",
+            "line": "normal",
+            "pad": "0px 14.5663px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 69,
+            "client": 69
+          },
+          "trigger": {
+            "x": 457.765625,
+            "y": 1240.171875,
+            "w": 283.234375,
+            "h": 71.203125,
+            "font": "21.0403px",
+            "line": "normal",
+            "pad": "0px 12.9479px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 69,
+            "client": 69
+          },
+          "menu": {
+            "x": 457.765625,
+            "y": 1173.015625,
+            "w": 283.234375,
+            "h": 57.453125,
+            "font": "18.6126px",
+            "line": "normal",
+            "pad": "4.85545px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 57,
+            "client": 57
+          },
+          "option": {
+            "x": 457.765625,
+            "y": 1177.859375,
+            "w": 283.234375,
+            "h": 47.765625,
+            "font": "18.6126px",
+            "line": "25.1269px",
+            "pad": "11.3294px 17.8033px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 48,
+            "client": 48
+          },
+          "hint": {
+            "x": 577.375,
+            "y": 1123.0220947265625,
+            "w": 44,
+            "h": 44,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 42,
+            "client": 42
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "24.2772px",
+            "line": "41.2713px",
+            "pad": "19.4218px 31.5077px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 393.8515625,
+              "y": 518.4296875,
+              "w": 236.296875,
+              "h": 405.515625,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 536.9179077148438,
+              "y": 512.961669921875,
+              "w": 290.43414306640625,
+              "h": 434.455322265625,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 632.74365234375,
+              "y": 516.3758544921875,
+              "w": 344.53314208984375,
+              "h": 456.88299560546875,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 702.0977172851562,
+              "y": 527.7667846679688,
+              "w": 375.96002197265625,
+              "h": 465.60760498046875,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": -54.05772399902344,
+              "y": 527.7667846679688,
+              "w": 375.96002197265625,
+              "h": 465.60760498046875,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 46.72321701049805,
+              "y": 516.3758544921875,
+              "w": 344.53314208984375,
+              "h": 456.88299560546875,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 196.64796447753906,
+              "y": 512.961669921875,
+              "w": 290.43414306640625,
+              "h": 434.455322265625,
+              "rawW": 236,
+              "rawH": 406,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      },
+      {
+        "label": "F673",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.20703125,
+          "samples": 3,
+          "peakGap": 6.00787353515625,
+          "width": 673,
+          "height": 841
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "touch",
+          "vw": 673,
+          "vh": 841,
+          "profile": "",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": true
+          },
+          "expected": {
+            "idle": 169.3957345971564,
+            "shuffle": 103.6303317535545,
+            "selection": 145.48104265402844,
+            "result": 189.32464454976304
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 26.90625,
+            "y": 124.9375,
+            "w": 619.1875,
+            "h": 638.609375,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 639,
+            "client": 639
+          },
+          "title": {
+            "x": 26.90625,
+            "y": 84.34375,
+            "w": 619.1875,
+            "h": 28.640625,
+            "font": "22.9182px",
+            "line": "28.6478px",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 30,
+            "client": 29
+          },
+          "actions": {
+            "x": 195.5,
+            "y": 763.546875,
+            "w": 281.984375,
+            "h": 43.828125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 44,
+            "client": 44
+          },
+          "shuffle": {
+            "x": 195.5,
+            "y": 763.546875,
+            "w": 99.640625,
+            "h": 43.828125,
+            "font": "12.9538px",
+            "line": "normal",
+            "pad": "0px 8.96801px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 42,
+            "client": 42
+          },
+          "trigger": {
+            "x": 303.109375,
+            "y": 763.546875,
+            "w": 174.375,
+            "h": 43.828125,
+            "font": "12.9538px",
+            "line": "normal",
+            "pad": "0px 7.97156px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 42,
+            "client": 42
+          },
+          "menu": {
+            "x": 303.109375,
+            "y": 722.21875,
+            "w": 174.375,
+            "h": 35.359375,
+            "font": "11.4591px",
+            "line": "normal",
+            "pad": "2.98934px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 35,
+            "client": 35
+          },
+          "option": {
+            "x": 303.109375,
+            "y": 725.203125,
+            "w": 174.375,
+            "h": 29.390625,
+            "font": "11.4591px",
+            "line": "15.4698px",
+            "pad": "6.97511px 10.9609px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 29,
+            "client": 29
+          },
+          "hint": {
+            "x": 372.3671875,
+            "y": 680.3515014648438,
+            "w": 35.859375,
+            "h": 35.859375,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 34,
+            "client": 34
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "14.9467px",
+            "line": "25.4093px",
+            "pad": "11.9573px 20.7077px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 263.765625,
+              "y": 319.40625,
+              "w": 145.46875,
+              "h": 249.65625,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 351.84710693359375,
+              "y": 316.04052734375,
+              "w": 178.79852294921875,
+              "h": 267.471923828125,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 410.84405517578125,
+              "y": 318.1432800292969,
+              "w": 212.1048583984375,
+              "h": 281.2784118652344,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 453.5430908203125,
+              "y": 325.15673828125,
+              "w": 231.45318603515625,
+              "h": 286.64892578125,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": -11.996246337890625,
+              "y": 325.15673828125,
+              "w": 231.45315551757812,
+              "h": 286.64892578125,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 50.05105972290039,
+              "y": 318.1432800292969,
+              "w": 212.10488891601562,
+              "h": 281.2784118652344,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 142.35440063476562,
+              "y": 316.04052734375,
+              "w": 178.79849243164062,
+              "h": 267.471923828125,
+              "rawW": 145,
+              "rawH": 250,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      },
+      {
+        "label": "D680",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.201416015625,
+          "samples": 3,
+          "peakGap": 6,
+          "width": 680,
+          "height": 500
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "fine",
+          "vw": 680,
+          "vh": 500,
+          "profile": "",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": false
+          },
+          "expected": {
+            "idle": 140.4323308270677,
+            "shuffle": 164,
+            "selection": 93.8878391552211,
+            "result": 192.29323308270676
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 20.390625,
+            "y": 134.390625,
+            "w": 639.21875,
+            "h": 271.21875,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 271,
+            "client": 271
+          },
+          "title": {
+            "x": 20.390625,
+            "y": 78.390625,
+            "w": 639.21875,
+            "h": 44,
+            "font": "30.6px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 44,
+            "client": 44
+          },
+          "actions": {
+            "x": 184,
+            "y": 413.609375,
+            "w": 312,
+            "h": 44,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 44,
+            "client": 44
+          },
+          "shuffle": {
+            "x": 184,
+            "y": 413.609375,
+            "w": 112,
+            "h": 44,
+            "font": "14px",
+            "line": "normal",
+            "pad": "0px 20px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 42,
+            "client": 42
+          },
+          "trigger": {
+            "x": 306,
+            "y": 413.609375,
+            "w": 190,
+            "h": 44,
+            "font": "14px",
+            "line": "normal",
+            "pad": "0px 14px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 42,
+            "client": 42
+          },
+          "menu": {
+            "x": 306,
+            "y": 380.765625,
+            "w": 190,
+            "h": 28.84375,
+            "font": "11px",
+            "line": "normal",
+            "pad": "2px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 29,
+            "client": 29
+          },
+          "option": {
+            "x": 306,
+            "y": 382.765625,
+            "w": 190,
+            "h": 24.84375,
+            "font": "11px",
+            "line": "14.85px",
+            "pad": "5px 9px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 25,
+            "client": 25
+          },
+          "hint": {
+            "x": 383,
+            "y": 338.765625,
+            "w": 36,
+            "h": 36,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 34,
+            "client": 34
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "15px",
+            "line": "27.75px",
+            "pad": "15px 18px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 293.0625,
+              "y": 189.4453125,
+              "w": 93.875,
+              "h": 161.109375,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 349.9075012207031,
+              "y": 191.6968231201172,
+              "w": 115.38348388671875,
+              "h": 172.60633850097656,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 387.9824523925781,
+              "y": 200.24197387695312,
+              "w": 136.87692260742188,
+              "h": 181.51605224609375,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 415.53912353515625,
+              "y": 212.5090789794922,
+              "w": 149.36285400390625,
+              "h": 184.9818572998047,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 115.0980453491211,
+              "y": 212.5090789794922,
+              "w": 149.36282348632812,
+              "h": 184.9818572998047,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 155.14060974121094,
+              "y": 200.24197387695312,
+              "w": 136.87693786621094,
+              "h": 181.51605224609375,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 214.70899963378906,
+              "y": 191.6968231201172,
+              "w": 115.38349914550781,
+              "h": 172.60633850097656,
+              "rawW": 94,
+              "rawH": 161,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      },
+      {
+        "label": "L800",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.11138916015625,
+          "samples": 3,
+          "peakGap": 6.002410888671875,
+          "width": 800,
+          "height": 360
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "touch",
+          "vw": 800,
+          "vh": 360,
+          "profile": "phone-landscape",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": true
+          },
+          "expected": {
+            "idle": 96.92307692307692,
+            "shuffle": 96.92307692307692,
+            "selection": 96.92307692307692,
+            "result": 141.89358010410643
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 212,
+            "y": 71,
+            "w": 376,
+            "h": 281.8125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 282,
+            "client": 282
+          },
+          "title": {
+            "x": 8,
+            "y": 32.875,
+            "w": 784,
+            "h": 22.71875,
+            "font": "18.9415px",
+            "line": "22.7298px",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 24,
+            "client": 23
+          },
+          "actions": {
+            "x": 485.8125,
+            "y": 313.609375,
+            "w": 282.1875,
+            "h": 32,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 32,
+            "client": 32
+          },
+          "shuffle": {
+            "x": 485.8125,
+            "y": 313.609375,
+            "w": 100,
+            "h": 32,
+            "font": "11.0769px",
+            "line": "normal",
+            "pad": "0px 7.2px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 30,
+            "client": 30
+          },
+          "trigger": {
+            "x": 593,
+            "y": 313.609375,
+            "w": 175,
+            "h": 32,
+            "font": "11.0769px",
+            "line": "normal",
+            "pad": "0px 6.4px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 30,
+            "client": 30
+          },
+          "menu": {
+            "x": 593,
+            "y": 280.046875,
+            "w": 175,
+            "h": 29.09375,
+            "font": "10.6154px",
+            "line": "normal",
+            "pad": "2.4px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 29,
+            "client": 29
+          },
+          "option": {
+            "x": 593,
+            "y": 282.4375,
+            "w": 175,
+            "h": 24.3125,
+            "font": "10.6154px",
+            "line": "14.3308px",
+            "pad": "5px 10.1538px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 24,
+            "client": 24
+          },
+          "hint": {
+            "x": 663.890625,
+            "y": 240.82571411132812,
+            "w": 33.21875,
+            "h": 33.21875,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 31,
+            "client": 31
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "15px",
+            "line": "27.75px",
+            "pad": "15px 18px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 351.5390625,
+              "y": 98.28064727783203,
+              "w": 96.921875,
+              "h": 166.328125,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 410.2210998535156,
+              "y": 96.037841796875,
+              "w": 119.12704467773438,
+              "h": 178.1983642578125,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 449.5263671875,
+              "y": 97.43822479248047,
+              "w": 141.3165283203125,
+              "h": 187.3975830078125,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 477.9736022949219,
+              "y": 102.11043548583984,
+              "w": 154.20663452148438,
+              "h": 190.97622680664062,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 167.81976318359375,
+              "y": 102.11043548583984,
+              "w": 154.20663452148438,
+              "h": 190.97622680664062,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 209.15713500976562,
+              "y": 97.43822479248047,
+              "w": 141.31649780273438,
+              "h": 187.3975830078125,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 270.65185546875,
+              "y": 96.037841796875,
+              "w": 119.12704467773438,
+              "h": 178.1983642578125,
+              "rawW": 97,
+              "rawH": 166,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      },
+      {
+        "label": "T1180L",
+        "peak": {
+          "kind": "hint-cycle",
+          "minGap": 12.03564453125,
+          "samples": 3,
+          "peakGap": 5.997802734375,
+          "width": 1180,
+          "height": 820
+        },
+        "measurement": {
+          "version": "trial",
+          "input": "touch",
+          "vw": 1180,
+          "vh": 820,
+          "profile": "roomy-touch-landscape",
+          "phase": "selection",
+          "qaInput": {
+            "name": "",
+            "touch": true
+          },
+          "expected": {
+            "idle": 211.63982430453882,
+            "shuffle": 141.66910688140558,
+            "selection": 181.4055636896047,
+            "result": 224.597364568082
+          },
+          "resizeTrace": [],
+          "animations": [],
+          "counter": "1 / 20",
+          "stage": {
+            "x": 90,
+            "y": 127.03125,
+            "w": 1000,
+            "h": 656.078125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 656,
+            "client": 656
+          },
+          "title": {
+            "x": 35.390625,
+            "y": 83.1875,
+            "w": 1109.21875,
+            "h": 31.84375,
+            "font": "25.4832px",
+            "line": "31.854px",
+            "pad": "0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 33,
+            "client": 32
+          },
+          "actions": {
+            "x": 425.703125,
+            "y": 745.75,
+            "w": 328.59375,
+            "h": 41.453125,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 41,
+            "client": 41
+          },
+          "shuffle": {
+            "x": 425.703125,
+            "y": 745.75,
+            "w": 118,
+            "h": 41.453125,
+            "font": "12.0937px",
+            "line": "normal",
+            "pad": "0px 10px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 39,
+            "client": 39
+          },
+          "trigger": {
+            "x": 553.703125,
+            "y": 745.75,
+            "w": 200.59375,
+            "h": 41.453125,
+            "font": "12.0937px",
+            "line": "normal",
+            "pad": "0px 14px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 39,
+            "client": 39
+          },
+          "menu": {
+            "x": 553.703125,
+            "y": 707.796875,
+            "w": 200.59375,
+            "h": 32.15625,
+            "font": "10px",
+            "line": "normal",
+            "pad": "3.10981px 0px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 32,
+            "client": 32
+          },
+          "option": {
+            "x": 553.703125,
+            "y": 710.90625,
+            "w": 200.59375,
+            "h": 25.9375,
+            "font": "10px",
+            "line": "13.5px",
+            "pad": "6.21962px 9.5022px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 26,
+            "client": 26
+          },
+          "hint": {
+            "x": 638.453125,
+            "y": 670.705322265625,
+            "w": 31.09375,
+            "h": 31.09375,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "grid",
+            "scroll": 29,
+            "client": 29
+          },
+          "reading": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "15px",
+            "line": "27.75px",
+            "pad": "15px 18px",
+            "hidden": false,
+            "display": "block",
+            "scroll": 0,
+            "client": 0
+          },
+          "host": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "font": "16px",
+            "line": "normal",
+            "pad": "0px",
+            "hidden": false,
+            "display": "flex",
+            "scroll": 0,
+            "client": 0
+          },
+          "cards": [
+            {
+              "x": 499.3046875,
+              "y": 299.40625,
+              "w": 181.390625,
+              "h": 311.3125,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": true
+            },
+            {
+              "x": 609.1361694335938,
+              "y": 295.20941162109375,
+              "w": 222.95166015625,
+              "h": 333.52752685546875,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 682.7010498046875,
+              "y": 297.83148193359375,
+              "w": 264.48370361328125,
+              "h": 350.74310302734375,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 735.9436645507812,
+              "y": 306.57696533203125,
+              "w": 288.61053466796875,
+              "h": 357.43963623046875,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 155.44589233398438,
+              "y": 306.57696533203125,
+              "w": 288.61041259765625,
+              "h": 357.43963623046875,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 232.8152618408203,
+              "y": 297.83148193359375,
+              "w": 264.48370361328125,
+              "h": 350.74310302734375,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            },
+            {
+              "x": 347.91217041015625,
+              "y": 295.20941162109375,
+              "w": 222.95166015625,
+              "h": 333.52752685546875,
+              "rawW": 181,
+              "rawH": 311,
+              "picked": false,
+              "center": false
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "integrity": {
+    "originalArchiveUnchanged": true,
+    "originalFiles": 281,
+    "originalExtractionUnchanged": true,
+    "changedCodeFiles": [
+      "css/motion/04-fan-layout.css",
+      "css/effects/13-idle-deck-size.css",
+      "css/screen/01-foundation-and-cards.css",
+      "css/screen/25-landscape-adaptive-layout.css",
+      "css/screen/23-portrait-responsive-scale.css",
+      "js/motion/selection/carousel.js",
+      "js/motion/core/cinema-core.js",
+      "js/motion/animation/card-animation.js",
+      "js/motion/reveal/center-motion.js",
+      "js/settings/config/config.js",
+      "js/screen/app/main.js",
+      "js/screen/app/reveal-flow.js",
+      "js/screen/app/stage-boundary.js",
+      "js/screen/app/events.js"
+    ],
+    "unchangedOriginalFiles": 267,
+    "unchangedAssets": 106,
+    "missingFiles": [],
+    "syntaxChecked": 47,
+    "syntaxErrors": [],
+    "activeJS": 30,
+    "activeCSS": 29,
+    "missingReferences": []
+  },
+  "comparisonQA": {
+    "bodyWidth": 1348,
+    "broken": 0,
+    "images": 8,
+    "rows": 19,
+    "viewport": 1348
+  }
+}

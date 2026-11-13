@@ -62,9 +62,10 @@
 @keyframes ad2-menu-hint-nudge {
  0%,100%{transform:translate(-50%,0)} 48%{transform:translate(-50%,calc(11px * var(--ad4-arrow-scale,1)))}
 }
-/* Open landscape menus rise above the button; keep the hint above the list. */
-:where(html.phone-landscape,html.roomy-touch-landscape) .reading-dropdown .ad2-menu-hint.is-menu-open {
- bottom:calc(100% + 14px + var(--ad2-menu-open-height, 0px));
+/* Every open menu rises above its button; keep the hint above the list. */
+.reading-dropdown .ad2-menu-hint.is-menu-open {
+ /* Reserve the full downward nudge, not just its resting position. */
+ bottom:calc(100% + var(--ad5-menu-offset,6px) + var(--ad2-menu-open-height,0px) + 11px * var(--ad4-arrow-scale,1) + 6px);
 }
 @media(prefers-reduced-motion:reduce){
  .fan-swipe-hint,.fan-swipe-hint span,

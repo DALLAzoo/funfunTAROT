@@ -33,4 +33,5 @@ export function setupStageBoundary(stage, actions, app){
   window.visualViewport?.addEventListener('resize',refresh,{passive:true});
   document.fonts?.ready.then(refresh);
   refresh();
+  return measure;
 }

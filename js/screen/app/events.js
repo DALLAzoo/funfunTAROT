@@ -1,6 +1,8 @@
-import {CONFIG as C, stageSize, updateResponsiveDesignMetrics, isCompactTouchLandscape,isAdaptiveTablet} from '../../settings/config/config.js';
+import {CONFIG as C, stageSize, updateResponsiveDesignMetrics} from '../../settings/config/config.js';
 
-import {cardSize,floatLayout,alignIdleDeck} from '../../motion/animation/card-animation.js';
+import {cardSize,floatLayout,alignIdleDeck,refreshMotion} from '../../motion/animation/card-animation.js';
+
+import {resizeResultCard} from '../../motion/reveal/center-motion.js';
 
 /** Register navigation, selection, shuffle and responsive layout handlers. */
 export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
@@ -85,60 +87,51 @@ export function bindEvents({ctx, $, shuffleBtn, startShuffle, getState}) {
     }
   });
 
-  window.addEventListener('resize', () => {
-    updateResponsiveDesignMetrics();
+  // One scheduled update after viewport, input-profile, font or actual stage
+  // geometry changes. No temporary DOM replica or competing resize writer.
+  let pending=0,lastGeometry='';
+  const update=()=>{
+    pending=0;
     window.tarotViewportProfile?.refresh?.();
-    if (getState() === 'idle' && ctx.cards.length) {
-      floatLayout(ctx.cards, ctx.stage);cardSize(ctx.stage,'idle');alignIdleDeck(ctx.cards);
+    updateResponsiveDesignMetrics();
+    ctx.measureStageBoundary?.();
+    const view=$('#resultView'),heading=$('#resultSelectionTitle');
+    const actions=ctx.main.querySelector('.controls .actions');
+    const key=[innerWidth,innerHeight,ctx.stage.clientWidth,ctx.stage.clientHeight,
+      actions.offsetWidth,actions.offsetHeight,heading?.offsetHeight,
+      document.documentElement.className,getState(),view.hidden].join('|');
+    if(key===lastGeometry)return;
+    lastGeometry=key;
+    const state=getState();
+    if(state==='idle' && ctx.cards.length){
+      floatLayout(ctx.cards,ctx.stage);cardSize(ctx.stage,'idle');alignIdleDeck(ctx.cards);
+    }else if(state==='selection'){
+      // layout() also works during a snap; it keeps the current fractional slot.
+      ctx.carousel?.layout();
+    }else if(state==='shuffling'){
+      cardSize(ctx.stage,ctx.stage.classList.contains('orbit-opening')?'selection':'shuffle');
+      refreshMotion(ctx.cards);
     }
-    if (getState() === 'selection' && !ctx.carousel?.busy) {
-      ctx.carousel.layout();
-    }
-    if (getState() === 'result') {
-      const el = $('.result-card');
-      const w = stageSize('result', innerWidth);
-      el.style.width = w + 'px';
-      el.style.height = w * C.aspect + 'px';
-      const host = $('#resultCardHost');
-      host.style.width = w + 'px';host.style.height = w * C.aspect + 'px';
-      host.style.removeProperty('--result-width');
-      $('#resultView').style.setProperty('--result-width',w+'px');
-      $('#resultView').style.setProperty('--result-height',w*C.aspect+'px');
-      // Recalculate the selection-screen button anchor after tablet resize/rotation.
-      // A layout-only replica preserves the original first-screen placement while
-      // #tarotApp is hidden and its shared heading lives inside #resultView.
-      const touchPortrait=window.matchMedia?.(
-        '(orientation:portrait) and (hover:none) and (pointer:coarse)'
-      ).matches;
-      if (touchPortrait) {
-        const original=$('#tarotApp');
-        const replica=document.createElement('main');
-        replica.className=original.className;
-        replica.style.cssText='position:absolute;left:0;top:0;width:100%;visibility:hidden;pointer-events:none;z-index:-1;';
-        const intro=$('#sharedIntro').cloneNode(true);
-        const title=intro.querySelector('h1');
-        if (title) title.textContent='어떤 메시지가 기다릴까요?';
-        replica.append(intro);
-        const stage=document.createElement('section');stage.className=$('#stage').className;
-        replica.append(stage);
-        replica.append(original.querySelector('.controls').cloneNode(true));
-        document.body.append(replica);
-        const action=replica.querySelector('.controls .actions').getBoundingClientRect();
-        replica.remove();
-        const sourceActionTop=Math.round(
-          Math.max(8,Math.min(innerHeight-action.height-8,action.top)));
-        const view=$('#resultView');
-        view.style.setProperty('--portrait-actions-top',sourceActionTop+'px');
-        if (window.matchMedia('(min-width:700px)').matches) {
-          view.style.setProperty('--tablet-actions-top',sourceActionTop+'px');
-        }
-      }
-      const heading = $('#resultSelectionTitle');
-      if (heading) {
-        $('#resultView').style.setProperty('--reveal-top',Math.round(
-          heading.getBoundingClientRect().bottom-$('#resultView').getBoundingClientRect().top+
-          (window.matchMedia?.('(min-width:700px) and (min-height:550px) and (hover:none) and (pointer:coarse)').matches?24:12))+'px');
+    if((state==='revealing'||state==='result') && !view.hidden){
+      const card=$('.result-card'),host=$('#resultCardHost');
+      if(card && host){
+        const width=stageSize('result',innerWidth);
+        view.style.setProperty('--result-width',width+'px');
+        view.style.setProperty('--result-height',width*C.aspect+'px');
+        resizeResultCard(card,host,width);
       }
     }
-  });
+    ctx.updateMenuHint?.();
+  };
+  const schedule=()=>{if(!pending)pending=requestAnimationFrame(update);};
+  window.addEventListener('resize',schedule,{passive:true});
+  window.addEventListener('orientationchange',schedule,{passive:true});
+  window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  window.matchMedia('(hover:none) and (pointer:coarse)').addEventListener?.('change',schedule);
+  const observer=new ResizeObserver(schedule);
+  observer.observe(ctx.stage);
+  observer.observe(ctx.main.querySelector('.controls .actions'));
+  observer.observe($('#sharedIntro'));
+  document.fonts?.ready.then(schedule);
+  ctx.refreshResponsiveLayout=schedule;
 }

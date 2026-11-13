@@ -49,15 +49,8 @@ const startShuffle = () => startShuffleFlow(ctx);
 ctx.choose = chosen => chooseFlow(ctx, chosen);
 
 updateResponsiveDesignMetrics();
-let responsiveMetricsFrame=0;
-window.addEventListener('resize',()=>{
- if(responsiveMetricsFrame)cancelAnimationFrame(responsiveMetricsFrame);
- responsiveMetricsFrame=requestAnimationFrame(()=>{
-  responsiveMetricsFrame=0;
-  updateResponsiveDesignMetrics();
- });
-},{passive:true});
+// bindEvents owns the coalesced viewport/layout update.
 bindEvents({ctx, $, shuffleBtn, startShuffle, getState});
-setupStageBoundary(stage, main.querySelector('.controls .actions'), main);
+ctx.measureStageBoundary=setupStageBoundary(stage, main.querySelector('.controls .actions'), main);
 initReadingScrollCue();
 await initializeApp({ctx, $, stage, container, status, setState});

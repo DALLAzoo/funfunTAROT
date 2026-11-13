@@ -33,8 +33,7 @@ export const smooth=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t)};
 export const mix=(a,b,t)=>Object.fromEntries(Object.keys(a).map(k=>[k,a[k]+(b[k]-a[k])*t]));
 // Single fan geometry for opening, dragging and snapping.
 // Seven cards are displayed at a time, at equal physical size.
-export function slotPose(offset,width,c=C){
- const size=stageSize('selection',width,c);
+export function slotPose(offset,width,c=C,size=stageSize('selection',width,c)){
  const a=Math.abs(offset),sgn=Math.sign(offset);
  // The established desktop fan is the geometry reference. Its original
  // formula/fit remains byte-for-byte equivalent on non-touch desktop.

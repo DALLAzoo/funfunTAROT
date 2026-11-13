@@ -289,7 +289,7 @@ export async function chooseFlow(ctx,chosen){
   setState('result','카드가 공개됐어요');
   // A resize during 'revealing' previously left the host at the old size.
   // Refresh from the real RESULT layout after travel/flip has finished.
-  requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));
+  ctx.refreshResponsiveLayout?.();
   $('#resultAgain').focus({preventScroll:true});
  }catch(e){const intro=$('#sharedIntro');if(intro.parentElement===resultView){main.insertBefore(intro,stage);}$('#resultSelectionTitle').textContent=ctx.readingSelection || '어떤 메시지가 기다릴까요?';magic.stop();resultView.classList.remove('is-final','is-revealed');main.hidden=false;resultView.hidden=true;ctx.carousel=new Carousel(ctx.cards,stage,refreshCounter,ctx.choose);ctx.carousel.layout();setState('selection','전환을 완료하지 못했어요. 다시 선택해 주세요.');}
 }

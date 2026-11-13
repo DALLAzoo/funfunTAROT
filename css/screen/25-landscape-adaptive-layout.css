@@ -172,7 +172,7 @@
     z-index:70;
   }
   :where(html.roomy-touch-landscape) #resultView > .result-reading-group {
-    padding-bottom:calc(var(--ad2-tablet-action-bottom) + 44px + 12px);
+    padding-bottom:calc(var(--ad2-tablet-action-bottom) + var(--land-button-h) + 12px);
     box-sizing:border-box;
   }
 }
