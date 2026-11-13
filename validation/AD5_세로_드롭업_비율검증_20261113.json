@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-13",
+  "reference_archive": "AD4_portrait_axes_full_20261113(1).zip",
+  "changed_code_files": [
+    "funfunTAROT-main/css/screen/23-portrait-responsive-scale.css"
+  ],
+  "test_method": "Chromium CSS cascade & computed box measurement in offline CSS/DOM fixture; full site JS E2E and real tablets not run (localhost blocked).",
+  "reference_portrait_390x844_preserved": true,
+  "landscape_844x390_and_PC_1366x768_preserved": true,
+  "measurements": [
+    {
+      "name": "phone390",
+      "viewport": [
+        390,
+        844
+      ],
+      "trigger_font_px": "13px",
+      "trigger_height_px": 44,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "13px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 42.1875
+    },
+    {
+      "name": "mini768",
+      "viewport": [
+        768,
+        1024
+      ],
+      "trigger_font_px": "15.7725px",
+      "trigger_height_px": 53.375,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "15.7725px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 51.15625
+    },
+    {
+      "name": "ipadpro1032",
+      "viewport": [
+        1032,
+        1376
+      ],
+      "trigger_font_px": "21.1943px",
+      "trigger_height_px": 71.734375,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "21.1943px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 68.78125
+    },
+    {
+      "name": "surface960",
+      "viewport": [
+        960,
+        1440
+      ],
+      "trigger_font_px": "22.1801px",
+      "trigger_height_px": 75.0625,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "22.1801px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 72
+    },
+    {
+      "name": "landscape844",
+      "viewport": [
+        844,
+        390
+      ],
+      "trigger_font_px": "14px",
+      "trigger_height_px": 44,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "13px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 42.1875
+    },
+    {
+      "name": "pc1366",
+      "viewport": [
+        1366,
+        768
+      ],
+      "trigger_font_px": "14px",
+      "trigger_height_px": 44,
+      "option_font_before_px": "13px",
+      "option_font_after_px": "13px",
+      "option_height_before_px": 42.1875,
+      "option_height_after_px": 42.1875
+    }
+  ]
+}
