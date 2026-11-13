@@ -1,0 +1,207 @@
+{
+  "baseline": "InBetweenShift_AD5_portrait_dropdown_ratio_20261113.zip",
+  "modified_existing_files": [
+    "css/decoration/cards.css",
+    "css/effects/09-card-surface-performance.css"
+  ],
+  "missing_original_files": [],
+  "added_files_before_report": [],
+  "css_file_count": 30,
+  "css_import_count": 27,
+  "css_syntax_errors": [],
+  "byte_identical_assets_and_js_and_screen_css": 165,
+  "back_artworks_sample_alpha": [
+    {
+      "name": "back-01.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-02.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-03.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-04.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-05.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-06.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-07.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-08.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-1.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-10.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-11.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-12.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-2.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-3.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-4.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-5.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-6.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-7.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-8.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    },
+    {
+      "name": "back-1-9.webp",
+      "size": [
+        640,
+        1098
+      ],
+      "corner_alpha": 0
+    }
+  ],
+  "scaling_samples_css_only": {
+    "104": {
+      "radius_px": 4.06,
+      "face_border_px": 1
+    },
+    "146": {
+      "radius_px": 5.7,
+      "face_border_px": 1
+    },
+    "170": {
+      "radius_px": 6.64,
+      "face_border_px": 1.02
+    },
+    "210": {
+      "radius_px": 8.2,
+      "face_border_px": 1.26
+    },
+    "243": {
+      "radius_px": 9.49,
+      "face_border_px": 1.46
+    },
+    "260": {
+      "radius_px": 10.16,
+      "face_border_px": 1.5
+    }
+  },
+  "browser_visual_check": "not_run: Chromium was blocked by administrator policy on localhost and file URLs",
+  "real_device_check": "not_run",
+  "animated_corner_continuity": "not_measured",
+  "node_check": "PASS: all 47 JS files (node --check)",
+  "revision12_checks": "PASS: 7-card geometry",
+  "scope": "CSS card-face source treatment only; card size, position, choreography, images and audio preserved"
+}

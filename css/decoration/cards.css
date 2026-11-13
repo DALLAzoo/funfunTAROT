@@ -14,18 +14,29 @@
 .tarot-card:focus-visible::after{border:2px solid #ded3ff;border-radius:12px;box-shadow:none;}
 .card-front.has-image{border:0;background:transparent;}
 .transition-overlay .card-face{border-radius:0;}
+/* AD5: the actual 3-D face owns its continuous edge.  The back artwork's
+   transparent rounded pixels are filled beneath that same face, never by an
+   independent overlay or a subpixel outer shadow.  Scale the shape with the
+   back artwork (about 25 original pixels per 640-pixel source width). */
+#stage{--card-radius:clamp(2px,calc(var(--card-w,170px) * .0390625),12px);}
 .tarot-card .card-face{box-shadow:0 4px 13px rgba(0,0,0,.18)!important;}
+#stage .tarot-card .card-face{
+ border:clamp(1px,calc(var(--card-w,170px) * .006),1.5px) solid rgba(208,162,89,.72)!important;
+ background-color:#151012!important;
+ background-origin:border-box;
+ background-clip:border-box;
+}
 .card-edge{border:1px solid rgba(224,210,181,.5);box-shadow:none!important;}
 .edge-3{border-color:rgba(240,230,208,.65);}
 @media(max-width:600px){.card-face{box-shadow:0 3px 8px rgba(0,0,0,.13)!important;}}
-.card-back{background-size:100% 100%!important;background-repeat:no-repeat!important;background-position:center!important;border:0!important;}
+.card-back{background-size:100% 100%!important;background-repeat:no-repeat!important;background-position:center!important;}
 .card-face{border-radius:3px!important;box-shadow:0 3px 11px rgba(0,0,0,.12)!important;}
 .card-edge{border-radius:3px!important;}
 .card-front,.card-front img{filter:none!important;}
 @media(max-width:600px){.card-face{box-shadow:0 2px 7px rgba(0,0,0,.10)!important;}}
-.tarot-card.shuffle-surface .card-front{background-image:var(--back-image)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;background-color:transparent!important;border:0!important;}
-.shuffle-surface .card-face{background-color:transparent!important;}
-.shuffle-surface .card-face{box-shadow:0 2px 6px rgba(0,0,0,.12),0 0 0 .6px rgba(240,227,197,.22)!important;}
+.tarot-card.shuffle-surface .card-front{background-image:var(--back-image)!important;background-size:100% 100%!important;background-position:center!important;background-repeat:no-repeat!important;}
+
+.shuffle-surface .card-face{box-shadow:0 2px 6px rgba(0,0,0,.12)!important;}
 .selection-stage .card-back{background-size:100% 100%;background-repeat:no-repeat;}
 .card-back::before,.shuffle-surface .card-front::before{border-radius:inherit;background:radial-gradient(ellipse 42% 22% at 50% 50%,rgba(255,249,205,.97) 0%,rgba(255,213,106,.78) 26%,rgba(235,161,54,.26) 62%,transparent 100%);background-size:270% 270%;background-position:10% 15%;}
 .stage.idle-stack .shuffle-surface .card-edge{background:linear-gradient(135deg,rgba(197,149,75,.13),transparent 60%),repeating-linear-gradient(180deg,rgba(193,145,83,.27) 0px,rgba(193,145,83,.27) .55px,rgba(42,28,24,.96) 1.1px,rgba(91,60,43,.92) 2.5px)!important;border:1px solid rgba(135,89,51,.68)!important;border-radius:var(--card-radius,8px)!important;box-shadow:inset 0 0 14px rgba(17,10,10,.6)!important;}

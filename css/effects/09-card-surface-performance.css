@@ -4,8 +4,9 @@
  background-size:100% 100%!important;
  background-position:center!important;
  background-repeat:no-repeat!important;
- background-color:transparent!important;
- border:0!important;
+ /* Use the same opaque face backing and physical frame as the visible back.
+    This second face is used during rotation; it must not become transparent. */
+ background-color:#151012!important;
  padding:0!important;
 }
 /* Only the final revealed card, moved to #resultView, may show the actual front. */
