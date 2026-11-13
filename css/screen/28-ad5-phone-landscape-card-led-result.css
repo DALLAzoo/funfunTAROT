@@ -1,0 +1,95 @@
+/* AD5 — smartphone landscape RESULT only.
+   Keep the existing right-bottom action anchor from screen/25.
+   Reading height follows content; neither buttons nor heading/card move with it.
+   A 42.5:57.5 composition is shared across phone landscape viewport sizes.
+   No portrait, tablet landscape, PC or pre-reveal stage rules are changed. */
+@media (orientation:landscape) and (hover:none) and (pointer:coarse)
+       and (max-width:1000px) and (max-height:500px)
+       and (min-aspect-ratio:3/2) {
+  html.phone-landscape #resultView.result-view {
+    display:grid!important;
+    grid-template-columns:minmax(0,42.5fr) minmax(0,57.5fr)!important;
+    grid-template-rows:auto minmax(0,1fr)!important;
+    column-gap:clamp(8px,1.7vw,18px)!important;
+    row-gap:clamp(6px,1.5dvh,10px)!important;
+    align-items:start!important;
+    padding:4dvh 4vw!important;
+    height:100dvh!important;
+    overflow:hidden;
+  }
+
+  /* The shared intro is moved from the full-width top center to the
+     reading column; its first English text line begins at the 4% top inset. */
+  html.phone-landscape #resultView > #sharedIntro {
+    grid-column:2!important;
+    grid-row:1!important;
+    align-self:start!important;
+    justify-self:stretch!important;
+    position:relative!important;
+    inset:auto!important;
+    width:100%!important;
+    max-width:100%!important;
+    text-align:left!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  html.phone-landscape #resultView > #sharedIntro h1,
+  html.phone-landscape #resultView > #sharedIntro .eyebrow {
+    text-align:left!important;
+  }
+
+  /* The card fills the available height without changing its image ratio.
+     It shares a bottom line with the unchanged fixed action bar.  The actual
+     --result-width/height are provided by the existing stageSize gateway. */
+  html.phone-landscape #resultView .result-card-host,
+  html.phone-landscape #resultView.is-final .result-card-host,
+  html.phone-landscape #resultView.is-revealed .result-card-host {
+    grid-column:1!important;
+    grid-row:1 / -1!important;
+    align-self:end!important;
+    justify-self:center!important;
+    position:relative!important;
+    inset:auto!important;
+    width:var(--result-width)!important;
+    height:var(--result-height)!important;
+    min-height:0!important;
+    max-height:100%!important;
+    margin:0!important;
+    transform:none!important;
+  }
+
+  /* Reserve only the action bar's height inside the reading column.
+     A short reading ends naturally and leaves unused background below it;
+     a long reading shrinks within the same ceiling and scrolls internally. */
+  html.phone-landscape #resultView > .result-reading-group {
+    grid-column:2!important;
+    grid-row:2!important;
+    align-self:stretch!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:0!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+    padding:0 0 calc(var(--ad2-land-button-height) + clamp(8px,2dvh,12px))!important;
+    margin:0!important;
+    overflow:hidden!important;
+  }
+  html.phone-landscape #resultView .result-reading,
+  html.phone-landscape #resultView.is-revealed .result-reading:not([hidden]) {
+    position:relative!important;
+    inset:auto!important;
+    transform:none!important;
+    flex:0 1 auto!important;
+    align-self:stretch!important;
+    height:max-content!important;
+    max-height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    padding:clamp(9px,2.5dvh,14px) clamp(10px,1.8vw,16px)!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+  }
+}

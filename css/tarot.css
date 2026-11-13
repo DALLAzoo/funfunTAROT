@@ -49,3 +49,6 @@
 
 /* AD2: text legibility and chosen-card emphasis, after older overrides. */
 @import url("./screen/27-reading-type-and-selected-glow.css");
+
+/* AD5 trial: smartphone landscape result only; other screen families unchanged. */
+@import url("./screen/28-ad5-phone-landscape-card-led-result.css");
