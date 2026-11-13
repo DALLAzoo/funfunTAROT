@@ -510,8 +510,8 @@ body{overflow-x:hidden}
   bottom:calc(100% + var(--ad5-menu-offset));
   left:auto;
   right:0;
-  width:88%;
-  max-width:88%;
+  width:100%;
+  max-width:100%;
   min-width:0;
   box-sizing:border-box;
   z-index:70;
